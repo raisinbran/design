@@ -36,7 +36,13 @@ pleft {
     font-size: 1.5em;
     line-height: 1.4em;
     color: #333;
-    margin-right:400px;
+    margin-right:52.5%;
+}
+pright {
+    font-size: 1.5em;
+    line-height: 1.4em;
+    color: #333;
+    margin-left:52.5%;
 }
 footer {
     border-top: 1px solid #d5d5d5;
