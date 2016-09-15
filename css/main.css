@@ -28,21 +28,21 @@ h2 {
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
 }
 p {
-    font-size: 1.5em;
-    line-height: 1.4em;
+    font-size: 1.25em;
+    line-height: 1.15em;
     color: #333;
 }
 pleft {
-    font-size: 1.5em;
-    line-height: 1.4em;
+    font-size: 1.25em;
+    line-height: 1.15em;
     color: #333;
-    margin-right:52.5%;
+    margin-right:55%;
 }
 pright {
-    font-size: 1.5em;
-    line-height: 1.4em;
+    font-size: 1.25em;
+    line-height: 1.15em;
     color: #333;
-    margin-left:52.5%;
+    margin-left:55%;
 }
 footer {
     border-top: 1px solid #d5d5d5;
