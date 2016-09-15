@@ -23,10 +23,20 @@ h1 {
     font-size: 3em;
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
 }
+h2 {
+    font-size: 1em;
+    font-family:'Helvetica', 'Arial', 'Sans-Serif';
+}
 p {
     font-size: 1.5em;
     line-height: 1.4em;
     color: #333;
+}
+pleft {
+    font-size: 1.5em;
+    line-height: 1.4em;
+    color: #333;
+    margin-right:400px;
 }
 footer {
     border-top: 1px solid #d5d5d5;
