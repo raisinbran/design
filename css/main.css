@@ -32,6 +32,12 @@ p {
     line-height: 1.15em;
     color: #333;
 }
+p.left {
+    margin-right: 52.5%;
+}
+p.right {
+    margin-left: 52.5%;
+}
 footer {
     border-top: 1px solid #d5d5d5;
     font-size: .8em;
