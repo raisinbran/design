@@ -1,0 +1,8 @@
+.parallax {
+  background: url("https://github.com/raisinbran/design/blob/master/images/IMG_2901.JPG");
+  height: 100%;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
