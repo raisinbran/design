@@ -1,8 +1,27 @@
 .parallax {
-  background: url("https://github.com/raisinbran/design/blob/master/images/IMG_2901.JPG");
-  height: 100%;
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  z-index: -1;
+}
+
+/* Turn off parallax scrolling for tablets and phones. Increase/decrease the pixels if needed */
+@media only screen and (max-device-width: 1024px) {
+    .parallax {
+        background-attachment: scroll;
+    }
+}
+
+#A {
+  background-image: url("../images/IMG_2901.JPG");
+  height: 40%;
+}
+
+body, html {
+  height: 100%;
+}
+
+#Title {
+  background-color: transparent;
 }
