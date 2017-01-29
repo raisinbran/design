@@ -30,11 +30,11 @@ form {
 
 #A {
   background-image: url("../images/IMG_2901.JPG");
-  height: 40%;
+  background-color: #B0C4DE;
+  filter:brightness(0.25);
 }
 #B {
-  background-image: url("../images/IMG_2901.JPG");
-  height: 15%;
+  background-image: url("");
 }
 
 body, html {
@@ -42,11 +42,11 @@ body, html {
 }
 
 .color-prime {
-  background-color: #96CDCD;
+  background-color: #65909A;
 }
 
 .color-aux {
-  background-color: #87CEEB;
+  background-color: #607B8B;
 }
 
 #Title {
