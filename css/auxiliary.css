@@ -13,13 +13,40 @@
     }
 }
 
+.page-header {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.margins {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+form {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
 #A {
   background-image: url("../images/IMG_2901.JPG");
   height: 40%;
 }
+#B {
+  background-image: url("../images/IMG_2901.JPG");
+  height: 15%;
+}
 
 body, html {
   height: 100%;
+}
+
+.color-prime {
+  background-color: #96CDCD;
+}
+
+.color-aux {
+  background-color: #87CEEB;
 }
 
 #Title {
