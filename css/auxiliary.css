@@ -1,17 +1,17 @@
 .parallax {
   background-attachment: fixed;
-  background-position: center;
+  background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-  z-index: -1;
+
 }
 
 /* Turn off parallax scrolling for tablets and phones. Increase/decrease the pixels if needed */
-@media only screen and (max-device-width: 1024px) {
+/*@media only screen and (max-device-width: 1024px) {
     .parallax {
         background-attachment: scroll;
     }
-}
+}*/
 
 .page-header {
   margin-top: 0.5em;
@@ -29,12 +29,14 @@ form {
 }
 
 #A {
-  background-image: url("../images/IMG_2901.JPG");
+  background-image: url("../images/IMG_2901_crop.png");
   background-color: #B0C4DE;
-  filter:brightness(0.25);
+  background-blend-mode: multiply;
 }
 #B {
-  background-image: url("");
+  background-image: url("../images/10.jpg");
+  background-color: #B0C4DE;
+  background-blend-mode: normal;
 }
 
 body, html {
@@ -46,7 +48,7 @@ body, html {
 }
 
 .color-aux {
-  background-color: #607B8B;
+  background-color: #95B8C5;
 }
 
 #Title {
