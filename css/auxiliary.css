@@ -60,7 +60,10 @@ form {
 }
 
 #C {
-  background-image: url("The Cost v.1.0 hd.png");
+  background-image: url("../images/The Cost v.1.0 hd.png");
+  background-color: black;
+  background-size: auto 75%;
+  background-position: top center;
 }
 
 video#bgvid {
