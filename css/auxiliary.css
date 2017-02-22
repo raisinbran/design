@@ -3,7 +3,6 @@
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-
 }
 
 /* Turn off parallax scrolling for tablets and phones. Increase/decrease the pixels if needed */
@@ -22,15 +21,18 @@
   height:2em;
   width:2em;
   border-radius:100%;
-  border-color:#222222;
-  border-width:0em;
+  border:0;
   margin-top:0.8em;
-  background: url("../images/Raisinbran B E x.png");
-  background-size: 100%;
-  transition-duration: 0.3s;
+  background: url("../images/Raisinbran B E stitch3.gif");
+  background-color:#222222;
+  background-position: left;
+  background-size: 200%;
+  position: relative;
+  transition-duration: 0s;
+
 }
 #raisin:hover {
-  background: url("../images/Raisinbran B E y.png")
+  background-position: right;
 }
 
 .padding-prime {
@@ -57,6 +59,7 @@ form {
   background-image: url("../images/10.jpg");
   background-color: #B0C4DE;
   background-blend-mode: normal;
+  background-position: 55% 50%;
 }
 
 #C {
@@ -97,4 +100,37 @@ body, html {
 
 #Title {
   background-color: transparent;
+}
+
+.hexagon {
+  position: relative;
+  width: 300px;
+  height: 173.21px;
+  background-color: white;
+  margin: 86.60px 0;
+  border-left: solid 3px #222222;
+  border-right: solid 3px #222222;
+}
+.hexagon:before,
+.hexagon:after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 212.13px;
+  height: 212.13px;
+  -webkit-transform: scaleY(0.5774) rotate(-45deg);
+  -ms-transform: scaleY(0.5774) rotate(-45deg);
+  transform: scaleY(0.5774) rotate(-45deg);
+  background-color: inherit;
+  left: 40.9340px;
+}
+.hexagon:before {
+  top: -106.0660px;
+  border-top: solid 4.2426px #222222;
+  border-right: solid 4.2426px #222222;
+}
+.hexagon:after {
+  bottom: -106.0660px;
+  border-bottom: solid 4.2426px #222222;
+  border-left: solid 4.2426px #222222;
 }
