@@ -102,35 +102,29 @@ body, html {
   background-color: transparent;
 }
 
-.hexagon {
-  position: relative;
-  width: 300px;
-  height: 173.21px;
-  background-color: white;
-  margin: 86.60px 0;
-  border-left: solid 3px #222222;
-  border-right: solid 3px #222222;
+.project-wrap {
+  padding-bottom:100%;
+  overflow:hidden;
+  position:relative;
+  transition: 0.3s ease;
 }
-.hexagon:before,
-.hexagon:after {
-  content: "";
+img.project {
   position: absolute;
-  z-index: 1;
-  width: 212.13px;
-  height: 212.13px;
-  -webkit-transform: scaleY(0.5774) rotate(-45deg);
-  -ms-transform: scaleY(0.5774) rotate(-45deg);
-  transform: scaleY(0.5774) rotate(-45deg);
-  background-color: inherit;
-  left: 40.9340px;
 }
-.hexagon:before {
-  top: -106.0660px;
-  border-top: solid 4.2426px #222222;
-  border-right: solid 4.2426px #222222;
+.project-caption {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .3s ease;
+  background-color: white;
+  text-align: center;
+  color: inherit;
 }
-.hexagon:after {
-  bottom: -106.0660px;
-  border-bottom: solid 4.2426px #222222;
-  border-left: solid 4.2426px #222222;
+.project-wrap:hover .project-caption {
+  opacity: 0.5;
 }
