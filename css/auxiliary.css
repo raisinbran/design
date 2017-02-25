@@ -103,7 +103,7 @@ body, html {
 }
 
 .project-wrap {
-  padding-bottom:100%;
+  object-fit: cover;
   overflow:hidden;
   position:relative;
   transition: 0.3s ease;
@@ -124,7 +124,8 @@ img.project {
   background-color: white;
   text-align: center;
   color: inherit;
+  padding-top: 40%
 }
 .project-wrap:hover .project-caption {
-  opacity: 0.5;
+  opacity: 0.8;
 }
