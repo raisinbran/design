@@ -12,9 +12,12 @@
     }
 }
 
+p {font-family:"Georgia", Georgia, serif}
+
 .page-header {
   margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
+  color: black
 }
 
 #raisin {
@@ -36,14 +39,14 @@
 }
 
 .padding-prime {
-  padding-top: 1.5em;
-  padding-bottom: 1.5em;
+  padding-top: 2.5em;
+  padding-bottom: 2em;
 }
 
-form {
+/*form {
   margin-top: 1em;
   margin-bottom: 1em;
-}
+}*/ /*deprecated*/
 
 #A {
   background-image: url("../images/IMG_2901.JPG");
@@ -69,6 +72,10 @@ form {
   background-position: top center;
 }
 
+img.default {
+  vertical-align: baseline;
+}
+
 video#bgvid {
   width: 100vw;
   /*position: fixed;
@@ -91,11 +98,11 @@ body, html {
 }
 
 .color-prime {
-  background-color: #65909A;
+  background-color: #95B8C5;
 }
 
 .color-aux {
-  background-color: #95B8C5;
+  background-color: #89ADCE;
 }
 
 #Title {
