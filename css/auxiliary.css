@@ -17,15 +17,17 @@ p {font-family:"Georgia", Georgia, serif}
 .page-header {
   margin-top: 0.5em;
   margin-bottom: 1em;
-  color: black
+  color: "color-prime";
 }
+
+h1, h2, h3, h4, h5, h6 {font-family: "Arial"}
 
 #raisin {
   height:2em;
   width:2em;
   border-radius:100%;
   border:0;
-  margin-top:0.8em;
+  margin-top:-0.4em;
   background: url("../images/Raisinbran B E stitch3.gif");
   background-color:#222222;
   background-position: left;
@@ -62,7 +64,7 @@ p {font-family:"Georgia", Georgia, serif}
   background-image: url("../images/10.jpg");
   background-color: #B0C4DE;
   background-blend-mode: normal;
-  background-position: 55% 50%;
+  background-position: 55% 1%;
 }
 
 #C {
@@ -135,4 +137,10 @@ img.project {
 }
 .project-wrap:hover .project-caption {
   opacity: 0.8;
+}
+
+.text-justify {
+  column-count: 2;
+  column-width: 14em;
+  column-gap: 1.5em;
 }
