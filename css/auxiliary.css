@@ -5,14 +5,47 @@
   background-size: cover;
 }
 
+.parallax-false {
+  background-attachment: scroll;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
 /* Turn off parallax scrolling for tablets and phones. Increase/decrease the pixels if needed */
-@media only screen and (max-device-width: 1024px) {
+@media only screen and (max-device-width: 1366px) {
     .parallax {
         background-attachment: scroll;
     }
+    .parallax-false {
+      cursor: pointer;
+    }
 }
 
-p {font-family:"Georgia", Georgia, serif}
+div.cover {
+  object-fit: cover;
+}
+
+img.collapse {
+  border-style: solid;
+  border-width: .1em;
+  object-fit: cover;
+  height: 15em;
+  display: block;
+  margin-top: .25em;
+  margin-bottom: .75em;
+  width: 100%;
+}
+
+p {
+  font-family:Georgia, serif;
+  font-size:1em;
+}
+p.large {
+  font-family:Helvetica, sans-serif;
+  font-size:1.8em;
+  font-weight: bold;
+}
 
 .page-header {
   margin-top: 0.5em;
@@ -20,7 +53,11 @@ p {font-family:"Georgia", Georgia, serif}
   color: "color-prime";
 }
 
-h1, h2, h3, h4, h5, h6 {font-family: "Arial"}
+h1, h2, h3, h4, h5, h6 {
+  font-family:Helvetica, sans-serif;
+  padding-top:0em;
+  font-weight:bold;
+}
 
 #raisin {
   height:2em;
@@ -41,8 +78,15 @@ h1, h2, h3, h4, h5, h6 {font-family: "Arial"}
 }
 
 .padding-prime {
-  padding-top: 2.5em;
-  padding-bottom: 2em;
+  padding-top: 0.75em;
+  padding-bottom: 0.75em;
+}
+
+.padding-collapse {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 /*form {
@@ -67,11 +111,74 @@ h1, h2, h3, h4, h5, h6 {font-family: "Arial"}
   background-position: 55% 1%;
 }
 
-#C {
-  background-image: url("../images/The Cost v.1.0 hd.png");
-  background-color: black;
+#Filtran {
+  background-image: url("../images/Filtran/160803 Ford 6F35 Helical 2 blur crop.PNG");
+  background-size: cover;
+  background-position: center 20%;
+}
+
+#Segal {
+  background-image: url("../images/Segal Intern/10.JPG");
+  background-size: cover;
+  background-position: center center;
+}
+
+#Capstone-Wrench {
+  background-image: url("../images/Bionic/IMG_0109_edit.PNG");
+  background-size: cover;
+  background-position: center center;
+}
+
+#Capstone-Breadfruit-B {
+  background-image: url("../images/Bionic/IMG_0109_edit");
+  background-size: cover;
+  background-position: center center;
+}
+
+#Capstone-Breadfruit {
+  background-image: url("../images/Bolt/IMG_4403.mp4");
   background-size: auto 75%;
   background-position: top center;
+}
+
+#Clip-It {
+  background-image: url("../images/Human-Cent Product Dsgn/Mech Clip H Render A.JPG");
+  background-size: cover;
+  background-position: center 40%;
+}
+
+#Sombrero {
+  background-image: url("../images/Sombrero/Snapchat-3808179944577413439_edit.PNG");
+  background-size: cover;
+  background-position: center center;
+}
+
+.overlay {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: white;
+}
+
+.parallax-false:hover .overlay {
+  opacity: .8;
+}
+
+.overlay-text {
+  color: black;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 img.default {
@@ -100,18 +207,32 @@ body, html {
 }
 
 .color-prime {
-  background-color: #95B8C5;
+  background-color: #e6e6e6;
 }
 
 .color-aux {
-  background-color: #89ADCE;
+  background-color: #b3b3b3;
+}
+
+div.gradient-prime-aux {
+  background: linear-gradient(to bottom, #e6e6e6 0%, #b3b3b3 100%);
+}
+
+a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
 }
 
 #Title {
   background-color: transparent;
 }
 
-.project-wrap {
+.text-justify {
+  column-count: 2;
+  column-width: 14em;
+  column-gap: 1.5em;
+}
+
+/*.project-wrap {
   object-fit: cover;
   overflow:hidden;
   position:relative;
@@ -137,10 +258,4 @@ img.project {
 }
 .project-wrap:hover .project-caption {
   opacity: 0.8;
-}
-
-.text-justify {
-  column-count: 2;
-  column-width: 14em;
-  column-gap: 1.5em;
-}
+}*/
