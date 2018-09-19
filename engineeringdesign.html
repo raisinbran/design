@@ -4,119 +4,112 @@
   <title>Engineering Design - Brandon Chen</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/auxiliary.css">
   <link rel="stylesheet" href="css/hexagons.css">
-  <!-- jQuery library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <!-- Latest compiled JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <!--<style>
-  #A {
-    background-image: url("images/IMG_2901.JPG");
-  }
-</style>-->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html"><button type="button" id="raisin"></button></a>
-      <a class="navbar-brand" href="index.html">Brandon Chen</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="resume.html">Resume</a></li>
-        <li class="active"><a href="engineeringdesign.html">Engineering Design</a></li>
-        <li><a href="visualdesign.html">Visual Design</a></li>
-      </ul>
-    </div>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+  <a class="navbar-brand" href="index.html">
+    <img src="images/Raisinbran B E y.png" width="30" height="30" style="margin-right:.2em" class="d-inline-block align-top" alt="">
+    Brandon Chen
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="resume.html">Resume</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="engineeringdesign.html">Engineering Design</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="visualdesign.html">Visual Design</a>
+      </li>
+    </ul>
   </div>
 </nav>
 
-<div class="container-fluid color-prime">
-  <div style="height:3em"></div>
-  <div class="row padding-prime">
-    <h2 style="text-align:center">WORK EXPERIENCE</h2>
-  </div>
+<div class="container-fluid color-prime padding-prime">
+  <div style="height:4em"></div>
+  <h2 class="text-center">WORK EXPERIENCE</h2>
 </div>
 
 <div id="accordion-enggdsgn">
-
-<a href="#collapse-filtran" data-toggle="collapse">
-  <div class="parallax-false" id="Filtran" style="height:10em">
-    <div class="overlay">
-      <div class="overlay-text">
-        <p class="large">Filtran</p>
-        <p>Design Engineer Intern / Summer 2016</p>
+  <a href="#collapse-filtran" data-toggle="collapse">
+    <div class="parallax-false" id="Filtran" style="height:10em">
+      <div class="overlay">
+        <div class="overlay-text">
+          <h3>Filtran</h3>
+          <p>Design Engineer Intern / Summer 2016</p>
+        </div>
+      </div>
+    </div>
+  </a>
+  <div id="collapse-filtran" class="container-fluid collapse" style="background-color:#ffcc99" data-parent="#accordion-enggdsgn">
+    <div class="row padding-collapse">
+      <div class="col-sm-6 col-lg-3">​<strong>Filtran is a leading</strong> supplier of automatic transmission filtration solutions to the automotive industry. I decreased development time of new products by 18%, and I improved the quality of proposals using computer simulations, especially CFD (computational fluid dynamics) and FEA (finite element analysis). In addition, I reduced the machining and setup time of fixtures for performance qualification tests and vibration tests by 60%.<br>Filtran is ISO-9000, ISO-14001, and TS-16949 certified.</p>
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <img class="collapse" style="object-position: right" src="images/Filtran/Slide - GM X72 New Suction Filter blur.PNG">
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <img class="collapse" style="object-position: 43%" src="images/Filtran/160803 Ford 6F35 Helical 2 blur crop.PNG">
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <img class="collapse" style="object-position: 85%" src="images/Filtran/allison tc10 pf new metal bypass 082316.PNG">
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <img class="collapse" style="object-position: center 40%" src="images/Filtran/160714 AAM check valve 1 crop.JPG">
       </div>
     </div>
   </div>
-</a>
-<div id="collapse-filtran" class="container-fluid collapse" style="background-color:#ffcc99" data-parent="#accordion-enggdsgn">
-  <div class="row padding-collapse">
-    <div class="col-sm-6 col-lg-3">​<strong>Filtran is a leading</strong> supplier of automatic transmission filtration solutions to the automotive industry. I decreased development time of new products by 18%, and I improved the quality of proposals using computer simulations, especially CFD (computational fluid dynamics) and FEA (finite element analysis). In addition, I reduced the machining and setup time of fixtures for performance qualification tests and vibration tests by 60%.<br>Filtran is ISO-9000, ISO-14001, and TS-16949 certified.</p>
-    </div>
-    <div class="col-xs-6 col-sm-3">
-      <img class="collapse" style="object-position: right" src="images/Filtran/Slide - GM X72 New Suction Filter blur.PNG">
-    </div>
-    <div class="col-xs-6 col-sm-3">
-      <img class="collapse" style="object-position: 43%" src="images/Filtran/160803 Ford 6F35 Helical 2 blur crop.PNG">
-    </div>
-    <div class="col-xs-6 col-sm-3">
-      <img class="collapse" style="object-position: 85%" src="images/Filtran/allison tc10 pf new metal bypass 082316.PNG">
-    </div>
-    <div class="col-xs-6 col-sm-3">
-      <img class="collapse" style="object-position: center 40%" src="images/Filtran/160714 AAM check valve 1 crop.JPG">
-    </div>
-  </div>
-</div>
 
-<a href="#collapse-segal" data-toggle="collapse">
-  <div class="parallax-false" id="Segal" style="height:10em">
-    <div class="overlay">
-      <div class="overlay-text">
-        <p class="large">Segal Design Institute</p>
-        <p>Design Intern / Summer 2015</p>
+  <a href="#collapse-segal" data-toggle="collapse">
+    <div class="parallax-false" id="Segal" style="height:10em">
+      <div class="overlay">
+        <div class="overlay-text">
+          <p class="large">Segal Design Institute</p>
+          <p>Design Intern / Summer 2015</p>
+        </div>
+      </div>
+    </div>
+  </a>
+  <div id="collapse-segal" class="container-fluid collapse" style="background-color:#9fc6c1" data-parent="#accordion-enggdsgn">
+    <div class="row padding-collapse">
+      <div class="col-sm-9">​<strong>The Segal interns work on</strong> several mechanical, electrical, and biomedical projects involving the gathering of more feedback from users and stakeholders, refining of the design, and fabrication of several units. The clients of these projects ranged from a child with motor impairment at the Rehabilitation Institute of Chicago, to Nigerian doctors and the University of Ibadan, to many other local organizations.</p>
+      </div>
+    </div>
+    <div class="row padding-collapse">
+      <div class="col-xs-6 col-sm-3">
+        <img class="collapse" style="object-position: 65%" src="images/Segal Intern/Outlet H Assembly Render B.JPG">
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <img class="collapse" style="object-position: 25% 70%" src="images/Segal Intern/IMG_2919 edit.JPG">
+      </div>
+      <div class="col-xs-6 col-sm-3">
+        <img class="collapse" style="object-position: 85%" src="images/Segal Intern/North Garage B Render D.JPG">
       </div>
     </div>
   </div>
-</a>
-<div id="collapse-segal" class="container-fluid collapse" style="background-color:#9fc6c1" data-parent="#accordion-enggdsgn">
-  <div class="row padding-collapse">
-    <div class="col-sm-9">​<strong>The Segal interns work on</strong> several mechanical, electrical, and biomedical projects involving the gathering of more feedback from users and stakeholders, refining of the design, and fabrication of several units. The clients of these projects ranged from a child with motor impairment at the Rehabilitation Institute of Chicago, to Nigerian doctors and the University of Ibadan, to many other local organizations.</p>
-    </div>
-  </div>
-  <div class="row padding-collapse">
-    <div class="col-xs-6 col-sm-3">
-      <img class="collapse" style="object-position: 65%" src="images/Segal Intern/Outlet H Assembly Render B.JPG">
-    </div>
-    <div class="col-xs-6 col-sm-3">
-      <img class="collapse" style="object-position: 25% 70%" src="images/Segal Intern/IMG_2919 edit.JPG">
-    </div>
-    <div class="col-xs-6 col-sm-3">
-      <img class="collapse" style="object-position: 85%" src="images/Segal Intern/North Garage B Render D.JPG">
-    </div>
-  </div>
-</div>
 
 </div>
+
+
+
 
 <div class="container-fluid color-prime" style="height:1em"></div>
 
 <div class="gradient-prime-aux" style="height:3em"></div>
 
-<div class="container-fluid color-aux">
-  <div class="row padding-prime">
-    <h2 style="text-align:center">ACADEMIC PROJECTS</h2>
-  </div>
+<div class="container-fluid color-aux padding-prime">
+  <h2 class="text-center">ACADEMIC PROJECTS</h2>
 </div>
 
 <div class="parallax-false" id="Capstone-Wrench" style="height:12em">
