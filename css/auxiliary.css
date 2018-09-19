@@ -38,14 +38,14 @@ img.collapse {
 }
 
 p {
-  font-family:Georgia, serif;
+  /*font-family:Georgia, serif;*/
   font-size:1em;
 }
-p.large {
+/*p.large {
   font-family:Helvetica, sans-serif;
   font-size:1.8em;
   font-weight: bold;
-}
+}*/
 
 .page-header {
   margin-top: 0.5em;
@@ -77,8 +77,8 @@ h1, h2, h3, h4, h5, h6 {
 }*/
 
 .padding-prime {
-  padding-top: 0.75em;
-  padding-bottom: 0.5em;
+  padding-top: 2em;
+  padding-bottom: 1.75em;
 }
 
 .padding-collapse {
@@ -93,15 +93,56 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1em;
 }*/ /*deprecated*/
 
+header {
+  position: relative;
+  background-color: black;
+  height: 100vh;
+  min-height: 25rem;
+  width: 100%;
+  overflow: hidden;
+}
+header video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+header .container {
+  position: relative;
+  z-index: 2;
+}
+header .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 1;
+}
+@media (pointer: coarse) and (hover: none) {
+  header {
+    background: url("images/Bolt/IMG_4406_Moment_Moment.jpg") #e6e6e6 no-repeat center center scroll;
+  }
+  header video {
+    display: none;
+  }
+}
+
 #A {
   background-image: url("../images/IMG_2901.JPG");
   background-color: #B0C4DE;
   background-blend-mode: multiply;
   background-position: center left;
-}
-#Peel { /*video background*/
-  overflow:hidden;
-  display:block;
 }
 #B {
   background-image: url("../images/10.jpg");
@@ -223,12 +264,6 @@ a:link, a:visited, a:hover, a:active {
 
 #Title {
   background-color: transparent;
-}
-
-.text-justify {
-  column-count: 2;
-  column-width: 14em;
-  column-gap: 1.5em;
 }
 
 /*.project-wrap {
