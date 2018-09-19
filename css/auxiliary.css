@@ -26,6 +26,10 @@ div.cover {
   object-fit: cover;
 }
 
+div.card {
+  max-height:20em;
+}
+
 img.collapse {
   border-style: solid;
   border-width: .1em;
@@ -35,6 +39,12 @@ img.collapse {
   margin-top: .25em;
   margin-bottom: .75em;
   width: 100%;
+}
+
+img.card {
+  object-fit:cover;
+  max-width:inherit;
+  max-height:inherit;
 }
 
 p {
@@ -96,7 +106,7 @@ h1, h2, h3, h4, h5, h6 {
 header {
   position: relative;
   background-color: black;
-  height: 100vh;
+  height: 95vh;
   min-height: 25rem;
   width: 100%;
   overflow: hidden;
