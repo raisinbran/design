@@ -22,14 +22,6 @@
     }
 }
 
-div.cover {
-  object-fit: cover;
-}
-
-div.card {
-  max-height:20em;
-}
-
 img.collapse {
   border-style: solid;
   border-width: .1em;
@@ -51,11 +43,6 @@ p {
   /*font-family:Georgia, serif;*/
   font-size:1em;
 }
-/*p.large {
-  font-family:Helvetica, sans-serif;
-  font-size:1.8em;
-  font-weight: bold;
-}*/
 
 .page-header {
   margin-top: 0.5em;
@@ -63,28 +50,9 @@ p {
   color: "color-prime";
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6 {}
 
-}
 
-/*Depreciated as of bootstrap 4.0
-#raisin {
-  height:1.6em;
-  width:1.6em;
-  border-radius:100%;
-  border:0;
-  margin-top:-0.4em;
-  background: url("../images/Raisinbran B E stitch3.gif");
-  background-color:#222222;
-  background-position: left;
-  background-size: 200%;
-  position: relative;
-  transition-duration: 0s;
-
-}
-#raisin:hover {
-  background-position: right;
-}*/
 
 .padding-prime {
   padding-top: 2em;
@@ -148,62 +116,35 @@ header .overlay {
   }
 }
 
-#A {
-  background-image: url("../images/IMG_2901.JPG");
-  background-color: #B0C4DE;
-  background-blend-mode: multiply;
-  background-position: center left;
+div.card {
+  background-color:black;
 }
-#B {
-  background-image: url("../images/10.jpg");
-  background-color: #B0C4DE;
-  background-blend-mode: normal;
-  background-position: 55% 1%;
-}
-
-#Filtran {
-  background-image: url("../images/Filtran/160803 Ford 6F35 Helical 2 blur crop.png");
+.card-img {
+  width: 100%;
+  height: 100%;
+  background-color: black; /* fallback color */
+  background-position: center;
   background-size: cover;
-  background-position: center 20%;
+  transition:all .5s ease;
+  opacity:1;
 }
-
-#Segal {
-  background-image: url("../images/Segal Intern/10.jpg");
-  background-size: cover;
-  background-position: center center;
+.card:hover .card-img,
+.card:focus .card-img {
+  transform: scale(1.02);
+  opacity:0.375;
 }
-
-#Capstone-Wrench {
-  background-image: url("../images/Bionic/IMG_0109_edit.PNG");
-  background-size: cover;
-  background-position: center center;
+.card:hover .card-img-overlay{
+  color:white;
 }
-
-#Capstone-Breadfruit-B {
-  background-image: url("../images/Bionic/IMG_0109_edit");
-  background-size: cover;
-  background-position: center center;
+.card-img-overlay>h3, .card-img-overlay>p{
+    visibility:hidden;
 }
-
-#Capstone-Breadfruit {
-  background-image: url("../images/Bolt/IMG_4403.mp4");
-  background-size: auto 75%;
-  background-position: top center;
+.card-img-overlay:hover h3, .card-img-overlay:hover p{
+    visibility:visible;
 }
+.card-title {margin-top:50%}
 
-#Clip-It {
-  background-image: url("../images/Human-Cent Product Dsgn/Mech Clip H Render A.JPG");
-  background-size:cover;
-  background-position: center 40%;
-}
-
-#Sombrero {
-  background-image: url("../images/Sombrero/Snapchat-3808179944577413439_edit.png");
-  background-size: cover;
-  background-position: center center;
-}
-
-.overlay {
+/*.overlay {
   position: relative;
   top: 0;
   bottom: 0;
@@ -214,12 +155,11 @@ header .overlay {
   opacity: 0;
   transition: .5s ease;
   background-color: white;
+  object-fit:cover;
 }
-
-.parallax-false:hover .overlay {
+.parallax-false:hover .overlay{
   opacity: .8;
 }
-
 .overlay-text {
   color: black;
   position: relative;
@@ -229,27 +169,10 @@ header .overlay {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;
-}
+}*/
 
 img.default {
   vertical-align: baseline;
-}
-
-video#bgvid {
-  width: 100vw;
-  /*position: fixed;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: -100;
-  -ms-transform: translateX(-50%) translateY(-50%);
-  -moz-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  transform: translateX(-50%) translateY(-50%);
-  background-size: cover;*/
 }
 
 body, html {
@@ -257,11 +180,16 @@ body, html {
 }
 
 .color-prime {
-  background-color: #e6e6e6;
+  background-color: #d9d9d9;
 }
-
 .color-aux {
   background-color: #b3b3b3;
+}
+.color-light {
+  background-color:#abb3ba;
+}
+.color-dark {
+  background-color: #343A40;
 }
 
 div.gradient-prime-aux {
@@ -275,6 +203,40 @@ a:link, a:visited, a:hover, a:active {
 #Title {
   background-color: transparent;
 }
+
+#A {
+  background-image: url("../images/IMG_2901.JPG");
+  background-color: #B0C4DE;
+  background-blend-mode: multiply;
+  background-position: center left;
+}
+#B {
+  background-image: url("../images/10.jpg");
+  background-color: #B0C4DE;
+  background-blend-mode: normal;
+  background-position: 55% 1%;
+}
+
+
+
+/*Depreciated as of bootstrap 4.0
+#raisin {
+  height:1.6em;
+  width:1.6em;
+  border-radius:100%;
+  border:0;
+  margin-top:-0.4em;
+  background: url("../images/Raisinbran B E stitch3.gif");
+  background-color:#222222;
+  background-position: left;
+  background-size: 200%;
+  position: relative;
+  transition-duration: 0s;
+
+}
+#raisin:hover {
+  background-position: right;
+}*/
 
 /*.project-wrap {
   object-fit: cover;
