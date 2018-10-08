@@ -52,8 +52,6 @@ p {
 
 h1, h2, h3, h4, h5, h6 {}
 
-
-
 .padding-prime {
   padding-top: 2em;
   padding-bottom: 1.75em;
@@ -118,6 +116,9 @@ header .overlay {
 
 div.card {
   background-color:black;
+  height:40vh;
+  margin-top:.75em;
+  margin-bottom:.75em;
 }
 .card-img {
   width: 100%;
@@ -142,7 +143,6 @@ div.card {
 .card-img-overlay:hover h3, .card-img-overlay:hover p{
     visibility:visible;
 }
-.card-title {margin-top:50%}
 
 /*.overlay {
   position: relative;
@@ -200,7 +200,27 @@ a:link, a:visited, a:hover, a:active {
   text-decoration: none;
 }
 
-#Title {
+.nav-link {
+  transition: .5 ease;
+}
+
+.btn-linkedin, .btn-github, .btn-email, i {
+  transition: .3s ease;
+}
+.btn-linkedin:hover, .btn-linkedin:focus {
+  background-color: #0082CA;
+}
+.btn:hover i, .btn:focus i {
+  color:white;
+}
+.btn-git:hover, .btn-git:focus {
+  background-color: #4B515D;
+}
+.btn-email:hover, .btn-email:focus {
+  background-color: #EA4335;
+}
+
+/*#Title {
   background-color: transparent;
 }
 
@@ -216,8 +236,7 @@ a:link, a:visited, a:hover, a:active {
   background-blend-mode: normal;
   background-position: 55% 1%;
 }
-
-
+*/
 
 /*Depreciated as of bootstrap 4.0
 #raisin {
