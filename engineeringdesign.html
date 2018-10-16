@@ -8,8 +8,6 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/auxiliary.css">
   <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -39,15 +37,20 @@
 <div style="height:3.5em"></div>
 
 <div class="color-light px-3 py-2">
-  <div class="card-columns">
-    <div class="card">
-      <div class="card-img" style="background-image: url('images/Filtran/allison tc10 pf new metal bypass 2 082316.PNG');"></div>
-      <a href="engineeringdesign.html">
+  <div class="card-columns" id="accordion">
+    <div class="card" id="headingOne">
+      <div class="card-img btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="background-image: url('images/Filtran/allison tc10 pf new metal bypass 2 082316.PNG');"></div>
+
         <div class="card-img-overlay d-flex flex-column justify-content-end">
           <h3 class="card-title">Filtran</h3>
           <p class="card-text">Design Engineer Intern</p>
         </div>
-      </a>
+
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        </div>
+      </div>
     </div>
     <div class="card">
       <div class="card-img" style="background-image: url('images/Segal Intern/10.jpg');"></div>
@@ -88,119 +91,70 @@
   </div>
 </div>
 
-<div class="container-fluid color-prime padding-prime">
-  <div style="height:3.5em"></div>
-  <h1 class="display-4 text-center">Work Experience</h1>
-</div>
-
-<div id="accordion-enggdsgn">
-  <a href="#collapse-filtran" data-toggle="collapse">
-    <div class="parallax-false" id="Filtran" style="height:12em">
-      <div class="overlay">
-        <div class="overlay-text">
-          <h3>Filtran</h3>
-          <p>Design Engineer Intern / Summer 2016</p>
-        </div>
+<div class="color-light px-4 pt-4 pb-2">
+  <div class="d-flex text-center pb-4">
+    <h6 class="my-auto w-100">Recent work in product design, manufacturing, and user experience:</h6>
+  </div>
+  <div class="row">
+    <div class="offset-sm-1 offset-lg-0 offset-xl-2 col-sm-5 col-lg-3 col-xl-2">
+      <div class="card">
+        <div class="card-img" style="background-image: url('images/Filtran/allison tc10 pf new metal bypass 2 082316.PNG');"></div>
+        <a href="engineeringdesign.html">
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <h3 class="card-title">Filtran</h3>
+            <p class="card-text">Design Engineer Intern</p>
+          </div>
+        </a>
       </div>
     </div>
-  </a>
-  <div id="collapse-filtran" class="container-fluid collapse" style="background-color:#ffcc99" data-parent="#accordion-enggdsgn">
-    <div class="row padding-collapse">
-      <div class="col-sm-6 col-lg-3">​<strong>Filtran supplies</strong> automatic transmission filtration solutions to the automotive industry. I decreased development time of new products by 18%, and I improved the quality of proposals using computer simulations, especially CFD (computational fluid dynamics) and FEA (finite element analysis). In addition, I reduced the machining and setup time of fixtures for performance qualification tests and vibration tests by 60%.<br>Filtran is ISO-9000, ISO-14001, and TS-16949 certified.</p>
-      </div>
-      <div class="col-xs-6 col-sm-3">
-        <img class="collapse" style="object-position: right" src="images/Filtran/Slide - GM X72 New Suction Filter blur.PNG">
-      </div>
-      <div class="col-xs-6 col-sm-3">
-        <img class="collapse" style="object-position: 43%" src="images/Filtran/160803 Ford 6F35 Helical 2 blur crop.PNG">
-      </div>
-      <div class="col-xs-6 col-sm-3">
-        <img class="collapse" style="object-position: 85%" src="images/Filtran/allison tc10 pf new metal bypass 082316.PNG">
-      </div>
-      <div class="col-xs-6 col-sm-3">
-        <img class="collapse" style="object-position: center 40%" src="images/Filtran/160714 AAM check valve 1 crop.JPG">
+    <div class="col-sm-5 col-lg-3 col-xl-2">
+      <div class="card">
+        <div class="card-img" style="background-image: url('images/Bolt/20160726-144705_orig.jpg');"></div>
+        <a href="engineeringdesign.html">
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <h3 class="card-title">Capstone Project</h3>
+            <p class="card-text">Breadfruit-to-Flour Conversion Improvement</p>
+          </div>
+        </a>
       </div>
     </div>
-  </div>
-
-  <a href="#collapse-segal" data-toggle="collapse">
-    <div class="parallax-false" id="Segal" style="height:12em">
-      <div class="overlay">
-        <div class="overlay-text">
-          <p class="large">Segal Design Institute</p>
-          <p>Design Intern / Summer 2015</p>
-        </div>
+    <div class="offset-sm-1 offset-lg-0 col-sm-5 col-lg-3 col-xl-2">
+      <div class="card">
+        <div class="card-img" style="background-image: url('images/Segal Intern/10.jpg');"></div>
+        <a href="engineeringdesign.html">
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <h3 class="card-title">Segal Design Institute</h3>
+            <p class="card-text">Design Intern</p>
+          </div>
+        </a>
       </div>
     </div>
-  </a>
-  <div id="collapse-segal" class="container-fluid collapse" style="background-color:#9fc6c1" data-parent="#accordion-enggdsgn">
-    <div class="row padding-collapse">
-      <div class="col-sm-9">​<strong>The Segal interns work on</strong> several mechanical, electrical, and biomedical projects involving the gathering of more feedback from users and stakeholders, refining of the design, and fabrication of several units. The clients of these projects ranged from a child with motor impairment at the Rehabilitation Institute of Chicago, to Nigerian doctors and the University of Ibadan, to many other local organizations.</p>
+    <div class="col-sm-5 col-lg-3 col-xl-2">
+      <div class="card">
+        <div class="card-img" style="background-image: url('images/325/Chen_Toothbrush_Rend_f_edit.png');background-position:right center;"></div>
+        <a href="engineeringdesign.html">
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <h3 class="card-title">Computer-Aided Design</h3>
+            <p class="card-text"></p>
+          </div>
+        </a>
       </div>
     </div>
-    <div class="row padding-collapse">
-      <div class="col-xs-6 col-sm-3">
-        <img class="collapse" style="object-position: 65%" src="images/Segal Intern/Outlet H Assembly Render B.JPG">
-      </div>
-      <div class="col-xs-6 col-sm-3">
-        <img class="collapse" style="object-position: 25% 70%" src="images/Segal Intern/IMG_2919 edit.JPG">
-      </div>
-      <div class="col-xs-6 col-sm-3">
-        <img class="collapse" style="object-position: 85%" src="images/Segal Intern/North Garage B Render D.JPG">
-      </div>
-    </div>
-  </div>
-
-</div>
-
-
-<div class="container-fluid color-prime" style="height:1em"></div>
-
-<div class="gradient-prime-aux" style="height:3em"></div>
-
-<div class="container-fluid color-aux padding-prime">
-  <h2 class="text-center">Academic Projects</h2>
-</div>
-
-<div class="parallax-false" id="Capstone-Wrench" style="height:12em">
-  <div class="overlay">
-    <div class="overlay-text"><p.large>Bionic Wrench Assembly Improvement</p.large><p>Capstone Project</p></div>
+    <div class="col-xl-2"></div>
   </div>
 </div>
 
-<div class="parallax-false" id="Capstone-Breadfruit" style="height:12em">
-  <div class="overlay">
-    <div class="overlay-text"><p.large>Breadfruit-to-Flour Throughput Improvement</p.large><p>Capstone Project</p></div>
+<footer class="container-fluid color-dark pt-4 pb-2">
+  <div class="d-flex justify-content-center mb-2">
+    <a href="https://linkedin.com/in/brandonjianchen/"><button type="button" class="btn btn-linkedin mx-1"><i class="fa fa-linkedin"></i></button></a>
+    <a href="https://github.com/raisinbran"><button type="button" class="btn btn-git mx-1"><i class="fa fa-github"></i></button></a>
+    <a href="mailto:brandonjianchen@gmail.com"><button type="button" class="btn btn-email mx-1"><i class="fa fa-envelope"></i></button></a>
   </div>
-</div>
-
-<div class="parallax-false" id="Clip-It" style="height:8em">
-  <div class="overlay">
-    <div class="overlay-text"><p.large>"Clip-It" Garbage Bag Holder</p.large><p>Human-Centered Product Design</p></div>
-  </div>
-</div>
-
-<div class="parallax-false" id="Sombrero" style="height:8em">
-  <div class="overlay">
-    <div class="overlay-text"><p.large>"Candy Sombrero" Injection-Molded Toy</p.large><p>Computer-Aided Manufacturing</p></div>
-  </div>
-</div>
-
-<div class="parallax-false" id="Infrashield" style="height:8em">
-  <div class="overlay">
-    <div class="overlay-text"><p.large>"Infrashield" Ballistic Wall</p.large></div>
-  </div>
-</div>
-
-<div class="parallax-false" id="Wheelchair-Caddy" style="height:8em">
-  <div class="overlay">
-    <div class="overlay-text"><p.large>Wheelchair Caddy</p.large></div>
-  </div>
-</div>
-
-<footer class="container-fluid color-aux padding-prime">
-  <p class="text-center">2018 Brandon Chen<br>Design Portfolio</p>
+  <p class="text-center text-muted">2018 Brandon Chen</p>
 </footer>
 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>

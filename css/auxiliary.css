@@ -219,18 +219,18 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .btn-linkedin, .btn-github, .btn-email, i {
-  transition: .3s ease;
+  transition: .2s ease;
 }
-.btn-linkedin:hover, .btn-linkedin:focus {
+.btn-linkedin:hover {
   background-color: #0082CA;
 }
 .btn:hover i, .btn:focus i {
   color:white;
 }
-.btn-git:hover, .btn-git:focus {
+.btn-git:hover {
   background-color: #4B515D;
 }
-.btn-email:hover, .btn-email:focus {
+.btn-email:hover {
   background-color: #EA4335;
 }
 
