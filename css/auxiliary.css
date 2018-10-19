@@ -129,12 +129,15 @@ header .overlay {
     column-count: 4;
   }
 }
-div.card {
-  background-color:white;
+.card {
+  background-color:black;
   height:40vh;
   margin-bottom:1em;
 }
-div.card .collapse
+.collapse.show .card {
+  height:10vh;
+  background-color: black;
+}
 
 .card-img {
   width: 100%;
