@@ -130,10 +130,12 @@ header .overlay {
   }
 }
 div.card {
-  background-color:black;
+  background-color:white;
   height:40vh;
   margin-bottom:1em;
 }
+div.card .collapse
+
 .card-img {
   width: 100%;
   height: 100%;
