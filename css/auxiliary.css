@@ -32,6 +32,25 @@ img.collapse {
   margin-bottom: .75em;
   width: 100%;
 }
+/*.collapsing{
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease;
+}
+*Need to make work at some point*
+.collapsing.horizontal{
+  width: 0;
+  -webkit-transition-property: width, visibility;
+  transition-property: width, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+}*/
 
 img.card {
   object-fit:cover;
@@ -42,6 +61,9 @@ img.card {
 p {
   /*font-family:Georgia, serif;*/
   font-size:1em;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
 }
 
 .page-header {
@@ -50,7 +72,11 @@ p {
   color: "color-prime";
 }
 
-h1, h2, h3, h4, h5, h6 {}
+h1, h2, h3, h4, h5, h6 {
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+}
 
 .padding-prime {
   padding-top: 2em;
@@ -68,10 +94,6 @@ h1, h2, h3, h4, h5, h6 {}
   margin-top: 1em;
   margin-bottom: 1em;
 }*/ /*deprecated*/
-
-.col-md-0 {
-
-}
 
 header {
   position: relative;
@@ -132,11 +154,9 @@ header .overlay {
 .card {
   background-color:black;
   height:40vh;
-  margin-bottom:1em;
-}
-.collapse.show .card {
-  height:10vh;
-  background-color: black;
+  margin-bottom:0em;
+  margin-top:1em;
+  overflow:hidden;
 }
 
 .card-img {
@@ -150,8 +170,8 @@ header .overlay {
 }
 .card:hover .card-img,
 .card:focus .card-img {
-  transform: scale(1.02);
-  opacity:0.375;
+  transform: scale(1.03);
+  opacity:0.5;
 }
 .card:hover .card-img-overlay{
   color:white;
@@ -161,6 +181,62 @@ header .overlay {
 }
 .card-img-overlay:hover h3, .card-img-overlay:hover p{
     visibility:visible;
+}
+
+.square {
+  background-color:black;
+  border-style: solid;
+  border-width:0.05em;
+  border-color:black;
+  margin-top:.7em;
+  margin-bottom:.5em;
+  width:100%;
+  height:16vh;
+  overflow:hidden;
+}
+/*.square:before {
+  content: "";
+  display:block;
+  padding-top:100%;
+}
+.square-img {
+  background-color: gray; * fallback color *
+  background-position: center;
+  background-size: cover;
+  border-style: solid;
+  border-width:0.05em;
+  border-color:black;
+  transition:all .5s ease;
+  opacity:1;
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}*/
+.square-img {
+  background-color: gray; /* fallback color */
+  background-position: center;
+  background-size: cover;
+  width:100%;
+  height:100%;
+  transition:all .5s ease;
+  opacity:1;
+}
+.square:hover .square-img, .square:focus .square-img {
+  transform: scale(1.03);
+  opacity:0.5;
+}
+
+.triangle-up {
+	width: 0;
+	height: 2em;
+	border-left: 1em solid transparent;
+	border-right: 1em solid transparent;
+	border-bottom: 1em solid #6C757D;
+  margin-top:-0.9em;
+  /*font-color:#6C757D;*For debugging only.*/
+  transition:0s;
 }
 
 /*.overlay {
@@ -189,10 +265,6 @@ header .overlay {
   transform: translate(-50%, -50%);
   text-align: center;
 }*/
-
-img.default {
-  vertical-align: baseline;
-}
 
 body, html {
   height: 100%;
@@ -237,6 +309,14 @@ a:link, a:visited, a:hover, a:active {
 }
 .btn-email:hover {
   background-color: #EA4335;
+}
+#fa-envelope:hover {
+  padding-bottom:.48em;
+  transition:0s;
+}
+
+#footer-buttons {
+  height:2.5em;
 }
 
 /*#Title {
