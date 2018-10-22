@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>About - Brandon Chen</title>
+  <title>Engineering Design - Brandon J. Chen</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/auxiliary.css">
+  <script src="auxiliary.js"></script>
   <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -14,7 +15,7 @@
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
   <a class="navbar-brand" href="https://raisinbran.github.io/design">
     <img src="images/Raisinbran B E y.png" width="30" height="30" style="margin-right:0.2em;border-radius:100%" class="d-inline-block align-top" alt="">
-    Brandon Chen
+    Brandon J. Chen
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
     <span class="navbar-toggler-icon"></span>
@@ -37,81 +38,164 @@
 <div style="height:3.5em"></div>
 
 <div id="accordion">
-
-<div class="color-light px-4 pt-4 pb-2">
+<div class="color-light px-4 pt-4 pb-2" style="min-height:83vh">
   <div class="d-flex text-center pb-4">
-    <h1 class="my-auto w-100">Work</h1>
+    <h2 class="my-auto w-100">Engineering &times; Human-Centered Design</h2>
   </div>
   <div class="row">
-    <div class="offset-sm-1 offset-lg-0 offset-xl-2 col-sm-5 col-lg-3 col-xl-2">
-      <div class="card">
-        <div class="card-img" style="background-image: url('images/Filtran/allison tc10 pf new metal bypass 2 082316.PNG');"></div>
-        <a class="card-link" data-toggle="collapse" href="#collapseFiltran">
-          <div class="card-img-overlay d-flex flex-column justify-content-end">
-            <h3 class="card-title">Filtran</h3>
-            <p class="card-text">Design Engineer Intern</p>
-          </div>
-        </a>
-      </div>
-      <div id="collapseFiltran" class="collapse" data-parent="#accordion">
-        <div class="px-4 py-4">
-          <p>​<strong>Filtran</strong> is a leading supplier of automatic transmission filtration solutions to the automotive industry. Filtran is ISO-9000 / ISO-14001 / TS-16949 certified.</p>
-          <a data-toggle="tooltip" data-placement="top" title="Hooray!">
-            <div class="card-img" style="background-image: url('images/Filtran/allison tc10 pf new metal bypass 082316.PNG');"></div>
+    <div class="col-sm-1 col-md-2"></div>
+    <div class="col-sm-10 col-md-8">
+      <div class="row">
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+          <a class="card-link" data-toggle="collapse" href="#collapseFiltran">
+            <div class="card">
+              <div class="card-img" style="background-image: url('images/Filtran/allison tc10 pf new metal bypass 2 082316.PNG');"></div>
+              <div class="card-img-overlay d-flex flex-column justify-content-end">
+                <h3 class="card-title">Filtran</h3>
+                <p class="card-text">Transmission filters for the automative industry</p>
+              </div>
+            </div>
           </a>
-          <a href="#" data-toggle="tooltip" data-placement="top" title="Hooray!">Hover</a>
+        </div>
+        <div class="col-sm-6 col-lg-8 collapse" id="collapseFiltran" data-parent="#accordion">
+          <!--*Pending horizontal transitions implementation*-->
+            <div class="bg-secondary rounded px-3 pt-2 my-3">
+              <h3 class="font-weight-light text-white">Design Engineer Intern</h3>
+              <h6 class="text-white">Filtran, June - September 2016</h6><br>
+            </div>
+            <p>​<strong>Filtran</strong>, a part of Filtration Group, is a leading global supplier of automatic transmission filtration solutions to the automotive industry. Filtran is ISO-9000 / ISO-14001 / TS-16949 certified.</p>
+        </div>
+        <div id="collapseFiltran" class="col-sm-12 collapse" data-parent="#accordion">
+          <div class="row">
+            <div class="col-10">
+              <div class="offset-3">
+                <div class="triangle-up"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-secondary rounded row py-3 px-2 mb-2">
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a class="button" data-toggle="popover" data-content="And here's some amazing content. It's very engaging. Right?" data-full="images/FIltran/allison tc10 pf new metal bypass 082316.PNG">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/allison tc10 pf new metal bypass 082316.PNG');height:115%;background-position:93%"></div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a href="#">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/160908 Allison TC10 sf 1.PNG');height:130%;background-position:10% 100%;"></div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a href="#">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/vib fixture G 080616.PNG');"></div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a href="#">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/DAE S6A1 4 crop.png');"></div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a href="#">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/160714 AAM check valve 1 crop.JPG');height:135%;background-position:50% 100%;"></div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a href="#">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/Slide - GM X72 New Suction Filter blur.png');background-position:80%;"></div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a href="#">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/IMG_4761.JPG');background-position:50% 20%;"></div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <a href="#">
+                <div class="square">
+                  <div class="square-img" style="background-image: url('images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 4.png');height:130%"></div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
           <div class="card">
             <div class="card-img" style="background-image: url('images/Bolt/20160726-144705_orig.jpg');"></div>
+            <a class="card-link" data-toggle="collapse" href="#collapseBolt">
+              <div class="card-img-overlay d-flex flex-column justify-content-end">
+                <h3 class="card-title">Manufactur&shy;ing Design</h3>
+                <p class="card-text">Intellectual property and product manufacturing</p>
+              </div>
+            </a>
+            <div id="collapseBolt" class="collapse" data-parent="#accordion">
+              <div class="px-4">My longest Yeah Boy ever.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+          <div class="card">
+            <div class="card-img" style="background-image: url('images/Bolt/20160726-144705_orig.jpg');"></div>
+            <a class="card-link" data-toggle="collapse" href="#collapseBolt">
+              <div class="card-img-overlay d-flex flex-column justify-content-end">
+                <h3 class="card-title">Capstone Project</h3>
+                <p class="card-text">Breadfruit-to-Flour Conversion Improvement</p>
+              </div>
+            </a>
+            <div id="collapseBolt" class="collapse" data-parent="#accordion">
+              <div class="px-4">My longest Yeah Boy ever.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+          <div class="card">
+            <div class="card-img" style="background-image: url('images/Segal Intern/10.jpg');"></div>
+            <a href="engineeringdesign.html">
+              <div class="card-img-overlay d-flex flex-column justify-content-end">
+                <h3 class="card-title">Segal Design Institute</h3>
+                <p class="card-text">Design Intern</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+          <div class="card">
+            <div class="card-img" style="background-image: url('images/325/Chen_Toothbrush_Rend_f_edit.png');background-position:right center;"></div>
+            <a href="engineeringdesign.html">
+              <div class="card-img-overlay d-flex flex-column justify-content-end">
+                <h3 class="card-title">Computer-Aided Design</h3>
+                <p class="card-text"></p>
+              </div>
+            </a>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-sm-5 col-lg-3 col-xl-2">
-      <div class="card">
-        <div class="card-img" style="background-image: url('images/Bolt/20160726-144705_orig.jpg');"></div>
-        <a class="card-link" data-toggle="collapse" href="#collapseBolt">
-          <div class="card-img-overlay d-flex flex-column justify-content-end">
-            <h3 class="card-title">Capstone Project</h3>
-            <p class="card-text">Breadfruit-to-Flour Conversion Improvement</p>
-          </div>
-        </a>
-        <div id="collapseBolt" class="collapse" data-parent="#accordion">
-          <div class="px-4">My longest Yeah Boy ever.
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="offset-sm-1 offset-lg-0 col-sm-5 col-lg-3 col-xl-2">
-      <div class="card">
-        <div class="card-img" style="background-image: url('images/Segal Intern/10.jpg');"></div>
-        <a href="engineeringdesign.html">
-          <div class="card-img-overlay d-flex flex-column justify-content-end">
-            <h3 class="card-title">Segal Design Institute</h3>
-            <p class="card-text">Design Intern</p>
-          </div>
-        </a>
-      </div>
-    </div>
-    <div class="col-sm-5 col-lg-3 col-xl-2">
-      <div class="card">
-        <div class="card-img" style="background-image: url('images/325/Chen_Toothbrush_Rend_f_edit.png');background-position:right center;"></div>
-        <a href="engineeringdesign.html">
-          <div class="card-img-overlay d-flex flex-column justify-content-end">
-            <h3 class="card-title">Computer-Aided Design</h3>
-            <p class="card-text"></p>
-          </div>
-        </a>
-      </div>
-    </div>
-    <div class="col-xl-2"></div>
+    <div class="col-sm-1 col-md-2"></div>
   </div>
+</div>
 </div>
 
 <footer class="container-fluid color-dark pt-4 pb-2">
-  <div class="d-flex justify-content-center mb-2">
+  <div class="d-flex justify-content-center" id="footer-buttons">
     <a href="https://linkedin.com/in/brandonjianchen/"><button type="button" class="btn btn-linkedin mx-1"><i class="fa fa-linkedin"></i></button></a>
     <a href="https://github.com/raisinbran"><button type="button" class="btn btn-git mx-1"><i class="fa fa-github"></i></button></a>
-    <a href="mailto:brandonjianchen@gmail.com"><button type="button" class="btn btn-email mx-1"><i class="fa fa-envelope"></i></button></a>
+    <a href="mailto:brandonjianchen@gmail.com"><button type="button" id="fa-envelope" class="btn btn-email mx-1"><i class="fa fa-envelope"></i></button></a>
   </div>
   <p class="text-center text-muted">2018 Brandon Chen</p>
 </footer>
