@@ -143,6 +143,7 @@ header .overlay {
 .popover{
   max-width:96vw;
   margin-bottom: -0.1em;
+  box-shadow:.1em .1em 1em black;
 }
 @media (max-width:576px){
   .popover{
@@ -197,14 +198,14 @@ header .overlay {
 
 .square {
   background-color:black;
-  margin-top:.6em;
-  margin-bottom:.6em;
   width:100%;
-  height:16vh;
+  height:8em;
   overflow:hidden;
-  outline-style: solid;
-  outline-width:0.07em;
-  outline-color:black;
+  border-style: solid;
+  border-width:0.035em;
+  border-color:#6C757D;
+  margin-top:0em;
+  margin-bottom:0em;
 }
 /*.square:before {
   content: "";
@@ -243,13 +244,23 @@ header .overlay {
 
 .square-passive {
   background-color:black;
-  margin-top:.6em;
-  margin-bottom:.6em;
-  height:21vh;
+  height:25vh;
   overflow:hidden;
   outline-style: solid;
-  outline-width:0.07em;
+  outline-width:0.1em;
   outline-color:black;
+  border-radius:0;
+  border-width:0;
+  margin-left:-.8em;
+  margin-right:-.8em;
+  margin-top:.2em;
+  margin-bottom:.2em;
+}
+
+@media (max-width:768px){
+  .square-passive{
+    height:20vh;
+  }
 }
 .square-img-passive {
   background-color: gray; /* fallback color */
