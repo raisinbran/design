@@ -1,4 +1,6 @@
-.parallax {
+/*Auxiliary CSS*/
+
+/*.parallax {
   background-attachment: fixed;
   background-position: center center;
   background-repeat: no-repeat;
@@ -12,7 +14,7 @@
   position: relative;
 }
 
-/* Turn off parallax scrolling for tablets and phones. Increase/decrease the pixels if needed */
+* Turn off parallax scrolling for tablets and phones. Increase/decrease the pixels if needed *
 @media only screen and (max-device-width: 1366px) {
     .parallax {
         background-attachment: scroll;
@@ -20,9 +22,9 @@
     .parallax-false {
       cursor: pointer;
     }
-}
+}*/
 
-img.collapse {
+/*img.collapse {
   border-style: solid;
   border-width: .1em;
   object-fit: cover;
@@ -32,7 +34,7 @@ img.collapse {
   margin-bottom: .75em;
   width: 100%;
 }
-/*.collapsing{
+.collapsing{
   position: relative;
   height: 0;
   overflow: hidden;
@@ -50,13 +52,13 @@ img.collapse {
   transition-property: width, visibility;
   -webkit-transition-duration: 0.35s;
   transition-duration: 0.35s;
-}*/
+}
 
 img.card {
   object-fit:cover;
   max-width:inherit;
   max-height:inherit;
-}
+}*/
 
 p {
   /*font-family:Georgia, serif;*/
@@ -78,18 +80,16 @@ h1, h2, h3, h4, h5, h6 {
   hyphens: auto;
 }
 
-.padding-prime {
+/*.padding-prime {
   padding-top: 2em;
   padding-bottom: 1.75em;
 }
-
 .padding-collapse {
   padding-top: 1em;
   padding-bottom: 1em;
   padding-left: 2em;
   padding-right: 2em;
-}
-
+}*/
 /*form {
   margin-top: 1em;
   margin-bottom: 1em;
@@ -140,7 +140,20 @@ header .overlay {
   }
 }
 
-.card-columns {
+.popover{
+  max-width:96vw;
+  margin-bottom: -0.1em;
+}
+@media (max-width:576px){
+  .popover{
+    max-width:93vw !important;
+  }
+}
+.popover-body{
+  background:#e6e6e6;
+}
+
+/*.card-columns {
   @include media-breakpoint-up(sm) {
     column-count: 1;
   }
@@ -150,15 +163,14 @@ header .overlay {
   @include media-breakpoint-up(lg) {
     column-count: 4;
   }
-}
+}*/
 .card {
   background-color:black;
   height:40vh;
-  margin-bottom:0em;
-  margin-top:1em;
+  margin-bottom:1em;
+  margin-top:0em;
   overflow:hidden;
 }
-
 .card-img {
   width: 100%;
   height: 100%;
@@ -185,14 +197,14 @@ header .overlay {
 
 .square {
   background-color:black;
-  border-style: solid;
-  border-width:0.05em;
-  border-color:black;
-  margin-top:.7em;
-  margin-bottom:.5em;
+  margin-top:.6em;
+  margin-bottom:.6em;
   width:100%;
   height:16vh;
   overflow:hidden;
+  outline-style: solid;
+  outline-width:0.07em;
+  outline-color:black;
 }
 /*.square:before {
   content: "";
@@ -223,9 +235,28 @@ header .overlay {
   transition:all .5s ease;
   opacity:1;
 }
-.square:hover .square-img, .square:focus .square-img {
-  transform: scale(1.03);
-  opacity:0.5;
+.square:hover .square-img, .square:focus .square-img{
+  transform: scale(1.1);
+  opacity:0.6;
+}
+.square:hover .square, .square:focus .square {}
+
+.square-passive {
+  background-color:black;
+  margin-top:.6em;
+  margin-bottom:.6em;
+  height:21vh;
+  overflow:hidden;
+  outline-style: solid;
+  outline-width:0.07em;
+  outline-color:black;
+}
+.square-img-passive {
+  background-color: gray; /* fallback color */
+  background-position: center;
+  background-size: cover;
+  width:100%;
+  height:100%;
 }
 
 .triangle-up {
@@ -237,6 +268,15 @@ header .overlay {
   margin-top:-0.9em;
   /*font-color:#6C757D;*For debugging only.*/
   transition:0s;
+  transition-delay:0s;
+}
+@include media-breakpoint-down(sm) {
+  .triangle-up {
+    margin-bottom:-1em;
+  }
+}
+@include media-breakpoint-up(md) .triangle-up {
+    margin-bottom:0em;
 }
 
 /*.overlay {
