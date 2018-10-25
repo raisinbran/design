@@ -142,14 +142,29 @@ header .overlay {
 
 .popover{
   max-width:96vw;
-  margin-bottom: -0.1em;
+  margin-bottom:;
   box-shadow:.1em .1em 1em black;
 }
-@media (max-width:576px){
+@media (max-width:575.98px){
   .popover{
-    max-width:93vw !important;
+    width:93vw;
   }
 }
+@media (min-width:576px) and (max-width:767.98px){
+
+}
+@media (min-width:768px) and (max-width:991.98px){
+  #Bolt-descrip {
+    column-count:2;
+  }
+}
+@media (min-width:992px) and (max-width:1199.98px){
+
+}
+@media (min-width:1200px){
+
+}
+
 .popover-body{
   background:#e6e6e6;
 }
@@ -189,10 +204,10 @@ header .overlay {
 .card:hover .card-img-overlay{
   color:white;
 }
-.card-img-overlay>h3, .card-img-overlay>p{
+.card-img-overlay h3, .card-img-overlay h4, .card-img-overlay p{
     visibility:hidden;
 }
-.card-img-overlay:hover h3, .card-img-overlay:hover p{
+.card-img-overlay:hover h3,.card-img-overlay:hover h4, .card-img-overlay:hover p{
     visibility:visible;
 }
 
@@ -244,7 +259,7 @@ header .overlay {
 
 .square-passive {
   background-color:black;
-  height:25vh;
+  height:26vh;
   overflow:hidden;
   outline-style: solid;
   outline-width:0.1em;
@@ -253,15 +268,10 @@ header .overlay {
   border-width:0;
   margin-left:-.8em;
   margin-right:-.8em;
-  margin-top:.2em;
-  margin-bottom:.2em;
+  margin-top:0em;
+  margin-bottom:0em;
 }
 
-@media (max-width:768px){
-  .square-passive{
-    height:20vh;
-  }
-}
 .square-img-passive {
   background-color: gray; /* fallback color */
   background-position: center;
