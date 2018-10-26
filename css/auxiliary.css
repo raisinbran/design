@@ -154,15 +154,13 @@ header .overlay {
 
 }
 @media (min-width:768px) and (max-width:991.98px){
+}
+@media (min-width:992px) and (max-width:1199.98px){
+}
+@media (min-width:1200px){
   #Bolt-descrip {
     column-count:2;
   }
-}
-@media (min-width:992px) and (max-width:1199.98px){
-
-}
-@media (min-width:1200px){
-
 }
 
 .popover-body{
@@ -282,23 +280,15 @@ header .overlay {
 
 .triangle-up {
 	width: 0;
-	height: 2em;
-	border-left: 2em solid transparent;
-	border-right: 2em solid transparent;
-	border-bottom: 2em solid #6C757D;
+	height: 0em;
+	border-left: 1em solid transparent;
+	border-right: 1em solid transparent;
+	border-bottom: 1.5em solid #6C757D;
   margin-top:0em;
-  margin-bottom:-1em;
+  margin-bottom:0em;
   /*font-color:#6C757D;*For debugging only.*/
   transition:0s;
   transition-delay:0s;
-}
-@include media-breakpoint-down(sm) {
-  .triangle-up {
-    margin-bottom:-1em;
-  }
-}
-@include media-breakpoint-up(md) .triangle-up {
-    margin-bottom:0em;
 }
 
 /*.overlay {
@@ -330,6 +320,16 @@ header .overlay {
 
 body, html {
   height: 100%;
+}
+
+.mt--1{
+  margin-top:-0.25rem !important;
+}
+.mt--2{
+  margin-top:-0.5rem !important;
+}
+.mt--3{
+  margin-top:-1rem !important;
 }
 
 .color-prime {
