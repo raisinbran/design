@@ -140,6 +140,11 @@ header .overlay {
   }
 }
 
+video{
+  max-width:100%;
+  object-fit:cover;
+}
+
 .popover{
   max-width:96vw;
   margin-bottom:;
