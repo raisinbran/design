@@ -164,7 +164,7 @@ video{
 .popover{
   max-width:96vw;
   margin-bottom:;
-  box-shadow:.1em .1em 1em black;
+  box-shadow:.1em .1em 1.3em black;
 }
 @media (max-width:575.98px){
   .popover{
@@ -311,6 +311,27 @@ video{
   /*font-color:#6C757D;*For debugging only.*/
   transition:0s;
   transition-delay:0s;
+}
+.triangle-right {
+	width: 0;
+	height: 0em;
+	border-left: 1.8em solid black;
+	border-bottom: 1.2em solid transparent;
+  border-top: 1.2em solid transparent;
+  margin-left:-.3em;
+  position:absolute;
+  z-index:1;
+  /*font-color:#6C757D;*For debugging only.*/
+}
+.triangle-right-small {
+	width: 0;
+	height: 0em;
+	border-left: .9em solid white;
+	border-bottom: .6em solid transparent;
+  border-top: .6em solid transparent;
+  position:absolute;
+  z-index:2;
+  /*font-color:#6C757D;*For debugging only.*/
 }
 
 /*.overlay {
