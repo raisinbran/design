@@ -168,13 +168,13 @@ video{
   max-width:96vw;
   margin-bottom:;
   box-shadow:.1em .1em 1.3em black;
-  overflow:hidden;
 }
 @media (max-width:575.98px){
   .popover{
     width:93vw;
   }
 }
+
 @media (min-width:576px) and (max-width:767.98px){
 
 }
@@ -190,6 +190,7 @@ video{
 
 .popover-body{
   background:#e6e6e6;
+  overflow:hidden;
 }
 
 /*.card-columns {
