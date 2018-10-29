@@ -144,7 +144,7 @@ video{
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 120%;
+  width: 100%;
   height: auto;
   z-index: 0;
   -ms-transform: translateX(-50%) translateY(-50%);
@@ -159,12 +159,16 @@ video{
   min-height: 12rem;
   width: 100%;
   overflow: hidden;
+  border-style: solid;
+  border-width:0.035em;
+  border-color:#6C757D;
 }
 
 .popover{
   max-width:96vw;
   margin-bottom:;
   box-shadow:.1em .1em 1.3em black;
+  overflow:hidden;
 }
 @media (max-width:575.98px){
   .popover{
@@ -218,7 +222,7 @@ video{
 .card:hover .card-img,
 .card:focus .card-img {
   transform: scale(1.03);
-  opacity:0.5;
+  opacity:0.25;
 }
 .card:hover .card-img-overlay{
   color:white;
