@@ -14,11 +14,11 @@
   <title>Engineering Design - Brandon J. Chen</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" rel="preload" as="style">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous" rel="preload" as="script"></script>
   <link rel="stylesheet" href="css/auxiliary.css">
-  <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script type="text/javascript" src="js/auxiliary.js"></script>
+  <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="preload" as="style">
+  <script type="text/javascript" src="js/auxiliary.js" rel="preload" as="script"></script>
 </head>
 <body>
 
@@ -1157,7 +1157,7 @@
             </div>
           </div>
         </div>
-        <div id="collapseCAM" class="collapse offset-xl-6"></div>
+        <div id="collapseCAM" class="collapse offset-xl-6" data-parent="#accordion"></div>
         <div class="col-sm-4 col-lg-4 col-xl-3">
           <a class="card-link" data-toggle="collapse" href="#collapseCAM">
             <div class="card">
@@ -1316,7 +1316,7 @@
             </div>
           </div>
         </div>
-        <div id="collapseInfraShield" class="offset-xl-3 collapse"></div>
+        <div id="collapseInfraShield" class="offset-xl-3 collapse" data-parent="#accordion"></div>
         <div class="col-sm-4 col-lg-4 col-xl-3">
           <a class="card-link" data-toggle="collapse" href="#collapseInfraShield">
             <div class="card">
@@ -1542,17 +1542,17 @@
 
 <footer class="container-fluid color-dark pt-4 pb-2">
   <div class="d-flex justify-content-center" id="footer-buttons">
-    <a href="https://linkedin.com/in/brandonjianchen/"><button type="button" class="btn btn-linkedin mx-1"><i class="fa fa-linkedin"></i></button></a>
-    <a href="https://github.com/raisinbran"><button type="button" class="btn btn-git mx-1"><i class="fa fa-github"></i></button></a>
-    <a href="mailto:brandonjianchen@gmail.com"><button type="button" id="fa-envelope" class="btn btn-email mx-1"><i class="fa fa-envelope"></i></button></a>
+    <a href="https://linkedin.com/in/brandonjianchen/"><button type="button" class="btn btn-linkedin mx-1" data-toggle="tooltip" data-placement="top" title="LinkedIn"><i class="fa fa-linkedin"></i></button></a>
+    <a href="https://github.com/raisinbran"><button type="button" class="btn btn-git mx-1" data-toggle="tooltip" data-placement="top" title="Github"><i class="fa fa-github"></i></button></a>
+    <a href="mailto:brandonjianchen@gmail.com"><button type="button" id="fa-envelope" class="btn btn-email mx-1" data-toggle="tooltip" data-placement="top" title="Email"><i class="fa fa-envelope"></i></button></a>
   </div>
   <p class="text-center text-muted">2018 Brandon Chen</p>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-<script src="js/auxiliary.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous" rel="preload" as="script"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous" rel="preload" as="script"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous" rel="preload" as="script"></script>
+<script src="js/auxiliary.js" rel="preload" as="script"></script>
 
 </body>
 </html>
