@@ -430,7 +430,8 @@ a:link, a:visited, a:hover, a:active {
 }
 
 #footer-buttons {
-  height:2.5em;
+  height:2em;
+  width:2.6em;
 }
 
 /*#Title {
