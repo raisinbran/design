@@ -229,10 +229,10 @@ video{
 .card:hover .card-img-overlay{
   color:white;
 }
-.card-img-overlay h3, .card-img-overlay h4, .card-img-overlay p{
+.card-img-overlay h3, .card-img-overlay h4, .card-img-overlay h6, .card-img-overlay p{
     visibility:hidden;
 }
-.card-img-overlay:hover h3,.card-img-overlay:hover h4, .card-img-overlay:hover p{
+.card-img-overlay:hover h3,.card-img-overlay:hover h4, .card-img-overlay:hover h6, .card-img-overlay:hover p{
     visibility:visible;
 }
 
