@@ -1,0 +1,79 @@
+body{
+  font-size:12px;
+}
+
+.calculator {
+  background: linear-gradient(#dddddd, #b1b1b1, #b1b1b1, #b1b1b1);
+  width: 25.5em;
+  height: 30.5em;
+  margin: auto;
+  padding-top: 1em;
+  border: 0.05em solid black;
+  border-radius: 0.3em;
+}
+
+button {
+  background-color: #d3d3d3;
+  color: #333333;
+  margin: 0.23em 0.05em;
+  width: 3.5em;
+  height: 1.95em;
+  border: 0.05em solid #5d5d5d;
+  border-radius: 0.35em;
+  font-family: tahoma;
+  text-align: center;
+  font-size: 1.6em;
+  position: relative;
+  left: 0.6em;
+  box-shadow: inset 0em -0.08em 0.3em 0em #5d5d5d, inset 0em 0.15em 0.2em 0em white;
+}
+
+button:hover {
+  background-color: #b1b1b1;
+  transition-duration: 0.3s;
+}
+
+button:active {
+  background-color: #5d5d5d;
+  transition-duration: 0s;
+}
+
+.lcd {
+  position: relative;
+  left: 10%;
+  width: 80%;
+  height: 5.2em;
+  margin-bottom: 0;
+  border: 0.05em solid #808080;
+  border-radius: 0.35em;
+  background-color: #f0faca;
+  text-align: right;
+  font-family: tahoma;
+  color: black;
+  box-shadow: 0em -0.1em 0.2em 0.15em #808080, 0em 0.1em 0.2em 0.2em white;
+}
+
+#number {
+  position: relative;
+  top: 0em;
+  right: 1.2em;
+  font-size: 1.8em;
+}
+
+#operator {
+  position: relative;
+  top: 1em;
+  right: 2.3em;
+  font-size: 1em;
+}
+
+#button-0 {
+  width: 7.2em;
+}
+
+#button-equal {
+  position: relative;
+  margin-left: 11.4em;
+  height: 4.36em;
+  bottom: 4.85em;
+}
