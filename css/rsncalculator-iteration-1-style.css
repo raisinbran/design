@@ -1,0 +1,76 @@
+body{
+  font-size:12px;
+}
+
+.calculator {
+
+background: #b1b1b1;
+width: 25.5em;
+height: 30.5em;
+margin: auto;
+padding-top: 1em;
+
+}
+
+
+button {
+
+background-color: #d3d3d3;
+
+color: #333333;
+
+margin: 0.23em 0.05em;
+
+width: 3.5em;
+
+height: 1.95em;
+
+border: 0.05em solid #5d5d5d;
+
+font-family: tahoma;
+
+text-align: center;
+
+font-size: 1.6em;
+
+position: relative;
+
+left: 0.6em;
+
+}
+
+
+.lcd {
+
+position: relative;
+
+left: 10%;
+
+width: 80%;
+
+height: 5.2em;
+
+margin-bottom: 1.2em;
+
+background-color: #f0faca;
+
+text-align: right;
+
+font-family: tahoma;
+
+color: black;
+
+}
+
+
+.number {
+
+position: relative;
+
+top: 0em;
+
+right: 1.5em;
+
+font-size: 1.8em;
+
+}
