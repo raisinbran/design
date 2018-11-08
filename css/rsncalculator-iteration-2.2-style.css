@@ -6,7 +6,7 @@ body{
   background: linear-gradient(#dddddd, #b1b1b1, #b1b1b1, #b1b1b1);
   width: 25.5em;
   height: 30.5em;
-  margin: auto;
+  margin: auto auto -5em;
   padding-top: 1em;
   border: 0.05em solid black;
   border-radius: 0.3em;
@@ -43,7 +43,7 @@ button:active {
   left: 10%;
   width: 80%;
   height: 5.2em;
-  margin-bottom: 1.2;
+  margin-bottom: 1.2em;
   border: 0.05em solid #808080;
   border-radius: 0.35em;
   background-color: #f0faca;
