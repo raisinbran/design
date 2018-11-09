@@ -44,10 +44,44 @@ p {
   hyphens: auto;
 }
 
+.noselect {
+-webkit-touch-callout: none;
+/* iOS Safari */
+-webkit-user-select: none;
+/* Chrome/Safari/Opera */
+-khtml-user-select: none;
+/* Konqueror */
+-moz-user-select: none;
+/* Firefox */
+-ms-user-select: none;
+/* Internet Explorer/Edge */
+user-select: none;
+/* Non-prefixed version, currently not supported by any browser */
+}
+
 .page-header {
   margin-top: 0.5em;
   margin-bottom: 1em;
   color: "color-prime";
+}
+
+.logo-area {
+  border-radius:100%;
+  width:30px;
+  height:30px;
+  overflow:hidden;
+  margin-right:0.3em;
+}
+.logo {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:left;
+  margin-right:0.2em;
+  transition:0s;
+}
+.logo:hover {
+  object-position:right;
 }
 
 h1, h2, h3, h4, h5, h6 {
