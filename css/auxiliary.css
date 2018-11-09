@@ -74,14 +74,12 @@ user-select: none;
 
 }
 .logo {
-  width:100%;
-  height:100%;
   object-fit:cover;
-  object-position:left bottom;
+  object-position:left center;
   transition:0s;
 }
 .logo:hover {
-  object-position:right bottom;
+  object-position:right center;
 }
 
 h1, h2, h3, h4, h5, h6 {
