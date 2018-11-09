@@ -202,7 +202,7 @@ video{
 }*/
 .card {
   background-color:black;
-  height:24em;
+  height:36vmin;
   margin-bottom:1em;
   margin-top:0em;
   overflow:hidden;
