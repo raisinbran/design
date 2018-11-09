@@ -1,29 +1,5 @@
 /*Auxiliary CSS*/
 
-/*.parallax {
-  background-attachment: fixed;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.parallax-false {
-  background-attachment: scroll;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
-}
-
-* Turn off parallax scrolling for tablets and phones. Increase/decrease the pixels if needed *
-@media only screen and (max-device-width: 1366px) {
-    .parallax {
-        background-attachment: scroll;
-    }
-    .parallax-false {
-      cursor: pointer;
-    }
-}*/
-
 /*img.collapse {
   border-style: solid;
   border-width: .1em;
@@ -79,21 +55,6 @@ h1, h2, h3, h4, h5, h6 {
   -ms-hyphens: auto;
   hyphens: auto;
 }
-
-/*.padding-prime {
-  padding-top: 2em;
-  padding-bottom: 1.75em;
-}
-.padding-collapse {
-  padding-top: 1em;
-  padding-bottom: 1em;
-  padding-left: 2em;
-  padding-right: 2em;
-}*/
-/*form {
-  margin-top: 1em;
-  margin-bottom: 1em;
-}*/ /*deprecated*/
 
 header {
   position: relative;
@@ -207,7 +168,7 @@ video{
 }*/
 .card {
   background-color:black;
-  height:40vh;
+  height:24em;
   margin-bottom:1em;
   margin-top:0em;
   overflow:hidden;
@@ -447,24 +408,6 @@ i{
   width:2.6em;
 }
 
-/*#Title {
-  background-color: transparent;
-}
-
-#A {
-  background-image: url("../images/IMG_2901.JPG");
-  background-color: #B0C4DE;
-  background-blend-mode: multiply;
-  background-position: center left;
-}
-#B {
-  background-image: url("../images/10.jpg");
-  background-color: #B0C4DE;
-  background-blend-mode: normal;
-  background-position: 55% 1%;
-}
-*/
-
 /*Depreciated as of bootstrap 4.0
 #raisin {
   height:1.6em;
@@ -482,32 +425,4 @@ i{
 }
 #raisin:hover {
   background-position: right;
-}*/
-
-/*.project-wrap {
-  object-fit: cover;
-  overflow:hidden;
-  position:relative;
-  transition: 0.3s ease;
-}
-img.project {
-  position: absolute;
-}
-.project-caption {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 0;
-  transition: .3s ease;
-  background-color: white;
-  text-align: center;
-  color: inherit;
-  padding-top: 40%
-}
-.project-wrap:hover .project-caption {
-  opacity: 0.8;
 }*/
