@@ -74,9 +74,8 @@ user-select: none;
 
 }
 .logo {
-  width:100%;
+  width:200%;
   height:100%;
-  object-fit:cover;
   object-position:left bottom;
   transition:0s;
 }
