@@ -65,21 +65,29 @@ user-select: none;
   color: "color-prime";
 }
 
-.logo-area {
+#logo {
+  position:relative;
   border-radius:100%;
-  width:32px;
-  height:32px;
+  width:2em;
+  height:2em;
   overflow:hidden;
   margin-right:0.3em;
-  object-fit:contain;
 }
-.logo {
-  object-fit:cover;
-  object-position:left bottom;
-  transition:0s;
+#logo img{
+  height:2em;
+  width:2em;
+  position:absolute;
+  left:0;
+  -webkit-transition: opacity .2s ease;
+  -moz-transition: opacity .2s ease;
+  -o-transition: opacity .2s ease;
+  transition: opacity .2s ease;
 }
-.logo:hover {
-  object-position:right bottom;
+#logo img.bottom{
+  opacity:0;
+}
+#logo:hover img.bottom{
+  opacity:1;
 }
 
 h1, h2, h3, h4, h5, h6 {
