@@ -397,10 +397,10 @@ body, html {
 .color-aux {
   background-color: #b3b3b3;
 }
-.color-light {
+.bg-prime {
   background-color:#abb3ba;
 }
-.color-dark {
+.bg-aux {
   background-color: #343A40;
 }
 
@@ -413,42 +413,51 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .nav-link {
-  transition: .5 ease;
+  transition: .2 ease;
 }
 
-.btn{
-
-}
-.btn-linkedin, .btn-github, .btn-email {
-  transition: .2s ease;
-  background-color:#d9d9d9;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
 i{
   transition: .2s ease;
-}
-.btn-linkedin:hover {
-  background-color: #0082CA;
 }
 .btn:hover i, .btn:focus i {
   color:white;
 }
-.btn-git:hover {
+.btn-linkedin:hover {
+  background-color: #0082CA;
+}
+.btn-github:hover {
   background-color: #4B515D;
 }
 .btn-email:hover {
   background-color: #EA4335;
 }
-#fa-envelope:hover {
+.btn-weebly:hover {
+  background-color: white;
+}
+.btn-weebly:hover .fa-weebly{
+  filter:brightness(1);
+}
+/*#fa-envelope:hover {
   padding-bottom:.48em;
   transition:0s;
-}
+}*/
 
-#footer-buttons {
+.btn-footer {
   height:2em;
   width:2.6em;
+  margin-bottom:0.5em;
+  margin-left:0.2em;
+  transition: .2s ease;
+  background-color:#abb3ba;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.fa-weebly{
+  object-fit:contain;
+  height:100%;
+  width:100%;
+  filter:brightness(0);
 }
 
 /*Depreciated as of bootstrap 4.0
