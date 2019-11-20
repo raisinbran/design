@@ -18,10 +18,9 @@
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" rel="preload" as="style">
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous" rel="preload" as="script"></script>
-  <link rel="stylesheet" href="css/auxiliary.css">
+  <link rel="stylesheet" href="css/auxiliary_WIP.css">
   <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script type="text/javascript" src="js/auxiliary.js" rel="preload" as="script"></script>
-  <script type="text/javascript" src="js/includeHTML.js" rel="preload" as="script"></script>
 </head>
 <body>
 
@@ -53,7 +52,7 @@
 
 <div style="height:3.5em"></div>
 
-<header style="height:10em;background-image:url('images/Segal Intern/IMG_1505 crop lowq.jpg');background-size:cover; background-position:center 61%">
+<header style="height:50vh;background-image:url('images/Segal Intern/IMG_1505 crop lowq.jpg');background-size:cover; background-position:center 61%">
   <div class="overlay"></div>
   <div class="container h-100">
     <div class="d-flex text-center" style="height:96%">
@@ -62,15 +61,34 @@
         <h6 style="color:#b3b3b3"><br></h6>
       </div>
     </div>
-    <p class="text-dark text-center align-items-end d-lg-block">DSGN 395: Design Your Life, 2016/12/08</p>
   </div>
 </header>
 
+<div class="bg-prime py-4">
+  <div class="row" id="accordion">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <div class="col-12">
+        <a class="card-link" data-toggle="collapse" href="#collapseFiltran">
+          <div class="card">
+            <div class="card-img" style="background-image: url('images/Filtran/160823 allison tc10 pf new metal bypass 3_sd.png');">
+            </div>
+            <div class="card-img-overlay d-flex flex-column justify-content-end">
+              <h4 class="card-title">Auto Transmission Fluid Filtration</h4>
+              <h6 class="card-subtitle">Filtran</h6>
+            </div>
+            <div class="card-body collapse" id="collapseFiltran" data-parent="#accordion">
+              <p class="card-text">​<strong>Filtran LLC.</strong> (Filtration Group) manufactures transmission fluid filters for the automotive industry and aftermarket, including to Ford, Mazda, and Allison Transmission.</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div>
 <div class="bg-prime px-4 pt-4 pb-2" style="min-height:83vh">
-  <!--<div class="d-flex text-center pb-4">
-    <h2 class="my-auto w-100">Engineering &times; Human-Centered Design</h2>
-  </div>-->
   <div class="row" id="accordion">
     <div class="col-md-1 col-lg-2"></div>
     <div class="col-md-10 col-lg-8">
@@ -103,7 +121,7 @@
             <h3 class="font-weight-light text-white">Design Engineer Intern</h3>
             <h6 class="text-white">Filtran / June - September 2016</h6>
           </div>
-          <p>​<strong>Filtran</strong>, a part of Filtration Group, is a leading global supplier of automatic transmission filtration solutions to the automotive industry and aftermarket. Filtran is ISO-9000, ISO-14001, TS-16949 certified.</p>
+          <p>​<strong>Filtran</strong> (Filtration Group) is a leading global supplier of automatic transmission filtration solutions to the automotive industry and aftermarket. Filtran is ISO-9000, ISO-14001, TS-16949 certified.</p>
         </div>
         <div id="collapseFiltran" class="col-sm-12 collapse" data-parent="#accordion">
           <!--<div class="row">
@@ -1550,15 +1568,46 @@
 </div>
 </div>
 
-<div include-html="footer.html"></div>
+<footer class="container-fluid bg-aux pt-4 pb-2 pl-2">
+  <div class="row">
+    <div class="offset-1 col-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6 d-none d-md-block">
+      <div class="mt-1 mb-5 mr-3" style=";height:5.5em;width:5.5em; object-fit:contain;border-radius:100%;overflow:hidden;float:left;">
+        <div style="background-image:url('images/IMG_6992.jpg'); background-size:cover; height:122%; width:122%; background-position:100% 40%;"></div>
+      </div>
+      <div style="width:5.9em;float:right" class="mt-1 mb-5 ml-3">
+        <a href="https://linkedin.com/in/brandonjianchen/" target="_blank" rel="noopener"><button type="button" class="btn btn-linkedin btn-footer" data-toggle="tooltip" data-placement="top" title="LinkedIn"><i class="fa fa-linkedin"></i></button></a>
+        <a href="https://github.com/raisinbran" target="_blank" rel="noopener"><button type="button" class="btn btn-github btn-footer" data-toggle="tooltip" data-placement="top" title="Github"><i class="fa fa-github"></i></button></a>
+        <a href="mailto:brandonjianchen@gmail.com" target="_blank" rel="noopener"><button type="button" class="btn btn-email btn-footer" data-toggle="tooltip" data-placement="bottom" title="Email"><i class="fa fa-envelope"></i></button></a>
+        <a href="https://brandonjchen.weebly.com" target="_blank" rel="noopener"><button type="button" class="btn btn-weebly btn-footer" data-toggle="tooltip" data-placement="bottom" title="Weebly"><i class="fa"><img src="images/weebly.svg" class="fa-weebly"></i></button></a>
+      </div>
+      <p class="text-secondary"><strong>About: </strong>I wanted more control over how a website that represents me should look, and I was dissatisfied with my old portfolio site on Weebly. Taking on the challenge of teaching myself web design out of school, I built this design portfolio from the ground up as a full replacement.</p>
+    </div>
+    <div class="offset-1 col-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6 d-block d-md-none">
+      <p class="text-secondary"><small><strong>About: </strong>I wanted more control over how a website that represents me should look, and I was dissatisfied with my old portfolio site on Weebly. Taking on the challenge of teaching myself web design out of school, I built this design portfolio from the ground up as a full replacement.</small></p>
+      <div class="row">
+        <div class="col-6">
+          <div class="mt-1 mb-5" style=";height:5em;width:5em; object-fit:contain;border-radius:100%;overflow:hidden;float:right;">
+            <div style="background-image:url('images/IMG_6992.jpg'); background-size:cover; height:122%; width:122%; background-position:100% 40%;"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div style="width:5.9em;float:left" class="mt-1 mb-5">
+            <a href="https://linkedin.com/in/brandonjianchen/" target="_blank" rel="noopener"><button type="button" class="btn btn-linkedin btn-footer" data-toggle="tooltip" data-placement="top" title="LinkedIn"><i class="fa fa-linkedin"></i></button></a>
+            <a href="https://github.com/raisinbran" target="_blank" rel="noopener"><button type="button" class="btn btn-github btn-footer" data-toggle="tooltip" data-placement="top" title="Github"><i class="fa fa-github"></i></button></a>
+            <a href="mailto:brandonjianchen@gmail.com" target="_blank" rel="noopener"><button type="button" class="btn btn-email btn-footer" data-toggle="tooltip" data-placement="bottom" title="Email"><i class="fa fa-envelope"></i></button></a>
+            <a href="https://brandonjchen.weebly.com" target="_blank" rel="noopener"><button type="button" class="btn btn-weebly btn-footer" data-toggle="tooltip" data-placement="bottom" title="Weebly"><i class="fa"><img src="images/weebly.svg" class="fa-weebly"></i></button></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="text-center text-secondary">2019 Brandon J. Chen</p>
+</footer>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous" rel="preload" as="script"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous" rel="preload" as="script"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous" rel="preload" as="script"></script>
-<script src="js/auxiliary.js" rel="preload" as="script"></script>
-<script src="js/includeHTML.js" rel="preload" as="script">
-includeHTML();
-</script>
+<!--<script src="js/auxiliary_WIP.js" rel="preload" as="script"></script>-->
 
 </body>
 </html>

@@ -21,7 +21,9 @@ $('.popover-dismiss').popover({
   trigger: 'focus'
 });
 
-
+$(function() {
+    $("#footer").load("footer.html");
+});
 
 /*// Wait for the web page to be ready
 $(document).ready(function() {
