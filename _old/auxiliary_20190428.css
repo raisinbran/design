@@ -1,5 +1,41 @@
 /*Auxiliary CSS*/
 
+/*img.collapse {
+  border-style: solid;
+  border-width: .1em;
+  object-fit: cover;
+  height: 15em;
+  display: block;
+  margin-top: .25em;
+  margin-bottom: .75em;
+  width: 100%;
+}
+.collapsing{
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease;
+}
+*Need to make work at some point*
+.collapsing.horizontal{
+  width: 0;
+  -webkit-transition-property: width, visibility;
+  transition-property: width, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+}
+
+img.card {
+  object-fit:cover;
+  max-width:inherit;
+  max-height:inherit;
+}*/
+
 p {
   /*font-family:Georgia, serif;*/
   font-size:1em;
@@ -63,8 +99,8 @@ h1, h2, h3, h4, h5, h6 {
 header {
   position: relative;
   background-color: black;
-  height: 90vh;
-  min-height: 25rem;
+  /*height: 95vh;
+  min-height: 25rem;*/
   width: 100%;
   overflow: hidden;
   object-fit:cover;

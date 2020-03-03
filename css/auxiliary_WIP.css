@@ -63,7 +63,7 @@ h1, h2, h3, h4, h5, h6 {
 header {
   position: relative;
   background-color: black;
-  height: 90vh;
+  height: 95vh;
   min-height: 25rem;
   width: 100%;
   overflow: hidden;
@@ -171,21 +171,45 @@ video{
   }
 }*/
 .card {
-  background-color:black;
-  height:36vmin;
-  margin-bottom:1em;
-  margin-top:0em;
+  border-color:black;
+  border-width:thin;
+  background-color:white;
+  height:12em;
   overflow:hidden;
+  transition:all 0.4s ease;
 }
+.card-pop {
+  background-color: white;
+  opacity:0;
+  width:100%;
+  height:100%;
+}
+.card:focus .card {
+  height:24em;
+  max-height:90vh;
+}
+.stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: auto;
+    content: "";
+    background-color: rgba(0,0,0,0);
+}
+
 .card-img {
   width: 100%;
-  height: 100%;
+  height:12em;
   background-color: gray; /* fallback color */
   background-position: center;
   background-size: cover;
   transition:all .5s ease;
   opacity:1;
 }
+/*
 .card:hover .card-img,
 .card:focus .card-img {
   transform: scale(1.03);
@@ -194,12 +218,19 @@ video{
 .card:hover .card-img-overlay{
   color:white;
 }
-.card-img-overlay h3, .card-img-overlay h4, .card-img-overlay h6, .card-img-overlay p{
+.card-img-overlay p{
     visibility:hidden;
 }
-.card-img-overlay:hover h3,.card-img-overlay:hover h4, .card-img-overlay:hover h6, .card-img-overlay:hover p{
+.card-img-overlay:hover p{
     visibility:visible;
 }
+*/
+.card-img-overlay h3, .card-img-overlay h4, .card-img-overlay h6{
+  visibility:visible;
+  color:white;
+  background-color: #abb3ba;
+}
+
 
 .square {
   background-color:black;
@@ -212,26 +243,7 @@ video{
   margin-top:0em;
   margin-bottom:0em;
 }
-/*.square:before {
-  content: "";
-  display:block;
-  padding-top:100%;
-}
-.square-img {
-  background-color: gray; * fallback color *
-  background-position: center;
-  background-size: cover;
-  border-style: solid;
-  border-width:0.05em;
-  border-color:black;
-  transition:all .5s ease;
-  opacity:1;
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-}*/
+
 .square-img {
   background-color: gray; /* fallback color */
   background-position: center;
@@ -241,12 +253,13 @@ video{
   transition:all .5s ease;
   opacity:1;
 }
+/*
 .square:hover .square-img, .square:focus .square-img{
   transform: scale(1.1);
   opacity:0.6;
 }
 .square:hover .square, .square:focus .square {}
-
+*/
 .square-passive {
   background-color:black;
   height:36vh;
@@ -305,33 +318,6 @@ video{
   /*font-color:#6C757D;*For debugging only.*/
 }
 
-/*.overlay {
-  position: relative;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 0;
-  transition: .5s ease;
-  background-color: white;
-  object-fit:cover;
-}
-.parallax-false:hover .overlay{
-  opacity: .8;
-}
-.overlay-text {
-  color: black;
-  position: relative;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  text-align: center;
-}*/
-
 body, html {
   height: 100%;
 }
@@ -367,6 +353,9 @@ body, html {
 .bg-aux {
   background-color: #343A40;
 }
+.bg-white {
+  background-color: white;
+}
 
 div.gradient-prime-aux {
   background: linear-gradient(to bottom, #e6e6e6 0%, #b3b3b3 100%);
@@ -401,10 +390,6 @@ i{
 .btn-weebly:hover .fa-weebly{
   filter:brightness(1);
 }
-/*#fa-envelope:hover {
-  padding-bottom:.48em;
-  transition:0s;
-}*/
 
 .btn-footer {
   height:2em;
@@ -423,22 +408,3 @@ i{
   width:100%;
   filter:brightness(0);
 }
-
-/*Depreciated as of bootstrap 4.0
-#raisin {
-  height:1.6em;
-  width:1.6em;
-  border-radius:100%;
-  border:0;
-  margin-top:-0.4em;
-  background: url("../images/Raisinbran B E stitch3.gif");
-  background-color:#222222;
-  background-position: left;
-  background-size: 200%;
-  position: relative;
-  transition-duration: 0s;
-
-}
-#raisin:hover {
-  background-position: right;
-}*/
