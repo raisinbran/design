@@ -63,7 +63,7 @@ h1, h2, h3, h4, h5, h6 {
 header {
   position: relative;
   background-color: black;
-  height: 95vh;
+  /*height: 95vh;*/
   min-height: 25rem;
   width: 100%;
   overflow: hidden;
@@ -159,45 +159,17 @@ video{
   overflow:hidden;
 }
 
-/*.card-columns {
-  @include media-breakpoint-up(sm) {
-    column-count: 1;
-  }
-  @include media-breakpoint-up(md) {
-    column-count: 2;
-  }
-  @include media-breakpoint-up(lg) {
-    column-count: 4;
-  }
-}*/
 .card {
   border-color:black;
-  border-width:thin;
+  border-bottom-width:0;
+  border-radius:0.8em;
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
   background-color:white;
   height:12em;
   overflow:hidden;
   transition:all 0.4s ease;
-}
-.card-pop {
-  background-color: white;
-  opacity:0;
-  width:100%;
-  height:100%;
-}
-.card:focus .card {
-  height:24em;
-  max-height:90vh;
-}
-.stretched-link::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    pointer-events: auto;
-    content: "";
-    background-color: rgba(0,0,0,0);
+  margin-bottom:1em;
 }
 
 .card-img {
@@ -209,26 +181,15 @@ video{
   transition:all .5s ease;
   opacity:1;
 }
-/*
+
 .card:hover .card-img,
 .card:focus .card-img {
-  transform: scale(1.03);
-  opacity:0.25;
 }
-.card:hover .card-img-overlay{
-  color:white;
-}
-.card-img-overlay p{
-    visibility:hidden;
-}
-.card-img-overlay:hover p{
-    visibility:visible;
-}
-*/
+
 .card-img-overlay h3, .card-img-overlay h4, .card-img-overlay h6{
   visibility:visible;
   color:white;
-  background-color: #abb3ba;
+  background-color:;
 }
 
 
