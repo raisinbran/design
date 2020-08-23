@@ -60,14 +60,25 @@ h1, h2, h3, h4, h5, h6 {
   hyphens: auto;
 }
 
-header {
+header#header-index {
   position: relative;
   background-color: black;
-  /*height: 95vh;*/
-  min-height: 25rem;
+  min-height: 87.05vh;
   width: 100%;
   overflow: hidden;
   object-fit:cover;
+  background-image:url('images/Bolt/IMG_4406_Moment_Moment.jpg');
+  background-size:cover;
+  background-position:center;
+}
+header#header-creative {
+  position: relative;
+  background-color: black;
+  height: 90vh;
+  width: 100%;
+  overflow: hidden;
+  object-fit:cover;
+  z-index:-100;
 }
 header video, header iframe {
   position: absolute;
@@ -106,28 +117,79 @@ header .overlay {
   }
 }
 
-.video-container{
-  position: relative;
-  background-color: black;
-  height: 16vw;
-  min-height: 12rem;
-  width: 100%;
-  overflow: hidden;
-  border-style: solid;
-  border-width:0.035em;
-  border-color:#6C757D;
+.btn:hover {
+  background-color: #0a001a;
+  border-color:#0a001a;
+  color:white;
+}
+
+#eng-bg {
+  position:absolute;
+  overflow:hidden;
+  width:100%;
+  height:100%;
+  z-index:-100;
+  background-color: #0a001a;
+}
+
+#bg {
+  position:;
+  overflow:hidden;
+  width:100%;
+  height:97vh;
+  z-index:-200;
+  /*background-color: #0a001a;*/
+  background-color:#8c92ac;
+}
+
+.eng-bg-container {
+  background-color:;
+  width:100%;
+  height:100%;
+  max-height:85vh;
+  max-width:100%;
+  overflow:hidden;
+  margin:0;
+  object-fit:cover;
+  border-style:solid;
+  border-color:red;
+  border-width:0;
+}
+
+video#eng-bg-video {
+  position:;
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  width: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+#eng-bg-img-l {
+  padding-left:3vw;
+  padding-right:8vw;
+}
+
+#eng-bg-img-r {
+  padding-left:8vw;
+  padding-right:3vw;
 }
 
 #card-button /*.card*/ {
-  border-color:#a0a6ac;
-  border-radius:0.8em;
+  border-color:black;
+  border-radius:0.5em;
   border-bottom-left-radius:0;
   border-bottom-right-radius:0;
   background-color:white;
-  height:6em;
+  height:4em;
   overflow:hidden;
   margin-bottom:0;
-  margin-top:2em;
+  margin-top:1.75em;
+  border-width:0.05em;
 }
 
 .card .overlay {
@@ -153,6 +215,7 @@ header .overlay {
 
 #card-button.card-img-overlay {
   visibility:visible;
+  transition:all .3s ease;
   /*-webkit-text-stroke:0.06em black;*/
 }
 
@@ -183,16 +246,22 @@ header .overlay {
 
 .jumbotron {
   padding-top:1em;
-  margin:0;
+  margin-bottom:1em;
   border-top-left-radius:0;
   border-top-right-radius:0;
+  border-color:black;
+  border-left-width:0.05em;
+  border-right-width:0.05em;
+  border-top-width:0em;
+  border-bottom-width:0.2em;
+  border-style:solid;
 }
 
 .square {
   background-color:black;
   width:100%;
-  height:10em;
-  min-height:24vh;
+  height:28vh;
+  max-height:18em;
   overflow:hidden;
   border-style:solid;
   border-width:0.03em;
@@ -207,13 +276,14 @@ header .overlay {
   min-height:100%;
 }
 
-.square img {
+.square img, .square video {
   transition:all .3s ease;
 }
 
-.square:hover img.img-descrip,
-.square:focus img.img-descrip{
+.square:hover .img-descrip,
+.square:focus .img-descrip{
   opacity:0.4;
+  transition:all 0.3s ease;
 }
 .square .descrip {
   visibility:hidden;
@@ -224,6 +294,16 @@ header .overlay {
 .square:hover .descrip {
   color:white;
   visibility:visible;
+  transition:all 0s ease;
+}
+
+.square video {
+  position:relative;
+  object-fit:cover;
+  background-color: black;
+  min-height:100%;
+  min-width:100%;
+  overflow:hidden;
 }
 
 body, html {
