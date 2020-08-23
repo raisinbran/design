@@ -16,9 +16,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Brandon J. Chen">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" rel="preload" as="style">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous" rel="preload" as="script"></script>
-  <link rel="stylesheet" href="css/auxiliary.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous" rel="preload" as="style">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous" rel="preload" as="script"></script>
+  <link rel="stylesheet" href="css/auxiliary-2.0.css">
   <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script type="text/javascript" src="js/auxiliary.js" rel="preload" as="script"></script>
 </head>
@@ -41,6 +41,9 @@
         <a class="nav-link" href="images/Brandon Resume.pdf" target="_blank">Résumé</a>
       </li>
       <li class="nav-item">
+        <div class="nav-link noselect" href="" target="">|</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="engineeringdesign.html">Engineering Design</a>
       </li>
       <li class="nav-item">
@@ -52,739 +55,345 @@
 
 <div style="height:3.5em"></div>
 
-<header style="height:85vh;background-image:url('images/IMG_2901_crop.jpg');background-size:cover; background-position:center">
+<!--<header id="header-creative" style="background-image:url('images/IMG_2901_crop.jpg'); background-size:cover; background-position:center;">
   <div class="overlay"></div>
   <video playsinline autoplay muted loop poster="images/IMG_2901_crop.jpg" class="d-none d-lg-block">
     <source src="https://media.githubusercontent.com/media/raisinbran/design/master/images/Large%20Files/DSGN%20395%20DYL%20final%201.1_shortened_muted.mp4" type="video/mp4"></source>
     <source src="images/Large Files/DSGN 395 DYL final 1.1_shortened_muted.mp4" type="video/mp4" alt="images/IMG_2901_crop.jpg"></source>
     Your browser doesn't support HTML5 video.
   </video>
-  <div class="container h-100">
-    <div class="d-flex text-center" style="height:96%">
-      <div class="my-auto w-100">
-        <h1 class="display-3 text-white">Creative Design</h1>
-        <h6 style="color:#b3b3b3"><br></h6>
+  <div class="container d-flex align-items-end justify-content-end">
+    <p class="text-dark text-right d-lg-block">DSGN 395: Design Your Life, 2016/12/08</p>
+  </div>
+</header>-->
+
+<div class="container-fluid" style="z-index:-200;position:fixed">
+  <div class="row">
+    <div class="col-xl-3" id="bg">
+    </div>
+    <div class="col-xl-6" style="background-color:#8c92ac">
+    </div>
+    <div class="col-xl-3" id="bg">
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+
+<div class="container" style="min-height:88vh;z-index:100;visibility:;background-color:#8c92ac;"><!--91.3vh for no scroll bar-->
+  <div class="row pt-3 pb-5" id="accordion" style="padding-left:1vw;padding-right:1vw">
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseArt">
+        <div class="card" id="card-button" style="height:12em">
+          <div class="card-img" style="background-image: url('images/Creative/The Cost v.1.0_th.jpg'); background-position:50% 30%;">
+            <div class="overlay" style="opacity:0.2">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Art</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseArt" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4"></h1>
+          <hr class="my-2">
+          <p class="card-text"></p>
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row no-gutters">
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/The Cost v.1.0 sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2">2018. Inkscape/Adobe Illustrator.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 d-block d-md-none">
+              <div class="square">
+                <img src="images/Creative/Brantor, Arnaskor icon_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2">2012. Pencil</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/IMG_3092_edit-B_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Deering Library</h5>
+                    <p class="card-text mt-n2">2015. Pencil.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/IMG_3035_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Deering Library reference</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/IMG_3036_edit.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Scrap sculpture</h5>
+                    <p class="card-text mt-n2">2015. Charcoal</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/IMG_2984_edit_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Scrap sculpture reference</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 d-none d-md-block">
+              <div class="square">
+                <img src="images/Creative/Brantor, Arnaskor icon_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2">2012. Pencil</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/Forgotten 2nd Map v.1.1.7 icon.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2">2012. Pencil/Adobe Photoshop</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <p class="text-dark text-center align-items-end d-lg-block">DSGN 395: Design Your Life, 2016/12/08</p>
-  </div>
-</header>
-
-<div id="accordion">
-<div class="bg-prime px-4 pt-4 pb-4" style="min-height:50vh">
-  <div class="d-flex text-center pb-4">
-    <h2 class="my-auto w-100">Creative Design</h2>
-  </div>
-  <div class="row">
-    <div class="col-md-1 col-lg-2"></div>
-    <div class="col-md-10 col-lg-8">
-      <div class="row">
-        <div class="col-sm-4 col-md-4 col-xl-3"><!--DNU-->
-          <a class="card-link" data-toggle="collapse" href="#collapseDNU">
-            <div class="card">
-              <div class="card-img" style="background-image: url('images/Creative/headerimage_transparent_edit_april2015_edit.jpg');background-position:;"></div>
-              <div class="card-img-overlay d-flex flex-column justify-content-end">
-                <h4 class="card-title">Advertis&shy;ing</h4>
-                <p class="card-text font-italic">The Daily Northwestern</p>
-              </div>
-            </div>
-          </a>
-          <div class="row collapse" id="collapseDNU" data-parent="#accordion" style="margin-top:-1em;">
-            <div class="col-11">
-              <div class="offset-6">
-                <div class="triangle-up"></div>
-              </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseDNU">
+        <div class="card" id="card-button" style="height:8em">
+          <div class="card-img" style="background-image: url('images/Creative/DNU20161118-pg1.jpg'); background-position:50% 10%;">
+            <div class="overlay" style="opacity:0.7">
             </div>
           </div>
-        </div>
-        <div id="collapseDNU" class="col-sm-8 col-md-8 col-xl-9 collapse" data-parent="#accordion">
-          <div class="bg-secondary rounded px-3 py-2 mb-2">
-            <h3 class="font-weight-light text-white">Ad Production Artist</h3>
-            <h6 class="text-white"><i>The Daily Northwestern</i> / 2013 - 2017</h6>
-          </div>
-          <p>​<b>Every publishing day, the ad production artists</b> are responsible for setting up the newspaper's advertisement layout, working in conjunction with the newsroom, and publishing clients' ads in the best form. Observing several inefficiencies in the current process and outdated information in the old training/reference manual, I also revised said manual so that new production artists learn faster, and so that more current knowledge and best practices are retained between hires.</p>
-        </div>
-        <div id="collapseDNU" class="col-12 col-md-9 col-xl-6 collapse" style="margin-top:-.2em" data-parent="#accordion">
-          <div class="bg-secondary rounded row py-3 px-3 mb-4 no-gutters" style="margin-left:-1em;margin-right:-1em;">
-            <div class="col-6 col-sm-4 col-md-4"><!--DNU 09-23-16 Dummy 12pg.jpg-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#dnu-dummy">
-                <div class="square">
-                  <div class="square-img" style="background-color:white;background-image: url('images/Creative/09-23-16 Dummy 12pg.jpg');background-position:;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="dnu-dummy">
-                <div class="popover-heading bg-dark">Sample Dummy Ad Layout</div>
-                <div class="popover-body">
-                  <div class="square-passive" style="height:48em;width:35em">
-                    <div class="square-img-passive" style="background-color:white; background-image: url('images/Creative/09-23-16 Dummy 12pg.jpg'); background-position:;"></div>
-                  </div>
-                </div>
-                <p class="" style="width:35em"></p>
-              </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-4"><!--DNU Manual-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#dnu-manual">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/CompshopAdProductionManual2017-1.jpg');height:140%;background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="dnu-manual">
-                <div class="popover-heading bg-dark">Revised Training/Reference Manual (v.4)</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-6">
-                      <div class="square-passive" style="height:45em; max-height:42vh">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/CompshopAdProductionManual2017-2.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="square-passive" style="height:45em; max-height:42vh">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/CompshopAdProductionManual2017-3.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p class="mt-2" style="width:56em">Over the course of my work, I noticed that the manual needed significant revisions in several areas. These issues would also be brought up by other production artists. I therefore took it upon myself as a personal project to improve its content and layout. Changes include font standardization, rewritten step-by-step instructions, and media reformatting. For the curious, here is the <a href="images/CompshopAdProductionManual2017.pdf" target="_blank">full revised manual.</a></p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-4"><!--Yearbook promo-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#dnu-yearbook">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/IMG_5051_th.JPG');background-position:;height:140%"></div>
-                </div>
-              </a>
-              <div class="d-none" id="dnu-yearbook">
-                <div class="popover-heading bg-dark">Animated Yearbook Ad</div>
-                <div class="popover-body">
-                  <div class="square-passive" style="height:250px;max-height:60vh">
-                    <div class="square-img-passive" title="Senior yearbook portraits animated ad">
-                      <img src="images/Creative/Yearbook-senior-portraits-ad-300x250-hd.gif"></img>
-                    </div>
-                  </div>
-                  <p class="" style="width:250px"></p>
-                </div>
-              </div>
-            </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Ad Production</h5>
           </div>
         </div>
-        <div class="collapse w-100" id="collapseDNU" data-parent="#accordion"></div>
-        <div class="col-sm-4 col-md-4 col-xl-3"><!--Industrial Design-->
-          <a class="card-link" data-toggle="collapse" href="#collapseID">
-            <div class="card">
-              <div class="card-img" style="background-image: url('images/Ind Dsgn/Furniture 1_sd.jpg');background-position:10%"></div>
-              <div class="card-img-overlay d-flex flex-column justify-content-end">
-                <h3 class="card-title">Indus&shy;tri&shy;al Design</h3>
-                <p class="card-text">Sketches, CAD & renderings</p>
-              </div>
-            </div>
-          </a>
-          <div class="row collapse" id="collapseID" data-parent="#accordion" style="margin-top:-1em;">
-            <div class="col-11">
-              <div class="offset-6">
-                <div class="triangle-up"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="collapseID" class="col-12 col-md-12 col-xl-12 collapse" data-parent="#accordion">
-          <div class="bg-secondary rounded px-3 py-2 mb-2">
-            <h3 class="font-weight-light text-white">Indus&shy;tri&shy;al Design</h3>
-            <h6 class="text-white">Sketches, CAD & renderings</h6>
-          </div>
-          <p>A collection of various works.</p>
-        </div>
-        <div id="collapseID" class="col-12 collapse" style="margin-top:-.2em" data-parent="#accordion">
-          <div class="bg-secondary rounded row py-3 px-3 mb-4 no-gutters" style="margin-left:-1em;margin-right:-1em;">
-            <div class="col-6 col-sm-3 col-lg-2"><!--Toothbrush-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#id-toothbrush">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/325/Chen_Toothbrush_Rend_f_edit_th.jpg');background-position:50% 70%;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="id-toothbrush">
-                <div class="popover-heading bg-dark">Toothbrush</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-7">
-                      <div class="square-passive" style="height:3em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/toothbrush right edit.jpg'); background-position:;"></div>
-                      </div>
-                      <div class="square-passive" style="height:3em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/toothbrush top edit.jpg'); background-position:;"></div>
-                      </div>
-                      <div class="square-passive" style="height:8em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/Toothbrush construction_th.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-5">
-                      <div class="square-passive" style="height:14em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/Toothbrush Assem construction crop.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-12 mt-2">
-                      <div class="square-passive" style="height:26em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/Chen_Toothbrush_Rend_f_edit.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseDNU" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4"><i>The Daily Northwestern</i></h1>
+          <hr class="my-2">
+          <p class="card-text">​<b>Every publishing day, the ad production artists</b> are responsible for setting up the newspaper's advertisement layout, working in conjunction with the newsroom, and publishing clients' ads in the best form. Observing several inefficiencies in the current process and outdated information in the old training/reference manual, I also revised said manual so that new production artists learn faster, and so that more current knowledge and best practices are retained between hires.</p>
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row no-gutters">
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/09-23-16 Dummy 12pg.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Ad layout for next day's paper</h5>
+                    <p class="card-text mt-n2"></p>
                   </div>
-                  <p class="mt-2" style="width:35em">Toothbrush reproduction via image profile tracing. SolidWorks</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-3 col-lg-2"><!--Method bottle-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#id-method">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/325/Chen_MethodBottleRend_e_edited_b_th.jpg');background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="id-method">
-                <div class="popover-heading bg-dark">Method Shampoo Bottle</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-3">
-                      <div class="square-passive" style="height:3em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/method - Top.jpg'); background-position:;"></div>
-                      </div>
-                      <div class="square-passive" style="height:12em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/method - Side.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-5">
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="square-passive" style="height:3em;">
-                            <div class="square-img-passive" style="background-image: url('images/325/method logo_edit.jpg'); background-position:;"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-4">
-                          <div class="square-passive" style="height:12em;">
-                            <div class="square-img-passive" style="background-image: url('images/325/method - Front.jpg'); background-position:;"></div>
-                          </div>
-                        </div>
-                        <div class="col-8">
-                          <div class="square-passive" style="height:12em;">
-                            <div class="square-img-passive" style="background-image: url('images/325/MethodBottle Cap construction crop.jpg'); background-position:;"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="square-passive" style="height:15em;">
-                        <div class="square-img-passive" style="background-image: url('images/325/MethodBottle body construction_crop.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/CompshopAdProductionManual2017-1.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Revised Training Manual</h5>
+                    <p class="card-text mt-n2"></p>
                   </div>
-                  <div class="square-passive mt-2" style="height:18em;">
-                    <div class="square-img-passive" style="background-image: url('images/325/Chen_MethodBottleRend_e_edited_b_sd.jpg'); background-position:;"></div>
-                  </div>
-                  <p class="mt-2" style="max-width:38em">Method shampoo bottle reproduction using profile tracing. SolidWorks, PhotoView 360, Adobe Photoshop.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-3 col-lg-2"><!--Custom Coca cola-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#id-cola">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/325/Chen_BottleRend_c_th.jpg');background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="id-cola">
-                <div class="popover-heading bg-dark">Customized Coca Cola Bottle</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-3">
-                      <div class="square-passive" style="height:14em">
-                        <div class="square-img-passive" style="background-image: url('images/325/Coca-Cola-OGB.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-9">
-                      <div class="square-passive" style="height:14em">
-                        <div class="square-img-passive" style="background-image: url('images/325/Bottle construction.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="square-passive mt-2">
-                    <div class="square-img-passive" style="background-image: url('images/325/Chen_BottleRend_c_sd.jpg'); background-position:;"></div>
-                  </div>
-                  <p class="mt-2" style="width:32em">Created with profile tracing and custom dimensional modifications, along with a personal name molded in. SolidWorks.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-3 col-lg-2"><!--Mondrian house-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#id-mondrian">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/ACE/ACE sample house2_th.jpg');background-position:;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="id-mondrian">
-                <div class="popover-heading bg-dark">Mondrian House</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-6">
-                      <div class="square-passive" style="height:10em">
-                        <div class="square-img-passive" style="background-image: url('images/ACE/ACE cheezits sample floor plan.jpg'); background-position:;"></div>
-                      </div>
-                      <div class="square-passive" style="height:14em">
-                        <div class="square-img-passive" style="background-image: url('images/ACE/house top_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="square-passive" style="height:24em">
-                        <div class="square-img-passive" style="background-image: url('images/ACE/ACE sample house_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p class="mt-2" style="width:64em;max-width:93vw;">​<a href="http://www.acementor.org/" >ACE mentorship</a>, Spring 2012. Single-family residence emphasizing radical architecture while retaining the sustainable design hallmark of the San Francisco Bay Area. SketchUp.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-3 col-lg-2"><!--Wicker stool-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#id-stool">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Ind Dsgn/Furniture 1_th.jpg');background-position:10%;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="id-stool">
-                <div class="popover-heading bg-dark">Wicker Stool</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-4">
-                      <div class="square-passive" style="height:8em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Furniture Boards 1_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="square-passive" style="height:8em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Furniture Boards 2_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="square-passive" style="height:8em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Furniture merge_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-5 mt-2">
-                      <div class="square-passive" style="height:20em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Furniture Design Stool B Render B crop_sd.jpg'); background-position:60%;"></div>
-                      </div>
-                    </div>
-                    <div class="col-7 mt-2">
-                      <div class="square-passive" style="height:20em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Furniture 1_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p class="mt--2" style="width:48em;">​</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-3 col-lg-2"><!--Watch-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#id-watch">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Ind Dsgn/Toy Watch 1 crop_sd.jpg');background-position:;width:220%"></div>
-                </div>
-              </a>
-              <div class="d-none" id="id-watch">
-                <div class="popover-heading bg-dark">Multi-function Watch</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:20em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Toy Watch 1 crop_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p style="width:35em;">​</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-3 col-lg-2"><!--Octopus caddy-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#id-octopus">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Ind Dsgn/Final Project Octopus Rend B_sd.jpg');background-position:top;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="id-octopus">
-                <div class="popover-heading bg-dark">Octopus Caddy</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-8">
-                      <div class="square-passive" style="height:18em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Final Project Octopus Rend B_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="square-passive" style="height:9em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Final Project Boards 1_sd.jpg'); background-position:;"></div>
-                      </div>
-                      <div class="square-passive" style="height:9em">
-                        <div class="square-img-passive" style="background-image: url('images/Ind Dsgn/Final Project Boards 2_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p style="width:48em;" class="mb--2">​</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4 col-md-4 col-xl-3"><!--Human-Computer Interaction-->
-          <a class="card-link" data-toggle="collapse" href="#collapseHCI">
-            <div class="card">
-              <div class="card-img" style="background-image: url('images/HCI/Index.JPG');background-position:65%"></div>
-              <div class="card-img-overlay d-flex flex-column justify-content-end">
-                <h3 class="card-title">Human-Comput&shy;er Inter&shy;ac&shy;tion</h3>
-                <p class="card-text">HCI & web design</p>
-              </div>
-            </div>
-          </a>
-          <div class="row collapse" id="collapseHCI" data-parent="#accordion" style="margin-top:-1em;">
-            <div class="col-11">
-              <div class="offset-6">
-                <div class="triangle-up"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="collapseHCI" class="col-12 col-sm-12 col-xl-3 collapse" data-parent="#accordion">
-          <div class="bg-secondary rounded px-3 py-2 mb-2">
-            <h3 class="font-weight-light text-white">Human-Computer Interaction</h3>
-            <h6 class="text-white">HCI & web design / 2017</h6>
-          </div>
-          <p></p>
-        </div>
-        <div id="collapseHCI" class="col-12 collapse" style="margin-top:-.2em" data-parent="#accordion">
-          <div class="bg-secondary rounded row py-3 px-3 mb-4 no-gutters" style="margin-left:-1em;margin-right:-1em;">
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--Water Tracker 1-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#HCI-tracker-1">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/HCI/Index.JPG');background-position:;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="HCI-tracker-1">
-                <div class="popover-heading bg-dark">Water Tracker App, Landing Page</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:;">
-                        <div class="square-img-passive" style="background-image: url('images/HCI/Index.JPG'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p class="mt-2" style="width:50em">Household water usage tracking app. Proof-of-concept. Quarter project.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--Water Tracker 2-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#HCI-tracker-2">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/HCI/Appliances.JPG');background-position:;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="HCI-tracker-2">
-                <div class="popover-heading bg-dark">Water Tracker App, Appliance(s) Selection</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:;">
-                        <div class="square-img-passive" style="background-image: url('images/HCI/Appliances.JPG'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p class="mt-2" style="width:50em">Household water usage tracking app. Proof-of-concept. Quarter team project.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--Water Tracker 3-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#HCI-tracker-3">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/HCI/Waterlogging.JPG');background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="HCI-tracker-3">
-                <div class="popover-heading bg-dark">Water Tracker App, User Data Entry</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:;">
-                        <div class="square-img-passive" style="background-image: url('images/HCI/Waterlogging.JPG'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p class="mt-2" style="width:50em">Household water usage tracking app. Proof-of-concept. Quarter team project.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--Water Tracker 4-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#HCI-tracker-4">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/HCI/DataPresent.JPG');background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="HCI-tracker-4">
-                <div class="popover-heading bg-dark">Water Tracker App, Data Visualization Page</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:;">
-                        <div class="square-img-passive" style="background-image: url('images/HCI/DataPresent.JPG'); background-position:;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <p class="mt-2" style="width:50em">Household water usage tracking app. Proof-of-concept. Quarter team project.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--Calculator-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="modal" data-trigger="focus" data-target="#hci-calculator">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/HCI/calculator.png');background-position:top"></div>
-                </div>
-              </a>
-              <div class="modal fade" id="hci-calculator" tabindex="-1" role="dialog" aria-labelledby="HCI-javascript-calculator" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h6 class="modal-title" id="hci-calculator-title">Javascript Calculator</h6>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <p class="text-center" style="margin-bottom:0em">Starting example picture</p>
-                      <div class="w-100 d-flex justify-content-center">
-                        <img src="images/HCI/calculator.png" class="" style="height:14em; max-width:70vw;border-style:solid;border-width:0.05em;"></img>
-                      </div>
-                      <div class="w-100">
-                        <p class="text-center mt-4 mb--2">Iteration 1, visual framework. Original version <a href="https://codepen.io/rsnbr4n/pen/WRombL">on codepen.io</a>.</p>
-                        <div class="embed-responsive embed-responsive-1by1">
-                          <iframe src="rsncalculator-iteration-1.html" class="embed-responsive-item" style="width:100%"></iframe>
-                        </div>
-                      </div>
-                      <div class="w-100">
-                        <p class="text-center mt-4 mb--2">Iteration 2.2, visual refinement and implementation of basic arithmetic functionality. Original version <a href="https://codepen.io/rsnbr4n/pen/Ndwgmd">on codepen.io</a>.</p>
-                        <div class="embed-responsive embed-responsive-1by1">
-                          <iframe src="rsncalculator-iteration-2.2.html" class="embed-responsive-item"></iframe>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Creative/Yearbook-senior-portraits-ad-300x250-hd.gif" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Ad for campus video boards</h5>
+                    <p class="card-text mt-n2"></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div id="collapseHCI" class="w-100 collapse" data-parent="#accordion"></div>
-        <div class="collapse col-xl-3" id="collapseArt" data-parent="#accordion"></div>
-        <div class="col-sm-4 col-md-4 col-xl-3"><!--Art-->
-          <a class="card-link" data-toggle="collapse" href="#collapseArt">
-            <div class="card">
-              <div class="card-img" style="background-image: url('images/Creative/IMG_3092_edit_th.jpg');background-position:65%;"></div>
-              <div class="card-img-overlay d-flex flex-column justify-content-end">
-                <h3 class="card-title">Art</h3>
-                <p class="card-text">Group & personal work</p>
-              </div>
-            </div>
-          </a>
-          <div class="row collapse" id="collapseArt" data-parent="#accordion" style="margin-top:-1em;">
-            <div class="col-11">
-              <div class="offset-6">
-                <div class="triangle-up"></div>
-              </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseID">
+        <div class="card" id="card-button" style="height:8em">
+          <div class="card-img" style="background-image: url('images/Ind Dsgn/Furniture 1_sd.jpg'); background-position:100% 40%;">
+            <div class="overlay" style="opacity:0.7">
             </div>
           </div>
-        </div>
-        <div id="collapseArt" class="col-sm-8 col-md-8 col-xl-9 collapse" data-parent="#accordion">
-          <div class="bg-secondary rounded px-3 py-2 mb-2">
-            <h3 class="font-weight-light text-white">Art</h3>
-            <h6 class="text-white"></h6>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Industrial Design</h5>
           </div>
-          <!--<p>I've been creating visual art since childhood. I explore this skill both for my interest in design and for accompanying my writing pursuits. Here is some of the work I'm most proud of:</p>-->
-          <!--<p class="small font-italic">Due to unforseen circumstances, my recent paintings are not available.</p>-->
         </div>
-        <div id="collapseArt" class="col-12 collapse" style="margin-top:-.2em" data-parent="#accordion">
-          <div class="bg-secondary rounded row py-3 px-3 mb-4 no-gutters" style="margin-left:-1em;margin-right:-1em;">
-            <div class="col-12"><!--The Cost-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#art-the-cost">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/The Cost v.1.0_th.jpg');background-position:50% 35%"></div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseID" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4"><i></i></h1>
+          <p class="lead">Sketches, CAD, & renderings</p>
+          <hr class="my-2">
+          <p class="card-text"></p>
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row no-gutters">
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <div class="img-fluid img-descrip" style="background-image: url('images/325/Toothbrush construction.jpg');background-position:15% 90%;">
                 </div>
-              </a>
-              <div class="d-none" id="art-the-cost">
-                <div class="popover-heading bg-dark">"The Cost"</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:120em;max-height:40vh;">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/The Cost v.1.0 sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Toothbrush</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
                   </div>
-                  <p class="mt-2" style="width:80em">Artwork for practicing new software. 2018. Inkscape/Adobe Illustrator.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--sculpture-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#art-sculpture">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/IMG_3036_edit.JPG');background-position:;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="art-sculpture">
-                <div class="popover-heading bg-dark">Scrap Sculpture</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:30em;">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/IMG_3036_edit.JPG'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/325/Chen_Toothbrush_Rend_f_edit_th.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Toothbrush</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
                   </div>
-                  <p class="mt-2" style="width:45em">Arbitrary assembly of scrap pieces into a sculpture. 2015. Charcoal.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--library-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#art-library">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/IMG_3092_edit_th.jpg');background-position:;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="art-library">
-                <div class="popover-heading bg-dark">"Deering Library"</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:30em;">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/IMG_3092_edit.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <div class="img-fluid img-descrip" style="background-image: url('images/325/method - Side.jpg');background-position:50% 25%;"></div>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Method shampoo bottle reference</h5>
+                    <p class="card-text mt-n2"></p>
                   </div>
-                  <p class="mt-2" style="width:45em">Deering Library is a historic building on Northwestern University's Evanston campus, built not long after its founding. 2015. Pencil.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--self-portrait-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#creative-self-portrait">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/IMG_3101_edit_edit.jpg');background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="creative-self-portrait">
-                <div class="popover-heading bg-dark">"Self-Portrait"</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:;">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/IMG_3101_edit_edit.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/325/Chen_MethodBottleRend_e_edited_b_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Method shampoo bottle</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
                   </div>
-                  <p class="mt-2" style="width:35em">Self-portrait, and distorted self-portrait based on memory alone. 2015. Pencil.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--golden gate-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#creative-tang-divergence">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/The Tang Divergence Illustration_edit.jpg');background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="creative-tang-divergence">
-                <div class="popover-heading bg-dark">"Golden Gate"</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:60em;max-height:55vh;">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/The Tang Divergence Illustration_edit.jpg');"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/325/Coca-Cola-OGB.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Cola bottle reference image</h5>
+                    <p class="card-text mt-n2"></p>
                   </div>
-                  <p class="mt-2" style="width:46em">Illustration for a fiction piece. 2012. Pencil.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--orb-cross-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#art-orb-cross">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/Silver-Orb-Within-Cross_sd.jpg'); background-position:"></div>
-                </div>
-              </a>
-              <div class="d-none" id="art-orb-cross">
-                <div class="popover-heading bg-dark">Orb-Cross</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:32em;max-height:50vh">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/Silver-Orb-Within-Cross_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/325/Chen_BottleRend_c_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Customized cola bottle</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
                   </div>
-                  <p class="mt-2" style="width:42em">Illustration for a fiction piece. 2011. Pencil.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--brantor-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#art-brantor">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/Brantor, Arnaskor icon_sd.jpg');background-position:;height:130%"></div>
-                </div>
-              </a>
-              <div class="d-none" id="art-brantor">
-                <div class="popover-heading bg-dark">"Brantor"</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:32em;max-height:50vh">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/Brantor, Arnaskor icon_sd.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Ind Dsgn/Furniture Boards 1_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Wicker stool, prior art board</h5>
+                    <p class="card-text mt-n2"></p>
                   </div>
-                  <p class="mt-2" style="width:42em">Illustration for a fiction piece. 2012. Pencil, Adobe Photoshop.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--circumstances-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#art-circumstances">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/Circumstances Illustration_edit.jpg');height:170%;background-position:30%;"></div>
-                </div>
-              </a>
-              <div class="d-none" id="art-circumstances">
-                <div class="popover-heading bg-dark">"Circumstances"</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:33em;max-height:50vh;">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/Circumstances Illustration_edit.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Ind Dsgn/Furniture Boards 2_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Wicker stool, mood board</h5>
+                    <p class="card-text mt-n2"></p>
                   </div>
-                  <p class="mt-2" style="width:42em">Illustration for a fiction piece. 2012. Pencil.</p>
                 </div>
               </div>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><!--arnaskor-->
-              <a href="javascript:void(0);" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-popover-content="#art-arnaskor">
-                <div class="square">
-                  <div class="square-img" style="background-image: url('images/Creative/Forgotten 2nd Map v.1.1.7 icon.jpg');background-position:;height:170%"></div>
-                </div>
-              </a>
-              <div class="d-none" id="art-arnaskor">
-                <div class="popover-heading bg-dark">"Map of Arnaskor"</div>
-                <div class="popover-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="square-passive" style="height:30em;max-height:50vh">
-                        <div class="square-img-passive" style="background-image: url('images/Creative/Forgotten 2nd Map v.1.1.7 icon.jpg'); background-position:;"></div>
-                      </div>
-                    </div>
+            <div class="col-6 col-md-4">
+              <div class="square">
+                <img src="images/Ind Dsgn/Furniture merge_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Wicker stool, concept board</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
                   </div>
-                  <p class="mt-2" style="width:41em">Illustration for a fiction piece. 2011. Pencil, Adobe Photoshop.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="square">
+                <img src="images/Ind Dsgn/Furniture Design Stool B Render B crop_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Wicker stool product rendering</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="square">
+                <img src="images/Ind Dsgn/Furniture 1_sd.jpg" class="img-fluid img-descrip">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Wicker stool product sketch</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -794,6 +403,7 @@
     </div>
   </div>
 </div>
+
 </div>
 
 <footer class="container-fluid bg-aux pt-4">
@@ -801,15 +411,14 @@
     <a href="https://linkedin.com/in/brandonjianchen/" target="_blank" rel="noopener"><button type="button" class="btn btn-linkedin btn-footer" data-toggle="tooltip" data-placement="top" title="LinkedIn"><i class="fa fa-linkedin"></i></button></a>
     <a href="https://github.com/raisinbran" target="_blank" rel="noopener"><button type="button" class="btn btn-github btn-footer ml-2" data-toggle="tooltip" data-placement="top" title="Github"><i class="fa fa-github"></i></button></a>
   </div>
-  <div class="row justify-content-center">
+  <div class="row justify-content-center pt-1 pb-2">
     <p class="text-secondary">2020 Brandon J. Chen</p>
   </div>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous" rel="preload" as="script"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous" rel="preload" as="script"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous" rel="preload" as="script"></script>
-<script src="js/auxiliary.js" rel="preload" as="script"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous" rel="preload" as="script"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous" rel="preload" as="script"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous" rel="preload" as="script"></script>
 
 </body>
 </html>

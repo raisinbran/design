@@ -1,0 +1,445 @@
+/*Auxiliary CSS*/
+
+p {
+  /*font-family:Georgia, serif;*/
+  font-size:1em;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+}
+
+.noselect {
+-webkit-touch-callout: none;
+/* iOS Safari */
+-webkit-user-select: none;
+/* Chrome/Safari/Opera */
+-khtml-user-select: none;
+/* Konqueror */
+-moz-user-select: none;
+/* Firefox */
+-ms-user-select: none;
+/* Internet Explorer/Edge */
+user-select: none;
+/* Non-prefixed version, currently not supported by any browser */
+}
+
+.page-header {
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+  color: "color-prime";
+}
+
+#logo {
+  position:relative;
+  border-radius:100%;
+  width:2em;
+  height:2em;
+  overflow:hidden;
+  margin-right:0.3em;
+}
+#logo img{
+  height:2em;
+  width:2em;
+  position:absolute;
+  left:0;
+  -webkit-transition: opacity .2s ease;
+  -moz-transition: opacity .2s ease;
+  -o-transition: opacity .2s ease;
+  transition: opacity .2s ease;
+}
+#logo img.bottom{
+  opacity:0;
+}
+#logo:hover img.bottom{
+  opacity:1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+}
+
+header {
+  position: relative;
+  background-color: black;
+  height: 91vh;
+  min-height: 25rem;
+  width: 100%;
+  overflow: hidden;
+  object-fit:cover;
+}
+header video, header iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+header .container {
+  position: relative;
+  z-index: 2;
+}
+header .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 1;
+}
+@media (pointer: coarse) and (hover: none) {
+  header {
+    background: url("images/Bolt/IMG_4406_Moment_Moment.jpg") #e6e6e6 no-repeat center center scroll;
+  }
+  header video {
+    display: none;
+  }
+}
+
+video{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+.video-container{
+  position: relative;
+  background-color: black;
+  height: 16vw;
+  min-height: 12rem;
+  width: 100%;
+  overflow: hidden;
+  border-style: solid;
+  border-width:0.035em;
+  border-color:#6C757D;
+}
+
+.popover{
+  max-width:96vw;
+  margin-bottom:;
+  box-shadow:.1em .1em 1.5em black;
+}
+@media (max-width:575.98px){
+  .popover{
+    width:93vw;
+  }
+}
+
+@media (min-width:576px) and (max-width:767.98px){
+
+}
+@media (min-width:768px) and (max-width:991.98px){
+}
+@media (min-width:992px) and (max-width:1199.98px){
+}
+@media (min-width:1200px){
+  #Bolt-descrip {
+    column-count:2;
+  }
+}
+
+.popover-body{
+  background:#e6e6e6;
+  overflow:hidden;
+}
+
+/*.card-columns {
+  @include media-breakpoint-up(sm) {
+    column-count: 1;
+  }
+  @include media-breakpoint-up(md) {
+    column-count: 2;
+  }
+  @include media-breakpoint-up(lg) {
+    column-count: 4;
+  }
+}*/
+.card {
+  background-color:black;
+  height:36vmin;
+  margin-bottom:1em;
+  margin-top:0em;
+  overflow:hidden;
+}
+.card-img {
+  width: 100%;
+  height: 100%;
+  background-color: gray; /* fallback color */
+  background-position: center;
+  background-size: cover;
+  transition:all .5s ease;
+  opacity:1;
+}
+.card:hover .card-img,
+.card:focus .card-img {
+  transform: scale(1.03);
+  opacity:0.25;
+}
+.card:hover .card-img-overlay{
+  color:white;
+}
+.card-img-overlay h3, .card-img-overlay h4, .card-img-overlay h6, .card-img-overlay p{
+    visibility:hidden;
+}
+.card-img-overlay:hover h3,.card-img-overlay:hover h4, .card-img-overlay:hover h6, .card-img-overlay:hover p{
+    visibility:visible;
+}
+
+.square {
+  background-color:black;
+  width:100%;
+  height:12em;
+  max-height:30vh;
+  overflow:hidden;
+  border-style: solid;
+  border-width:0.035em;
+  border-color:#6C757D;
+  margin-top:0em;
+  margin-bottom:0em;
+}
+/*.square:before {
+  content: "";
+  display:block;
+  padding-top:100%;
+}
+.square-img {
+  background-color: gray; * fallback color *
+  background-position: center;
+  background-size: cover;
+  border-style: solid;
+  border-width:0.05em;
+  border-color:black;
+  transition:all .5s ease;
+  opacity:1;
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}*/
+.square-img {
+  background-color: gray; /* fallback color */
+  background-position: center;
+  background-size: cover;
+  width:100%;
+  height:100%;
+  transition:all .5s ease;
+  opacity:1;
+}
+.square:hover .square-img, .square:focus .square-img{
+  transform: scale(1.1);
+  opacity:0.6;
+}
+.square:hover .square, .square:focus .square {}
+
+.square-passive {
+  background-color:black;
+  height:36vh;
+  overflow:hidden;
+  outline-style: solid;
+  outline-width:0.1em;
+  outline-color:black;
+  border-radius:0;
+  border-width:0;
+  margin-left:-.8em;
+  margin-right:-.8em;
+  margin-top:0em;
+  margin-bottom:0em;
+  max-height:44vh;
+}
+
+.square-img-passive {
+  background-color: gray; /* fallback color */
+  background-position: center;
+  background-size: cover;
+  width:100%;
+  height:100%;
+}
+
+.triangle-up {
+	width: 0;
+	height: 0em;
+	border-left: 1em solid transparent;
+	border-right: 1em solid transparent;
+	border-bottom: 1.5em solid #6C757D;
+  margin-top:0em;
+  margin-bottom:0em;
+  /*font-color:#6C757D;*For debugging only.*/
+  transition:0s;
+  transition-delay:0s;
+}
+.triangle-right {
+	width: 0;
+	height: 0em;
+	border-left: 1.8em solid black;
+	border-bottom: 1.2em solid transparent;
+  border-top: 1.2em solid transparent;
+  margin-left:-.3em;
+  position:absolute;
+  z-index:1;
+  /*font-color:#6C757D;*For debugging only.*/
+}
+.triangle-right-small {
+	width: 0;
+	height: 0em;
+	border-left: .9em solid white;
+	border-bottom: .6em solid transparent;
+  border-top: .6em solid transparent;
+  position:absolute;
+  z-index:2;
+  /*font-color:#6C757D;*For debugging only.*/
+}
+
+/*.overlay {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: white;
+  object-fit:cover;
+}
+.parallax-false:hover .overlay{
+  opacity: .8;
+}
+.overlay-text {
+  color: black;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}*/
+
+body, html {
+  height: 100%;
+}
+
+.mt--1{
+  margin-top:-0.25rem !important;
+}
+.mb--1{
+  margin-bottom:-0.25rem;
+}
+.mt--2{
+  margin-top:-0.5rem !important;
+}
+.mb--2{
+  margin-bottom:-0.5rem;
+}
+.mt--3{
+  margin-top:-1rem !important;
+}
+.mb--3{
+  margin-bottom:-1rem;
+}
+
+.color-prime {
+  background-color: #d9d9d9;
+}
+.color-aux {
+  background-color: #b3b3b3;
+}
+.bg-prime {
+  background-color:#abb3ba;
+}
+.bg-aux {
+  background-color: #343A40;
+}
+
+div.gradient-prime-aux {
+  background: linear-gradient(to bottom, #e6e6e6 0%, #b3b3b3 100%);
+}
+
+a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
+}
+
+.nav-link {
+  transition: .2 ease;
+}
+
+i{
+  transition: .2s ease;
+}
+.btn:hover i, .btn:focus i {
+  color:white;
+}
+.btn-linkedin:hover {
+  background-color: #0082CA;
+}
+.btn-github:hover {
+  background-color: #4B515D;
+}
+.btn-email:hover {
+  background-color: #EA4335;
+}
+.btn-weebly:hover {
+  background-color: white;
+}
+.btn-weebly:hover .fa-weebly{
+  filter:brightness(1);
+}
+/*#fa-envelope:hover {
+  padding-bottom:.48em;
+  transition:0s;
+}*/
+
+.btn-footer {
+  height:2em;
+  width:2.6em;
+  margin-bottom:0.5em;
+  margin-left:0.2em;
+  transition: .2s ease;
+  background-color:#abb3ba;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.fa-weebly{
+  object-fit:contain;
+  height:100%;
+  width:100%;
+  filter:brightness(0);
+}
+
+/*Depreciated as of bootstrap 4.0
+#raisin {
+  height:1.6em;
+  width:1.6em;
+  border-radius:100%;
+  border:0;
+  margin-top:-0.4em;
+  background: url("../images/Raisinbran B E stitch3.gif");
+  background-color:#222222;
+  background-position: left;
+  background-size: 200%;
+  position: relative;
+  transition-duration: 0s;
+
+}
+#raisin:hover {
+  background-position: right;
+}*/
