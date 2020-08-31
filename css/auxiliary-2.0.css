@@ -185,7 +185,7 @@ video#eng-bg-video {
   border-bottom-left-radius:0;
   border-bottom-right-radius:0;
   background-color:white;
-  height:4em;
+  height:5em;
   overflow:hidden;
   margin-bottom:0;
   margin-top:1.75em;
@@ -246,7 +246,7 @@ video#eng-bg-video {
 
 .jumbotron {
   padding-top:1em;
-  margin-bottom:1em;
+  margin-bottom:0.5em;
   border-top-left-radius:0;
   border-top-right-radius:0;
   border-color:black;
@@ -257,18 +257,26 @@ video#eng-bg-video {
   border-style:solid;
 }
 
+.jumbotron .row {
+  /*margin-bottom:-2em; /*Fixes jumbotron excessive bottom padding introduced by square bottom margin.*/
+  margin-top:-1em;
+}
+
 .square {
-  background-color:black;
+  background-color:black; /*NOTE:In combination with border-radius, will cause color bleeding on radius edge. Need to fix later.*/
   width:100%;
-  height:28vh;
+  height:40vh;
   max-height:18em;
   overflow:hidden;
   border-style:solid;
-  border-width:0.03em;
-  border-color:#a0a6ac;
-  margin-top:0em;
-  margin-bottom:0em;
-  border-radius:0;
+  border-width:0em;
+  border-color:#E9ECEF;
+  margin-top:1em;
+  margin-bottom:1em;
+  border-radius:0.7em;
+  -moz-background-clip: padding-box; /*Does NOT fix radius background-color bleed*/
+  -webkit-background-clip: padding-box; /*Does NOT fix radius background-color bleed*/
+  background-clip: padding-box; /*Does NOT fix radius background-color bleed*/
 }
 
 .img-fluid /*Fixes .img-fluid not adjusting image height to fill parent element.*/ {
@@ -285,13 +293,19 @@ video#eng-bg-video {
   opacity:0.4;
   transition:all 0.3s ease;
 }
+/*.descrip {
+  margin-left:1em;
+  margin-right:1em;
+  margin-bottom:2em;
+}*/
 .square .descrip {
   visibility:hidden;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10+ and Edge */
   user-select: none; /* Standard syntax */
 }
-.square:hover .descrip {
+.square:hover .descrip,
+.square:focus .descrip {
   color:white;
   visibility:visible;
   transition:all 0s ease;
