@@ -24,9 +24,8 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top noselect">
   <a class="navbar-brand" href="https://raisinbran.github.io/design">
-    <!--<img src="images/Raisinbran B E y.jpg" width="30" height="30" style="margin-right:0.2em;border-radius:100%" class="d-inline-block align-top" alt="">-->
     <div class="d-inline-block align-middle" id="logo">
       <img class="top" src="images/logo_raisinbran.png">
       <img class="bottom" src="images/logo_raisinbran_hover.png">
@@ -41,9 +40,15 @@
       <li class="nav-item">
         <a class="nav-link" href="images/Brandon Resume.pdf" target="_blank">Résumé</a>
       </li>
+      <span class="nav-item d-none d-sm-block">
+        <span class="nav-link noselect" href="" target="">|</span>
+      </span>
       <li class="nav-item">
         <a class="nav-link" href="engineeringdesign.html">Engineering Design</a>
       </li>
+      <span class="nav-item d-none d-sm-block">
+        <span class="nav-link noselect" href="" target="">|</span>
+      </span>
       <li class="nav-item">
         <a class="nav-link" href="creativedesign.html">Creative Design</a>
       </li>
@@ -55,8 +60,9 @@
 
 <header id="header-index">
   <div class="overlay"></div>
-  <video playsinline autoplay muted loop poster="images/Bolt/IMG_4406_Moment_Moment.jpg" class="d-none d-lg-block">
-    <source src="images/Bolt/IMG_4403_header.mp4" type="video/mp4" alt="images/Bolt/IMG_4403.gif" alt="images/Bolt/IMG_4406_Moment_Moment.jpg"></source>
+  <!--<img src="images/Bolt/IMG_4406_Moment_Moment.jpg" class="d-block d-md-none" style="position:absolute;min-height:100%;min-width:100%;">-->
+  <video playsinline autoplay muted loop poster="images/Bolt/IMG_4406_Moment_Moment.jpg" class="">
+    <source src="video/Bolt/IMG_4403_header.mp4" type="video/mp4" alt="images/Bolt/IMG_4406_Moment_Moment.jpg"></source>
     Your browser doesn't support HTML5 video.
   </video>
   <div class="container h-100">
