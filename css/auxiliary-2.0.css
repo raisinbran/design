@@ -3,9 +3,9 @@
 p {
   /*font-family:Georgia, serif;*/
   font-size:1em;
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-  hyphens: auto;
+  -webkit-hyphens: manual;
+  -ms-hyphens: manual;
+  hyphens: manual;
 }
 
 .noselect {
