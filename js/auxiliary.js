@@ -22,7 +22,16 @@ $('.popover-dismiss').popover({
 });
 
 $(function() {
-    $("#footer").load("footer.html");
+    fetch('footer.html')
+  .then(function(response) {
+    if (!response.ok) throw new Error('Footer could not load: ' + response.status);
+    return response.text();
+  })
+  .then(function(html) {
+    var footer = document.getElementById('footer');
+    if (footer) footer.innerHTML = html;
+  })
+  .catch(function(error) { console.error(error); });
 });
 
 /*// Wait for the web page to be ready

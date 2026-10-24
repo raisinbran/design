@@ -72,7 +72,7 @@ header#header-index {
   width: 100%;
   overflow: hidden;
   object-fit:cover;
-  background-image:url('images/Bolt/IMG_4406_Moment_Moment.jpg');
+  background-image:url('../images/Bolt/IMG_4406_Moment_Moment.jpg');
   background-size:cover;
   background-position:center;
 }
@@ -115,7 +115,7 @@ header .overlay {
 }
 @media (pointer: coarse) and (hover: none) {
   header {
-    background: url("images/Bolt/IMG_4406_Moment_Moment.jpg") #e6e6e6 no-repeat center center scroll;
+    background: url("../images/Bolt/IMG_4406_Moment_Moment.jpg") #e6e6e6 no-repeat center center scroll;
   }
   header video {
     display: none;
