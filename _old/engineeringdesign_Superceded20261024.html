@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYT47YF2F7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-NYT47YF2F7');
+  </script>
+
+  <title>Engineering Design - Brandon J. Chen</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Brandon J. Chen">
+<meta name="description" content="Engineering design projects and technical portfolio by Brandon J. Chen.">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/auxiliary-2.0.css">
+  <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top noselect">
+  <a class="navbar-brand" href="index.html">
+    <div class="d-inline-block align-middle" id="logo">
+      <img class="top" src="images/logo_raisinbran.png" alt="" width="40" height="40">
+      <img class="bottom" src="images/logo_raisinbran_hover.png" alt="" width="40" height="40">
+    </div>
+    Brandon J. Chen
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar" aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="images/Brandon Resume.pdf" target="_blank">Résumé</a>
+      </li>
+      <li class="nav-item d-none d-sm-block" aria-hidden="true"><span class="nav-link noselect">|</span></li>
+      <li class="nav-item">
+        <a class="nav-link active" href="engineeringdesign.html">Engineering Design</a>
+      </li>
+      <li class="nav-item d-none d-sm-block" aria-hidden="true"><span class="nav-link noselect">|</span></li>
+      <li class="nav-item">
+        <a class="nav-link" href="creativedesign.html">Creative Design</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div style="height:3.5em"></div>
+
+<div class="container-fluid" style="z-index:-200;position:fixed">
+  <div class="row">
+    <div class="col-xl-3" id="bg">
+    </div>
+    <div class="col-xl-6" style="background-color:#8c92ac">
+    </div>
+    <div class="col-xl-3" id="bg">
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+
+<!--<div class="row" id="eng-bg">
+  <div class="d-none d-xl-block col-xl-3">
+    <div id="eng-bg-container">
+      <video playsinline muted loop poster="" class="d-none d-lg-block" id="eng-bg-video eng-bg-video-l" preload="none" data-play-when-visible>
+        <source src="video/PCJPB/IMG_0225_stable-2.mp4" type="video/mp4" alt=""></source>
+        Your browser doesn't support HTML5 video.
+      </video>
+    </div>
+  </div>
+  <div class="d-none d-xl-block col-xl-6 bg-white">
+  </div>
+  <div class="d-none d-xl-block col-xl-3">
+    <div id="eng-bg-container">
+      <video playsinline muted loop poster="" class="d-none d-lg-block" id="eng-bg-video eng-bg-video-r" preload="none" data-play-when-visible>
+        <source src="video/PCJPB/IMG_0225_stable-2.mp4" type="video/mp4" alt=""></source>
+        Your browser doesn't support HTML5 video.
+      </video>
+    </div>
+  </div>
+</div>-->
+
+<!--<div class="row" id="eng-bg">
+  <div class="d-none d-xl-block col-xl-3 pt-4">
+    <div class="eng-bg-container" id="eng-bg-img-l">
+      <img src="video/PCJPB/IMG_0225_stable.gif" class="img-fluid" style="object-position:0% 50%" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <div class="d-none d-xl-block col-xl-6 bg-white">
+  </div>
+  <div class="d-none d-xl-block col-xl-3 pt-4">
+    <div class="eng-bg-container" id="eng-bg-img-r">
+      <img src="video/PCJPB/IMG_0225_stable.gif" class="img-fluid" style="object-position:100% 50%" loading="lazy" decoding="async">
+    </div>
+  </div>
+</div>-->
+
+<div class="container" style="min-height:88vh;z-index:100;visibility:;background-color:#8c92ac;"><!--91.3vh for no scroll bar-->
+  <div class="row pt-3 pb-5" id="accordion" style="padding-left:1vw;padding-right:1vw">
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseSignal">
+        <div class="card" id="card-button" style="height:8em">
+          <div class="card-img" style="background-image: url('images/PCJPB/IMG_1242_edit.jpg'); background-position:50% 40%;">
+            <div class="overlay" style="opacity:0.4">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Positive Train Control and Signal Systems</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse show" id="collapseSignal" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4">Caltrain</h1>
+          <p class="lead">at RSE, Inc.</p>
+          <hr class="my-2">
+          <p class="card-text">​<strong>The Rail Safety Improvement Act of 2008</strong> mandated the use of PTC (positive train control) technology to prevent accidents on US railroads. In September 2019, Caltrain began the Revenue Service Demonstration phase, operating PTC on regular passenger trains, on the San Francisco Peninsula. PTC interoperability work continues with the adjacent Union Pacific, Altamont Corridor Express, and Amtrak railways.</p>
+          <p class="card-text"><strong>Year</strong> &rtrif; 2019-2021</p>
+          <p class="card-text"><strong>Signals and Crossings</strong><br>&rtrif; Updated signal diagram drawings systemwide<br>&rtrif; Worked with client in conjunction with the upcoming track and train electrification, positive train control, and ongoing construction projects<br>&rtrif; Assigned tasks to other engineers as needed</p>
+          <p class="card-text"><strong>"I-EMTS" PTC System</strong><br>&rtrif; Represented client as a witness and test engineer during contractor field equipment verification</p>
+          <!--<dl class="row mt-3 mb-n2">
+            <dt class="col-sm-3">"I-EMTS" PTC System</dt>
+            <dd class="col-sm-9">
+              <p>Represented client as a witness and test engineer during contractor field equipment verification</p>
+            </dd>
+            <dt class="col-sm-3">Signals and Crossings</dt>
+            <dd class="col-sm-9">
+              <p>Updated signal diagram drawings systemwide</p>
+              <p>Worked with client in conjunction with the upcoming track and train electrification, positive train control, and ongoing construction projects</p>
+              <p>Assigned tasks to other engineers as needed</p>
+            </dd>
+          </dl>-->
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="square embed-responsive">
+                <video playsinline muted loop poster="" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
+                  <source src="video/PCJPB/Caltrain - Brisbane to SSF_D.mp4" type="video/mp4" alt=""></source>
+                  Your browser doesn't support HTML5 video.
+                </video>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Brake testing</h5>
+                    <p class="card-text mt-n2">PTC Implementation</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="square embed-responsive">
+                <video playsinline muted loop poster="" class="embed-responsive-item" id="video-square" preload="none" data-play-when-visible>
+                  <source src="video/PCJPB/IMG_0935_edit_E.mp4" type="video/mp4" alt=""></source>
+                  Your browser doesn't support HTML5 video.
+                </video>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="square">
+                <img src="images/PCJPB/IMG_0355_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="square embed-responsive">
+                <video playsinline muted loop poster="" class="embed-responsive-item" id="video-square" preload="none" data-play-when-visible>
+                  <source src="video/PCJPB/IMG_0225_stable-2.mp4" type="video/mp4" alt=""></source>
+                  Your browser doesn't support HTML5 video.
+                </video>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="square">
+                <img src="images/PCJPB/IMG_1242_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseFiltran">
+        <div class="card" id="card-button">
+          <div class="card-img" style="background-image: url('images/Filtran/160803 Ford 6F35 Helical 2 wide.jpg');background-position:70% 25.5%;background-size:180%">
+            <div class="overlay" style="opacity:0.5">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Automotive Filtration Systems</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseFiltran" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4">Filtran</h1>
+          <hr class="my-2">
+          <p class="card-text">​<strong>Filtran is a leading global supplier </strong> of automatic transmission filtration solutions to automotive OEM's and the automotive aftermarket. Filtran is ISO-9000, ISO-14001, & TS-16949 certified.</p>
+          <p class="card-text"><strong>Year</strong> &rtrif; 2016</p>
+          <!--<p class="card-text"><strong>Role</strong> &rtrif; Design Engineer Intern</p>-->
+          <p class="card-text"><strong>Responsibilities</strong><br>&rtrif; Designed conceptual transmission fluid filters for major auto manufacturing clients, including an exclusivity contract with Ford Motor Company<br>&rtrif; Redesigned testing equipment and shortened turnaround times of QA department's performance qualification and vibration tests</p>
+          <!--<dl class="row mt-1 mb-n2">
+            <dt class="col-sm-3">Year</dt>
+            <dd class="col-sm-9">
+              <p>2016</p>
+            </dd>
+            <dt class="col-sm-0"></dt>
+            <dd class="col-sm-12">
+              <ul>
+                <li>Designed conceptual transmission fluid filters for major auto manufacturing clients, including an exclusivity contract with Ford Motor Company</li>
+                <li>Redesigned testing equipment and shortened turnaround times of QA department's performance qualification and vibration tests</li>
+              </ul>
+            </dd>
+          </dl>-->
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160714 AAM check valve 2_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Metal spring-loaded check valve</h5>
+                    <p class="card-text mt-n2">American Axle & Manufacturing</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160714 AAM check valve 1 crop.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Plastic check valve "prior art"</h5>
+                    <p class="card-text mt-n2">American Axle & Manufacturing</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160908 Allison TC10 sf 1.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Suction filter shelf fit extension</h5>
+                    <p class="card-text mt-n2">Allison Transmission</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/Slide - GM X72 New Suction Filter blur.jpg" class="img-fluid img-descrip" style="object-position:85% 50%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Proposed self-positioning suction filter</h5>
+                    <p class="card-text mt-n2">General Motors</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg" class="img-fluid img-descrip" style="object-position:31% 50%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Checking for collisions in a multi-test vibration robustness fixture</h5>
+                    <p class="card-text mt-n2">Filtran QA department</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160803 Ford 6F35 Helical 2.jpg" class="img-fluid img-descrip" style="object-position:40% 50%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Hybrid nozzle with fluid flow guide ribs</h5>
+                    <p class="card-text mt-n2">Ford</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Hybrid nozzle</h5>
+                    <p class="card-text mt-n2">Ford</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160829 Ford 6F35 Jet Nozzle SF CFD160804 Report - Effect of Helical Outlet External Rib Addition (MHdraft)_edit.jpg" class="img-fluid img-descrip" style="object-fit:contain" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Simulation results of fluid pressure on hybrid nozzle</h5>
+                    <p class="card-text mt-n2">Ford</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseBolt">
+        <div class="card" id="card-button">
+          <div class="card-img" style="background-image: url('images/Bolt/Bolt Final C Render A_sd.jpg');background-position:0% 55%;background-size:125%">
+            <div class="overlay" style="opacity:0.5">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Prototype Low-Cost Motorized Peeler</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseBolt" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4">Trees That Feed Foundation</h1>
+          <p class="lead">with Northwestern University</p>
+          <hr class="my-2">
+          <p class="card-text" style="hyphens:auto;">​<strong>A common sight in Jamaica and Haiti, breadfruit</strong> can potentially strengthen food security and en&shy;tre&shy;pre&shy;neurial ventures on the island. ​The <a href="http://treesthatfeed.org/" target="_blank" rel="noopener">Trees That Feed Foundation</a> aims to improve the throughput of breadfruit processing, which involves peeling, shredding, drying, and packaging.<br><br>The "Bolt", our motorized prototype peeler, removes the breadfruit's sticky, rough skin in as little as 10 seconds compared to up to a minute with hand-peeling. For material selection and complexity of assembly, local manu&shy;fac&shy;tur&shy;ing and supply costs as well as an alternative manual operation feature were taken into consideration.</p>
+          <hr class="my-2">
+          <p class="card-text"><strong>Year</strong> &rtrif; 2016</p>
+          <p class="card-text"><strong>Lead</strong><br>&rtrif; Mockup builds, computer modeling design and file management, material procurement, and construction of a prototype deliverable to the client and end users</p>
+          <p class="card-text"><strong>Contributor</strong><br>&rtrif; User interviews, user testing and performance testing</p>
+          <!--<dl class="row mt-2 mb-n1">
+            <dt class="col-sm-2">Lead</dt>
+            <dd class="col-sm-10">
+              <p>Mockup builds, computer modeling design and file management, material procurement, and construction of the prototype deliverable to the client and end users</p>
+            </dd>
+            <dt class="col-sm-2">Contributions</dt>
+            <dd class="col-sm-10">
+              <p>Brainstorming, user interviews and testing, documentation, and overall project direction</p>
+            </dd>
+          </dl>-->
+          <p class="card-text"><strong>Also...</strong> We were featured in <a href="http://ideas.northwestern.edu/projects/breadfruit-peeler.html" target="_blank" rel="noopener">Northwestern Ideas: Breadfruit Peeler</a>.</p>
+          <p class="card-text"><strong>For more on breadfruit's role</strong> in a changing world, refer to <a href="https://news.northwestern.edu/stories/2022/08/climate-resilient-breadfruit-might-be-the-food-of-the-future" target="_blank" rel="noopener">an August 2022 study</a> between the university and the Chicago Botanic Garden.</p>
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="card square embed-responsive">
+                <video playsinline preload="metadata" muted loop poster="images/Bolt/Copy of Bike Peeler B Render A_edit.jpg" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
+                  <source src="video/Bolt/Bike Peeler B E 896x480.mp4" type="video/mp4">Your browser does not support HTML5 video. Content: motion simulation of bike peeler.
+                </video>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Early mockup motion simulation</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="square embed-responsive">
+                <video playsinline preload="metadata" muted loop poster="images/Bolt/IMG_4406_Moment_Moment.jpg" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
+                  <source src="video/Bolt/IMG_4403_header.mp4" type="video/mp4" alt="images/Bolt/IMG_4406_Moment_Moment.jpg">Your browser does not support HTML5 video. Content: video of lathe-peeler on breadfruit user test.
+                </video>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">User testing of mockup cutting edge</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/20160726_144633_edit.jpg" class="img-fluid img-descrip" style="object-position:50% 10%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Final prototype</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/Bolt Final C Render A_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Final prototype rendering</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/DSGN 384 Initial Sketches_sd.jpg" class="img-fluid img-descrip" style="object-position:50% 20%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Initial brainstorming</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/Bike Peeler Render A.JPG" class="img-fluid" style="object-position:60% 50%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Early mockup</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--<div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/Bike Peeler C Render A.JPG" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>-->
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/IMG_0088_crop.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">A field trip to our end users</h5>
+                    <p class="card-text mt-n2">Montego Bay, Jamaica</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/File_000_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">A field trip to our end users</h5>
+                    <p class="card-text mt-n2">Jamaica</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/IMG_3647_editB.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">A field trip to our end users</h5>
+                    <p class="card-text mt-n2">Jamaica</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/IMG_3619_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2">A homecooked meal by our host, including breadfruit-flour bread and fried breadfruit slices.</p>
+                    <p class="card-text mt-n2">Jamaica</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/Ubertato C Render B.JPG" class="img-fluid img-descrip" style="object-position:65% 100%;min-height:100%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Mockup</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/File_003_edit.jpg" class="img-fluid img-descrip" style="object-position:30% 70%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Mockup testing</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/Lathe Cutting Mech G Render C_crop.jpg" class="img-fluid img-descrip" style="object-position:76% 58%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Mockup CAD model</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Bolt/File_005_edit.jpg" class="img-fluid img-descrip" style="object-position:100% 45%;" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Designing the motor rotation</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseSegal-OutletCovers">
+        <div class="card" id="card-button">
+          <div class="card-img" style="background-image: url('images/ford-motor-company-engineering-design-center.jpg');background-position:50% 65%;background-size:100%">
+            <div class="overlay" style="opacity:0.25">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Redesigned Floor Outlet Covers</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseSegal-OutletCovers" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4">Segal Design Institute</h1>
+          <p class="lead">at Northwestern University</p>
+          <hr class="my-2">
+          <p class="card-text" style="hyphens:auto">​<strong>At the time, the Segal building was approaching</strong> its 10th year of operation. One of the signs of age were the worn-out and broken floor power outlet covers, part of a more unusual below-floor utilities design meant for more flexible classroom layouts and efficient HVAC. As a first step, the school procured some in-house solutions.​​</p>
+          <p class="card-text"><strong>Year</strong> &rtrif; 2015</p>
+          <!--<p class="card-text"><strong>Role</strong> &rtrif; Design Intern</p>-->
+          <p class="card-text"><strong>Lead</strong> &rtrif; Ideation, product design, materials selection and prototype building</p>
+          <p class="card-text"><strong>Contributor</strong> &rtrif; User interviews, user testing and performance testing</p>
+          <!--<dl class="row mt-4 mb-n1">
+            <dt class="col-sm-2">Year</dt>
+            <dd class="col-sm-10">
+              <p>2015</p>
+            </dd>
+            <dt class="col-sm-2">Lead</dt>
+            <dd class="col-sm-10">
+              <p>Ideation, product design, materials selection and prototype building</p>
+            </dd>
+            <dt class="col-sm-2">Contributions</dt>
+            <dd class="col-sm-10">
+              <p>User interviews, user testing and performance testing</p>
+            </dd>
+          </dl>-->
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">The Segal building</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Feature0191_11x.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2">Segal lecture hall. Note the floor power outlets and ventilation grills.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/20150702_141023[1]_editB.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Floor outlet interior</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/20150702_141206[1]_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Intact original floor outlet cover</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/IMG_2697_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/IMG_2831_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/Outlet H Assembly Render B_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">SolidWorks Photoview rendering of prototype</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/IMG_2903_edit_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2">CNC plywood prototype, after a successful 6-month test run in one of the classrooms.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseSegal-WarmingPad">
+        <div class="card" id="card-button">
+          <div class="card-img" style="background-image: url('images/Segal Intern/10_edit_sd.jpg');background-position:0% 55%;background-size:100%">
+            <div class="overlay" style="opacity:0.35">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Infant Surgery Warming Pad Prototype</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseSegal-WarmingPad" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4">Segal Design Institute & University of Ibadan</h1>
+          <hr class="my-2">
+          <div class="row my-2">
+            <div class="col-12 col-xl-6">
+              <p class="card-text" style="hyphens:auto">​​<strong>In Lagos, Nigeria, some infants are unable </strong>to undergo gastrointestinal surgery in a timely fashion due to financial and infrastructural complications. To address this need, doctors at the University of Ibadan are looking into alternatives to high-end operating room equipment. One particular concern was high heat loss from the patient's body during an operation, with practical or inexpensive solutions few to none.</p>
+            </div>
+            <div class="col-12 col-xl-6">
+              <p class="card-text" style="hyphens:auto">The prototype Infant Warming Pad is a low-cost, mass-manufacturable, and sanitary closed-system bed that maintains an infant's body temperature with convective heat during surgery.</p>
+              <!--<dl class="row mt-1 mb-n2">
+                <dd class="col-sm-12">
+                  <ul>
+                    <li>Primary designer and builder for the power supply unit</li>
+                    <li>Built warming pad internals: resistors, wiring, external casing</li>
+                  </ul>
+                </dd>
+              </dl>-->
+            </div>
+          </div>
+          <p><br></p>
+          <p class="card-text"><strong>Year</strong> &rtrif; 2015</p>
+          <p class="card-text"><strong>Lead</strong> &rtrif; Power supply unit designing and building</p>
+          <p class="card-text"><strong>Contributor</strong> &rtrif; Hardware manufacturing & assembly, quality verification</p>
+          <hr class="my-2 pb-2">
+          <div class="row">
+            <div class="col-6">
+              <div class="card square">
+                <img src="images/Segal Intern/IMG_2919_editB.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Assembled Prototype</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card square">
+                <img src="images/Segal Intern/IMG_2921_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Power supply internals</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/10_edit_sd.jpg" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Segal Intern/Working GUI rotate_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseSombrero">
+        <div class="card" id="card-button">
+          <div class="card-img" style="background-image: url('images/Sombrero/20160314_155323.jpg');background-position:50% 26%;background-size:100%">
+            <div class="overlay" style="opacity:0.25">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Computer-Aided Manufactured Toy</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseSombrero" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4">CPS STEM Outreach Program</h1>
+          <p class="lead">with Northwestern University</p>
+          <hr class="my-2">
+          <p class="card-text" style="hyphens:auto">​<strong>As part of a Chicago Public Schools STEM outreach program to promote engineering,</strong> a group of fourth graders tasked us with toys to manufacture using polypropylene. Applying our knowledge of color mixing and part size in an injection mold process, our team separated one toy, a "candy sombrero" figure, into three parts for assembly: the sombrero, the main body, and the mustache.</p>
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row mb-3">
+            <div class="col-12 offset-lg-3 col-lg-6">
+              <div class="square embed-responsive">
+                <video playsinline muted loop poster="" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
+                  <source src="video/Sombrero/Core Manufacture 1.mp4" type="video/mp4" alt=""></source>
+                  Your browser doesn't support HTML5 video.
+                </video>
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Simulation of computer-aided manufacturing instruction code to CNC mill</h5>
+                    <p class="card-text mt-n2">Siemens NX</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Final prototype (polypropylene)</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Sombrero/20160314_155323_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Final prototype, production run 2</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Sombrero/IMG_3201_editB_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Initial drawing from students</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Sombrero/IMG_0547.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Initial prototype production run</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Sombrero/20160308_175627_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Initial prototype core mold</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Sombrero/core.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Sombrero hat core and cavity molds</h5>
+                    <p class="card-text mt-n2">Siemens NX</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseClipIt">
+        <div class="card" id="card-button">
+          <div class="card-img" style="background-image: url('images/HCPD/13410515_10154350748446414_1352083497_o.jpg');background-position:0% 35%;background-size:100%">
+            <div class="overlay" style="opacity:0.4">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Quality-of-Life Kitchen Product</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="collapse" id="collapseClipIt" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4"></h1>
+          <p class="lead">Northwestern University</p>
+          <hr class="my-2">
+          <p class="card-text" style="hyphens:auto">​<strong>The Clip-It prevents</strong> a trash bag from falling into a trash can, which dirties the can and complicates usage. It was developed using the human-centered design approach: user research testing, patent research, establishment of a white space, and an iterative design process. Prototypes were fabricated using 3D printing and fused deposition modeling.</p>
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/Mech Clip H Render A.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Prototype rendering</h5>
+                    <p class="card-text mt-n2">SolidWorks Photoview 360</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/IMG_4553.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Stress testing</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/IMG_4540.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Stress testing</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/Mech Clip Trashed H Render A edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Prototype environment rendering</h5>
+                    <p class="card-text mt-n2">SolidWorks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/13410515_10154350748446414_1352083497_o.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Assembled prototypes</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/FINAL PRESENTATION (1) b.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Mockups/Iterations</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/Mech Clip H 2.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Prototype draft, spring arm</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/HCPD/Mech Clip H.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Prototype draft, parts assembly</h5>
+                    <p class="card-text mt-n2"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<div class="col-12">
+      <a class="card-toggle" data-toggle="collapse" href="#collapseInfraShield">
+        <div class="card" id="card-button">
+          <div class="card-img" style="background-image: url('images/Sombrero/20160314_155323.jpg');background-position:50% 26%;background-size:100%">
+            <div class="overlay" style="opacity:0.25">
+            </div>
+          </div>
+          <div class="card-img-overlay d-flex align-items-center">
+            <h5 class="card-title px-3" style="color:white">Power Station Ballistic Shield</h5>
+          </div>
+        </div>
+      </a>
+    </div>-->
+    <!--<div class="col-12">
+      <div class="collapse" id="collapseInfraShield" data-parent="#accordion">
+        <div class="jumbotron">
+          <h1 class="display-4"></h1>
+          <p class="lead">2014</p>
+          <hr class="my-2">
+          <p class="card-text" style="hyphens:auto"><strong>After the </strong><a href="http://www.wsj.com/articles/SB10001424052702304851104579359141941621778" target="_blank" rel="noopener">April 2013 Silicon Valley substation incident</a>, our client showed interest in improving protection of America's electric grid. In terms of small-arms fire, we identified the cylindrical bushings as one weak point that could easily shut down a substation transformer. The prototype InfraShield (from "infrastructure shield") both obstructs line of sight from the substation perimeter fence and absorbs ballistic impacts, while its conservative design reduces construction cost.</p>
+          <hr class="my-2 pb-2 mt-n1">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160714 AAM check valve 2_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Metal spring-loaded check valve</h5>
+                    <p class="card-text mt-n2">American Axle & Manufacturing</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card square">
+                <img src="images/Filtran/160714 AAM check valve 1 crop.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
+                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                  <div class="descrip">
+                    <h5 class="card-title">Plastic check valve used as "prior art"</h5>
+                    <p class="card-text mt-n2">American Axle & Manufacturing</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+  </div>
+</div>
+
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous"></script>
+<!--<script src="js/auxiliary_WIP.js"></script>-->
+
+  <script src="js/auxiliary.js"></script>
+  <script defer src="js/media-visibility.js"></script>
+<div id="site-footer"></div>
+<script defer src="js/shared-footer.js"></script>
+</body>
+</html>
