@@ -1,0 +1,409 @@
+/*Auxiliary CSS*/
+
+p {
+  /*font-family:Georgia, serif;*/
+  font-size:1em;
+  -webkit-hyphens: manual;
+  -ms-hyphens: manual;
+  hyphens: manual;
+}
+
+.noselect {
+-webkit-touch-callout: none;
+/* iOS Safari */
+-webkit-user-select: none;
+/* Chrome/Safari/Opera */
+-khtml-user-select: none;
+/* Konqueror */
+-moz-user-select: none;
+/* Firefox */
+-ms-user-select: none;
+/* Internet Explorer/Edge */
+user-select: none;
+/* Non-prefixed version, currently not supported by any browser */
+}
+
+.page-header {
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+  color: "color-prime";
+}
+
+#logo {
+  position:relative;
+  border-radius:100%;
+  width:2em;
+  height:2em;
+  overflow:hidden;
+  margin-right:0.3em;
+}
+#logo img{
+  height:2em;
+  width:2em;
+  position:absolute;
+  left:0;
+  -webkit-transition: opacity .2s ease;
+  -moz-transition: opacity .2s ease;
+  -o-transition: opacity .2s ease;
+  transition: opacity .2s ease;
+}
+#logo img.bottom{
+  opacity:0;
+}
+#logo:hover img.bottom{
+  opacity:1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+}
+@media (max-width:575px){
+  .jumbotron .display-4 {
+    font-size:2em;
+  }
+}
+
+header#header-index {
+  position: relative;
+  background-color: black;
+  min-height: 87.05vh;
+  width: 100%;
+  overflow: hidden;
+  object-fit:cover;
+  background-image:url('images/Bolt/IMG_4406_Moment_Moment.jpg');
+  background-size:cover;
+  background-position:center;
+}
+header#header-creative {
+  position: relative;
+  background-color: black;
+  height: 90vh;
+  width: 100%;
+  overflow: hidden;
+  object-fit:cover;
+  z-index:-100;
+}
+header video, header iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+header .container {
+  position: relative;
+  z-index: 2;
+}
+header .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 1;
+}
+@media (pointer: coarse) and (hover: none) {
+  header {
+    background: url("images/Bolt/IMG_4406_Moment_Moment.jpg") #e6e6e6 no-repeat center center scroll;
+  }
+  header video {
+    display: none;
+  }
+}
+
+.btn:hover {
+  background-color: #0a001a;
+  border-color:#0a001a;
+  color:white;
+}
+
+#eng-bg {
+  position:absolute;
+  overflow:hidden;
+  width:100%;
+  height:100%;
+  z-index:-100;
+  background-color: #0a001a;
+}
+
+#bg {
+  position:;
+  overflow:hidden;
+  width:100%;
+  height:97vh;
+  z-index:-200;
+  /*background-color: #0a001a;*/
+  background-color:#8c92ac;
+}
+
+.eng-bg-container {
+  background-color:;
+  width:100%;
+  height:100%;
+  max-height:85vh;
+  max-width:100%;
+  overflow:hidden;
+  margin:0;
+  object-fit:cover;
+  border-style:solid;
+  border-color:red;
+  border-width:0;
+}
+
+video#eng-bg-video {
+  position:;
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  width: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+#eng-bg-img-l {
+  padding-left:3vw;
+  padding-right:8vw;
+}
+
+#eng-bg-img-r {
+  padding-left:8vw;
+  padding-right:3vw;
+}
+
+#card-button /*.card*/ {
+  border-color:black;
+  border-radius:0.5em;
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
+  background-color:white;
+  height:5em;
+  overflow:hidden;
+  margin-bottom:0;
+  margin-top:1.75em;
+  border-width:0.05em;
+}
+
+.card .overlay {
+  width:100%;
+  height:100%;
+  background-color: black; /* fallback color */
+  background-position: center;
+  background-size: cover;
+}
+
+.card-img {
+  width:100%;
+  height:inherit;
+  background-color: black; /* fallback color */
+  background-position: center;
+  background-size: cover;
+  transition:all 0s;
+  opacity:1;
+}
+
+/*a.card-toggle:focus .card {
+  height:18em;
+}*/
+
+#card-button.card-img-overlay {
+  visibility:visible;
+  transition:all .3s ease;
+  /*-webkit-text-stroke:0.06em black;*/
+}
+.card-img-overlay .card-title {
+  margin-top:0.5em;
+}
+
+#img-square {
+  width:100%;
+  height:16em;
+  background-color:black;
+}
+
+#video-square video {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.overlay {
+  size:100% 100%;
+}
+
+.jumbotron {
+  padding-top:1em;
+  margin-bottom:0.5em;
+  border-top-left-radius:0;
+  border-top-right-radius:0;
+  border-color:black;
+  border-left-width:0.05em;
+  border-right-width:0.05em;
+  border-top-width:0em;
+  border-bottom-width:0.2em;
+  border-style:solid;
+}
+
+.jumbotron .row {
+  /*margin-bottom:-2em; /*Fixes jumbotron excessive bottom padding introduced by square bottom margin.*/
+  margin-top:-1em;
+}
+
+.square {
+  background-color:black; /*NOTE:In combination with border-radius, will cause color bleeding on radius edge. Need to fix later.*/
+  width:100%;
+  height:40vh;
+  max-height:18em;
+  overflow:hidden;
+  border-style:solid;
+  border-width:0em;
+  border-color:#E9ECEF;
+  margin-top:1em;
+  margin-bottom:1em;
+  border-radius:0.6em;
+  -moz-background-clip: padding-box; /*Does NOT fix radius background-color bleed*/
+  -webkit-background-clip: padding-box; /*Does NOT fix radius background-color bleed*/
+  background-clip: padding-box; /*Does NOT fix radius background-color bleed*/
+}
+
+.img-fluid /*Fixes .img-fluid not adjusting image height to fill parent element.*/ {
+  object-fit:cover;
+  min-height:100%;
+}
+
+.square img, .square video {
+  transition:all .3s ease;
+}
+
+.square:hover .img-descrip,
+.square:focus .img-descrip{
+  opacity:0.4;
+  transition:all 0.3s ease;
+}
+/*.descrip {
+  margin-left:1em;
+  margin-right:1em;
+  margin-bottom:2em;
+}*/
+.square .descrip {
+  visibility:hidden;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10+ and Edge */
+  user-select: none; /* Standard syntax */
+}
+.square:hover .descrip,
+.square:focus .descrip {
+  color:white;
+  visibility:visible;
+  transition:all 0s ease;
+}
+
+.square video {
+  position:relative;
+  object-fit:cover;
+  background-color: black;
+  min-height:100%;
+  min-width:100%;
+  overflow:hidden;
+}
+
+body, html {
+  height: 100%;
+}
+
+@media (min-width:1200px){
+  #text-col {
+    column-count:2;
+    column-gap:2em;
+  }
+}
+
+.color-prime {
+  background-color: #d9d9d9;
+}
+.color-aux {
+  background-color: #b3b3b3;
+}
+.bg-prime {
+  background-color:#abb3ba;
+}
+.bg-aux {
+  background-color: #343A40;
+}
+.bg-white {
+  background-color: white;
+}
+
+div.gradient-prime-aux {
+  background: linear-gradient(to bottom, #e6e6e6 0%, #b3b3b3 100%);
+}
+
+a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
+}
+
+.nav-link {
+  transition: .2 ease;
+}
+
+i{
+  transition: .2s ease;
+}
+.btn:hover i, .btn:focus i {
+  color:white;
+}
+.btn-linkedin:hover {
+  background-color: #0082CA;
+}
+.btn-github:hover {
+  background-color: #4B515D;
+}
+.btn-email:hover {
+  background-color: #EA4335;
+}
+.btn-weebly:hover {
+  background-color: white;
+}
+.btn-weebly:hover .fa-weebly{
+  filter:brightness(1);
+}
+
+.btn-footer {
+  height:2em;
+  width:2.6em;
+  margin-bottom:0.5em;
+  margin-left:0.2em;
+  transition: .2s ease;
+  background-color:#abb3ba;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.fa-weebly{
+  object-fit:contain;
+  height:100%;
+  width:100%;
+  filter:brightness(0);
+}
