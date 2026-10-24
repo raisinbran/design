@@ -16,23 +16,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Brandon J. Chen">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous" rel="preload" as="style">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous" rel="preload" as="script"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
   <link rel="stylesheet" href="css/auxiliary-2.0.css">
   <!--Font Awesome Brand Icons: --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script type="text/javascript" src="js/auxiliary.js" rel="preload" as="script"></script>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top noselect">
-  <a class="navbar-brand" href="https://raisinbran.github.io/design">
+  <a class="navbar-brand" href="index.html">
     <div class="d-inline-block align-middle" id="logo">
-      <img class="top" src="images/logo_raisinbran.png">
-      <img class="bottom" src="images/logo_raisinbran_hover.png">
+      <img class="top" src="images/logo_raisinbran.png" alt="" width="40" height="40">
+      <img class="bottom" src="images/logo_raisinbran_hover.png" alt="" width="40" height="40">
     </div>
     Brandon J. Chen
   </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar" aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
@@ -74,7 +72,7 @@
 <!--<div class="row" id="eng-bg">
   <div class="d-none d-xl-block col-xl-3">
     <div id="eng-bg-container">
-      <video playsinline autoplay muted loop poster="" class="d-none d-lg-block" id="eng-bg-video eng-bg-video-l">
+      <video playsinline muted loop poster="" class="d-none d-lg-block" id="eng-bg-video eng-bg-video-l" preload="none" data-play-when-visible>
         <source src="video/PCJPB/IMG_0225_stable-2.mp4" type="video/mp4" alt=""></source>
         Your browser doesn't support HTML5 video.
       </video>
@@ -84,7 +82,7 @@
   </div>
   <div class="d-none d-xl-block col-xl-3">
     <div id="eng-bg-container">
-      <video playsinline autoplay muted loop poster="" class="d-none d-lg-block" id="eng-bg-video eng-bg-video-r">
+      <video playsinline muted loop poster="" class="d-none d-lg-block" id="eng-bg-video eng-bg-video-r" preload="none" data-play-when-visible>
         <source src="video/PCJPB/IMG_0225_stable-2.mp4" type="video/mp4" alt=""></source>
         Your browser doesn't support HTML5 video.
       </video>
@@ -95,14 +93,14 @@
 <!--<div class="row" id="eng-bg">
   <div class="d-none d-xl-block col-xl-3 pt-4">
     <div class="eng-bg-container" id="eng-bg-img-l">
-      <img src="video/PCJPB/IMG_0225_stable.gif" class="img-fluid" style="object-position:0% 50%">
+      <img src="video/PCJPB/IMG_0225_stable.gif" class="img-fluid" style="object-position:0% 50%" loading="lazy" decoding="async">
     </div>
   </div>
   <div class="d-none d-xl-block col-xl-6 bg-white">
   </div>
   <div class="d-none d-xl-block col-xl-3 pt-4">
     <div class="eng-bg-container" id="eng-bg-img-r">
-      <img src="video/PCJPB/IMG_0225_stable.gif" class="img-fluid" style="object-position:100% 50%">
+      <img src="video/PCJPB/IMG_0225_stable.gif" class="img-fluid" style="object-position:100% 50%" loading="lazy" decoding="async">
     </div>
   </div>
 </div>-->
@@ -148,7 +146,7 @@
           <div class="row">
             <div class="col-12 col-md-6">
               <div class="square embed-responsive">
-                <video playsinline autoplay muted loop poster="" class="embed-responsive-item img-descrip" id="video-square">
+                <video playsinline muted loop poster="" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
                   <source src="video/PCJPB/Caltrain - Brisbane to SSF_D.mp4" type="video/mp4" alt=""></source>
                   Your browser doesn't support HTML5 video.
                 </video>
@@ -162,7 +160,7 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="square embed-responsive">
-                <video playsinline autoplay muted loop poster="" class="embed-responsive-item" id="video-square">
+                <video playsinline muted loop poster="" class="embed-responsive-item" id="video-square" preload="none" data-play-when-visible>
                   <source src="video/PCJPB/IMG_0935_edit_E.mp4" type="video/mp4" alt=""></source>
                   Your browser doesn't support HTML5 video.
                 </video>
@@ -176,7 +174,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="square">
-                <img src="images/PCJPB/IMG_0355_edit.jpg" class="img-fluid">
+                <img src="images/PCJPB/IMG_0355_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -187,7 +185,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="square embed-responsive">
-                <video playsinline autoplay muted loop poster="" class="embed-responsive-item" id="video-square">
+                <video playsinline muted loop poster="" class="embed-responsive-item" id="video-square" preload="none" data-play-when-visible>
                   <source src="video/PCJPB/IMG_0225_stable-2.mp4" type="video/mp4" alt=""></source>
                   Your browser doesn't support HTML5 video.
                 </video>
@@ -201,7 +199,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="square">
-                <img src="images/PCJPB/IMG_1242_edit.jpg" class="img-fluid">
+                <img src="images/PCJPB/IMG_1242_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -253,7 +251,7 @@
           <div class="row">
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160714 AAM check valve 2_edit.jpg" class="img-fluid img-descrip">
+                <img src="images/Filtran/160714 AAM check valve 2_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Metal spring-loaded check valve</h5>
@@ -264,7 +262,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160714 AAM check valve 1 crop.JPG" class="img-fluid img-descrip">
+                <img src="images/Filtran/160714 AAM check valve 1 crop.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Plastic check valve "prior art"</h5>
@@ -275,7 +273,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160908 Allison TC10 sf 1.jpg" class="img-fluid img-descrip">
+                <img src="images/Filtran/160908 Allison TC10 sf 1.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Suction filter shelf fit extension</h5>
@@ -286,7 +284,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/Slide - GM X72 New Suction Filter blur.jpg" class="img-fluid img-descrip" style="object-position:85% 50%;">
+                <img src="images/Filtran/Slide - GM X72 New Suction Filter blur.jpg" class="img-fluid img-descrip" style="object-position:85% 50%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Proposed self-positioning suction filter</h5>
@@ -297,7 +295,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg" class="img-fluid img-descrip" style="object-position:31% 50%;">
+                <img src="images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg" class="img-fluid img-descrip" style="object-position:31% 50%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Checking for collisions in a multi-test vibration robustness fixture</h5>
@@ -308,7 +306,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160803 Ford 6F35 Helical 2.jpg" class="img-fluid img-descrip" style="object-position:40% 50%;">
+                <img src="images/Filtran/160803 Ford 6F35 Helical 2.jpg" class="img-fluid img-descrip" style="object-position:40% 50%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Hybrid nozzle with fluid flow guide ribs</h5>
@@ -319,7 +317,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg" class="img-fluid img-descrip">
+                <img src="images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Hybrid nozzle</h5>
@@ -330,7 +328,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160829 Ford 6F35 Jet Nozzle SF CFD160804 Report - Effect of Helical Outlet External Rib Addition (MHdraft)_edit.jpg" class="img-fluid img-descrip" style="object-fit:contain">
+                <img src="images/Filtran/160829 Ford 6F35 Jet Nozzle SF CFD160804 Report - Effect of Helical Outlet External Rib Addition (MHdraft)_edit.jpg" class="img-fluid img-descrip" style="object-fit:contain" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Simulation results of fluid pressure on hybrid nozzle</h5>
@@ -383,7 +381,7 @@
           <div class="row">
             <div class="col-12 col-md-6">
               <div class="card square embed-responsive">
-                <video playsinline autoplay preload="metadata" muted loop poster="images/Bolt/Copy of Bike Peeler B Render A_edit.jpg" class="embed-responsive-item img-descrip" id="video-square">
+                <video playsinline preload="metadata" muted loop poster="images/Bolt/Copy of Bike Peeler B Render A_edit.jpg" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
                   <source src="video/Bolt/Bike Peeler B E 896x480.mp4" type="video/mp4">Your browser does not support HTML5 video. Content: motion simulation of bike peeler.
                 </video>
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
@@ -396,7 +394,7 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="square embed-responsive">
-                <video playsinline autoplay preload="metadata" muted loop poster="images/Bolt/IMG_4406_Moment_Moment.jpg" class="embed-responsive-item img-descrip" id="video-square">
+                <video playsinline preload="metadata" muted loop poster="images/Bolt/IMG_4406_Moment_Moment.jpg" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
                   <source src="video/Bolt/IMG_4403_header.mp4" type="video/mp4" alt="images/Bolt/IMG_4406_Moment_Moment.jpg">Your browser does not support HTML5 video. Content: video of lathe-peeler on breadfruit user test.
                 </video>
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
@@ -409,7 +407,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/20160726_144633_edit.jpg" class="img-fluid img-descrip" style="object-position:50% 10%;">
+                <img src="images/Bolt/20160726_144633_edit.jpg" class="img-fluid img-descrip" style="object-position:50% 10%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Final prototype</h5>
@@ -420,7 +418,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/Bolt Final C Render A_sd.jpg" class="img-fluid img-descrip">
+                <img src="images/Bolt/Bolt Final C Render A_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Final prototype rendering</h5>
@@ -431,7 +429,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/DSGN 384 Initial Sketches_sd.jpg" class="img-fluid img-descrip" style="object-position:50% 20%;">
+                <img src="images/Bolt/DSGN 384 Initial Sketches_sd.jpg" class="img-fluid img-descrip" style="object-position:50% 20%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Initial brainstorming</h5>
@@ -442,7 +440,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/Bike Peeler Render A.JPG" class="img-fluid" style="object-position:60% 50%;">
+                <img src="images/Bolt/Bike Peeler Render A.JPG" class="img-fluid" style="object-position:60% 50%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Early mockup</h5>
@@ -453,7 +451,7 @@
             </div>
             <!--<div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/Bike Peeler C Render A.JPG" class="img-fluid">
+                <img src="images/Bolt/Bike Peeler C Render A.JPG" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -464,7 +462,7 @@
             </div>-->
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/IMG_0088_crop.jpg" class="img-fluid img-descrip">
+                <img src="images/Bolt/IMG_0088_crop.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">A field trip to our end users</h5>
@@ -475,7 +473,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/File_000_edit.jpg" class="img-fluid img-descrip">
+                <img src="images/Bolt/File_000_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">A field trip to our end users</h5>
@@ -486,7 +484,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/IMG_3647_editB.jpg" class="img-fluid img-descrip">
+                <img src="images/Bolt/IMG_3647_editB.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">A field trip to our end users</h5>
@@ -497,7 +495,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/IMG_3619_edit.jpg" class="img-fluid img-descrip">
+                <img src="images/Bolt/IMG_3619_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -509,7 +507,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/Ubertato C Render B.JPG" class="img-fluid img-descrip" style="object-position:65% 100%;min-height:100%;">
+                <img src="images/Bolt/Ubertato C Render B.JPG" class="img-fluid img-descrip" style="object-position:65% 100%;min-height:100%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Mockup</h5>
@@ -520,7 +518,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/File_003_edit.jpg" class="img-fluid img-descrip" style="object-position:30% 70%;">
+                <img src="images/Bolt/File_003_edit.jpg" class="img-fluid img-descrip" style="object-position:30% 70%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Mockup testing</h5>
@@ -531,7 +529,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/Lathe Cutting Mech G Render C_crop.jpg" class="img-fluid img-descrip" style="object-position:76% 58%;">
+                <img src="images/Bolt/Lathe Cutting Mech G Render C_crop.jpg" class="img-fluid img-descrip" style="object-position:76% 58%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Mockup CAD model</h5>
@@ -542,7 +540,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Bolt/File_005_edit.jpg" class="img-fluid img-descrip" style="object-position:100% 45%;">
+                <img src="images/Bolt/File_005_edit.jpg" class="img-fluid img-descrip" style="object-position:100% 45%;" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Designing the motor rotation</h5>
@@ -597,7 +595,7 @@
           <div class="row">
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg" class="img-fluid img-descrip">
+                <img src="images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">The Segal building</h5>
@@ -608,7 +606,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Feature0191_11x.jpg" class="img-fluid img-descrip">
+                <img src="images/Feature0191_11x.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -619,7 +617,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/20150702_141023[1]_editB.jpg" class="img-fluid img-descrip">
+                <img src="images/Segal Intern/20150702_141023[1]_editB.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Floor outlet interior</h5>
@@ -630,7 +628,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/20150702_141206[1]_edit.jpg" class="img-fluid img-descrip">
+                <img src="images/Segal Intern/20150702_141206[1]_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Intact original floor outlet cover</h5>
@@ -641,7 +639,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/IMG_2697_edit.jpg" class="img-fluid">
+                <img src="images/Segal Intern/IMG_2697_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -652,7 +650,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/IMG_2831_edit.jpg" class="img-fluid">
+                <img src="images/Segal Intern/IMG_2831_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -663,7 +661,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/Outlet H Assembly Render B_edit.jpg" class="img-fluid img-descrip">
+                <img src="images/Segal Intern/Outlet H Assembly Render B_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">SolidWorks Photoview rendering of prototype</h5>
@@ -674,7 +672,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/IMG_2903_edit_sd.jpg" class="img-fluid img-descrip">
+                <img src="images/Segal Intern/IMG_2903_edit_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -729,7 +727,7 @@
           <div class="row">
             <div class="col-6">
               <div class="card square">
-                <img src="images/Segal Intern/IMG_2919_editB.jpg" class="img-fluid img-descrip">
+                <img src="images/Segal Intern/IMG_2919_editB.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Assembled Prototype</h5>
@@ -740,7 +738,7 @@
             </div>
             <div class="col-6">
               <div class="card square">
-                <img src="images/Segal Intern/IMG_2921_edit.jpg" class="img-fluid img-descrip">
+                <img src="images/Segal Intern/IMG_2921_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Power supply internals</h5>
@@ -751,7 +749,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/10_edit_sd.jpg" class="img-fluid">
+                <img src="images/Segal Intern/10_edit_sd.jpg" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -762,7 +760,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg" class="img-fluid">
+                <img src="images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -773,7 +771,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Segal Intern/Working GUI rotate_edit.jpg" class="img-fluid">
+                <img src="images/Segal Intern/Working GUI rotate_edit.jpg" class="img-fluid" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title"></h5>
@@ -810,7 +808,7 @@
           <div class="row mb-3">
             <div class="col-12 offset-lg-3 col-lg-6">
               <div class="square embed-responsive">
-                <video playsinline autoplay muted loop poster="" class="embed-responsive-item img-descrip" id="video-square">
+                <video playsinline muted loop poster="" class="embed-responsive-item img-descrip" id="video-square" preload="none" data-play-when-visible>
                   <source src="video/Sombrero/Core Manufacture 1.mp4" type="video/mp4" alt=""></source>
                   Your browser doesn't support HTML5 video.
                 </video>
@@ -826,7 +824,7 @@
           <div class="row">
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg" class="img-fluid img-descrip">
+                <img src="images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Final prototype (polypropylene)</h5>
@@ -837,7 +835,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Sombrero/20160314_155323_sd.jpg" class="img-fluid img-descrip">
+                <img src="images/Sombrero/20160314_155323_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Final prototype, production run 2</h5>
@@ -848,7 +846,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Sombrero/IMG_3201_editB_sd.jpg" class="img-fluid img-descrip">
+                <img src="images/Sombrero/IMG_3201_editB_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Initial drawing from students</h5>
@@ -859,7 +857,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Sombrero/IMG_0547.JPG" class="img-fluid img-descrip">
+                <img src="images/Sombrero/IMG_0547.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Initial prototype production run</h5>
@@ -870,7 +868,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Sombrero/20160308_175627_sd.jpg" class="img-fluid img-descrip">
+                <img src="images/Sombrero/20160308_175627_sd.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Initial prototype core mold</h5>
@@ -881,7 +879,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Sombrero/core.jpg" class="img-fluid img-descrip">
+                <img src="images/Sombrero/core.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Sombrero hat core and cavity molds</h5>
@@ -918,7 +916,7 @@
           <div class="row">
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/Mech Clip H Render A.JPG" class="img-fluid img-descrip">
+                <img src="images/HCPD/Mech Clip H Render A.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Prototype rendering</h5>
@@ -929,7 +927,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/IMG_4553.JPG" class="img-fluid img-descrip">
+                <img src="images/HCPD/IMG_4553.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Stress testing</h5>
@@ -940,7 +938,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/IMG_4540.JPG" class="img-fluid img-descrip">
+                <img src="images/HCPD/IMG_4540.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Stress testing</h5>
@@ -951,7 +949,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/Mech Clip Trashed H Render A edit.jpg" class="img-fluid img-descrip">
+                <img src="images/HCPD/Mech Clip Trashed H Render A edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Prototype environment rendering</h5>
@@ -962,7 +960,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/13410515_10154350748446414_1352083497_o.jpg" class="img-fluid img-descrip">
+                <img src="images/HCPD/13410515_10154350748446414_1352083497_o.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Assembled prototypes</h5>
@@ -973,7 +971,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/FINAL PRESENTATION (1) b.jpg" class="img-fluid img-descrip">
+                <img src="images/HCPD/FINAL PRESENTATION (1) b.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Mockups/Iterations</h5>
@@ -984,7 +982,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/Mech Clip H 2.JPG" class="img-fluid img-descrip">
+                <img src="images/HCPD/Mech Clip H 2.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Prototype draft, spring arm</h5>
@@ -995,7 +993,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/HCPD/Mech Clip H.JPG" class="img-fluid img-descrip">
+                <img src="images/HCPD/Mech Clip H.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Prototype draft, parts assembly</h5>
@@ -1032,7 +1030,7 @@
           <div class="row">
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160714 AAM check valve 2_edit.jpg" class="img-fluid img-descrip">
+                <img src="images/Filtran/160714 AAM check valve 2_edit.jpg" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Metal spring-loaded check valve</h5>
@@ -1043,7 +1041,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card square">
-                <img src="images/Filtran/160714 AAM check valve 1 crop.JPG" class="img-fluid img-descrip">
+                <img src="images/Filtran/160714 AAM check valve 1 crop.JPG" class="img-fluid img-descrip" loading="lazy" decoding="async">
                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                   <div class="descrip">
                     <h5 class="card-title">Plastic check valve used as "prior art"</h5>
@@ -1066,17 +1064,19 @@
     <a href="https://linkedin.com/in/branjchen/" target="_blank" rel="noopener"><button type="button" class="btn btn-linkedin btn-footer" data-toggle="tooltip" data-placement="top" title="LinkedIn"><i class="fa fa-linkedin"></i></button></a>
     <a href="https://github.com/raisinbran" target="_blank" rel="noopener"><button type="button" class="btn btn-github btn-footer ml-2" data-toggle="tooltip" data-placement="top" title="Github"><i class="fa fa-github"></i></button></a>
     <!--<a href="mailto:x" target="_blank" rel="noopener"><button type="button" class="btn btn-email btn-footer ml-2" data-toggle="tooltip" data-placement="bottom" title="Email"><i class="fa fa-envelope"></i></button></a>-->
-    <!--<a href="https://brandonjchen.weebly.com" target="_blank" rel="noopener"><button type="button" class="btn btn-weebly btn-footer ml-2" data-toggle="tooltip" data-placement="bottom" title="Weebly"><i class="fa"><img src="images/weebly.svg" class="fa-weebly"></i></button></a>-->
+    <!--<a href="https://brandonjchen.weebly.com" target="_blank" rel="noopener"><button type="button" class="btn btn-weebly btn-footer ml-2" data-toggle="tooltip" data-placement="bottom" title="Weebly"><i class="fa"><img src="images/weebly.svg" class="fa-weebly" loading="lazy" decoding="async"></i></button></a>-->
   </div>
   <div class="row justify-content-center pt-1 pb-2">
     <p class="text-secondary">&copy; 2023 Brandon J. Chen</p>
   </div>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous" rel="preload" as="script"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous" rel="preload" as="script"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous" rel="preload" as="script"></script>
-<!--<script src="js/auxiliary_WIP.js" rel="preload" as="script"></script>-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous"></script>
+<!--<script src="js/auxiliary_WIP.js"></script>-->
 
+  <script src="js/auxiliary.js"></script>
+  <script defer src="js/media-visibility.js"></script>
 </body>
 </html>
