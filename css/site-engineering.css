@@ -1,0 +1,431 @@
+/* Source: navigation-2026.css */
+.site-nav-2026{background:#f8f8f6;border-bottom:1px solid #dce1e2;font-family:Inter,"Segoe UI",Arial,sans-serif}
+.site-nav-2026 *{box-sizing:border-box}
+.site-nav-2026 .nav-inner{width:min(1120px,calc(100% - 48px));margin:auto;display:flex;min-height:94px;justify-content:space-between;align-items:center;gap:24px}
+.site-nav-2026 .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#202a30}
+.site-nav-2026 .nav-logo{position:relative;width:64px;height:64px;flex:none}
+.site-nav-2026 .nav-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .22s}
+.site-nav-2026 .nav-logo .hover{opacity:0}
+.site-nav-2026 .nav-brand:hover .hover,.site-nav-2026 .nav-brand:focus-visible .hover{opacity:1}
+.site-nav-2026 .nav-name{font-size:16px;font-weight:750;display:block;line-height:1.2}
+.site-nav-2026 .nav-sub{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#57636a;display:block;margin-top:4px}
+.site-nav-2026 .nav-links{display:flex;align-items:center;flex-wrap:wrap;gap:26px}
+.site-nav-2026 .nav-links a{font-size:13px;font-weight:600;color:#3d4a51;text-decoration:none;white-space:nowrap;padding:8px 0}
+.site-nav-2026 .nav-links a:hover,.site-nav-2026 .nav-links a[aria-current=page]{color:#315f67;text-decoration:underline;text-underline-offset:5px}
+.site-nav-2026 a:focus-visible{outline:3px solid #bc8752;outline-offset:4px}
+@media(max-width:680px){.site-nav-2026 .nav-inner{width:calc(100% - 32px);padding:15px 0;min-height:0;flex-direction:column;align-items:flex-start;gap:14px}.site-nav-2026 .nav-logo{width:54px;height:54px}.site-nav-2026 .nav-links{gap:12px 20px}}
+@media(prefers-reduced-motion:reduce){.site-nav-2026 .nav-logo img{transition:none}}
+
+
+/* Source: navigation-sticky-r19.css */
+/* R19: persistent shared navigation, without changing its accepted appearance. */
+.site-nav-2026 {
+  position: sticky !important;
+  top: 0;
+  z-index: 1050;
+  width: 100%;
+  background: #f8f8f6;
+}
+html {
+  scroll-padding-top: 112px;
+}
+[id] {
+  scroll-margin-top: 112px;
+}
+/* Ensure sufficient space remains for content under zoom and short landscape viewports. */
+@media (max-height: 500px) {
+  .site-nav-2026 { position: relative !important; }
+  html { scroll-padding-top: 12px; }
+  [id] { scroll-margin-top: 12px; }
+}
+@media (max-width: 680px) and (min-height: 501px) {
+  html { scroll-padding-top: 152px; }
+  [id] { scroll-margin-top: 152px; }
+}
+
+
+/* Source: shared-layout-2026.css */
+/* R15 shared responsive layout. Load LAST on all three pages.
+   1200px max outer container, including responsive internal gutters.
+   Does not change original image files or accepted hero image scaling. */
+:root {
+  --site-content-max: 1200px;
+  --site-gutter: 16px;
+}
+@media (min-width: 768px) {
+  :root { --site-gutter: 24px; }
+}
+@media (min-width: 1024px) {
+  :root { --site-gutter: 32px; }
+}
+
+/* Shared navigation, including its grape logo. */
+.site-nav-2026 .nav-inner {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--site-content-max);
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+
+/* Homepage: only ordinary content. The hero remains 1550px at most. */
+body:not(.ed-page):not(.archive-2026) main .container,
+body:not(.ed-page):not(.archive-2026) .footer.container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--site-content-max);
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+body:not(.ed-page):not(.archive-2026) .fullbleed-hero img {
+  /* Explicitly retain accepted, uncropped image treatment. */
+  width: 100%;
+  max-width: 1550px;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
+body:not(.ed-page):not(.archive-2026) .fullbleed-hero figcaption {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1550px;
+  padding-inline: max(var(--site-gutter), calc((100% - var(--site-content-max)) / 2 + var(--site-gutter)));
+}
+
+/* Engineering introduction and archive project container. */
+body.ed-page .ed-shell,
+body.ed-page .ed-archive .container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--site-content-max);
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+
+/* Existing Bootstrap .row has negative 15px margins and .col-12 has
+   15px padding; keep this pair symmetric to prevent project header drift. */
+body.ed-page #accordion {
+  margin-inline: -15px !important;
+  padding-inline: 0 !important;
+}
+body.ed-page #accordion > .col-12 {
+  padding-inline: 15px !important;
+}
+
+/* Archive intro and project area use precisely the same outer boundaries. */
+body.archive-2026 .archive-intro,
+body.archive-2026 .archive-content {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--site-content-max);
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+body.archive-2026 .archive-content {
+  /* Override Bootstrap fixed-width .container breakpoints. */
+  width: 100%;
+}
+
+/* Respect page gutters on small screens, without squashing full images. */
+@media (max-width: 767.98px) {
+  .site-nav-2026 .nav-inner { width: 100%; }
+}
+
+
+/* Source: shared-typography-2026.css */
+/* R20: shared typography metrics for the accepted R19/R17 site.
+   Keep individual font sizes and weights; standardize line-height only. */
+:root {
+  --site-title-leading: 1.15;
+  --site-subtitle-leading: 1.5;
+  --site-nav-leading: 1.25;
+}
+
+/* One set of metrics on all three page headers. */
+.site-nav-2026 .nav-name,
+.site-nav-2026 .nav-sub,
+.site-nav-2026 .nav-links a {
+  line-height: var(--site-nav-leading);
+}
+.site-nav-2026 .nav-brand { line-height: var(--site-nav-leading); }
+
+/* Top-level page headings. */
+body.ed-page .ed-intro h1,
+body.archive-2026 .archive-intro h1,
+body:not(.ed-page):not(.archive-2026) .hero-feature h1 {
+  line-height: var(--site-title-leading);
+}
+
+/* Introductory paragraph/subtitle directly below a page heading. */
+body.ed-page .ed-intro p:not(.ed-kicker),
+body.archive-2026 .archive-intro p:not(.eyebrow),
+body:not(.ed-page):not(.archive-2026) .hero-feature .feature-intro {
+  line-height: var(--site-subtitle-leading);
+}
+
+/* Engineering/Archive expanded project titles and subheadings. */
+body.ed-page #accordion .jumbotron .display-4,
+body.archive-2026 #accordion .jumbotron .display-4 {
+  line-height: var(--site-title-leading);
+}
+body.ed-page #accordion .jumbotron .lead,
+body.archive-2026 #accordion .jumbotron .lead {
+  line-height: var(--site-subtitle-leading);
+}
+
+/* Homepage section headings inherit accepted sizes/weights, with uniform leading. */
+body:not(.ed-page):not(.archive-2026) .section-intro h2,
+body:not(.ed-page):not(.archive-2026) .section h2 {
+  line-height: var(--site-title-leading);
+}
+
+
+/* Source: footer-2026.css */
+/* Shared footer, isolated from legacy Bootstrap footer styles. */
+.footer-2026 {border-top:1px solid rgba(90,108,115,.22); background:#f7f8f8; color:#42515a; font-family:Inter,"Segoe UI",Arial,sans-serif; font-size:.875rem;}
+.footer-2026 *, .footer-2026 *::before, .footer-2026 *::after {box-sizing:border-box;}
+.footer-2026-inner {max-width:1200px; margin-inline:auto; padding:22px 16px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+.footer-2026-identity {display:flex; align-items:center; gap:13px; min-width:0;}
+.footer-2026-logo {position:relative; display:block; flex:0 0 46px; width:46px; height:46px;}
+.footer-2026-logo img {position:absolute; inset:0; width:100%; height:100%; object-fit:contain; transition:opacity .18s ease;}
+.footer-2026-logo .logo-default {opacity:1;}
+.footer-2026-logo .logo-hover {opacity:0;}
+.footer-2026-logo:hover .logo-default, .footer-2026-logo:focus-visible .logo-default {opacity:0;}
+.footer-2026-logo:hover .logo-hover, .footer-2026-logo:focus-visible .logo-hover {opacity:1;}
+.footer-2026-links {display:flex; gap:22px; flex-wrap:wrap;}
+.footer-2026-links a {color:inherit; text-decoration:none;}
+.footer-2026-links a:hover, .footer-2026-links a:focus-visible {text-decoration:underline;}
+@media (min-width:768px) {.footer-2026-inner {padding-inline:24px;}}
+@media (min-width:1024px) {.footer-2026-inner {padding-inline:32px;}}
+@media (max-width:480px) {.footer-2026-inner {align-items:flex-start; padding-block:20px; gap:13px;}.footer-2026-links {padding-left:59px;}}
+@media (prefers-reduced-motion:reduce) {.footer-2026-logo img {transition:none;}}
+
+
+/* Source: footer-icons-r21.css */
+/* R21: locally hosted social icons, restrained interaction, compact logo-free footer. */
+.footer-2026 .footer-2026-inner {
+  align-items: center;
+}
+.footer-2026 .footer-2026-identity { min-width: 0; }
+.footer-2026 .footer-2026-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 0;
+}
+.footer-2026 .footer-2026-links a.footer-2026-social,
+.footer-2026 a.footer-2026-social {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  text-decoration: none !important;
+  box-shadow: none;
+  background: transparent;
+  color: #42515a;
+  transition: background-color .16s ease, border-color .16s ease, transform .16s ease;
+}
+.footer-2026 a.footer-2026-social img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  text-decoration: none !important;
+  transition: opacity .16s ease;
+}
+.footer-2026 a.footer-2026-social:hover {
+  background-color: rgba(49, 95, 103, .09);
+  border-color: rgba(49, 95, 103, .22);
+  text-decoration: none !important;
+  transform: translateY(-1px);
+}
+.footer-2026 a.footer-2026-social:hover img { opacity: .83; }
+.footer-2026 a.footer-2026-social:focus-visible {
+  outline: 3px solid #bc8752;
+  outline-offset: 2px;
+  text-decoration: none !important;
+}
+@media (max-width: 480px) {
+  .footer-2026 .footer-2026-inner { align-items: center; }
+  .footer-2026 .footer-2026-links { padding-left: 0 !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-2026 a.footer-2026-social,
+  .footer-2026 a.footer-2026-social img { transition: none; }
+  .footer-2026 a.footer-2026-social:hover { transform: none; }
+}
+
+
+/* Source: footer-hover-r23.css */
+/* R23: keep footer SVG icons stationary during hover and focus. */
+.footer-2026 a.footer-2026-social,
+.footer-2026 a.footer-2026-social:hover,
+.footer-2026 a.footer-2026-social:focus-visible,
+.footer-2026 a.footer-2026-social:active {
+  transform: none !important;
+}
+.footer-2026 a.footer-2026-social {
+  transition: background-color .16s ease, border-color .16s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+ .footer-2026 a.footer-2026-social {transition:none}
+}
+
+
+/* Source: engineering-option-a-r54.css */
+/* R48, self-contained Engineering Option A pilot.
+   Static project HTML generated at installation. No Bootstrap dependency. */
+:root{--gallery-gap:12px;--pilot-font:Inter,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}
+body.engineering-option-a{margin:0;min-height:100vh;display:flex;flex-direction:column;font-family:var(--pilot-font);background:#fff;color:#202a30}
+.pilot-main{width:100%;max-width:1200px;padding-inline:32px;margin:0 auto;flex:1}
+.pilot-intro{padding:clamp(32px,4vw,52px) 0 27px}
+.pilot-kicker{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#687078;margin:0 0 12px}
+.pilot-intro h1{font-size:clamp(36px,5vw,58px);font-weight:350;letter-spacing:-.025em;line-height:1.15;margin:0}
+.pilot-deck{font-size:16px;line-height:1.5;margin:14px 0 0;color:#55636a}
+.pilot-notice{font-size:13px;line-height:1.6;color:#575f65;margin:0 0 20px}
+.project{margin:0 0 24px;border:1px solid transparent;transition:border-color .18s ease,box-shadow .18s ease}
+.project[open]{border-color:#c9d3d5;box-shadow:0 5px 18px rgba(17,35,42,.07)}
+.project-header{position:relative;isolation:isolate;display:flex;align-items:center;min-height:5em;padding:21px 27px;cursor:pointer;color:#fff;list-style:none;overflow:hidden;border:0;transition:box-shadow .18s ease}
+.project-header::-webkit-details-marker{display:none}
+.project--hero>.project-header{min-height:8em}
+.project-header-bg{position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;filter:contrast(1.02)}
+/* Shade concentrated at title side, near-clear before chevron. */
+.project-header-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(10,18,23,.77) 0%,rgba(10,18,23,.43) 36%,rgba(10,18,23,.12) 65%,rgba(10,18,23,0) 85%)}
+.project--hero .project-header-shade{background:linear-gradient(90deg,rgba(7,15,21,.91) 0%,rgba(7,15,21,.65) 31%,rgba(7,15,21,.19) 62%,rgba(7,15,21,0) 83%)}
+.project-header-text{font-weight:350;font-size:clamp(17px,1.65vw,20px);line-height:1.25;letter-spacing:-.012em;max-width:calc(100% - 58px)}
+.project-header:hover{box-shadow:0 7px 22px rgba(16,36,42,.24),0 0 0 2px rgba(65,106,115,.18)}
+.project-header:focus-visible{outline:3px solid #b07840;outline-offset:3px}
+.project[open]>.project-header{box-shadow:inset 0 -3px #97aaad}
+.project[open]>.project-header:hover{box-shadow:inset 0 -3px #97aaad,0 7px 22px rgba(16,36,42,.20)}
+/* Opaque icon backplate keeps indicator visible on bright/light photo areas. */
+.project-chevron-wrap{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;margin-left:auto;border-radius:3px;background:rgba(12,24,31,.72);border:1px solid rgba(255,255,255,.35);box-shadow:0 1px 5px rgba(0,0,0,.12)}
+.project-chevron{display:block;width:11px;height:11px;border:solid #fff;border-width:0 2px 2px 0;transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
+.project[open] .project-chevron{transform:translateY(2px) rotate(225deg)}
+.project-body{padding:26px 0 38px}
+.project-body h2{font-weight:350;font-size:clamp(32px,4vw,48px);letter-spacing:-.018em;line-height:1.2;margin:0 0 14px}
+.project-title-divider{border:0;border-top:1px solid #d5dadd;margin:0 0 18px;width:100%;height:0}
+.project-prose{font:400 15px/1.6 Inter,"Segoe UI",Arial,sans-serif;color:#333}
+.project-prose p{margin:0 0 12px}.project-prose strong{font-weight:650}
+.project-body .lead{font-size:clamp(17px,1.65vw,20px);font-weight:300;line-height:1.5;color:#58626a}
+.project-gallery{display:flex;flex-direction:column;gap:var(--gallery-gap);width:100%;margin-top:24px}
+.project-row{display:flex;width:100%;gap:var(--gallery-gap);align-items:flex-start}
+.project-media{position:relative;overflow:hidden;flex:0 0 auto;padding:0;margin:0;min-width:0;background:#f4f4f4}
+.project-media img,.project-media video{display:block;width:100%;height:100%;object-fit:cover;object-position:var(--media-position,center)}
+.project-media figcaption{position:absolute;inset:auto 0 0;display:flex;flex-direction:column;justify-content:end;gap:2px;max-height:90%;padding:18px 14px 11px;color:#fff;background:linear-gradient(to bottom,rgba(8,16,20,0),rgba(8,16,20,.62) 48%,rgba(8,16,20,.9) 100%);opacity:0;pointer-events:none;overflow:hidden;text-shadow:0 1px 2px rgba(0,0,0,.45);transition:opacity .18s ease}
+.project-media:hover figcaption,.project-media:focus-within figcaption{opacity:1}
+.project-media .caption-main{font:400 15px/1.4 Inter,"Segoe UI",Arial,sans-serif}
+.project-media figcaption small{font:400 12px/1.4 Inter,"Segoe UI",Arial,sans-serif;margin-top:2px}
+.pilot-skip{position:absolute;top:-120px;left:12px;z-index:10000;background:#fff;padding:10px}.pilot-skip:focus{top:12px}
+@media(hover:none){.project-media figcaption{opacity:1}}
+@media(max-width:720px){
+ :root{--gallery-gap:8px}.pilot-main{padding-inline:16px}
+ .project-header{padding:18px;min-height:5em}.project--hero>.project-header{min-height:8em}
+ .project-header-text{font-size:17px}.project-body{padding-top:22px}
+ .project-media figcaption{padding:13px 11px 9px}
+}
+@media(min-width:721px) and (max-width:1023px){.pilot-main{padding-inline:24px}}
+@media(prefers-reduced-motion:reduce){.project-header,.project-media figcaption,.project-chevron,.project{transition:none}}
+
+/* R49 pilot enhancements. Content inset matches summary header inset. */
+.project-body{padding:25px 27px 38px}
+.project-gallery{margin-top:22px}
+.project-media.media-zoom-check-valve>img{transform:scale(1.2);transform-origin:center}
+.project-media.media-zoom-ubertato>img{transform:scale(1.2);transform-origin:center}
+.project-media video::-webkit-media-controls{display:none!important}
+@media(max-width:720px){.project-body{padding:22px 18px 30px}}
+/* Keep captions readable atop intentionally zoomed media. */
+
+/* R50 maintained pilot adjustments.
+   The originals remain unchanged; per-image effects occur only in the browser. */
+
+/* Display-level 1 degree CCW correction, slight overscale avoids blank wedges. */
+.project-media.media-level-vibration-fixture > img {
+  transform: rotate(-1deg) scale(1.035);
+  transform-origin: 50% 50%;
+}
+
+/* A further ~15% framing increase over R49's 1.20 factor (1.20 x 1.15 = 1.38).
+   No source crop; use CSS only. */
+.project-media.media-zoom-check-valve > img {
+  transform: none;
+  transform-origin: 50% 50%;
+}
+
+/* Preserve Ubertato's full height while cropping the image only horizontally.
+   The JS assigns a narrow display ratio and object-fit:cover centers the subject. */
+.project-media.media-zoom-ubertato > img {
+  transform: none;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Restore Phase 2-like generous, light expanded headings and separated subtitle. */
+.project-body > h2 {
+  font-family: Inter,"Segoe UI",Arial,sans-serif;
+  font-size: clamp(36px,4.5vw,52px);
+  font-weight: 300;
+  letter-spacing: -.025em;
+  line-height: 1.16;
+  margin: 0 0 8px;
+}
+.project-body > .lead {
+  font-family: Inter,"Segoe UI",Arial,sans-serif;
+  font-size: clamp(18px,1.9vw,22px);
+  font-weight: 300;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+.project-title-divider {margin: 0 0 18px;}
+
+/* R53: deterministic, uniform gallery spacing. No Bootstrap columns/gutters. */
+body.engineering-option-a .project-gallery {
+  display:flex; flex-direction:column; align-items:stretch;
+  gap:12px; row-gap:12px; column-gap:12px;
+  margin-inline:0; padding:0; width:100%; min-width:0;
+}
+body.engineering-option-a .project-gallery > .project-row {
+  display:flex; flex-wrap:nowrap; align-items:stretch;
+  gap:12px; column-gap:12px; row-gap:0;
+  padding:0; margin:0; width:100%; min-width:0;
+}
+body.engineering-option-a .project-gallery .project-media {
+  display:block; box-sizing:border-box; flex:none;
+  border:0; padding:0; margin:0; min-width:0; max-width:none;
+}
+@media (max-width:720px) {
+  body.engineering-option-a .project-gallery,
+  body.engineering-option-a .project-gallery > .project-row {
+    gap:8px; row-gap:8px; column-gap:8px;
+  }
+  body.engineering-option-a .project-gallery > .project-row {row-gap:0}
+}
+
+/* R54 image-specific framing. No shared zoom class can alter valve 2. */
+body.engineering-option-a .project-media.media-r54-valve-one > img {
+  transform: scale(1.59) !important;
+  transform-origin: 50% 44% !important;
+  object-position: 50% 44% !important;
+}
+body.engineering-option-a .project-media.media-r54-valve-two > img {
+  transform: none !important;
+  transform-origin: center !important;
+  object-position: center !important;
+}
+body.engineering-option-a .project-media.media-r54-ubertato > img {
+  transform: none !important;
+  object-fit: cover !important;
+  object-position: 58% 50% !important;
+}
+
+
+/* Source: site-background-r52.css */
+/* R52 shared canvas color across primary pages. One maintained token. */
+:root { --site-canvas: #ffffff; }
+html { background-color: var(--site-canvas); }
+body { background-color: var(--site-canvas) !important; }
+
