@@ -1,0 +1,52 @@
+/* Shared content geometry. One coordinate system for introductions and content.
+   max outer 1200px; 32px gutters desktop, 24px tablet, 16px mobile. */
+:root { --site-shell-max:1200px; --site-shell-gutter:32px; --site-intro-top:36px; }
+html body > .site-section-intro,
+body .pilot-main,
+body .photo-content,
+body .archive-content {
+  box-sizing:border-box !important;
+  width:100% !important;
+  max-width:var(--site-shell-max) !important;
+  padding-left:var(--site-shell-gutter) !important;
+  padding-right:var(--site-shell-gutter) !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+html body > .site-section-intro {
+  position:static !important; transform:none !important; inset:auto !important;
+  float:none !important; min-height:0 !important;
+  padding-top:0 !important; padding-bottom:0 !important;
+  margin-top:var(--site-intro-top) !important;
+  margin-bottom:24px !important;
+  text-align:left !important;
+}
+html body > .site-section-intro > h1 {
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:clamp(2.2rem,4.5vw,3.4rem) !important;
+  font-weight:300 !important; line-height:1.15 !important;
+  letter-spacing:-.03em !important; margin:0 0 9px !important;
+  padding:0 !important; text-align:left !important;
+}
+html body > .site-section-intro > .site-section-description {
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:15px !important; font-weight:400 !important;
+  line-height:1.65 !important; letter-spacing:normal !important;
+  color:#55636a !important; margin:0 !important;
+  padding:0 !important; text-align:left !important;
+}
+html body > .site-section-intro > .site-section-description + .site-section-description {
+ margin-top:10px !important;
+}
+html body > .site-section-intro::before,
+html body > .site-section-intro::after { content:none !important; display:none !important; }
+/* Project sections sit directly below the shared introduction.
+   Remove old accordion row padding and card margin using shared class hooks. */
+.site-project-list { margin-top:0 !important; padding-top:0 !important; }
+.site-project-list :is(.site-project-header, .project-header) { margin-block-start:0 !important; }
+@media (min-width:721px) and (max-width:1023px) {
+ :root { --site-shell-gutter:24px; }
+}
+@media (max-width:720px) {
+ :root { --site-shell-gutter:16px; --site-intro-top:30px; }
+}
