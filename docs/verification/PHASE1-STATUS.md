@@ -49,3 +49,7 @@ Local Git LFS hooks report that `git-lfs` is unavailable. Only new text tooling/
 ## Publication blocker
 
 Local commits are complete. `git -c core.hooksPath=/dev/null push -u origin codex/portfolio-phase1-validation` failed with `could not read Username for 'https://github.com': Device not configured`. The connected GitHub service was also tried: creating the feature branch returned HTTP 403, `Resource not accessible by integration`. Consequently no remote branch or PR was created, and hosted CI has not run. Publishing requires a Git credential with repository write/workflow permission or an appropriately authorized GitHub connection. Nothing was merged.
+
+## Publication update
+
+Repository access was refreshed by the owner. The GitHub connector successfully published the feature branch and workflow. Implementation on GitHub: `3399213fbdbe75e29ab263809c9a09e2c30ef238`; it contains the same tooling verified locally above. The earlier publication blocker is resolved through the connector; local Git HTTPS authentication remains unavailable. Hosted CI results will be reported on the PR.
