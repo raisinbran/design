@@ -1,0 +1,63 @@
+Phase 5A — Archive collections foundation and Studio toolbar
+Base: eb4416da4a43ea74819d985215cc3cfbf50834b6
+
+Toolbar: one fixed-height top-level row. Publication buttons align right; general
+Photography actions align left. Add original, Published Catalog and Remove
+original from list have priority wherever their measured native widths fit.
+More actions retains hidden actions and current disabled states. Preview publish
+and Publish remain on the right. Export settings uses the same variables for
+JPEG quality, custom suffix and scope; inline fields return when all content fits.
+Engineering keeps the same reserved toolbar height, so tabs do not move.
+Publication processing, crop semantics and source handling are unchanged.
+
+Archive API: archive_catalog.read_catalog(root), validate(catalog,root), and
+render(catalog,root,page=expected_bytes). Rendering returns bytes and never writes
+files. data/archive-catalog.json contains Art (7 media) then Industrial Design
+(11 media), the exact source template/fingerprint, source settings and explicit
+covers, captions, credits, alt text, framing, positions and prominence metadata.
+Unchanged source roundtrips exactly, including newline conventions and BOM.
+Changed output is deterministic and bounded to collection slots; page chrome and
+separator bytes remain unchanged. Validation rejects unsafe paths, missing files,
+duplicate IDs/references, invalid metadata and stale/broken template boundaries.
+Phase 5A deliberately retains the two known collection IDs/count; adding/removing
+collections and writing prominence settings belong to the Phase 5B save workflow.
+No Archive GUI or writer is installed and creativedesign.html is not modified.
+
+Future dependency order (no automation or theme implementation in this PR):
+1. Phase 5B creates the Archive editor and paired save/settings workflow.
+2. Implement application-wide persisted Light, Dark and System options, with
+   System default, on Windows and macOS. Cover both ttk and classic Tk widgets.
+   Dark should resemble Discord's default Dark: charcoal-gray surfaces with
+   light text, explicitly not Ash or Onyx. No new theme dependency is added now.
+3. Perform final native Windows and macOS visual verification after the editor
+   and theme phases. No global styling or system appearance changes in Phase 5A.
+
+Verification — Windows 11, Python 3.15.1, Tcl/Tk9.0.4:
+- Complete Studio suite: 121 passed,0 failures,0 errors,0 skips,27.178 seconds.
+  Includes9 Archive tests (exact real-page bytes plus disposable negative cases)
+  and new actual-geometry/tab-position, dialog-variable, menu-dispatch tests.
+  Settings/model storage isolated; synthetic media used for write workflows.
+- Validation suite:6 passed,0 failures/errors/skips,3.540seconds.
+- Photography JS:330 tag/viewport cases and existing assertions passed.
+- Homepage preview JS:passed; script emits no assertion count.
+- Python check:37files compiled and Studio modules imported successfully.
+- Native mouse/keyboard inspection:983x671,900x650,760x650,1470x940. Three priority
+  buttons, More actions when needed, Preview publish and Publish fit without
+  overlap. More actions opened with Shift-Tab then Space; disabled reset actions
+  remained disabled. Export settings dialog showed quality/suffix/scope; Close
+  worked. No destructive actions or real publication were manually invoked.
+- Instrumented real Tk geometry: at983,900,760,1470,1920 widths, toolbar height33px
+  and tab Y33px before switching, on Engineering and after returning. No overlap
+  assertions failed. At1920 width inline export fields returned. Native GUI tests
+  lower the existing980x670 production minimum only in the test harness to check
+ 900x650 and760x650; the app's production minimum is unchanged.
+- Archive real-page render equals original bytes; all18 assets and covers exist.
+- Protected content git diff against base is empty for creativedesign.html,
+  archive-photo-settings.js, Photography/Engineering catalogs and all media.
+
+Limitations: no native macOS execution or manual usability certification. Actual
+native font/control widths are measured rather than assuming Windows sizes.
+Synthetic GUI tests cover action dispatch/processing but do not prove every
+native file picker, publication dialog, assistive technology or export-viewer
+interaction. The QA Engineering tab read existing projects but saved no edits.
+No theme, Archive GUI, media re-encoding, merge or deployment performed.
