@@ -199,7 +199,7 @@ class Studio(tk.Tk):
         self.action_menu = tk.Menu(self,tearoff=False)
         actions=(
             ("Add original",self.choose),
-            ("Published catalog",self.edit_tags),
+            ("Published Catalog",self.edit_tags),
             ("Remove original from list",self.remove_from_list),
             ("Synchronize",self.synchronize_gallery),
             ("Suggest alt text",self.suggest_alt),
@@ -223,8 +223,8 @@ class Studio(tk.Tk):
         self.export_fields=ttk.Frame(self.publish_group)
         self.build_export_fields(self.export_fields)
         self.export_settings_button=ttk.Button(self.publish_group,text="Export settings…",command=self.show_export_settings)
-        self.export_preview_button=ttk.Button(self.publish_group,text="Preview export",command=self.preview_export)
-        self.publish_button=ttk.Button(self.publish_group,text="Publish copies...",command=self.publish)
+        self.export_preview_button=ttk.Button(self.publish_group,text="Preview publish",command=self.preview_export)
+        self.publish_button=ttk.Button(self.publish_group,text="Publish",command=self.publish)
         self.export_settings_button.pack(side="left",padx=(0,5))
         self.export_preview_button.pack(side="left",padx=(0,5))
         self.publish_button.pack(side="left")
@@ -527,7 +527,7 @@ class Studio(tk.Tk):
             return
         self.publish_group.pack(side="right")
         sizes={label:button.winfo_reqwidth()+4 for label,button,_ in self.action_buttons}
-        primary=["Add original","Published catalog","Remove original from list"]
+        primary=["Add original","Published Catalog","Remove original from list"]
         more=self.more_actions_button.winfo_reqwidth()
         fixed=self.export_preview_button.winfo_reqwidth()+5+self.publish_button.winfo_reqwidth()
         full_right=fixed+self.export_fields.winfo_reqwidth()
@@ -755,7 +755,7 @@ class Studio(tk.Tk):
         self.crop_status.set("Crop selected: "+("exported JPEG" if self.crop_action.get()=="export" else "gallery framing") if rect else "Full photograph")
         self.update_crop_label()
         self.refresh_action_states()
-        self.status.set("Crop selected. Preview export and Publish will use it." if rect else
+        self.status.set("Crop selected. Preview publish and Publish will use it." if rect else
             "Crop cleared. Full photograph selected.")
 
     def apply_custom_ratio(self):
