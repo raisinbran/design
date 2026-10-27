@@ -1,0 +1,441 @@
+{
+  "schemaVersion": 1,
+  "photoTags": [
+    "Moody",
+    "Sky",
+    "Night",
+    "Dusk",
+    "Day",
+    "Concrete Jungle",
+    "\"It's just rocks\""
+  ],
+  "photos": [
+    {
+      "file": "DSCF0514_edit_2.jpg",
+      "alt": "Waterfalls",
+      "visible": true,
+      "featured": false,
+      "displayPriority": "normal",
+      "aspectRatio": 2.43654822,
+      "tags": [
+        "Day",
+        "\"It's just rocks\""
+      ]
+    },
+    {
+      "file": "DSCF1024_edit.jpg",
+      "alt": "Japanese temple grounds with smoke and crowds",
+      "featured": true,
+      "visible": true,
+      "aspectRatio": 1.49925,
+      "tags": [],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF1024_edit.jpg.webp",
+      "thumbnailVersion": "9048a3431eec",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 514,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF2146_edit3.jpg",
+      "alt": "Communications tower above winter trees",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 0.602,
+      "tags": [
+        "Concrete Jungle"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF2146_edit3.jpg.webp",
+      "thumbnailVersion": "e84b6a46d1be",
+      "thumbnailWidth": 482,
+      "thumbnailHeight": 800,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF2978.jpg",
+      "alt": "Urban cable railway approaching a modern waterfront tower",
+      "featured": true,
+      "visible": true,
+      "aspectRatio": 0.667,
+      "tags": [
+        "Concrete Jungle"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF2978.jpg.webp",
+      "thumbnailVersion": "02b085866daa",
+      "thumbnailWidth": 534,
+      "thumbnailHeight": 800,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF0272.jpg",
+      "alt": "City skyline viewed from above with central boulevard",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 0.667,
+      "tags": [
+        "Sky",
+        "Concrete Jungle"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF0272.jpg.webp",
+      "thumbnailVersion": "a747aba1f5af",
+      "thumbnailWidth": 534,
+      "thumbnailHeight": 800,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF4891.jpg",
+      "alt": "Stone aqueduct and city in late afternoon light",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.776199,
+      "tags": [
+        "Day",
+        "Concrete Jungle",
+        "\"It's just rocks\""
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF4891.jpg.webp",
+      "thumbnailVersion": "4c8b9cd48ccc",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "IMG_0478_edit.jpg",
+      "alt": "Illuminated fortress at sunset framed by branches",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.776199,
+      "tags": [
+        "Sky",
+        "Night"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "IMG_0478_edit.jpg.webp",
+      "thumbnailVersion": "c38378982347",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "IMG_2553_edit.jpg",
+      "alt": "Stacked pebbles in foreground of rocky beach and sea stacks",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.333333,
+      "tags": [
+        "Sky",
+        "\"It's just rocks\""
+      ],
+      "displayPriority": "normal",
+      "thumbnail": "IMG_2553_edit.jpg.webp",
+      "thumbnailVersion": "81a0ea55c003",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 600,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "20241012_222059210_iOS.jpg",
+      "alt": "Ferris wheel beyond dark tree silhouettes under streaked clouds",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.49925,
+      "tags": [
+        "Moody",
+        "Sky"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "20241012_222059210_iOS.jpg.webp",
+      "thumbnailVersion": "2d3eb0f064a2",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 534,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "IMG_0475_edit.jpg",
+      "alt": "Illuminated fortress on a hill at dusk",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.333333,
+      "tags": [
+        "Night"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "IMG_0475_edit.jpg.webp",
+      "thumbnailVersion": "e4660ca9c7a9",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 600,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF5816.jpg",
+      "alt": "Cathedral beside a river at blue hour",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.776199,
+      "tags": [
+        "Moody",
+        "Night"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF5816.jpg.webp",
+      "thumbnailVersion": "0c4149c53bb2",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF2848.jpg",
+      "alt": "Cable cars silhouetted between pine trees over the sea at twilight",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.49925,
+      "tags": [
+        "Moody",
+        "Night"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF2848.jpg.webp",
+      "thumbnailVersion": "e361b13df0d9",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 534,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF7939_edit.jpg",
+      "alt": "Colorful riverside buildings in mist",
+      "featured": true,
+      "visible": true,
+      "aspectRatio": 1.779359,
+      "tags": [
+        "Moody",
+        "Concrete Jungle"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF7939_edit.jpg.webp",
+      "thumbnailVersion": "44f307e07868",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF3546.jpg",
+      "alt": "Historic courtyard with reflecting pool and stone arches",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.776199,
+      "tags": [
+        "\"It's just rocks\""
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF3546.jpg.webp",
+      "thumbnailVersion": "e3c85251f053",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF0815_edit.jpg",
+      "alt": "Narrow city street at dusk between tall buildings",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 0.667,
+      "tags": [
+        "Night",
+        "Concrete Jungle"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF0815_edit.jpg.webp",
+      "thumbnailVersion": "ceedc7771966",
+      "thumbnailWidth": 534,
+      "thumbnailHeight": 800,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF2447_edit.jpg",
+      "alt": "Large plaza framed by modern buildings with distant skyline",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.776199,
+      "tags": [
+        "Sky",
+        "Concrete Jungle"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF2447_edit.jpg.webp",
+      "thumbnailVersion": "0a7bb1b94c6b",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF0179.jpg",
+      "alt": "Sunlit wind turbines beneath a dramatic dark cloud",
+      "featured": true,
+      "visible": true,
+      "aspectRatio": 1.49925,
+      "tags": [
+        "Moody",
+        "Sky"
+      ],
+      "displayPriority": "featured",
+      "thumbnail": "DSCF0179.jpg.webp",
+      "thumbnailVersion": "bd638972bc5c",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 534,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF1972.jpg",
+      "alt": "Fiery red sunset clouds over dark hills",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.776199,
+      "tags": [
+        "Moody",
+        "Sky"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF1972.jpg.webp",
+      "thumbnailVersion": "f0a1f971e028",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF2868.jpg",
+      "alt": "Illuminated shopping street at night",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.49925,
+      "tags": [
+        "Night",
+        "Concrete Jungle"
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF2868.jpg.webp",
+      "thumbnailVersion": "db64a275ed37",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 534,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "Clipboard_Jan_31,_2024_at_7.49_PM_edit.jpg",
+      "alt": "Night view of an illuminated historic castle through a window",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.333333,
+      "tags": [
+        "Night"
+      ],
+      "tagStatus": "suggested-from-alt-text"
+    },
+    {
+      "file": "DSCF1366.jpg",
+      "alt": "Orange torii gate tunnel receding up stone steps",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.49925,
+      "tags": [
+        "\"It's just rocks\""
+      ],
+      "tagStatus": "suggested-from-alt-text",
+      "thumbnail": "DSCF1366.jpg.webp",
+      "thumbnailVersion": "7a32081225a3",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 534,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF1359.jpg",
+      "alt": "Dim interior showing a narrow distant passage of light",
+      "featured": false,
+      "visible": true,
+      "aspectRatio": 1.49925,
+      "tags": [],
+      "tagStatus": "suggested-from-alt-text"
+    },
+    {
+      "file": "DSCF1359_crop.jpg",
+      "alt": "torii",
+      "visible": true,
+      "featured": false,
+      "displayPriority": "normal",
+      "aspectRatio": 0.66666667,
+      "tags": [
+        "Night"
+      ],
+      "thumbnail": "DSCF1359_crop.jpg.webp",
+      "thumbnailVersion": "bf9033cd5dd9",
+      "thumbnailWidth": 533,
+      "thumbnailHeight": 800,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "R0000753_crop.jpg",
+      "alt": "wind town",
+      "visible": true,
+      "featured": false,
+      "displayPriority": "normal",
+      "aspectRatio": 0.75,
+      "tags": [
+        "Concrete Jungle"
+      ]
+    },
+    {
+      "file": "DSCF1024_edit_crop.jpg",
+      "alt": "temple",
+      "visible": true,
+      "featured": false,
+      "displayPriority": "normal",
+      "aspectRatio": 1.5,
+      "tags": [
+        "Day",
+        "Concrete Jungle"
+      ],
+      "thumbnail": "DSCF1024_edit_crop.jpg.webp",
+      "thumbnailVersion": "4363c46265e5",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 533,
+      "thumbnailFramed": true
+    },
+    {
+      "file": "DSCF3546_crop.jpg",
+      "alt": "andalusia",
+      "visible": true,
+      "featured": false,
+      "displayPriority": "normal",
+      "aspectRatio": 1.77631579,
+      "tags": [
+        "Day",
+        "Concrete Jungle"
+      ],
+      "thumbnail": "DSCF3546_crop.jpg.webp",
+      "thumbnailVersion": "3bb0918f5d6f",
+      "thumbnailWidth": 800,
+      "thumbnailHeight": 450,
+      "thumbnailFramed": true,
+      "mediaVersion": "d7245c9f2829"
+    },
+    {
+      "file": "DSCF0815_crop.jpg",
+      "alt": "eastern capital",
+      "visible": true,
+      "featured": false,
+      "displayPriority": "normal",
+      "aspectRatio": 0.66666667,
+      "tags": [
+        "Concrete Jungle"
+      ],
+      "thumbnail": "DSCF0815_crop.jpg.webp",
+      "thumbnailVersion": "e78cb02fd290",
+      "thumbnailWidth": 533,
+      "thumbnailHeight": 800,
+      "thumbnailFramed": true,
+      "mediaVersion": "04d1fd876510"
+    }
+  ]
+}

@@ -17,8 +17,9 @@
 
 
 
-<link rel="stylesheet" href="css/site-shared.css">
-<link rel="stylesheet" href="css/site-home-refinements.css">
+<link rel="stylesheet" href="css/site-shared.css?v=20261026-previews">
+<link rel="stylesheet" href="css/site-home-refinements.css?v=20261026-catalog">
+<link rel="stylesheet" href="css/site-section-intro.css?v=20261026-layout3">
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -29,7 +30,7 @@
 <span class="nav-logo" aria-hidden="true">
 <img src="assets/homepage-2026/grape-default.png" alt="" width="64" height="64">
 <img class="hover" src="assets/homepage-2026/grape-hover.png" alt="" width="64" height="64"></span>
-<span><span class="nav-name">Brandon J. Chen</span><span class="nav-sub">Engineering + Design</span></span></a>
+<span><span class="nav-name">Brandon J. Chen</span></span></a>
 <div class="nav-links">
 <a href="engineeringdesign.html" >Engineering</a>
 <a href="photography.html">Photography</a>
@@ -37,10 +38,7 @@
 </div></nav></header>
 
 <main id="main" class="r76-home">
-  <section class="hero-feature" aria-labelledby="hero-title">
-    <div class="container feature-head">
-      <h1 id="hero-title">Engineering &amp; design.</h1>
-    </div>
+  <section class="hero-feature container" aria-label="Featured engineering photograph">
     <figure class="fullbleed-hero">
       <img src="assets/homepage-2026/hero-guideway.jpg"
            alt="Elevated transportation guideway curving through airport infrastructure"
@@ -48,40 +46,27 @@
     </figure>
   </section>
 
+  <header class="site-section-intro" aria-label="Introduction">
+    <hr class="home-intro-divider">
+    <p class="site-section-description">At the intersection of engineering and design...</p>
+  </header>
+
   <nav class="r63-entry-nav container" aria-label="Explore the portfolio">
     <a href="engineeringdesign.html" class="r63-entry">
       <span class="r63-entry-label">Engineering <span aria-hidden="true">↗</span></span>
       <span class="r63-entry-description">Selected projects of note</span>
+      <span class="r63-entry-preview" data-home-preview="engineering" aria-hidden="true">
+        <img src="images/PCJPB/IMG_1242_edit.jpg" width="1065" height="1102" loading="lazy" decoding="async" alt="">
+      </span>
     </a>
     <a href="photography.html" class="r63-entry">
       <span class="r63-entry-label">Photography <span aria-hidden="true">↗</span></span>
       <span class="r63-entry-description">Almost a second job?</span>
+      <span class="r63-entry-preview" data-home-preview="photography" aria-hidden="true">
+        <img src="photography/thumbnails/DSCF1024_edit_crop.jpg.webp" width="800" height="514" loading="lazy" decoding="async" alt="">
+      </span>
     </a>
   </nav>
-
-  <section id="work" class="section r76-featured" aria-labelledby="featured-title">
-    <div class="container">
-      <header class="section-intro">
-        <h2 id="featured-title">Selected work</h2>
-      </header>
-      <div class="r76-feature-grid">
-        <a class="r76-feature" href="engineeringdesign.html#collapseSignal">
-          <figure>
-            <img src="images/PCJPB/IMG_1242_edit.jpg" width="1065" height="1102"
-                 loading="lazy" decoding="async" alt="Caltrain locomotive in a maintenance facility">
-          </figure>
-          <span class="r76-feature-title">Caltrain signal systems <span aria-hidden="true">↗</span></span>
-        </a>
-        <a class="r76-feature" href="photography.html">
-          <figure>
-            <img src="photography/published/DSCF0815_edit.jpg"
-                 loading="lazy" decoding="async" alt="Selected personal photograph">
-          </figure>
-          <span class="r76-feature-title">Photography <span aria-hidden="true">↗</span></span>
-        </a>
-      </div>
-    </div>
-  </section>
 
   <aside class="field-image" aria-label="Engineering field photography">
     <div class="container field-inner">
@@ -107,6 +92,8 @@
   </div>
 </footer>
 
+<script src="js/photography-catalog.js?v=20261026-previews" defer></script>
+<script src="js/home-previews.js?v=20261026-previews" defer></script>
 <script src="js/site-image-policy.js" defer></script>
 </body>
 </html>

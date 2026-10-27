@@ -1,0 +1,27 @@
+RAW compatibility assessment - 2026-10-26
+
+Recommendation: useful as an optional future import capability, rather than
+adding an incomplete RAW development pipeline to the current publishing tool.
+
+Benefits: import camera originals such as Fujifilm RAF directly, avoid requiring
+a separate JPEG/TIFF conversion, and potentially retain exposure/white-balance
+latitude while preparing an image. The latter benefit needs development controls
+that Studio currently does not offer. For cropped, watermarked 1080px JPEG/800px
+WebP publication from already edited photos, a good edited TIFF/JPEG is sufficient.
+
+Costs: RAW must be developed into RGB, with demosaicing, color management,
+white-balance and tone/exposure decisions. A generic conversion may not reproduce
+the camera's JPEG or a photographer's edited look. Camera-specific support also
+depends on the LibRaw build/version; an extension alone is not a guarantee.
+
+Possible route: optional rawpy/LibRaw import in an isolated dependency group,
+explicit camera-white-balance and sRGB policy, consistent preview/export decoder,
+orientation and dimensions tests, memory/latency checks, and camera-specific test
+files for Windows and Apple Silicon. Embedded-JPEG preview import is another
+possible mode but should be labelled accurately: it is not full RAW development.
+No RAW importer has been installed or enabled in this update.
+
+Primary sources:
+https://www.libraw.org/docs
+https://www.libraw.org/supported-cameras
+https://letmaik.github.io/rawpy/api/rawpy.Params.html

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Photography | Brandon J. Chen</title>
 <meta name="description" content="A personal photography collection by Brandon J. Chen.">
-<link rel="stylesheet" href="css/site-photography.css">
+<link rel="stylesheet" href="css/site-photography.css?v=20261026-studio11">
 
 
 
@@ -21,8 +21,9 @@
 
 
 
-<link rel="stylesheet" href="css/site-shared.css">
+<link rel="stylesheet" href="css/site-shared.css?v=20261026-previews">
   <link rel="stylesheet" href="css/site-section-intro.css">
+  <link rel="stylesheet" href="css/photography-tags.css">
 </head>
 <body class="photography-page">
 <a class="photo-skip" href="#main">Skip to content</a>
@@ -33,7 +34,7 @@
         <img src="assets/homepage-2026/grape-default.png" alt="" width="64" height="64">
         <img class="hover" src="assets/homepage-2026/grape-hover.png" alt="" width="64" height="64">
       </span>
-      <span><span class="nav-name">Brandon J. Chen</span><span class="nav-sub">Engineering + Design</span></span>
+      <span><span class="nav-name">Brandon J. Chen</span></span>
     </a>
     <div class="nav-links">
       <a href="engineeringdesign.html">Engineering</a>
@@ -50,12 +51,9 @@
 <main id="main" class="photo-main">
   <div class="photo-content">
     
-    <!-- Add, hide, or reorder gallery items in photography-items.js. Do not add originals to GitHub. -->
-    <!-- R36 image maintenance: photographic straightening is NOT done in CSS or HTML.
-  Make an authorized, non-generative rotated/cropped PUBLICATION COPY with the same
-  filename in photography/published/. Keep it <= 1000px long side, JPEG ~quality 76.
-  Update photography-ratios-r26.js when crop changes the width/height ratio.
-  Review locally and obtain approval before deploying. See PHOTO_MAINTENANCE_R36.txt. -->
+    <!-- Edit metadata in data/media-catalog.json, then regenerate js/photography-catalog.js. -->
+    <!-- Process new images locally with tools/portfolio-studio/LAUNCH_PORTFOLIO_STUDIO.bat. -->
+    <div id="photo-filters" class="photo-filter-bar" aria-label="Photo tags"></div>
     <div id="photo-gallery" class="photo-gallery"></div>
     <p id="photo-empty" class="photo-empty" hidden>No photographs have been selected for this preview yet.</p>
 
@@ -72,9 +70,9 @@
     </div>
   </div>
 </footer>
-<script src="js/photography-items.js" defer></script>
-<script src="js/photography-ratios.js" defer></script>
-<script src="js/photography-gallery.js" defer></script>
+<script src="js/photography-catalog.js?v=20261027-tags" defer></script>
+<script src="js/photography-gallery.js?v=20261026-studio11" defer></script>
+<script src="js/photography-tags.js?v=20261026-layout2" defer></script>
 <script src="js/site-image-policy.js" defer></script>
 </body>
 </html>
