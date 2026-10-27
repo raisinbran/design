@@ -1,0 +1,11 @@
+{
+  "export": {
+    "maxSide": 1440,
+    "openAfterPublish": false
+  },
+  "notifications": {
+    "mode": "silent",
+    "volume": 22
+  },
+  "scope": "scripted persistence only; UI unverified"
+}
