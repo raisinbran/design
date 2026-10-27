@@ -4,8 +4,10 @@ This file is local development tooling, not executed by website visitors.
 """
 import json
 import math
+import os
 import re
 import sys
+import tempfile
 from pathlib import Path
 from urllib.parse import quote
 
@@ -152,7 +154,19 @@ def sync(repo):
     target=repo/"js"/"photography-catalog.js"
     updated=generated_js(c)
     if not target.is_file() or target.read_text(encoding="utf-8")!=updated:
-        target.write_text(updated,encoding="utf-8")
+        temporary=None
+        try:
+            with tempfile.NamedTemporaryFile(mode="w",encoding="utf-8",newline="\n",
+                    dir=target.parent,prefix=".photography-catalog-",suffix=".tmp",delete=False) as staged:
+                temporary=Path(staged.name)
+                staged.write(updated)
+                staged.flush()
+                os.fsync(staged.fileno())
+            # Close first: Windows cannot replace an open NamedTemporaryFile.
+            os.replace(temporary,target)
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
     print(f"Catalog synchronized: {count} Photography images")
     return count
 

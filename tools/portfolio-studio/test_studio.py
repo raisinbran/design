@@ -1009,6 +1009,48 @@ class WindowTests(unittest.TestCase):
         self.management_error.assert_called_once()
         self.assertEqual(data.read_bytes(),before);self.assertTrue((media/"a.jpg").exists())
 
+    def test_partial_recycle_with_thumbnail_keeps_runtime_consistent_and_can_retry(self):
+        editor,media,data=self.isolated_editor()
+        thumb=self.add_paired_thumbnail(editor,media,data)
+        before_b=(media/"b.jpg").read_bytes();before_thumb=thumb.read_bytes()
+        self.select_names(editor,{"a.jpg","b.jpg"})
+        def partial(paths):
+            paths[0].rename(Path(self.temp.name)/"simulated-recycle-bin"/paths[0].name)
+            raise OSError("Remaining file locked")
+        self.recycle.side_effect=partial
+        editor.run_management(editor.delete_published)
+        self.management_error.assert_called_once()
+        recovered=json.loads(data.read_text())
+        self.assertEqual([p["file"] for p in recovered["photos"]],["b.jpg"])
+        self.assertEqual(manage_published.JS.read_text(),photo_studio.generated_js(recovered))
+        self.assertEqual((media/"b.jpg").read_bytes(),before_b)
+        self.assertEqual(thumb.read_bytes(),before_thumb)
+        self.select_name(editor,"b.jpg")
+        def finish(paths):
+            for path in paths:path.rename(Path(self.temp.name)/"simulated-recycle-bin"/path.name)
+        self.recycle.side_effect=finish
+        editor.run_management(editor.delete_published)
+        self.assertFalse((media/"b.jpg").exists())
+        self.assertEqual(json.loads(data.read_text())["photos"],[])
+        self.assertEqual(manage_published.JS.read_text(),photo_studio.generated_js(json.loads(data.read_text())))
+
+    def test_recycle_failure_after_full_images_moved_does_not_restore_missing_entries(self):
+        editor,media,data=self.isolated_editor()
+        thumb=self.add_paired_thumbnail(editor,media,data)
+        before_thumb=thumb.read_bytes()
+        self.select_names(editor,{"a.jpg","b.jpg"})
+        def partial(paths):
+            for path in paths[:2]:path.rename(Path(self.temp.name)/"simulated-recycle-bin"/path.name)
+            raise OSError("Thumbnail locked")
+        self.recycle.side_effect=partial
+        editor.run_management(editor.delete_published)
+        self.management_error.assert_called_once()
+        self.assertFalse((media/"a.jpg").exists() or (media/"b.jpg").exists())
+        recovered=json.loads(data.read_text());self.assertEqual(recovered["photos"],[])
+        self.assertEqual(manage_published.JS.read_text(),photo_studio.generated_js(recovered))
+        self.assertEqual(thumb.read_bytes(),before_thumb)
+        self.assertEqual(editor.catalog["photos"],[])
+
     def test_batch_import_descriptions_and_selection(self):
         editor,media,data=self.isolated_editor()
         Image.new("RGB",(600,400),(20,40,60)).save(media/"extra2.jpg")
