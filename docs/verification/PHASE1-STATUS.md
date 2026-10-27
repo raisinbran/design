@@ -45,3 +45,7 @@ Required Windows follow-up in an existing configured desktop environment:
 3. Verify Recycle Bin behavior and file opening adapters, and confirm publication/engineering editing on a disposable repository copy preserves originals and unrelated page content.
 
 Local Git LFS hooks report that `git-lfs` is unavailable. Only new text tooling/workflow/documentation files are committed; no LFS objects are introduced. Push may bypass the local LFS hook for this text-only branch without editing repository hooks. No merge is authorized or performed.
+
+## Publication blocker
+
+Local commits are complete. `git -c core.hooksPath=/dev/null push -u origin codex/portfolio-phase1-validation` failed with `could not read Username for 'https://github.com': Device not configured`. The connected GitHub service was also tried: creating the feature branch returned HTTP 403, `Resource not accessible by integration`. Consequently no remote branch or PR was created, and hosted CI has not run. Publishing requires a Git credential with repository write/workflow permission or an appropriately authorized GitHub connection. Nothing was merged.
