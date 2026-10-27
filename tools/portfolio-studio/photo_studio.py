@@ -190,7 +190,7 @@ class Studio(tk.Tk):
             self.suspend = previous
 
     def setup_ui(self):
-        # One compact main toolbar. Secondary actions live in an explicit menu.
+        # Keep primary entry points separate from the export settings row.
         action = ttk.Frame(self, padding=(8, 4))
         action.pack(fill="x")
         self.toolbar_action = action
@@ -198,8 +198,8 @@ class Studio(tk.Tk):
         self.action_menu = tk.Menu(self,tearoff=False)
         actions=(
             ("Add original",self.choose),
-            ("Remove original from list",self.remove_from_list),
             ("Published catalog",self.edit_tags),
+            ("Remove original from list",self.remove_from_list),
             ("Synchronize",self.synchronize_gallery),
             ("Suggest alt text",self.suggest_alt),
             ("AI alt text",self.ai_caption),
@@ -217,7 +217,9 @@ class Studio(tk.Tk):
         self.more_actions_button=ttk.Button(action,text="More actions ▼", command=self.show_action_menu)
         self.action_menu.configure(postcommand=self.populate_action_menu)
         self.more_actions_button.pack(side="left")
-        publish_group = ttk.Frame(action)
+        self.publish_row = ttk.Frame(self, padding=(8, 0, 8, 4))
+        self.publish_row.pack(fill="x")
+        publish_group = ttk.Frame(self.publish_row)
         self.publish_group=publish_group
         publish_group.pack(side="right")
         ttk.Label(publish_group, text="JPEG quality").pack(side="left", padx=(0,3))
@@ -491,31 +493,32 @@ class Studio(tk.Tk):
         self._overflow_queued=False
         if not hasattr(self,"action_buttons"):return
         if hasattr(self,"workspace_tabs") and self.workspace_tabs.select()==str(self.engineering_page):
-            self.publish_group.pack_forget();self.more_actions_button.pack_forget()
+            self.publish_row.pack_forget();self.more_actions_button.pack_forget()
+            self.hidden_actions=[]
             for label,button,_ in self.action_buttons:
                 button.pack_forget()
                 if label in ("Settings","About"):button.pack(side="left",padx=2)
             return
-        if not self.publish_group.winfo_manager():self.publish_group.pack(side="right")
+        if not self.publish_row.winfo_manager():
+            self.publish_row.pack(fill="x",before=self.workspace_tabs)
         current_width=self.toolbar_action.winfo_width()
         if getattr(self,"_last_toolbar_width",None)==current_width:return
         self._last_toolbar_width=current_width
-        # Available width excludes the persistent publish group and the overflow button.
-        total=sum(button.winfo_reqwidth()+5 for _,button,_ in self.action_buttons)
-        available=self.toolbar_action.winfo_width()-self.publish_group.winfo_reqwidth()-12
-        usable=max(0,available-(self.more_actions_button.winfo_reqwidth()+5 if total>available else 0))
-        needed=0
-        visible=[]
-        hidden=[]
-        # Size-dependent overflow retains stable left-to-right order.
-        for label,button,command in self.action_buttons:
-            needed+=button.winfo_reqwidth()+5
-            if needed<=usable:visible.append((label,button,command))
-            else:hidden.append((label,button,command))
-        # Publication controls have precedence over all left actions.
-        # Always retain the overflow menu when not every action fits.
-        if not visible and self.action_buttons:
-            hidden=list(self.action_buttons)
+        # Primary entry points never move into More actions. Export settings have
+        # their own row, so they cannot displace navigation at smaller widths.
+        sizes={label:button.winfo_reqwidth()+5 for label,button,_ in self.action_buttons}
+        available=max(0,current_width-16)
+        total=sum(sizes.values())
+        usable=available-(self.more_actions_button.winfo_reqwidth()+5 if total>available else 0)
+        primary={"Add original","Published catalog"}
+        visible_labels=set(primary)
+        remaining=usable-sum(sizes[label] for label in primary)
+        for label,_,_ in self.action_buttons:
+            if label not in primary and sizes[label]<=remaining:
+                visible_labels.add(label)
+                remaining-=sizes[label]
+        visible=[item for item in self.action_buttons if item[0] in visible_labels]
+        hidden=[item for item in self.action_buttons if item[0] not in visible_labels]
         for _,button,_ in self.action_buttons:button.pack_forget()
         # A pack(before=...) target must itself be packed. Rebuild in stable order.
         self.more_actions_button.pack_forget()

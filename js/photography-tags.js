@@ -37,9 +37,29 @@
   host.append(group);
   status.setAttribute("hidden", "");
 
+  const mobileLabel = document.createElement("label");
+  mobileLabel.className = "photo-filter-mobile";
+  mobileLabel.textContent = "Filter photos";
+  const select = document.createElement("select");
+  select.setAttribute("aria-label", "Filter photographs by tag");
+  ["All", ...labels].forEach(label => {
+    const option = document.createElement("option");
+    option.value = label === "All" ? "" : label;
+    option.textContent = label === "All" ? "All photos" : label;
+    select.appendChild(option);
+  });
+  select.addEventListener("change", () => {
+    selection.clear();
+    if (select.value) selection.add(select.value);
+    update();
+  });
+  mobileLabel.appendChild(select);
+  host.appendChild(mobileLabel);
+
   function update() {
     buttons.get("All").setAttribute("aria-pressed", String(selection.size === 0));
     labels.forEach(tag => buttons.get(tag).setAttribute("aria-pressed", String(selection.has(tag))));
+    select.value = Array.from(selection)[0] || "";
     const counts = gallery.setFilters(Array.from(selection));
     // Counter intentionally hidden. Filtering remains accessible through button states.
   }

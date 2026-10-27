@@ -53,12 +53,13 @@ function harness(customPhotos, customRatios) {
       const priority = expected.filter(photo => files.includes(photo.file)).some(photo =>
         ["featured", "portraitBoost"].includes(photo.displayPriority) || photo.featured);
       const cap = width < 720 ? Math.min(priority ? 640 : 590, width * 1.2) : priority ? 640 : 590;
+      if (width < 720) assert(height <= 360 + 0.01, "Mobile row exceeds viewing height");
       if (row === rows.at(-1)) assert(height <= cap + 0.01, "Final row exceeds standard height limit");
-      else assert(Math.abs(used - width) < 0.01, "Interior rows must fill the width regardless of height");
+      else if (width >= 720) assert(Math.abs(used - width) < 0.01, "Interior rows must fill the width regardless of height");
       assert(used <= width + 0.01, "Horizontal overflow");
       const ratioSum = files.reduce((sum, file) => sum + (ratios[file] || 1.5), 0);
       const exact = (width - gap * (files.length - 1)) / ratioSum;
-      if (files.length > 1 && exact <= cap) {
+      if (files.length > 1 && exact <= (width < 720 ? 360 : cap)) {
         assert(Math.abs(used - width) < 0.01, "Multi-photo row should fill width, including the final row");
       }
     }
@@ -69,7 +70,7 @@ function harness(customPhotos, customRatios) {
 const gallery = harness();
 const tags = gallery.context.window.PHOTO_TAG_LABELS;
 let cases = 0;
-for (const width of [360, 768, 1000, 1136, 1600]) {
+for (const width of [288, 343, 360, 398, 688, 768, 1000, 1136, 1600]) {
   for (const selected of [[], ...tags.map(tag => [tag]), ...tags.flatMap((a, i) => tags.slice(i + 1).map(b => [a, b])), ["unknown"]]) {
     gallery.check(selected, width); cases++;
   }
@@ -101,3 +102,12 @@ chips.find(chip => chip.textContent === "All").handlers.click();
 assert.equal(gallery.nodes["photo-empty"].hidden, true);
 assert.equal(gallery.nodes["photo-gallery"].children.flatMap(row => row.children).length, gallery.all.length);
 console.log(`Passed ${cases} tag/viewport layout cases, portrait triplets, landscape pairs, and All reset.`);
+
+const mobileSelect = gallery.nodes["photo-filters"].children[1].children[0];
+assert.equal(mobileSelect.children.length, tags.length + 1);
+mobileSelect.value = tags[0];
+mobileSelect.handlers.change();
+assert.equal(chips.find(chip => chip.textContent === tags[0]).attributes["aria-pressed"], "true");
+mobileSelect.value = "";
+mobileSelect.handlers.change();
+assert.equal(chips[0].attributes["aria-pressed"], "true");

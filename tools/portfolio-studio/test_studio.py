@@ -1099,8 +1099,45 @@ class WindowTests(unittest.TestCase):
                     if frame.winfo_manager():
                         self.assertGreater(frame.winfo_reqwidth(),1)
                 self.assertEqual(toolbar.menu.index("end"),len(toolbar.hidden)-1 if toolbar.hidden else None)
-                if width==1920:self.assertFalse(toolbar.hidden)
+                # Native themes and fonts differ between Windows and macOS.
+                # Every group must return when its measured content fits.
+                required=sum(frame.winfo_reqwidth()+6 for frame, *_ in toolbar.groups)
+                with patch.object(toolbar,"winfo_width",return_value=required):toolbar.reflow()
+                self.assertFalse(toolbar.hidden)
+                toolbar.populate_menu()
+                self.assertIsNone(toolbar.menu.index("end"))
             self.assertEqual(studio.alt_var.get(),"Keep this description.")
+
+    def test_primary_catalog_stays_visible_without_displacing_export_controls(self):
+        studio=self.studio()
+        catalog=next(button for label,button,_ in studio.action_buttons if label=="Published catalog")
+        for width in (980,1280,1470,1710,1920):
+            studio._last_toolbar_width=None
+            with patch.object(studio.toolbar_action,"winfo_width",return_value=width):
+                studio.update_toolbar_overflow()
+            hidden={label for label,_,_ in studio.hidden_actions}
+            self.assertNotIn("Published catalog",hidden)
+            self.assertNotIn("Add original",hidden)
+            self.assertEqual(catalog.winfo_manager(),"pack")
+            self.assertEqual(studio.publish_row.winfo_manager(),"pack")
+            self.assertEqual(studio.publish_group.master,studio.publish_row)
+            visible=[button for _,button,_ in studio.action_buttons if button.winfo_manager()]
+            occupied=sum(button.winfo_reqwidth()+5 for button in visible)
+            if hidden:occupied+=studio.more_actions_button.winfo_reqwidth()+5
+            self.assertLessEqual(occupied,width-16)
+            studio.populate_action_menu()
+            self.assertEqual(studio.action_menu.index("end"),len(hidden)-1 if hidden else None)
+        # Leaving and returning to Photography restores the persistent export row.
+        studio.workspace_tabs.select(studio.engineering_page)
+        studio.workspace_changed()
+        self.assertFalse(studio.publish_row.winfo_manager())
+        studio.workspace_tabs.select(studio.photography_page)
+        studio.workspace_changed()
+        self.assertEqual(catalog.winfo_manager(),"pack")
+        self.assertEqual(studio.publish_row.winfo_manager(),"pack")
+        with patch.object(photo_studio.subprocess,"Popen") as launch:
+            catalog.invoke()
+        self.assertEqual(Path(launch.call_args.args[0][1]).name,"edit_tags.py")
 
     def test_small_crop_handles_select_nearest_edge(self):
         studio=self.studio();viewport=studio.viewport

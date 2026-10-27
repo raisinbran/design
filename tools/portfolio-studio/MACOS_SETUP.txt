@@ -36,3 +36,12 @@ wheel checks, launcher syntax and bundle permission checks can be performed here
 Actual macOS Tk rendering, Finder/Trash integration, sounds and app launching still
 need a smoke test on an Apple Silicon Mac. This is not a notarized release and
 has not been represented as hardware-tested.
+
+Apple Silicon verification update — 2026-10-27
+Python 3.14.10 universal2 was installed and tested natively on macOS 27.0.1 arm64.
+Run Python's supplied Install Certificates.command after installing Python so the
+model downloader can verify HTTPS certificates. All 101 shared regression tests
+passed with the native desktop available. See MACOS_VERIFICATION.txt for evidence,
+the cross-platform toolbar test adjustment, and remaining manual/Windows limits.
+To repeat with isolated private settings and temporary test sources:
+  .venv-macos/bin/python verify_macos.py --download-model
