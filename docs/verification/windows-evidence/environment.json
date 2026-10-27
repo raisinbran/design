@@ -1,0 +1,25 @@
+{
+  "platform": "Windows-11-10.0.26300-SP0",
+  "windows": [
+    "11",
+    "10.0.26300",
+    "SP0",
+    "Multiprocessor Free"
+  ],
+  "python": "3.15.1 (tags/v3.15.1:c37e74c, Oct 21 2026, 06:24:08) [MSC v.1951 64 bit (AMD64)]",
+  "executable": "C:\\Users\\brand\\Documents\\GitHub\\design\\tools\\portfolio-studio\\.venv\\Scripts\\python.exe",
+  "tcl": "9.0.4",
+  "tk": "9.0.4",
+  "packages": {
+    "beautifulsoup4": "4.15.0",
+    "numpy": "2.5.4",
+    "opencv-python-headless": "5.0.0.93",
+    "pillow": "13.0.0",
+    "pillow_heif": "1.8.1",
+    "pip": "26.2.2",
+    "Send2Trash": "2.1.0",
+    "soupsieve": "3.0.4",
+    "typing_extensions": "4.16.0"
+  },
+  "isolated_storage": "C:\\Users\\brand\\AppData\\Local\\Temp\\studio-windows-parity-goab6uz0"
+}
