@@ -1,0 +1,81 @@
+Gallery images and full-size exports
+
+Catalog browsing: thumbnail rows show previews beside filenames, including
+Unlisted photos. Ctrl/Shift selection remains available for batch management.
+Select Unlisted rows and choose Add to gallery… to restore them to the gallery.
+Remove from repository… moves publication assets to the Windows Recycle Bin and
+removes their gallery entries. Main-window Settings controls notifications for
+all Studio windows. About follows Settings, immediately after Reset all.
+Arrange Gallery offers Reverse suggestion after generating an arrangement;
+reversing preserves locked photo positions and still requires Apply to save.
+
+Portfolio Studio 1.3.0 (build 20261027.1)
+The top-bar About button documents the export pipeline, public authorship,
+privacy and component credits. Both new JPEG and WebP files automatically embed
+an anti-AI usage notice in EXIF and XMP, plus the IPTC/PLUS Data Mining prohibition
+for AI/ML training. These are metadata signals, not adversarial pixel protection.
+No extra confirmation is added. Existing JPEGs remain unchanged until republished.
+The updated thumbnail pipeline rebuilds old thumbnails once when Build/update
+thumbnails is used, so its new rights metadata can be included. Originals stay
+read-only. See PIXEL_PROTECTION_RESEARCH.txt for pixel-protection research.
+
+For older published JPEGs, update_published_rights.py performs a lossless metadata
+backfill. Run without arguments for a dry run, or with --apply to update files.
+It skips current notices, preserves compressed pixels and unrelated metadata,
+backs up changed files outside Git, and refreshes catalog/private source hashes.
+Mist remains deferred; this utility adds no adversarial pixel processing.
+
+Publishing now creates a coordinated pair from the original photograph:
+- photography/published/<name>.jpg: full-size JPEG, tiled and corner watermarks.
+- photography/thumbnails/<name>.jpg.webp: gallery image, corner watermark only.
+
+There is one thumbnail per publication, capped at 800 pixels on its longest side,
+encoded as WebP at quality 78. No originals or full-size clean intermediates are
+stored in the repository. Overwrite reuses the same two paths. Versioned image
+URLs refresh browser caches without accumulating extra files.
+
+Preview export offers Gallery thumbnail and Full-size export views in Studio.
+The public gallery has no link or click action to open full-size JPEGs. Older entries
+without a thumbnail continue to use their existing JPEG until migrated.
+
+Drawn crop boxes are active immediately in Preview export and Publish; no Apply
+crop step is required. Original ratio is recalculated for each selected photo.
+HEIC/HEIF files are accepted by the original-photo picker and decoded locally.
+Descriptions use known generic nouns or a small offline MobileNet image classifier.
+The model is downloaded once into the local Studio cache outside Git, then runs
+on CPU without network access. Raw model categories are reduced to generic labels
+of at most three words, with no place names. Uncertain results use scene/composition
+labels. Review/edit suggested descriptions before publishing. Prominence
+controls preferred display size, not ordering; use Arrange gallery for ordering.
+
+Build/update thumbnails in the Published Photo Catalog handles all or selected
+catalog photos. It uses saved originals automatically when available; otherwise
+choose the folder containing the originals. Unchanged thumbnails are skipped.
+Existing exports are matched to original pixels to recover crop/rotation. Unsafe
+or ambiguous matches are reported, not guessed. Originals and existing JPEGs
+remain unchanged by this operation. HEIC originals are supported by pillow-heif.
+
+Original-file paths and rendering records are kept in the local PortfolioStudio
+settings folder beside preferences.json, outside the public Git repository.
+Restart Studio after installing this update before editing an already-open
+catalog, so its current contents and thumbnail references are loaded together.
+
+Gallery crop edits rebuild the thumbnail from the saved original and retain the
+corner mark within the selected framing. The JPEG is not re-exported.
+Remove gallery entries leaves both versions available locally as unlisted assets.
+Archive and Recycle Bin actions handle both versions. Recycling does not archive
+JPEG/WebP copies in the repository.
+
+If an original cannot be matched, republish from that original in Studio using
+the intended crop and Overwrite. This records an exact recipe and creates both
+versions automatically. Never generate a clean gallery image from a JPEG that
+already has tiled watermarks burned into it.
+
+Arrange Gallery button states distinguish three baselines: window-opening order,
+last-applied order, and the most recent generated strategy/order. Generate is
+available initially and after strategy or order changes; Apply requires a change
+from the last saved order; Restore requires a change from the window-opening order.
+All three catalog Remove actions request confirmation before changing files/catalog.
+Settings previews notification mode changes and debounced volume adjustments.
+
+Engineering/Archive management assessment: PROJECT_MANAGEMENT_ASSESSMENT.txt.

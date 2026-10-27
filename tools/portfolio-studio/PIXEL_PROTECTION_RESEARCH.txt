@@ -1,0 +1,104 @@
+Pixel protection for Portfolio Studio - researched 2026-10-26
+
+Status: deferred at Brandon's request. Retain these findings for future work;
+do not install or enable Mist as part of routine export maintenance.
+
+Finding: real pixel protection is feasible to investigate here, but should be
+treated as an experimental deterrent. Metadata opt-out notices are a separate,
+already implemented layer. No adversarial backend is installed or enabled.
+No photograph was uploaded or used to train an evaluation model in this work.
+
+Tools and threat models
+
+Glaze: closest match for style-mimicry protection. Official desktop guides support
+batch selection, intensity and render quality, but do not document a supported
+CLI/API for Studio. Stronger cloaks can be visible, especially on dark/smooth
+surfaces. Official guidance says resizing/watermarking should precede protection.
+Automation and distribution terms would need review before embedding its app.
+https://glaze.cs.uchicago.edu/userguide.html
+https://glaze.cs.uchicago.edu/faq.html
+https://glaze.cs.uchicago.edu/software/Glaze-LICENSE.pdf
+
+Nightshade: actual training-data poisoning, not direct individual style immunity.
+It depends on a future trainer ingesting sufficient poisoned samples. Official
+guides support batch input and concept/poison-tag selection. Resize/watermark
+first; if combined, Nightshade precedes Glaze. Official site advertises Windows/
+macOS 1.1 in April 2026, while the detailed reviewed guides remain older.
+https://nightshade.cs.uchicago.edu/
+https://nightshade.cs.uchicago.edu/userguide.html
+https://nightshade.cs.uchicago.edu/faq.html
+https://arxiv.org/abs/2310.13828
+
+Mist v2 / 2.1: strongest candidate for an automation prototype. Apache-2.0 source,
+documented batch CLI and LoRA/SDEdit evaluation. Authors estimate 3-5 minutes per
+image using about 6GB VRAM in typical cases; not benchmarked here. Their current
+README cautions it may only raise the cost for determined professional attackers.
+https://github.com/psyker-team/mist-v2
+
+Mist source review - findings to resolve before production:
+- Documents Python 3.10; requirements pin torch 2.0.1, include xformers, and leave
+  several ML packages unpinned. Studio uses Python 3.15 and has no torch installed.
+  Use an isolated worker, not Studio's working environment.
+- Requires Stable Diffusion 1.5 model assets. Establish model license, pinned
+  downloads and offline caching before processing private photographs.
+- CLI supports --cuda, --low_vram_mode, batch input/output folders, per-image
+  prompt files, strength budget, mixed precision and reproducible seeds.
+- load_data resizes to a 512x512 tensor by default. Without --resize, it saves
+  square output. Contrary to the flag's confusing help text, WITH --resize, it
+  transfers the calculated perturbation back to the original-size image.
+- That original-size branch expects PNG input names after rewriting suffixes;
+  use matching temporary PNG names and test portrait/landscape dimensions.
+- Reviewed CPU path contains an unconditional .cuda() call when loading the VAE.
+  Do not assume working Apple Silicon/CPU support from the README alone.
+- Disable remote experiment reporting/telemetry and prefetch models for private
+  offline processing. Preserve originals and public catalog during experiments.
+https://raw.githubusercontent.com/psyker-team/mist-v2/main/attacks/mist.py
+https://raw.githubusercontent.com/psyker-team/mist-v2/main/requirements.txt
+
+PhotoGuard: MIT-licensed research code and demos for resisting diffusion-based
+editing/inpainting. Useful for that threat; does not establish training-time
+style-mimicry protection. Official setup uses separate Python 3.10 dependencies.
+https://github.com/MadryLab/photoguard
+https://arxiv.org/abs/2302.06588
+
+Local hardware
+nvidia-smi reports RTX 3080, 12,288 MiB VRAM. Meets Mist's published Ampere/VRAM
+requirement on paper. Actual compatibility, free memory, speed and output quality
+require local tests. Windows CUDA support does not imply Apple Silicon support.
+
+Independent evidence and limitations
+ICLR 2025, Honig et al. (revised Feb 2025), evaluated Glaze, Mist and Anti-DreamBooth
+and found practical robust-mimicry approaches, including upscaling, can defeat
+tested protections. This is evidence about tested versions/setups, not proof that
+every future method fails. Avoid unconditional vendor claims of robustness.
+https://arxiv.org/abs/2406.12027
+LightShed, USENIX Security 2025: demonstrates detection and removal of tested
+Nightshade/Glaze perturbations, including generalization across methods.
+https://www.usenix.org/conference/usenixsecurity25/presentation/foerster
+
+Recommended experiment and eventual Studio integration
+1. Prototype Mist CLI in an isolated pinned worker, using disposable copies of
+   sky, crowds, foliage, buildings, shadow and textured photographs.
+2. Finish geometry, final size and visible watermarks BEFORE protecting pixels.
+   Protect the JPEG and thumbnail separately; do not merely shrink a protected
+   JPEG into a thumbnail. Resampling/compression can change the perturbation.
+3. Worker receives lossless temporary PNGs, preserves aspect ratio; then Studio
+   performs final JPEG/WebP encoding and attaches public rights metadata.
+4. Evaluate DECODED FINAL JPEG/WebP, not just intermediate PNG. Compare appearance
+   at gallery/full size, artifacts, framing, byte size and processing duration.
+5. Compare clean/protected fine-tuning or editing using identical seeds/prompts;
+   repeat on a second model and after resizing/recompression. Pixel changes alone
+   are not evidence of adversarial effectiveness.
+6. If acceptable, add a background queue with progress/cancel and private caching
+   keyed by source, geometry, dimensions, watermark settings and backend/model
+   versions. Preview and publish must reuse the SAME stochastic protected bytes.
+7. Stop a failed protected publication rather than silently label it protected.
+   Keep status private; never promise universal prevention of AI mimicry.
+8. Keep one public JPEG + one WebP. Model weights, environments, intermediates and
+   caches stay outside the repository. Originals remain read-only.
+
+Delivered now
+Both new JPEG and WebP exports automatically receive author/copyright, an EXIF
+anti-AI notice, XMP usage terms and IPTC/PLUS 'Prohibited for AI/ML training'. These
+do not alter pixels or establish adversarial protection. About explains this.
+Existing JPEGs are unchanged; republish to add the notices.

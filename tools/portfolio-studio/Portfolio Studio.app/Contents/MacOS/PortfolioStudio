@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+STUDIO_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+# Open the setup/launcher in Terminal so first-run dependency progress is visible.
+exec /usr/bin/open -a Terminal "$STUDIO_DIR/LAUNCH_PORTFOLIO_STUDIO_MAC.command"

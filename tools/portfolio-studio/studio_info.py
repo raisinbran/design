@@ -1,0 +1,7 @@
+"""Release identity shared by the About window and exported metadata."""
+APP_NAME = "Portfolio Studio"
+VERSION = "2.0.0"
+BUILD = "20261027.2"
+LAST_UPDATED = "2026-10-27"
+AUTHOR = "Brandon J. Chen"
+COPYRIGHT = "Copyright (c) 2026 Brandon J. Chen"

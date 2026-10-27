@@ -4,9 +4,10 @@
   const gallery = document.getElementById("photo-gallery");
   if (!gallery) return;
 
-  const photos = (window.PORTFOLIO_PHOTOS || []).filter(
+  const allPhotos = (window.PORTFOLIO_PHOTOS || []).filter(
     p => p.visible !== false && p.file && p.alt
   );
+  let photos = allPhotos;
   const ratios = window.PHOTO_ASPECT_RATIOS || {};
 
   const path = name => "photography/published/" + encodeURIComponent(name);
@@ -51,9 +52,9 @@
     return desired;
   }
 
-  const tiles = photos.map((photo, index) => {
+  const allTiles = allPhotos.map((photo, index) => {
     const tile = document.createElement("div");
-    
+    tile.dataset.file = photo.file;
     tile.className = "photo-tile";
     
     tile.dataset.priority = String(photo.displayPriority || (photo.featured ? "featured" : "normal"));
@@ -61,15 +62,63 @@
     const img = document.createElement("img");
     img.loading = "lazy";
     img.decoding = "async";
-    img.src = path(photo.file);
+    img.src = photo.thumbnail
+      ? "photography/thumbnails/" + encodeURIComponent(photo.thumbnail)
+        + (photo.thumbnailVersion ? `?v=${encodeURIComponent(photo.thumbnailVersion)}` : "")
+      : path(photo.file);
     img.alt = photo.alt;
+
+    /* portfolio-crop:stage6c */
+    // Framing is applied inside existing justified-row tiles, without altering
+    // source photographs or tile dimensions.
+    const galleryZoom = Number(photo.galleryZoom ?? 1);
+    const focusX = Number(photo.focusX ?? 0.5);
+    const focusY = Number(photo.focusY ?? 0.5);
+    if (!photo.thumbnailFramed && Number.isFinite(galleryZoom) && galleryZoom > 1 && galleryZoom <= 3 &&
+        Number.isFinite(focusX) && focusX >= 0 && focusX <= 1 &&
+        Number.isFinite(focusY) && focusY >= 0 && focusY <= 1) {
+      const bound = (galleryZoom - 1) / 2;
+      const shiftX = Math.max(-bound, Math.min(bound, galleryZoom * (0.5 - focusX)));
+      const shiftY = Math.max(-bound, Math.min(bound, galleryZoom * (0.5 - focusY)));
+      img.style.setProperty("transform",
+        `translate(${shiftX * 100}%, ${shiftY * 100}%) scale(${galleryZoom})`,
+        "important");
+      img.style.transformOrigin = "center center";
+      img.style.objectFit = "cover";
+    }
+
+
+
+    // portfolio-gallery-crop:stage6d
+    // The catalog-generated aspect ratio adjusts the justified tile size.
+    // Image geometry below displays exactly the selected crop region.
+    const rect = photo.galleryCrop;
+    if (!photo.thumbnailFramed && rect && Number.isFinite(Number(rect.x)) && Number.isFinite(Number(rect.y)) &&
+        Number(rect.width) > 0 && Number(rect.height) > 0 &&
+        Number(rect.x) >= 0 && Number(rect.y) >= 0 &&
+        Number(rect.x) + Number(rect.width) <= 1.000001 &&
+        Number(rect.y) + Number(rect.height) <= 1.000001) {
+      tile.style.setProperty("position", "relative", "important");
+      tile.style.setProperty("overflow", "hidden", "important");
+      img.style.setProperty("position", "absolute", "important");
+      img.style.setProperty("left", `${-100 * Number(rect.x) / Number(rect.width)}%`, "important");
+      img.style.setProperty("top", `${-100 * Number(rect.y) / Number(rect.height)}%`, "important");
+      img.style.setProperty("width", `${100 / Number(rect.width)}%`, "important");
+      img.style.setProperty("height", `${100 / Number(rect.height)}%`, "important");
+      img.style.setProperty("max-width", "none", "important");
+      img.style.setProperty("max-height", "none", "important");
+      img.style.setProperty("transform", "none", "important");
+      img.style.setProperty("transform-origin", "top left", "important");
+      img.style.setProperty("object-fit", "fill", "important");
+    }
 
     tile.appendChild(img);
     
     return tile;
   });
+  let tiles = allTiles;
 
-  // Edit photo ordering / visibility / displayPriority in photography-items.js.
+  // Edit photo ordering / visibility / displayPriority through the media catalog.
   // R30 adds optional displayPriority:
   //   "low"           = allow somewhat smaller presentation
   //   "normal"        = default
@@ -81,7 +130,6 @@
     if (!width) return;
 
     const gap = width < 720 ? 8 : 12;
-    const target = width < 1024 ? 250 : 295;
     const n = tiles.length;
     const r = photos.map((_, i) => ratioAt(i));
 
@@ -111,100 +159,61 @@
       gallery.appendChild(wrapper);
     }
 
-    if (width < 1024) {
-      // Keep the already-accepted mobile/tablet behavior simple and dense.
-      let begin = 0, sum = 0;
-      for (let i = 0; i < n; i++) {
-        sum += r[i];
-        if (sum * target + gap * (i - begin) >= width) {
-          addRow(begin, i + 1, (width - gap * (i - begin)) / sum, true);
-          begin = i + 1;
-          sum = 0;
-        }
-      }
-      if (begin < n) {
-        addRow(begin, n, Math.min(target, (width - gap * Math.max(0, n - begin - 1)) / sum), false);
-      }
-      return;
-    }
-
-    // Desktop: plan all rows together so portraits are not squeezed by following photos.
+    // Plan the entire filtered set together, including the final row. Natural
+    // aspect ratios and catalog order are preserved; no image is cropped here.
     const dp = Array(n + 1).fill(Infinity);
     const choice = Array(n).fill(null);
     dp[n] = 0;
-
-    for (let i = n - 1; i >= 0; i--) {
+    for (let begin = n - 1; begin >= 0; begin--) {
       let sum = 0;
-      for (let end = i + 1; end <= Math.min(n, i + 6); end++) {
+      let nonPortraits = 0;
+      for (let end = begin + 1; end <= Math.min(n, begin + 3); end++) {
         sum += r[end - 1];
-        const count = end - i;
-        const rowPhotos = photos.slice(i, end);
+        if (r[end - 1] >= 0.95) nonPortraits++;
+        // Keep portrait triplets, but never shrink two portraits beside a landscape.
+        // Three landscapes/squares also make each photograph too small.
+        if (nonPortraits > 2 || (end - begin === 3 && nonPortraits === 1)) continue;
+        const count = end - begin;
+        const rowPhotos = photos.slice(begin, end);
+        const hasPortrait = nonPortraits < count;
+        const desired = width < 720
+          ? (hasPortrait ? Math.min(420, width * 0.9) : 230)
+          : width < 1024 ? (hasPortrait ? 440 : 280)
+          : desiredRowHeight(rowPhotos, hasPortrait);
+        const standardMax = rowPhotos.some(p => priorityValue(p) >= 2) ? 640 : 590;
+        const maximum = width < 720 ? Math.min(standardMax, width * 1.2) : standardMax;
         const exact = (width - gap * (count - 1)) / sum;
-        const last = end === n;
-        const hasPortrait = rowPhotos.some((_, rowIndex) => r[i + rowIndex] < 0.95);
-        const desired = desiredRowHeight(rowPhotos, hasPortrait);
-
-        // Last rows may be shorter than full width by design, but still bounded.
-        const lastCap = hasPortrait ? Math.min(560, desired + 15) : Math.min(320, desired + 10);
-        const height = last ? Math.min(exact, lastCap) : exact;
-
-        let penalty = 110 * Math.pow(Math.log(height / desired), 2);
-
-        // Avoid very small portrait rows.
-        if (hasPortrait) {
-          const minPortrait = Math.max(...rowPhotos.map((p, rowIndex) => {
-            return r[i + rowIndex] < 0.95 ? desiredPortraitMin(p) : 0;
-          }));
-          if (height < minPortrait) {
-            penalty += 950 * Math.pow((minPortrait - height) / minPortrait, 2) + 120;
-          }
-        }
-
-        // Avoid oversized rows.
-        const maxComfort = rowPhotos.some(p => priorityValue(p) >= 2) ? 640 : 590;
-        if (height > maxComfort) {
-          penalty += 800 * Math.pow((height - maxComfort) / maxComfort, 2) + 90;
-        }
-
+        // Interior rows always fill the gallery, even above the preferred height.
+        // Only the final row may stay short to avoid oversized leftover photos.
+        const cap = count === 1 ? Math.min(maximum, desired + (hasPortrait ? 15 : 40)) : maximum;
+        const height = end === n ? Math.min(exact, cap) : exact;
+        const used = sum * height + gap * (count - 1);
+        let penalty = 10 + 110 * Math.pow(Math.log(height / desired), 2);
+        penalty += 180 * Math.pow(Math.max(0, width - used) / width, 2);
         if (height < 190) penalty += 150;
-        if (count === 1) penalty += 150;
-
-        // Per-photo priority preferences.
-        for (let j = i; j < end; j++) {
-          const photo = photos[j];
-          const pr = priorityValue(photo);
-          const isPortrait = r[j] < 0.95;
-
-          if (pr >= 2 && isPortrait && height < desiredPortraitMin(photo)) {
-            penalty += 220 * Math.pow((desiredPortraitMin(photo) - height) / desiredPortraitMin(photo), 2) + 40;
-          }
-          if (pr >= 3 && !isPortrait && height < 265) {
-            penalty += 70;
-          }
-          if (pr < 0 && height > (isPortrait ? 500 : 330)) {
-            penalty += 90 * Math.pow((height - (isPortrait ? 500 : 330)) / (isPortrait ? 500 : 330), 2);
-          }
+        if (count === 1) penalty += end === n ? 40 : 120;
+        if (hasPortrait) {
+          const minimum = Math.max(...rowPhotos.map((photo, offset) => r[begin + offset] < 0.95
+            ? Math.min(desiredPortraitMin(photo), width < 720 ? width * 0.65 : 410) : 0));
+          if (height < minimum) penalty += 120 + 950 * Math.pow((minimum - height) / minimum, 2);
         }
-
-        // Light penalty for large unused width in a shortened final row.
-        if (last && exact > height) {
-          const used = sum * height + gap * (count - 1);
-          penalty += 40 * Math.pow((width - used) / width, 2);
+        for (let index = begin; index < end; index++) {
+          const priority = priorityValue(photos[index]);
+          if (priority >= 3 && r[index] >= 0.95 && height < 265) penalty += 70;
+          if (priority < 0 && height > (r[index] < 0.95 ? 500 : 330)) penalty += 35;
         }
-
         const score = penalty + dp[end];
-        if (score < dp[i]) {
-          dp[i] = score;
-          choice[i] = { end, height, fullWidth: !last || exact <= height };
+        if (score < dp[begin]) {
+          dp[begin] = score;
+          choice[begin] = { end, height, fullWidth: Math.abs(height - exact) < 0.01 };
         }
       }
     }
-
-    let i = 0;
-    while (i < n && choice[i]) {
-      const item = choice[i];
-      addRow(i, item.end, item.height, item.fullWidth);
-      i = item.end;
+    let begin = 0;
+    while (begin < n && choice[begin]) {
+      const row = choice[begin];
+      addRow(begin, row.end, row.height, row.fullWidth);
+      begin = row.end;
     }
   }
 
@@ -213,6 +222,25 @@
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(render);
   }, { passive: true });
+
+  window.PortfolioPhotographyGallery = Object.freeze({
+    setFilters(selected) {
+      const active = new Set(selected);
+      photos = active.size === 0 ? allPhotos : allPhotos.filter(photo =>
+        [...active].some(tag => Array.isArray(photo.tags) && photo.tags.includes(tag))
+      );
+      tiles = photos.map(photo => allTiles[allPhotos.indexOf(photo)]);
+      const empty = document.getElementById("photo-empty");
+      if (empty) {
+        empty.hidden = photos.length !== 0;
+        if (!photos.length) empty.textContent = active.size === 0
+          ? "No photographs are currently available."
+          : "No photographs match those tags.";
+      }
+      render();
+      return { showing: photos.length, total: allPhotos.length };
+    }
+  });
 
   render();
 })();

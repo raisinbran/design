@@ -90,3 +90,7 @@ html body video {
   user-select: none;
   -webkit-user-select: none;
 }
+
+/* A single centered name beside the grape mark on every public page. */
+.site-nav-2026 .nav-brand {align-items:center;}
+.site-nav-2026 .nav-name {margin:0;font-weight:500;}

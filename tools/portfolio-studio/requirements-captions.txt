@@ -1,0 +1,2 @@
+# Offline descriptions use the existing OpenCV CPU runtime.
+-r requirements.txt

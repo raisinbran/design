@@ -1,2 +1,16 @@
 _site/
 
+# Local Python virtual environments
+.venv/
+
+# Python temporary files
+__pycache__/
+*.py[cod]
+
+# Local Portfolio Studio configuration
+tools/portfolio-studio/studio-config.json
+
+# Unpublished source photographs
+tools/portfolio-studio/originals/
+# Native macOS Studio environment
+.venv-macos/
