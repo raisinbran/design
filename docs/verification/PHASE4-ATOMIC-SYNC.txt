@@ -1,0 +1,38 @@
+Phase 4 focused publishing reliability — 2026-10-27
+Base: f283e39c44b292464952d3d36199efec93bbb0d3
+Branch: codex/phase4-atomic-catalog-sync
+
+Change: catalog_tools.sync validates before writing and leaves matching text untouched.
+Changed output is staged in a unique temporary file in the destination directory,
+flushed and fsynced, closed, then atomically installed with os.replace. Finally
+removes leftover staging files on exceptions. Generated output is UTF-8/LF.
+
+New tests: 6 CatalogSyncTests cover successful replacement (same directory,
+fsync-before-replace, original unchanged until replacement), no-op with unchanged
+mtime/no staging, replace failure, fsync failure, invalid catalog and new target.
+All fixture file bytes/inventories are compared where applicable.
+Two WindowTests cover partial full-photo recycling with a paired thumbnail and
+retry, plus failure after both full JPEGs move but before the thumbnail moves.
+Actual recycle adapter and confirmation dialogs are mocked; only temporary
+synthetic files are renamed. manage_published production logic is unchanged.
+
+Validation, configured Windows venv (Python3.15.1/Tk9.0.4):
+- unittest discover tools/portfolio-studio test_catalog_sync.py: 6/6 passed,0 skips.
+- Complete Studio discovery test_*.py: 110 passed,0 failures,0 errors,0 skips,
+  12.221 seconds. APPDATA/LOCALAPPDATA isolated; installed model copied to temp.
+  Baseline102 +6 sync +2 recovery tests =110 (the6 sync tests are included).
+- unittest discover tools/validation: 6 passed,0 failures/errors/skips,3.271sec.
+- node tools/test-photography-gallery.cjs: 330 tag/viewport cases plus existing
+  portrait,landscape,filter,thumbnail,mobile-selection assertions passed.
+- node tools/test-home-previews.cjs: passed (script emits no assertion count).
+- git diff --check: passed. Protected data/media/site content diff: unchanged.
+
+Limits: single-file atomic replacement, not a multi-file transaction or crash
+journal. No directory fsync/power-loss/reboot guarantee or native file-lock stress
+certification. Cleanup is tested for synchronous replacement/fsync exceptions;
+process termination can leave a staging file. Partial recycling can leave an
+orphan thumbnail when its JPEG has already moved; tests document this existing
+behavior without deleting the leftover. Recovery writes across JSON/JS are not
+crash-atomic as a pair. No manual GUI usability or native recycle integration
+claim is made. No real portfolio catalogs or image files were modified.
+No merge, manual deployment, or publication-flow redesign performed.
