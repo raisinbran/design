@@ -652,7 +652,7 @@ class WindowTests(unittest.TestCase):
         self.assertEqual(studio.settings_button.cget("text"),"Settings")
         labels=[label for label,button,command in studio.action_buttons]
         self.assertEqual(labels[7:],["Reset all","Settings","About"])
-        self.assertEqual(studio.settings_button.master,studio.toolbar_action)
+        self.assertEqual(studio.settings_button.master,studio.action_left)
         content=" ".join(title+body for title,body in studio_about.PROTECTION_SECTIONS)
         self.assertNotIn("Pixel poisoning",content)
         self.assertNotIn("Mist",content)
@@ -1150,36 +1150,51 @@ class WindowTests(unittest.TestCase):
                 self.assertIsNone(toolbar.menu.index("end"))
             self.assertEqual(studio.alt_var.get(),"Keep this description.")
 
-    def test_primary_catalog_stays_visible_without_displacing_export_controls(self):
-        studio=self.studio()
-        catalog=next(button for label,button,_ in studio.action_buttons if label=="Published catalog")
-        for width in (980,1280,1470,1710,1920):
-            studio._last_toolbar_width=None
-            with patch.object(studio.toolbar_action,"winfo_width",return_value=width):
-                studio.update_toolbar_overflow()
-            hidden={label for label,_,_ in studio.hidden_actions}
-            self.assertNotIn("Published catalog",hidden)
-            self.assertNotIn("Add original",hidden)
-            self.assertEqual(catalog.winfo_manager(),"pack")
-            self.assertEqual(studio.publish_row.winfo_manager(),"pack")
-            self.assertEqual(studio.publish_group.master,studio.publish_row)
+    def test_single_toolbar_preserves_priority_actions_and_tab_y(self):
+        studio=self.studio();studio.deiconify();studio.minsize(600,500)
+        studio.jpeg_quality.set("95");studio.filename_suffix.set("_custom");studio.publish_scope.set("all")
+        for width,height in ((983,671),(900,650),(760,650),(1280,800),(1920,900)):
+            studio.geometry(f"{width}x{height}");studio.update()
+            studio._last_toolbar_width=None;studio.update_toolbar_overflow();studio.update_idletasks()
+            self.assertFalse(hasattr(studio,"publish_row"))
             visible=[button for _,button,_ in studio.action_buttons if button.winfo_manager()]
-            occupied=sum(button.winfo_reqwidth()+5 for button in visible)
-            if hidden:occupied+=studio.more_actions_button.winfo_reqwidth()+5
-            self.assertLessEqual(occupied,width-16)
+            hidden={label for label,_,_ in studio.hidden_actions}
+            primary=["Add original","Published catalog","Remove original from list"]
+            minimum=sum(next(b.winfo_reqwidth()+4 for l,b,_ in studio.action_buttons if l==label) for label in primary)
+            right=studio.publish_group.winfo_width()
+            if minimum+studio.more_actions_button.winfo_reqwidth()+right<=width-16:
+                self.assertTrue(all(label not in hidden for label in primary))
+            boxes=[(b.winfo_rootx(),b.winfo_rootx()+b.winfo_width()) for b in visible]
+            if hidden:boxes.append((studio.more_actions_button.winfo_rootx(),studio.more_actions_button.winfo_rootx()+studio.more_actions_button.winfo_width()))
+            boxes.append((studio.publish_group.winfo_rootx(),studio.publish_group.winfo_rootx()+right))
+            boxes.sort()
+            self.assertTrue(all(a[1]<=b[0] for a,b in zip(boxes,boxes[1:])),boxes)
+            self.assertGreater(studio.export_preview_button.winfo_width(),1)
+            self.assertGreater(studio.publish_button.winfo_width(),1)
+            self.assertLessEqual(boxes[-1][1],studio.winfo_rootx()+width)
             studio.populate_action_menu()
             self.assertEqual(studio.action_menu.index("end"),len(hidden)-1 if hidden else None)
-        # Leaving and returning to Photography restores the persistent export row.
-        studio.workspace_tabs.select(studio.engineering_page)
-        studio.workspace_changed()
-        self.assertFalse(studio.publish_row.winfo_manager())
-        studio.workspace_tabs.select(studio.photography_page)
-        studio.workspace_changed()
-        self.assertEqual(catalog.winfo_manager(),"pack")
-        self.assertEqual(studio.publish_row.winfo_manager(),"pack")
-        with patch.object(photo_studio.subprocess,"Popen") as launch:
-            catalog.invoke()
+            before=studio.workspace_tabs.winfo_y()
+            studio.workspace_tabs.select(studio.engineering_page);studio.workspace_changed();studio.update()
+            self.assertEqual(studio.workspace_tabs.winfo_y(),before)
+            studio.workspace_tabs.select(studio.photography_page);studio.workspace_changed();studio.update()
+            self.assertEqual(studio.workspace_tabs.winfo_y(),before)
+            self.assertEqual((studio.jpeg_quality.get(),studio.filename_suffix.get(),studio.publish_scope.get()),("95","_custom","all"))
+        catalog=next(button for label,button,_ in studio.action_buttons if label=="Published catalog")
+        with patch.object(photo_studio.subprocess,"Popen") as launch:catalog.invoke()
         self.assertEqual(Path(launch.call_args.args[0][1]).name,"edit_tags.py")
+
+    def test_export_settings_dialog_reuses_variables_and_menu_disabled_states(self):
+        studio=self.studio();studio.show_export_settings();dialog=studio._export_dialog
+        studio.filename_suffix.set("_custom");studio.jpeg_quality.set("85");studio.publish_scope.set("highlighted")
+        studio.show_export_settings();self.assertIs(studio._export_dialog,dialog)
+        controls=[child for frame in dialog.winfo_children() for child in frame.winfo_children() if isinstance(child,photo_studio.ttk.Combobox)]
+        self.assertEqual([c.get() for c in controls],["85","_custom","highlighted"])
+        studio.files_list.selection_clear(0,"end");studio.refresh_action_states()
+        studio.hidden_actions=list(studio.action_buttons);studio.populate_action_menu()
+        index=next(i for i,(label,_,_) in enumerate(studio.hidden_actions) if label=="Remove original from list")
+        self.assertEqual(studio.action_menu.entrycget(index,"state"),"disabled")
+        dialog.destroy()
 
     def test_small_crop_handles_select_nearest_edge(self):
         studio=self.studio();viewport=studio.viewport

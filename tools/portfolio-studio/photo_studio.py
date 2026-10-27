@@ -190,10 +190,11 @@ class Studio(tk.Tk):
             self.suspend = previous
 
     def setup_ui(self):
-        # Keep primary entry points separate from the export settings row.
+        # One fixed-height toolbar keeps the notebook stationary across workspaces.
         action = ttk.Frame(self, padding=(8, 4))
         action.pack(fill="x")
         self.toolbar_action = action
+        self.action_left = ttk.Frame(action)
         self.action_buttons = []
         self.action_menu = tk.Menu(self,tearoff=False)
         actions=(
@@ -209,7 +210,7 @@ class Studio(tk.Tk):
             ("About",lambda:show_about(self)),
         )
         for label, command in actions:
-            button=ttk.Button(action,text=label,command=command)
+            button=ttk.Button(self.action_left,text=label,command=command)
             self.action_buttons.append((label,button,command))
             if label=="Settings":self.settings_button=button
             if label=="About":self.about_button=button
@@ -217,25 +218,24 @@ class Studio(tk.Tk):
         self.more_actions_button=ttk.Button(action,text="More actions ▼", command=self.show_action_menu)
         self.action_menu.configure(postcommand=self.populate_action_menu)
         self.more_actions_button.pack(side="left")
-        self.publish_row = ttk.Frame(self, padding=(8, 0, 8, 4))
-        self.publish_row.pack(fill="x")
-        publish_group = ttk.Frame(self.publish_row)
-        self.publish_group=publish_group
-        publish_group.pack(side="right")
-        ttk.Label(publish_group, text="JPEG quality").pack(side="left", padx=(0,3))
-        ttk.Combobox(publish_group, textvariable=self.jpeg_quality, state="readonly",
-                     values=("80","85","90","95"),width=4).pack(side="left",padx=(0,7))
-        ttk.Label(publish_group, text="Filename suffix").pack(side="left", padx=(0,3))
-        suffix_control = ttk.Combobox(publish_group, textvariable=self.filename_suffix, state="normal",
-                     values=("_crop","_edit","_fix","_small","Custom…"), width=8)
-        suffix_control.pack(side="left",padx=(0,7))
-        suffix_control.bind("<<ComboboxSelected>>", self.choose_filename_suffix)
-        ttk.Label(publish_group, text="Publish scope").pack(side="left", padx=(0,4))
-        ttk.Combobox(publish_group, textvariable=self.publish_scope, state="readonly",
-                     values=("current","highlighted","all"), width=11).pack(side="left",padx=(0,7))
-        self.export_preview_button=ttk.Button(publish_group,text="Preview export",command=self.preview_export)
+        self.publish_group=ttk.Frame(action)
+        self.publish_group.pack(side="right")
+        self.export_fields=ttk.Frame(self.publish_group)
+        self.build_export_fields(self.export_fields)
+        self.export_settings_button=ttk.Button(self.publish_group,text="Export settings…",command=self.show_export_settings)
+        self.export_preview_button=ttk.Button(self.publish_group,text="Preview export",command=self.preview_export)
+        self.publish_button=ttk.Button(self.publish_group,text="Publish copies...",command=self.publish)
+        self.export_settings_button.pack(side="left",padx=(0,5))
         self.export_preview_button.pack(side="left",padx=(0,5))
-        ttk.Button(publish_group, text="Publish copies...",command=self.publish).pack(side="left")
+        self.publish_button.pack(side="left")
+        self.action_left.pack(side="left",fill="x",expand=True)
+        self.update_idletasks()
+        toolbar_height=max([button.winfo_reqheight() for _,button,_ in self.action_buttons]+[
+            self.export_fields.winfo_reqheight(),self.export_settings_button.winfo_reqheight(),
+            self.export_preview_button.winfo_reqheight(),self.publish_button.winfo_reqheight()])+8
+        action.configure(height=toolbar_height)
+        action.pack_propagate(False)
+        self._export_dialog=None
 
         self.workspace_tabs=ttk.Notebook(self)
         self.workspace_tabs.pack(fill="both",expand=True)
@@ -489,44 +489,66 @@ class Studio(tk.Tk):
         self._overflow_queued=True
         self.after_idle(self.update_toolbar_overflow)
 
+    def build_export_fields(self,parent):
+        for label,variable,values,width,editable in (
+                ("JPEG quality",self.jpeg_quality,("80","85","90","95"),4,False),
+                ("Filename suffix",self.filename_suffix,("_crop","_edit","_fix","_small","Custom…"),8,True),
+                ("Publish scope",self.publish_scope,("current","highlighted","all"),11,False)):
+            ttk.Label(parent,text=label).pack(side="left",padx=(0,3))
+            control=ttk.Combobox(parent,textvariable=variable,values=values,width=width,
+                state="normal" if editable else "readonly")
+            control.pack(side="left",padx=(0,7))
+            if editable:control.bind("<<ComboboxSelected>>",self.choose_filename_suffix)
+
+    def show_export_settings(self):
+        if self._export_dialog is not None and self._export_dialog.winfo_exists():
+            self._export_dialog.lift();return
+        dialog=tk.Toplevel(self);self._export_dialog=dialog
+        dialog.title("Export settings");dialog.transient(self);dialog.resizable(False,False)
+        frame=ttk.Frame(dialog,padding=12);frame.pack(fill="both",expand=True)
+        self.build_export_fields(frame)
+        ttk.Button(dialog,text="Close",command=dialog.destroy).pack(pady=(0,10))
+        dialog.bind("<Escape>",lambda _event:dialog.destroy())
+
     def update_toolbar_overflow(self):
         self._overflow_queued=False
         if not hasattr(self,"action_buttons"):return
-        if hasattr(self,"workspace_tabs") and self.workspace_tabs.select()==str(self.engineering_page):
-            self.publish_row.pack_forget();self.more_actions_button.pack_forget()
-            self.hidden_actions=[]
+        engineering=self.workspace_tabs.select()==str(self.engineering_page)
+        current_width=self.toolbar_action.winfo_width()
+        key=(current_width,engineering)
+        if getattr(self,"_last_toolbar_width",None)==key:return
+        self._last_toolbar_width=key
+        for _,button,_ in self.action_buttons:button.pack_forget()
+        self.more_actions_button.pack_forget()
+        if engineering:
+            self.publish_group.pack_forget();self.hidden_actions=[]
             for label,button,_ in self.action_buttons:
-                button.pack_forget()
                 if label in ("Settings","About"):button.pack(side="left",padx=2)
             return
-        if not self.publish_row.winfo_manager():
-            self.publish_row.pack(fill="x",before=self.workspace_tabs)
-        current_width=self.toolbar_action.winfo_width()
-        if getattr(self,"_last_toolbar_width",None)==current_width:return
-        self._last_toolbar_width=current_width
-        # Primary entry points never move into More actions. Export settings have
-        # their own row, so they cannot displace navigation at smaller widths.
-        sizes={label:button.winfo_reqwidth()+5 for label,button,_ in self.action_buttons}
-        available=max(0,current_width-16)
+        self.publish_group.pack(side="right")
+        sizes={label:button.winfo_reqwidth()+4 for label,button,_ in self.action_buttons}
+        primary=["Add original","Published catalog","Remove original from list"]
+        more=self.more_actions_button.winfo_reqwidth()
+        fixed=self.export_preview_button.winfo_reqwidth()+5+self.publish_button.winfo_reqwidth()
+        full_right=fixed+self.export_fields.winfo_reqwidth()
+        # Only show inline fields when all actions also fit. The dialog always
+        # shares the original variables, including custom suffix and scope.
+        inline=sum(sizes.values())+full_right<=current_width-16
+        self.export_fields.pack_forget();self.export_settings_button.pack_forget()
+        if inline:self.export_fields.pack(side="left",before=self.export_preview_button)
+        else:self.export_settings_button.pack(side="left",padx=(0,5),before=self.export_preview_button)
+        right=full_right if inline else fixed+self.export_settings_button.winfo_reqwidth()+5
+        available=max(0,current_width-16-right)
         total=sum(sizes.values())
-        usable=available-(self.more_actions_button.winfo_reqwidth()+5 if total>available else 0)
-        primary={"Add original","Published catalog"}
-        visible_labels=set(primary)
-        remaining=usable-sum(sizes[label] for label in primary)
-        for label,_,_ in self.action_buttons:
-            if label not in primary and sizes[label]<=remaining:
-                visible_labels.add(label)
-                remaining-=sizes[label]
-        visible=[item for item in self.action_buttons if item[0] in visible_labels]
-        hidden=[item for item in self.action_buttons if item[0] not in visible_labels]
-        for _,button,_ in self.action_buttons:button.pack_forget()
-        # A pack(before=...) target must itself be packed. Rebuild in stable order.
-        self.more_actions_button.pack_forget()
-        for _,button,_ in visible:
-            button.pack(side="left",padx=2)
-        self.hidden_actions=hidden
-        if hidden:self.more_actions_button.pack(side="left")
-        else:self.more_actions_button.pack_forget()
+        usable=available-(more if total>available else 0)
+        visible_labels=set();remaining=usable
+        for label in primary+[label for label,_,_ in self.action_buttons if label not in primary]:
+            if sizes[label]<=remaining:
+                visible_labels.add(label);remaining-=sizes[label]
+        self.hidden_actions=[item for item in self.action_buttons if item[0] not in visible_labels]
+        for label,button,_ in self.action_buttons:
+            if label in visible_labels:button.pack(side="left",padx=2)
+        if self.hidden_actions:self.more_actions_button.pack(side="left")
 
     def manage_published(self):
         subprocess.Popen([sys.executable,str(Path(__file__).with_name("manage_published.py"))],
