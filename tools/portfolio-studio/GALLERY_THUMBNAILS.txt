@@ -34,11 +34,11 @@ encoded as WebP at quality 78. No originals or full-size clean intermediates are
 stored in the repository. Overwrite reuses the same two paths. Versioned image
 URLs refresh browser caches without accumulating extra files.
 
-Preview export offers Gallery thumbnail and Full-size export views in Studio.
+Preview publish offers Gallery thumbnail and Full-size export views in Studio.
 The public gallery has no link or click action to open full-size JPEGs. Older entries
 without a thumbnail continue to use their existing JPEG until migrated.
 
-Drawn crop boxes are active immediately in Preview export and Publish; no Apply
+Drawn crop boxes are active immediately in Preview publish and Publish; no Apply
 crop step is required. Original ratio is recalculated for each selected photo.
 HEIC/HEIF files are accepted by the original-photo picker and decoded locally.
 Descriptions use known generic nouns or a small offline MobileNet image classifier.

@@ -674,7 +674,7 @@ class WindowTests(unittest.TestCase):
             self.assertEqual(before,set(Path(self.temp.name).rglob("*")))
             buttons=studio.publish_group.winfo_children()
             publish=next(button for button in buttons if isinstance(button,photo_studio.ttk.Button)
-                and button.cget("text")=="Publish copies...")
+                and button.cget("text")=="Publish")
             self.assertEqual(buttons.index(studio.export_preview_button)+1,buttons.index(publish))
         finally:preview.destroy()
 
@@ -1159,7 +1159,7 @@ class WindowTests(unittest.TestCase):
             self.assertFalse(hasattr(studio,"publish_row"))
             visible=[button for _,button,_ in studio.action_buttons if button.winfo_manager()]
             hidden={label for label,_,_ in studio.hidden_actions}
-            primary=["Add original","Published catalog","Remove original from list"]
+            primary=["Add original","Published Catalog","Remove original from list"]
             minimum=sum(next(b.winfo_reqwidth()+4 for l,b,_ in studio.action_buttons if l==label) for label in primary)
             right=studio.publish_group.winfo_width()
             if minimum+studio.more_actions_button.winfo_reqwidth()+right<=width-16:
@@ -1180,7 +1180,7 @@ class WindowTests(unittest.TestCase):
             studio.workspace_tabs.select(studio.photography_page);studio.workspace_changed();studio.update()
             self.assertEqual(studio.workspace_tabs.winfo_y(),before)
             self.assertEqual((studio.jpeg_quality.get(),studio.filename_suffix.get(),studio.publish_scope.get()),("95","_custom","all"))
-        catalog=next(button for label,button,_ in studio.action_buttons if label=="Published catalog")
+        catalog=next(button for label,button,_ in studio.action_buttons if label=="Published Catalog")
         with patch.object(photo_studio.subprocess,"Popen") as launch:catalog.invoke()
         self.assertEqual(Path(launch.call_args.args[0][1]).name,"edit_tags.py")
 
@@ -1195,6 +1195,19 @@ class WindowTests(unittest.TestCase):
         index=next(i for i,(label,_,_) in enumerate(studio.hidden_actions) if label=="Remove original from list")
         self.assertEqual(studio.action_menu.entrycget(index,"state"),"disabled")
         dialog.destroy()
+
+    def test_toolbar_menu_dispatches_all_actions_and_uses_current_disabled_states(self):
+        studio=self.studio()
+        callbacks=[Mock() for _ in studio.action_buttons]
+        studio.hidden_actions=[(label,button,callback) for (label,button,_),callback in zip(studio.action_buttons,callbacks)]
+        studio.populate_action_menu()
+        for index,((label,button,_),callback) in enumerate(zip(studio.hidden_actions,callbacks)):
+            self.assertEqual(studio.action_menu.entrycget(index,"state"),str(button.cget("state")))
+            studio.action_menu.invoke(index)
+            if str(button.cget("state"))=="disabled":callback.assert_not_called()
+            else:callback.assert_called_once_with()
+        self.assertEqual(studio.export_preview_button.cget("text"),"Preview publish")
+        self.assertEqual(studio.publish_button.cget("text"),"Publish")
 
     def test_small_crop_handles_select_nearest_edge(self):
         studio=self.studio();viewport=studio.viewport
