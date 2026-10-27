@@ -649,3 +649,16 @@ body.ed-page #accordion .r39-media-row .square video {
 html { background-color: var(--site-canvas); }
 body { background-color: var(--site-canvas) !important; }
 
+
+/* Compact mobile identity and navigation retain comfortable link targets. */
+@media (max-width:680px) {
+  .photography-page .site-nav-2026 .nav-inner { padding-block:6px; gap:0; }
+  .photography-page .site-nav-2026 .nav-logo { width:36px; height:36px; }
+  .photography-page .site-nav-2026 .nav-brand { min-height:40px; gap:8px; }
+  .photography-page .site-nav-2026 .nav-links { width:100%; gap:0 24px; }
+  .photography-page .site-nav-2026 .nav-links a {
+    display:flex; align-items:center; min-height:44px; padding-block:8px;
+  }
+  html { scroll-padding-top:108px; }
+  [id] { scroll-margin-top:108px; }
+}

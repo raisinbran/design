@@ -101,3 +101,22 @@
   z-index: 0;
 }
 .photography-page .photo-filter-status { display: none !important; }
+
+/* A native menu exposes every tag without a sideways gesture on phones. */
+.photo-filter-mobile { display:none; }
+@media (max-width:720px) {
+  .photography-page .photo-filter-chips { display:none; }
+  .photography-page .photo-filter-mobile {
+    display:flex; align-items:center; gap:12px; width:100%;
+    color:#55636a; font-size:13px;
+  }
+  .photo-filter-mobile select {
+    flex:1; min-width:0; min-height:44px; padding:8px 12px;
+    border:1px solid #d3dcde; border-radius:8px;
+    background:#fff; color:#2d454a; font:inherit; font-size:16px;
+  }
+  .photo-filter-mobile select:focus-visible {
+    outline:3px solid #aa7e4e; outline-offset:2px;
+  }
+  .photography-page .photo-justified-row { justify-content:center; }
+}

@@ -181,12 +181,16 @@
           : width < 1024 ? (hasPortrait ? 440 : 280)
           : desiredRowHeight(rowPhotos, hasPortrait);
         const standardMax = rowPhotos.some(p => priorityValue(p) >= 2) ? 640 : 590;
-        const maximum = width < 720 ? Math.min(standardMax, width * 1.2) : standardMax;
+        // Small screens need a visible continuation below each photograph.
+        // Leave room for the surrounding navigation and the next row.
+        const maximum = width < 720
+          ? Math.min(360, (window.innerHeight || 750) * 0.48)
+          : standardMax;
         const exact = (width - gap * (count - 1)) / sum;
-        // Interior rows always fill the gallery, even above the preferred height.
-        // Only the final row may stay short to avoid oversized leftover photos.
+        // Desktop interior rows fill the gallery. Mobile rows may leave side space
+        // to keep tall photographs within a comfortable viewing height.
         const cap = count === 1 ? Math.min(maximum, desired + (hasPortrait ? 15 : 40)) : maximum;
-        const height = end === n ? Math.min(exact, cap) : exact;
+        const height = width < 720 || end === n ? Math.min(exact, cap) : exact;
         const used = sum * height + gap * (count - 1);
         let penalty = 10 + 110 * Math.pow(Math.log(height / desired), 2);
         penalty += 180 * Math.pow(Math.max(0, width - used) / width, 2);
