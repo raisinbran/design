@@ -20,9 +20,12 @@ function element() {
 }
 function harness(customPhotos, customRatios) {
   const nodes = { "photo-gallery": element(), "photo-filters": element(), "photo-empty": element() };
-  const context = vm.createContext({ window: { addEventListener() {} },
+  const resizeHandlers = {};
+  const context = vm.createContext({ window: { addEventListener(name, callback) {
+    (resizeHandlers[name] ||= []).push(callback);
+  } },
     document: { getElementById: id => nodes[id], createElement: element, querySelector: () => null },
-    requestAnimationFrame() {}, cancelAnimationFrame() {} });
+    requestAnimationFrame(callback) { callback(); }, cancelAnimationFrame() {} });
   vm.runInContext(fs.readFileSync(path.join(root, "js/photography-catalog.js"), "utf8"), context);
   if (customPhotos) {
     context.window.PORTFOLIO_PHOTOS = customPhotos;
@@ -34,8 +37,12 @@ function harness(customPhotos, customRatios) {
   const api = context.window.PortfolioPhotographyGallery;
   const all = context.window.PORTFOLIO_PHOTOS.filter(photo => photo.visible !== false && photo.file && photo.alt);
   const ratios = context.window.PHOTO_ASPECT_RATIOS;
-  function check(tags, width) {
+  function check(tags, width, viewportHeight = 750, viewportWidth = width) {
     nodes["photo-gallery"].clientWidth = width;
+    context.window.innerHeight = viewportHeight;
+    context.window.innerWidth = viewportWidth;
+    const cappedRows = width < 720 || (viewportWidth <= 1024 && viewportHeight <= 500);
+    const viewingCap = Math.min(360, viewportHeight * 0.48);
     api.setFilters(tags);
     const expected = all.filter(photo => !tags.length || tags.some(tag => (photo.tags || []).includes(tag)));
     const rows = nodes["photo-gallery"].children;
@@ -53,19 +60,19 @@ function harness(customPhotos, customRatios) {
       const priority = expected.filter(photo => files.includes(photo.file)).some(photo =>
         ["featured", "portraitBoost"].includes(photo.displayPriority) || photo.featured);
       const cap = width < 720 ? Math.min(priority ? 640 : 590, width * 1.2) : priority ? 640 : 590;
-      if (width < 720) assert(height <= 360 + 0.01, "Mobile row exceeds viewing height");
+      if (cappedRows) assert(height <= viewingCap + 0.01, "Mobile row exceeds viewing height");
       if (row === rows.at(-1)) assert(height <= cap + 0.01, "Final row exceeds standard height limit");
-      else if (width >= 720) assert(Math.abs(used - width) < 0.01, "Interior rows must fill the width regardless of height");
+      else if (!cappedRows) assert(Math.abs(used - width) < 0.01, "Interior rows must fill the width regardless of height");
       assert(used <= width + 0.01, "Horizontal overflow");
       const ratioSum = files.reduce((sum, file) => sum + (ratios[file] || 1.5), 0);
       const exact = (width - gap * (files.length - 1)) / ratioSum;
-      if (files.length > 1 && exact <= (width < 720 ? 360 : cap)) {
+      if (files.length > 1 && exact <= (cappedRows ? viewingCap : cap)) {
         assert(Math.abs(used - width) < 0.01, "Multi-photo row should fill width, including the final row");
       }
     }
     return rows;
   }
-  return { check, all, nodes, context };
+  return { check, all, nodes, context, resizeHandlers };
 }
 const gallery = harness();
 const tags = gallery.context.window.PHOTO_TAG_LABELS;
@@ -75,6 +82,31 @@ for (const width of [288, 343, 360, 398, 688, 768, 1000, 1136, 1600]) {
     gallery.check(selected, width); cases++;
   }
 }
+// Measured landscape chrome: 95px navigation offset + 64px filter strip.
+// With a row aligned below it, show at least 24px of the following row.
+for (const [viewportWidth, viewportHeight, galleryWidth] of [[844,390,781],[932,430,869]]) {
+  for (const selected of [[], ...tags.map(tag => [tag]), ...tags.flatMap((a,i) => tags.slice(i+1).map(b => [a,b])), ["unknown"]]) {
+    const rows = gallery.check(selected, galleryWidth, viewportHeight, viewportWidth);
+    for (const row of rows.slice(0,-1)) {
+      const height = parseFloat(row.children[0].style.height);
+      assert(viewportHeight - 159 - height - 12 >= 24, "Next row must remain recognizable below landscape photos");
+    }
+    cases++;
+  }
+}
+// Height-only resizing must recompute rows; desktop widths keep their geometry.
+const desktopRows = () => gallery.nodes["photo-gallery"].children.map(row =>
+  row.children.map(tile => [tile.dataset.file,tile.style.width,tile.style.height]));
+gallery.check([],1136,900,1440);
+const desktopBefore = desktopRows();
+gallery.context.window.innerHeight = 390;
+gallery.resizeHandlers.resize.forEach(callback => callback());
+assert.deepEqual(desktopRows(),desktopBefore,"Short desktop windows must retain the normal layout");
+gallery.check([],781,844,844);
+gallery.context.window.innerHeight = 390;
+gallery.resizeHandlers.resize.forEach(callback => callback());
+assert(gallery.nodes["photo-gallery"].children.every(row =>
+  parseFloat(row.children[0].style.height) <= 390 * .48 + .01),"Height-only mobile resize must cap existing rows");
 const photos = Array.from({ length: 6 }, (_, index) => ({ file: `${index}.jpg`, alt: "Synthetic photograph", tags: [] }));
 const portraits = harness(photos, Object.fromEntries(photos.map(photo => [photo.file, 2 / 3])));
 assert.deepEqual(portraits.check([], 1136).map(row => row.children.length), [3, 3]);

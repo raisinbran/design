@@ -128,6 +128,11 @@
   function render() {
     const width = gallery.clientWidth;
     if (!width) return;
+    const viewportHeight = window.innerHeight || 750;
+    // Wide phones in landscape still need room to reveal the following row.
+    // Keep normal desktop rows unchanged, including short desktop windows.
+    const cappedRows = width < 720 ||
+      ((window.innerWidth || width) <= 1024 && viewportHeight <= 500);
 
     const gap = width < 720 ? 8 : 12;
     const n = tiles.length;
@@ -183,14 +188,14 @@
         const standardMax = rowPhotos.some(p => priorityValue(p) >= 2) ? 640 : 590;
         // Small screens need a visible continuation below each photograph.
         // Leave room for the surrounding navigation and the next row.
-        const maximum = width < 720
-          ? Math.min(360, (window.innerHeight || 750) * 0.48)
+        const maximum = cappedRows
+          ? Math.min(360, viewportHeight * 0.48)
           : standardMax;
         const exact = (width - gap * (count - 1)) / sum;
         // Desktop interior rows fill the gallery. Mobile rows may leave side space
         // to keep tall photographs within a comfortable viewing height.
         const cap = count === 1 ? Math.min(maximum, desired + (hasPortrait ? 15 : 40)) : maximum;
-        const height = width < 720 || end === n ? Math.min(exact, cap) : exact;
+        const height = cappedRows || end === n ? Math.min(exact, cap) : exact;
         const used = sum * height + gap * (count - 1);
         let penalty = 10 + 110 * Math.pow(Math.log(height / desired), 2);
         penalty += 180 * Math.pow(Math.max(0, width - used) / width, 2);
