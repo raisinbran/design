@@ -1,0 +1,2 @@
+Photography publish/readback/source byte preservation: PASS (dialogs/viewer mocked)
+Engineering import/save/Reload/source byte preservation: PASS (picker/confirmation mocked)
