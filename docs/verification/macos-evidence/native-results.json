@@ -1,0 +1,40 @@
+{
+  "export": "/private/tmp/portfolio-macos-synthetic/photography/published/mac-native-export.jpg",
+  "export_dimensions": {
+    "width": 1080,
+    "height": 721,
+    "aspectRatio": 1.49791956
+  },
+  "original_sha256_before": "b28205e7484bbc7325a5e37e6a1e9bf20433f6541a808119dadedb525d5eddb1",
+  "original_sha256_after": "b28205e7484bbc7325a5e37e6a1e9bf20433f6541a808119dadedb525d5eddb1",
+  "source_unchanged": true,
+  "trash_source_absent": true,
+  "trash_fixture_sha256": "c3e7f17ca08fae784e7065584c6fe947c0f8d047434462b7833eecd6a3c062a1",
+  "trash_fixture_name": "mac-native-trash-fixture-20261027.txt",
+  "audio": {
+    "soft": {
+      "exit_code": 0,
+      "stderr": "",
+      "audibility": "not observable through tool"
+    },
+    "system": {
+      "exit_code": 0,
+      "stderr": "",
+      "audibility": "not observable through tool"
+    }
+  },
+  "silent_adapter_returned": true,
+  "environment": {
+    "macOS": "27.0.1",
+    "architecture": "arm64",
+    "python": "3.14.10",
+    "packages": {
+      "Pillow": "13.0.0",
+      "numpy": "2.5.4",
+      "opencv-python-headless": "5.0.0.93",
+      "pillow_heif": "1.8.1",
+      "beautifulsoup4": "4.15.0",
+      "Send2Trash": "2.1.0"
+    }
+  }
+}

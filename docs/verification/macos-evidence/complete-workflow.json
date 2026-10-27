@@ -1,0 +1,24 @@
+{
+  "photography_publish_catalog_reload": "PASS",
+  "engineering_import_edit_save_reload": "PASS",
+  "original_sha256_before": "b28205e7484bbc7325a5e37e6a1e9bf20433f6541a808119dadedb525d5eddb1",
+  "original_sha256_after": "b28205e7484bbc7325a5e37e6a1e9bf20433f6541a808119dadedb525d5eddb1",
+  "catalog_photo": {
+    "file": "mac-grid_workflow.jpg",
+    "alt": "Synthetic Mac grid workflow",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "aspectRatio": 1.5,
+    "tags": [],
+    "thumbnail": "mac-grid_workflow.jpg.webp",
+    "thumbnailVersion": "67f153b818f0",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 533,
+    "thumbnailFramed": true,
+    "mediaVersion": "0d0dfff15442"
+  },
+  "engineering_title": "Mac synthetic saved project",
+  "repository": "/private/tmp/portfolio-macos-synthetic",
+  "dialogs": "mocked; not native usability evidence"
+}
