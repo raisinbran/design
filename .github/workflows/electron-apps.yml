@@ -1,0 +1,55 @@
+name: Electron apps
+
+on:
+  push:
+    paths:
+      - "tools/*-electron/**"
+      - "tools/portfolio-electron-shared/**"
+      - "package*.json"
+      - "tsconfig.json"
+      - ".npmrc"
+      - ".github/workflows/electron-apps.yml"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-packages:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PORTFOLIO_QA_OUTPUT: ${{ github.workspace }}/electron-qa-artifacts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test:electron
+      - run: npm run build:electron
+      - run: npx playwright install chromium
+      - run: npm run qa:browser
+      - run: npm run make --workspace @portfolio/studio
+      - run: npm run make --workspace @portfolio/processor
+      - run: npm run qa:packages
+      - run: npm run qa:native
+      - run: npm run benchmark:electron
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: electron-${{ runner.os }}-${{ runner.arch }}
+          path: |
+            tools/portfolio-studio-electron/out/make/**
+            tools/photo-processor-electron/out/make/**
+            electron-qa-artifacts/**
+      - run: git diff --exit-code

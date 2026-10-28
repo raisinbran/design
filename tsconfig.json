@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ],
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "react": [
+        "node_modules/@types/react/index.d.ts"
+      ],
+      "react/*": [
+        "node_modules/@types/react/*"
+      ],
+      "react-dom/*": [
+        "node_modules/@types/react-dom/*"
+      ],
+      "heic-decode": [
+        "tools/portfolio-studio-electron/node_modules/heic-decode"
+      ],
+      "sharp": [
+        "tools/portfolio-studio-electron/node_modules/sharp"
+      ],
+      "cheerio": [
+        "tools/portfolio-studio-electron/node_modules/cheerio"
+      ]
+    }
+  },
+  "include": [
+    "tools/*-electron/**/*.ts",
+    "tools/*-electron/**/*.tsx",
+    "tools/portfolio-electron-shared/**/*.ts",
+    "tools/portfolio-electron-shared/**/*.tsx"
+  ]
+}

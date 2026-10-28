@@ -17,3 +17,12 @@ tools/portfolio-studio/originals/
 
 # Portfolio Studio generated backups
 _old/
+
+# Electron development and packaged artifacts
+node_modules/
+.vite/
+out/
+*.tsbuildinfo
+
+# Optional Electron QA artifacts
+electron-qa-artifacts/

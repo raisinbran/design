@@ -15,6 +15,7 @@
   const photography = picks.flatMap(file => {
     const photo = photos.find(p => p.file === file && p.visible !== false);
     if (!photo) return [];
+    if (photo.publishedImage && !photo.thumbnail) return "";
     const folder = photo.thumbnail ? "thumbnails" : "published";
     const name = photo.thumbnail || photo.file;
     const version = photo.thumbnail ? photo.thumbnailVersion : photo.mediaVersion;

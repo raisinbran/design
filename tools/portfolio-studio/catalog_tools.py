@@ -127,7 +127,11 @@ def validate_catalog(catalog,repo=None):
                 raise ValueError(f"Crop out of bounds in {filename}")
         if not isinstance(p.get("tags"),list) or any(t not in tags for t in p["tags"]):
             raise ValueError(f"Unknown photo tag on {filename}")
-        if repo is not None and not (Path(repo)/"photography"/"published"/filename).is_file():
+        if "publishedImage" in p and type(p["publishedImage"]) is not bool:
+            raise ValueError("Invalid Published Image marker")
+        if p.get("publishedImage") is True and not thumbnail:
+            raise ValueError(f"Published Image requires thumbnail: {filename}")
+        if repo is not None and not p.get("publishedImage") and not (Path(repo)/"photography"/"published"/filename).is_file():
             raise ValueError(f"Missing publication image {filename}")
     return len(photos)
 
@@ -139,7 +143,9 @@ def generated_js(catalog):
         keep={k:v for k,v in p.items() if k not in ("aspectRatio","tagStatus","altNeedsReview")}
         photos.append(keep)
         crop=p.get("galleryCrop")
-        ratios[p["file"]]=p["aspectRatio"] * crop["width"]/crop["height"] if crop else p["aspectRatio"]
+        # Canonical floating ratios match Electron's generated script after JSON round trips.
+        ratio=float(p["aspectRatio"])
+        ratios[p["file"]]=ratio * crop["width"]/crop["height"] if crop else ratio
     return (
        SENTINEL +
        "window.PORTFOLIO_PHOTOS = " + json.dumps(photos,ensure_ascii=False,indent=2) + ";\n" +

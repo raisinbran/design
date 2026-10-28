@@ -65,7 +65,7 @@
     img.src = photo.thumbnail
       ? "photography/thumbnails/" + encodeURIComponent(photo.thumbnail)
         + (photo.thumbnailVersion ? `?v=${encodeURIComponent(photo.thumbnailVersion)}` : "")
-      : path(photo.file);
+      : photo.publishedImage ? "" : path(photo.file);
     img.alt = photo.alt;
 
     /* portfolio-crop:stage6c */
