@@ -62,3 +62,19 @@
 }
 
 .r76-home .home-intro-divider {border:0;border-top:1px solid #d5dadd;width:100%;height:0;margin:0 0 18px;}
+
+/* Match Engineering project content insets and heading color. */
+.r76-home .r63-entry { padding:21px 27px; }
+.r76-home .r63-entry-label { color:#202a30; }
+@media (max-width:720px) {
+  .r76-home .r63-entry { padding:18px; }
+}
+/* Aim for a 40vh header without stretching or cropping the source image.
+   The existing 1550px width cap and available container width take priority. */
+.r76-home .hero-feature .fullbleed-hero { background:transparent; }
+.r76-home .hero-feature .fullbleed-hero img {
+  width:min(100%, 76.28vh, 1550px) !important;
+  height:auto !important;
+  max-width:1550px;
+  object-fit:contain;
+}
