@@ -64,6 +64,39 @@
     const counts = gallery.setFilters(Array.from(selection));
     // Counter intentionally hidden. Filtering remains accessible through button states.
   }
+  // Mobile chips read left-to-right across the first row, then across the
+  // second. Explicit placement prevents a third row when tags overflow.
+  function arrangeMobileChips() {
+    const mobile = window.matchMedia("(max-width: 720px)").matches;
+    const chips = Array.from(group.children);
+    if (!mobile) {
+      chips.forEach(chip => { chip.style.gridRow = ""; chip.style.gridColumn = ""; });
+      return;
+    }
+    const available = group.clientWidth;
+    const gap = parseFloat(getComputedStyle(group).columnGap) || 7;
+    let columns = 0;
+    let occupied = 0;
+    for (const chip of chips) {
+      const chipWidth = chip.getBoundingClientRect().width;
+      const nextWidth = occupied + (columns ? gap : 0) + chipWidth;
+      if (columns && nextWidth > available) break;
+      occupied = nextWidth;
+      columns++;
+    }
+    columns = Math.max(1, columns);
+    chips.forEach((chip, index) => {
+      const firstRow = index < columns;
+      chip.style.gridRow = firstRow ? "1" : "2";
+      chip.style.gridColumn = String(firstRow ? index + 1 : index - columns + 1);
+    });
+  }
+  if (typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(arrangeMobileChips).observe(group);
+  }
+  window.addEventListener("resize", arrangeMobileChips, { passive:true });
+  arrangeMobileChips();
+
   const nav = document.querySelector(".site-nav-2026");
   function updateTop() {
     if (!nav) return;
