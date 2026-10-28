@@ -123,13 +123,12 @@
   .photography-page .photo-justified-row { justify-content:center; }
 }
 
-/* Size short tag chips to their labels, including inside the mobile grid. */
-.photography-page .photo-filter-chip {
-  width:max-content;
-  min-width:0;
-  padding-inline:8px;
-  justify-self:start;
-}
+/* Keep the original padding; prevent short labels (All, Day) from
+   stretching to match longer labels in the same mobile grid column. */
 @media (max-width:720px) {
-  .photography-page .photo-filter-chip { padding-inline:8px; }
+  .photography-page .photo-filter-chip {
+    width:max-content;
+    min-width:0;
+    justify-self:start;
+  }
 }
