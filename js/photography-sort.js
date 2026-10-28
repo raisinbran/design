@@ -74,7 +74,9 @@
 
   window.PortfolioSortedPhotos = candidates => {
     if (!ready || candidates.length < 2) return candidates;
-    const signature = candidates.map(photo => photo.file).join("|");
+    const mobile = window.matchMedia("(max-width: 720px)").matches;
+    const signature = (mobile ? "mobile|" : "desktop|") +
+      candidates.map(photo => photo.file).join("|");
     if (orderCache.has(signature)) return orderCache.get(signature);
     const remaining = candidates.slice();
     const proposed = [remaining.shift()];
@@ -87,9 +89,11 @@
       }
       proposed.push(remaining.splice(best, 1)[0]);
     }
-    const reversed = proposed.reverse();
-    orderCache.set(signature, reversed);
-    return reversed;
+    // Desktop keeps the existing reverse suggestion. Mobile uses its
+    // opposite order without modifying the underlying cached arrangement.
+    const result = mobile ? proposed : proposed.reverse();
+    orderCache.set(signature, result);
+    return result;
   };
 
   async function initialize() {
