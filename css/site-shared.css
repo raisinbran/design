@@ -117,3 +117,13 @@ html body video {
   /* Prevent iOS from requiring a first tap to activate the hover artwork. */
   body .site-nav-2026 .nav-brand:hover .nav-logo .hover { opacity:0; }
 }
+
+/* Center the two mobile navigation groups without changing desktop alignment. */
+@media (max-width:680px) {
+  body .site-nav-2026 .nav-inner { align-items:center; }
+  body .site-nav-2026 .nav-brand { justify-content:center; }
+  body .site-nav-2026 .nav-links {
+    justify-content:center;
+    gap:0 24px;
+  }
+}
