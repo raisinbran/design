@@ -164,6 +164,58 @@
       gallery.appendChild(wrapper);
     }
 
+    // On phones, separate orientations while retaining the order within each
+    // orientation. Pair portraits; an unpaired portrait is always the last row.
+    // Landscape photographs get the full row individually.
+    if ((window.innerWidth || width) <= 720) {
+      const portraitIndices = [];
+      const landscapeIndices = [];
+      for (let index = 0; index < n; index++) {
+        (r[index] < 0.95 ? portraitIndices : landscapeIndices).push(index);
+      }
+      // Group portrait pairs by the position of their first photograph,
+      // leaving a final unmatched portrait until after every complete row.
+      const groups = landscapeIndices.map(index => ({ index, members:[index] }));
+      for (let offset = 0; offset + 1 < portraitIndices.length; offset += 2) {
+        groups.push({
+          index:portraitIndices[offset],
+          members:portraitIndices.slice(offset, offset + 2)
+        });
+      }
+      groups.sort((left, right) => left.index - right.index);
+      if (portraitIndices.length % 2) {
+        groups.push({
+          index:portraitIndices[portraitIndices.length - 1],
+          members:[portraitIndices[portraitIndices.length - 1]]
+        });
+      }
+      for (const group of groups) {
+        const rowRatios = group.members.map(index => r[index]);
+        const count = group.members.length;
+        const exact = (width - gap * (count - 1)) /
+          rowRatios.reduce((total, ratio) => total + ratio, 0);
+        const portraitRow = rowRatios[0] < 0.95;
+        const limit = Math.min(360, viewportHeight * 0.48);
+        const desired = portraitRow ? Math.min(420, width * 0.9) : 270;
+        const height = Math.min(exact, limit, desired);
+        const wrapper = document.createElement("div");
+        wrapper.className = "photo-justified-row";
+        if (portraitRow) wrapper.classList.add("photo-portrait-row");
+        if (group.members.length === 1 && portraitRow) {
+          wrapper.classList.add("photo-final-row");
+        }
+        wrapper.style.gap = gap + "px";
+        for (const index of group.members) {
+          const tile = tiles[index];
+          tile.style.width = (height * r[index]) + "px";
+          tile.style.height = height + "px";
+          wrapper.appendChild(tile);
+        }
+        gallery.appendChild(wrapper);
+      }
+      return;
+    }
+
     // Plan the entire filtered set together, including the final row. Natural
     // aspect ratios and catalog order are preserved; no image is cropped here.
     const dp = Array(n + 1).fill(Infinity);
