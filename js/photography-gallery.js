@@ -197,7 +197,9 @@
         const portraitRow = rowRatios[0] < 0.95;
         const limit = Math.min(360, viewportHeight * 0.48);
         const desired = portraitRow ? Math.min(420, width * 0.9) : 270;
-        const height = Math.min(exact, limit, desired);
+        // Single non-portrait images fill the full row at natural aspect ratio.
+        // Portrait pairs retain the mobile height limit.
+        const height = portraitRow ? Math.min(exact, limit, desired) : exact;
         const wrapper = document.createElement("div");
         wrapper.className = "photo-justified-row";
         if (portraitRow) wrapper.classList.add("photo-portrait-row");
