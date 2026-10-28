@@ -1,0 +1,444 @@
+/* Engineering and Archive project presentation and media framing. */
+:root {
+  --gallery-gap: 12px;
+  --pilot-font: Inter,"Segoe UI",Arial,sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.engineering-option-a {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--pilot-font);
+  background: #fff;
+  color: #202a30;
+}
+
+.pilot-main {
+  width: 100%;
+  max-width: 1200px;
+  padding-inline: 32px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+.pilot-kicker {
+  font-size: 12px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #687078;
+  margin: 0 0 12px;
+}
+
+.pilot-deck {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 14px 0 0;
+  color: #55636a;
+}
+
+.pilot-notice {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #575f65;
+  margin: 0 0 20px;
+}
+
+.project {
+  margin: 0 0 24px;
+  border: 1px solid transparent;
+  transition: border-color .18s ease,box-shadow .18s ease;
+}
+
+.project[open] {
+  border-color: #c9d3d5;
+  box-shadow: 0 5px 18px rgba(17,35,42,.07);
+}
+
+.project-header {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 5em;
+  padding: 21px 27px;
+  cursor: pointer;
+  color: #fff;
+  list-style: none;
+  overflow: hidden;
+  border: 0;
+  transition: box-shadow .18s ease;
+}
+
+.project-header::-webkit-details-marker {
+  display: none;
+}
+
+.project--hero>.project-header {
+  min-height: 8em;
+}
+
+.project-header-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-size: cover;
+  background-position: center;
+  filter: contrast(1.02);
+}
+
+.project-header-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg,rgba(10,18,23,.77) 0%,rgba(10,18,23,.43) 36%,rgba(10,18,23,.12) 65%,rgba(10,18,23,0) 85%);
+}
+
+.project--hero .project-header-shade {
+  background: linear-gradient(90deg,rgba(7,15,21,.91) 0%,rgba(7,15,21,.65) 31%,rgba(7,15,21,.19) 62%,rgba(7,15,21,0) 83%);
+}
+
+.project-header-text {
+  font-weight: 350;
+  font-size: clamp(17px,1.65vw,20px);
+  line-height: 1.25;
+  letter-spacing: -.012em;
+  max-width: calc(100% - 58px);
+}
+
+.project-header:hover {
+  box-shadow: 0 7px 22px rgba(16,36,42,.24),0 0 0 2px rgba(65,106,115,.18);
+}
+
+.project-header:focus-visible {
+  outline: 3px solid #b07840;
+  outline-offset: 3px;
+}
+
+.project[open]>.project-header {
+  box-shadow: inset 0 -3px #97aaad;
+}
+
+.project[open]>.project-header:hover {
+  box-shadow: inset 0 -3px #97aaad,0 7px 22px rgba(16,36,42,.20);
+}
+
+.project-chevron-wrap {
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  margin-left: auto;
+  border-radius: 3px;
+  background: rgba(12,24,31,.72);
+  border: 1px solid rgba(255,255,255,.35);
+  box-shadow: 0 1px 5px rgba(0,0,0,.12);
+}
+
+.project-chevron {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform .2s ease;
+}
+
+.project[open] .project-chevron {
+  transform: translateY(2px) rotate(225deg);
+}
+
+.project-body {
+  padding: 26px 0 38px;
+}
+
+.project-body h2 {
+  font-weight: 350;
+  font-size: clamp(32px,4vw,48px);
+  letter-spacing: -.018em;
+  line-height: 1.2;
+  margin: 0 0 14px;
+}
+
+.project-title-divider {
+  border: 0;
+  border-top: 1px solid #d5dadd;
+  margin: 0 0 18px;
+  width: 100%;
+  height: 0;
+}
+
+.project-prose {
+  font: 400 15px/1.6 Inter,"Segoe UI",Arial,sans-serif;
+  color: #333;
+}
+
+.project-prose p {
+  margin: 0 0 12px;
+}
+
+.project-prose strong {
+  font-weight: 650;
+}
+
+.project-body .lead {
+  font-size: clamp(17px,1.65vw,20px);
+  font-weight: 300;
+  line-height: 1.5;
+  color: #58626a;
+}
+
+.project-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gallery-gap);
+  width: 100%;
+  margin-top: 24px;
+}
+
+.project-row {
+  display: flex;
+  width: 100%;
+  gap: var(--gallery-gap);
+  align-items: flex-start;
+}
+
+.project-media {
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 auto;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  background: #f4f4f4;
+}
+
+.project-media img,.project-media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--media-position,center);
+}
+
+.project-media figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 2px;
+  max-height: 90%;
+  padding: 18px 14px 11px;
+  color: #fff;
+  background: linear-gradient(to bottom,rgba(8,16,20,0),rgba(8,16,20,.62) 48%,rgba(8,16,20,.9) 100%);
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45);
+  transition: opacity .18s ease;
+}
+
+.project-media:hover figcaption,.project-media:focus-within figcaption {
+  opacity: 1;
+}
+
+.project-media .caption-main {
+  font: 400 15px/1.4 Inter,"Segoe UI",Arial,sans-serif;
+}
+
+.project-media figcaption small {
+  font: 400 12px/1.4 Inter,"Segoe UI",Arial,sans-serif;
+  margin-top: 2px;
+}
+
+.pilot-skip {
+  position: absolute;
+  top: -120px;
+  left: 12px;
+  z-index: 10000;
+  background: #fff;
+  padding: 10px;
+}
+
+.pilot-skip:focus {
+  top: 12px;
+}
+
+@media (hover:none) {
+  .project-media figcaption {
+    opacity: 1;
+  }
+}
+
+@media (max-width:720px) {
+  :root {
+    --gallery-gap: 8px;
+  }
+
+  .pilot-main {
+    padding-inline: 16px;
+  }
+
+  .project-header {
+    padding: 18px;
+    min-height: 5em;
+  }
+
+  .project--hero>.project-header {
+    min-height: 8em;
+  }
+
+  .project-header-text {
+    font-size: 17px;
+  }
+
+  .project-body {
+    padding-top: 22px;
+  }
+
+  .project-media figcaption {
+    padding: 13px 11px 9px;
+  }
+}
+
+@media (min-width:721px) and (max-width:1023px) {
+  .pilot-main {
+    padding-inline: 24px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .project-header,.project-media figcaption,.project-chevron,.project {
+    transition: none;
+  }
+}
+
+.project-body {
+  padding: 25px 27px 38px;
+}
+
+.project-gallery {
+  margin-top: 22px;
+}
+
+.project-media video::-webkit-media-controls {
+  display: none !important;
+}
+
+@media (max-width:720px) {
+  .project-body {
+    padding: 22px 18px 30px;
+  }
+}
+
+.project-media.media-level-vibration-fixture > img {
+  transform: rotate(-1deg) scale(1.035);
+  transform-origin: 50% 50%;
+}
+
+.project-media.media-zoom-check-valve > img {
+  transform: none;
+  transform-origin: 50% 50%;
+}
+
+.project-media.media-zoom-ubertato > img {
+  transform: none;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.project-body > h2 {
+  font-family: Inter,"Segoe UI",Arial,sans-serif;
+  font-size: clamp(36px,4.5vw,52px);
+  font-weight: 300;
+  letter-spacing: -.025em;
+  line-height: 1.16;
+  margin: 0 0 8px;
+}
+
+.project-body > .lead {
+  font-family: Inter,"Segoe UI",Arial,sans-serif;
+  font-size: clamp(18px,1.9vw,22px);
+  font-weight: 300;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+
+.project-title-divider {
+  margin: 0 0 18px;
+}
+
+body.engineering-option-a .project-gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  row-gap: 12px;
+  column-gap: 12px;
+  margin-inline: 0;
+  padding: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+body.engineering-option-a .project-gallery > .project-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 12px;
+  column-gap: 12px;
+  row-gap: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+body.engineering-option-a .project-gallery .project-media {
+  display: block;
+  box-sizing: border-box;
+  flex: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  max-width: none;
+}
+
+@media (max-width:720px) {
+  body.engineering-option-a .project-gallery,
+  body.engineering-option-a .project-gallery > .project-row {
+    gap: 8px;
+    row-gap: 8px;
+    column-gap: 8px;
+  }
+
+  body.engineering-option-a .project-gallery > .project-row {
+    row-gap: 0;
+  }
+}
+
+body.engineering-option-a .project-media.media-r54-valve-one > img {
+  transform: scale(1.59) !important;
+  transform-origin: 50% 44% !important;
+  object-position: 50% 44% !important;
+}
+
+body.engineering-option-a .project-media.media-r54-valve-two > img {
+  transform: none !important;
+  transform-origin: center !important;
+  object-position: center !important;
+}
+
+body.engineering-option-a .project-media.media-r54-ubertato > img {
+  transform: none !important;
+  object-fit: cover !important;
+  object-position: 58% 50% !important;
+}

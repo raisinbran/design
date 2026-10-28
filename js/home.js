@@ -55,7 +55,8 @@
       const image = document.createElement("img");
       image.alt = "";
       image.decoding = "async";
-      image.loading = "lazy";
+      // Decode detached slides immediately; lazy images can wait for DOM visibility.
+      image.loading = "eager";
       image.src = source;
       image.style.opacity = "0";
       image.style.zIndex = "0";

@@ -1,3 +1,114 @@
+/* Photography runtime: color ordering, justified gallery, and filter controls. */
+
+(() => {
+  "use strict";
+  // Match Portfolio Studio's Color harmony weights and greedy nearest-neighbor
+  // strategy. Keep the resulting order consistent across viewports.
+  const catalog = (window.PORTFOLIO_PHOTOS || []).filter(photo =>
+    photo.visible !== false && photo.file && photo.alt);
+  const ratios = window.PHOTO_ASPECT_RATIOS || {};
+  const key = "portfolio-color-features-v1";
+  let stored = {};
+  try { stored = JSON.parse(localStorage.getItem(key) || "{}"); }
+  catch (_) { stored = {}; }
+  const features = new Map();
+  const orderCache = new Map();
+  let ready = false;
+
+  function measure(photo) {
+    const revision = photo.thumbnailVersion || photo.mediaVersion || "";
+    const previous = stored[photo.file];
+    if (previous && previous.revision === revision && Array.isArray(previous.rgb)) {
+      features.set(photo.file, previous.rgb);
+      return Promise.resolve();
+    }
+    return new Promise(resolve => {
+      const image = new Image();
+      image.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const scale = Math.min(1, 110 / Math.max(image.naturalWidth, image.naturalHeight));
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          const context = canvas.getContext("2d", { willReadFrequently: true });
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          const bytes = context.getImageData(0, 0, canvas.width, canvas.height).data;
+          const rgb = [0, 0, 0];
+          for (let i = 0; i < bytes.length; i += 4) {
+            rgb[0] += bytes[i];
+            rgb[1] += bytes[i + 1];
+            rgb[2] += bytes[i + 2];
+          }
+          for (let channel = 0; channel < 3; channel++) rgb[channel] /= bytes.length / 4;
+          features.set(photo.file, rgb);
+          stored[photo.file] = { revision, rgb };
+        } catch (_) { features.set(photo.file, [128, 128, 128]); }
+        resolve();
+      };
+      image.onerror = () => { features.set(photo.file, [128, 128, 128]); resolve(); };
+      image.src = photo.thumbnail
+        ? "photography/thumbnails/" + encodeURIComponent(photo.thumbnail) +
+          (photo.thumbnailVersion ? "?v=" + encodeURIComponent(photo.thumbnailVersion) : "")
+        : "photography/published/" + encodeURIComponent(photo.file);
+    });
+  }
+
+  function proximity(first, second) {
+    const a = features.get(first.file) || [128, 128, 128];
+    const b = features.get(second.file) || [128, 128, 128];
+    const color = Math.hypot(...a.map((value, index) => value - b[index])) / 441.67;
+    const brightness = Math.abs(a.reduce((sum, v) => sum + v, 0) -
+      b.reduce((sum, v) => sum + v, 0)) / 765;
+    const saturation = Math.abs((Math.max(...a) - Math.min(...a)) -
+      (Math.max(...b) - Math.min(...b))) / 255;
+    const aTags = new Set(first.tags || []);
+    const bTags = new Set(second.tags || []);
+    const intersection = [...aTags].filter(tag => bTags.has(tag)).length;
+    const union = new Set([...aTags, ...bTags]).size;
+    const theme = 1 - intersection / Math.max(1, union);
+    const aRatio = ratios[first.file] || first.aspectRatio || 1.5;
+    const bRatio = ratios[second.file] || second.aspectRatio || 1.5;
+    const shape = Math.min(1, Math.abs(Math.log(Math.max(.1, aRatio) /
+      Math.max(.1, bRatio))) / 2);
+    return .64 * color + .22 * brightness + .06 * saturation +
+      .04 * theme + .04 * shape;
+  }
+
+  window.PortfolioSortedPhotos = candidates => {
+    if (!ready || candidates.length < 2) return candidates;
+    const signature = candidates.map(photo => photo.file).join("|");
+    if (orderCache.has(signature)) return orderCache.get(signature);
+    const remaining = candidates.slice();
+    const proposed = [remaining.shift()];
+    while (remaining.length) {
+      const current = proposed[proposed.length - 1];
+      let best = 0;
+      for (let index = 1; index < remaining.length; index++) {
+        if (proximity(current, remaining[index]) < proximity(current, remaining[best]))
+          best = index;
+      }
+      proposed.push(remaining.splice(best, 1)[0]);
+    }
+    // Use the same Color harmony order across desktop and mobile.
+    const result = proposed;
+    orderCache.set(signature, result);
+    return result;
+  };
+
+  async function initialize() {
+    // Limit parallel decoding to keep mobile browsers responsive.
+    for (let offset = 0; offset < catalog.length; offset += 4)
+      await Promise.all(catalog.slice(offset, offset + 4).map(measure));
+    try { localStorage.setItem(key, JSON.stringify(stored)); }
+    catch (_) { /* Storage is optional. */ }
+    ready = true;
+    window.PortfolioPhotographyGallery?.setFilters(
+      window.PortfolioPhotographySelectedTags || []);
+  }
+  initialize();
+})();
+
+
 (() => {
   "use strict";
 
@@ -311,4 +422,91 @@
   });
 
   render();
+})();
+
+
+(() => {
+  "use strict";
+  const gallery = window.PortfolioPhotographyGallery;
+  const host = document.getElementById("photo-filters");
+  if (!gallery || !host) return;
+  const labels = window.PHOTO_TAG_LABELS || [];
+  if (!Array.isArray(labels) || !labels.length) return;
+
+  const selection = new Set();
+  const group = document.createElement("div");
+  group.className = "photo-filter-chips";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-label", "Filter photographs by tag");
+
+  const buttons = new Map();
+  function createChip(text, isAll) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "photo-filter-chip";
+    button.textContent = text;
+    button.setAttribute("aria-pressed", isAll ? "true" : "false");
+    button.addEventListener("click", () => {
+      selection.clear();
+      if (!isAll) selection.add(text);
+      update();
+    });
+    group.appendChild(button);
+    buttons.set(text, button);
+  }
+  createChip("All", true);
+  labels.forEach(label => createChip(label, false));
+  host.append(group);
+
+  function update() {
+    window.PortfolioPhotographySelectedTags = Array.from(selection);
+    buttons.get("All").setAttribute("aria-pressed", String(selection.size === 0));
+    labels.forEach(tag => buttons.get(tag).setAttribute("aria-pressed", String(selection.has(tag))));
+    gallery.setFilters(Array.from(selection));
+  }
+  // Mobile chips read left-to-right across the first row, then across the
+  // second. Explicit placement prevents a third row when tags overflow.
+  function arrangeMobileChips() {
+    const mobile = window.matchMedia("(max-width: 720px)").matches;
+    const chips = Array.from(group.children);
+    if (!mobile) {
+      chips.forEach(chip => { chip.style.gridRow = ""; chip.style.gridColumn = ""; });
+      return;
+    }
+    const available = group.clientWidth;
+    const gap = parseFloat(getComputedStyle(group).columnGap) || 7;
+    let columns = 0;
+    let occupied = 0;
+    for (const chip of chips) {
+      const chipWidth = chip.getBoundingClientRect().width;
+      const nextWidth = occupied + (columns ? gap : 0) + chipWidth;
+      if (columns && nextWidth > available) break;
+      occupied = nextWidth;
+      columns++;
+    }
+    columns = Math.max(1, columns);
+    chips.forEach((chip, index) => {
+      const firstRow = index < columns;
+      chip.style.gridRow = firstRow ? "1" : "2";
+      chip.style.gridColumn = String(firstRow ? index + 1 : index - columns + 1);
+    });
+  }
+  if (typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(arrangeMobileChips).observe(group);
+  }
+  window.addEventListener("resize", arrangeMobileChips, { passive:true });
+  arrangeMobileChips();
+
+  const nav = document.querySelector(".site-nav-2026");
+  function updateTop() {
+    if (!nav) return;
+    const h = Math.ceil(nav.getBoundingClientRect().height);
+    host.style.setProperty("--photo-filter-top", `${h}px`);
+  }
+  if (nav && typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(updateTop).observe(nav);
+  }
+  window.addEventListener("resize", updateTop, { passive: true });
+  updateTop();
+  update();
 })();
