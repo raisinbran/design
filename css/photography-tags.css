@@ -102,21 +102,23 @@
 }
 .photography-page .photo-filter-status { display: none !important; }
 
-/* A native menu exposes every tag without a sideways gesture on phones. */
+/* Mobile retains the desktop chips and allows a maximum of two visual rows. */
 .photo-filter-mobile { display:none; }
 @media (max-width:720px) {
-  .photography-page .photo-filter-chips { display:none; }
-  .photography-page .photo-filter-mobile {
-    display:flex; align-items:center; gap:12px; width:100%;
-    color:#55636a; font-size:13px;
+  .photography-page .photo-filter-chips {
+    display:flex;
+    flex-wrap:wrap;
+    align-content:flex-start;
+    overflow-x:auto;
+    overflow-y:hidden;
+    max-height:calc(2 * (15px + 16px + 2px) + 7px + 7px);
+    width:100%;
+    flex-basis:100%;
+    gap:7px;
+    scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch;
   }
-  .photo-filter-mobile select {
-    flex:1; min-width:0; min-height:44px; padding:8px 12px;
-    border:1px solid #d3dcde; border-radius:8px;
-    background:#fff; color:#2d454a; font:inherit; font-size:16px;
-  }
-  .photo-filter-mobile select:focus-visible {
-    outline:3px solid #aa7e4e; outline-offset:2px;
-  }
+  .photography-page .photo-filter-chip { padding:8px 12px; }
+  .photography-page .photo-filter-mobile { display:none; }
   .photography-page .photo-justified-row { justify-content:center; }
 }
