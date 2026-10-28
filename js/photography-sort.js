@@ -74,9 +74,7 @@
 
   window.PortfolioSortedPhotos = candidates => {
     if (!ready || candidates.length < 2) return candidates;
-    const mobile = window.matchMedia("(max-width: 720px)").matches;
-    const signature = (mobile ? "mobile|" : "desktop|") +
-      candidates.map(photo => photo.file).join("|");
+    const signature = candidates.map(photo => photo.file).join("|");
     if (orderCache.has(signature)) return orderCache.get(signature);
     const remaining = candidates.slice();
     const proposed = [remaining.shift()];
@@ -89,9 +87,8 @@
       }
       proposed.push(remaining.splice(best, 1)[0]);
     }
-    // Desktop keeps the existing reverse suggestion. Mobile uses its
-    // opposite order without modifying the underlying cached arrangement.
-    const result = mobile ? proposed : proposed.reverse();
+    // Use the same Color harmony order across desktop and mobile.
+    const result = proposed;
     orderCache.set(signature, result);
     return result;
   };
