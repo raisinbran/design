@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, nativeTheme } from "electron";
+﻿import { app, BrowserWindow, dialog, ipcMain, nativeTheme } from "electron";
 import { mkdirSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
@@ -184,7 +184,7 @@ export function startDesktop(definition: AppDefinition): void {
             ? "#1e1f22"
             : "#f3f4f5",
           webPreferences: {
-            preload: path.join(__dirname, "preload.js"),
+            preload: path.join(__dirname, "preload.cjs"),
             sandbox: true,
             contextIsolation: true,
             nodeIntegration: false,
@@ -590,3 +590,4 @@ export function startDesktop(definition: AppDefinition): void {
     if (process.platform !== "darwin") app.quit();
   });
 }
+

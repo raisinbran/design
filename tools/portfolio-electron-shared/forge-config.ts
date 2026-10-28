@@ -1,8 +1,8 @@
-import type { ForgeConfig } from '@electron-forge/shared-types';
+﻿import type { ForgeConfig } from '@electron-forge/shared-types';
 import { MakerSquirrel } from '@electron-forge/maker-squirrel';
 import { MakerZIP } from '@electron-forge/maker-zip';
 import { VitePlugin } from '@electron-forge/plugin-vite';
-import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
+
 
 /** Both packages include their own native image runtime and share no installed companion files. */
 export function makeForgeConfig(name: string): ForgeConfig {
@@ -15,7 +15,7 @@ export function makeForgeConfig(name: string): ForgeConfig {
     },
     rebuildConfig: { onlyModules: [] },
     makers: [new MakerSquirrel({ name: name.replaceAll(' ', '') }), new MakerZIP({}, ['darwin', 'linux'])],
-    plugins: [new AutoUnpackNativesPlugin({}), new VitePlugin({
+    plugins: [new VitePlugin({
       build: [
         { entry: 'src/main.ts', config: 'vite.main.config.ts', target: 'main' },
         { entry: 'src/preload.ts', config: 'vite.preload.config.ts', target: 'preload' },
@@ -24,3 +24,4 @@ export function makeForgeConfig(name: string): ForgeConfig {
     })],
   };
 }
+
