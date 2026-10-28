@@ -290,6 +290,7 @@
       photos = active.size === 0 ? allPhotos : allPhotos.filter(photo =>
         [...active].some(tag => Array.isArray(photo.tags) && photo.tags.includes(tag))
       );
+      if (window.PortfolioSortedPhotos) photos = window.PortfolioSortedPhotos(photos);
       tiles = photos.map(photo => allTiles[allPhotos.indexOf(photo)]);
       const empty = document.getElementById("photo-empty");
       if (empty) {
