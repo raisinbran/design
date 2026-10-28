@@ -107,7 +107,6 @@
 @media (max-width:720px) {
   .photography-page .photo-filter-chips {
     display:grid;
-    grid-auto-flow:column;
     grid-template-rows:repeat(2, max-content);
     grid-auto-columns:max-content;
     justify-content:start;
