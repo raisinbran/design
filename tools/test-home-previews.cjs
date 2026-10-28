@@ -1,46 +1,73 @@
+// Exercise decoded-slide startup, fades, and pause conditions without real timers.
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const vm = require("node:vm");
-function harness(reduced = false) {
-  const timers = new Map(); let id = 0;
-  const image = () => ({style: {}, decode: async () => {}, remove() {this.removed = true;}});
-  const stage = {dataset: {homePreview: "photography"}, children: [image()],
-    querySelector() {return this.children[0];}, appendChild(img) {this.children.push(img);},
-    closest() {return card;}};
-  const card = {events: {}, addEventListener(name, fn) {this.events[name] = fn;}};
-  const motion = {matches: reduced, addEventListener() {}};
-  const doc = {hidden: false, querySelectorAll: () => [stage], createElement: image, addEventListener() {}};
-  vm.runInNewContext(fs.readFileSync(require("node:path").join(__dirname,"../js/home-previews.js"),"utf8"), {
-    document: doc, window: {matchMedia: () => motion, PORTFOLIO_PHOTOS: [
-      {file: "DSCF1024_edit_crop.jpg", thumbnail: "temple.webp", thumbnailVersion: "new"},
-      {file: "DSCF3546_crop.jpg", thumbnail: "court.webp"},
-      {file: "DSCF0179.jpg", visible: false}]},
-    setTimeout(fn, ms) {const key=++id;timers.set(key,{fn,ms});return key;},
-    clearTimeout(key) {timers.delete(key);}
-  });
-  async function tick(ms) {
-    const entry = [...timers.entries()].find(([,timer]) => timer.ms === ms);
+const source = fs.readFileSync(require("node:path").join(__dirname, "../js/home.js"), "utf8");
+const flush = async () => { for (let turn = 0; turn < 30; turn++) await Promise.resolve(); };
+async function harness({ reduced = false, touch = false, failFirst = false } = {}) {
+  const timers = new Map();
+  const events = {};
+  let timerId = 0;
+  let observer;
+  const image = () => ({ style: {}, async decode() {
+    assert.equal(this.loading, "eager", "Detached slides must load before insertion");
+    if (failFirst && this.src.includes("temple")) throw Error("missing image");
+  }, remove() { this.removed = true; stage.children = stage.children.filter(child => child !== this); } });
+  const fallback = { style: {}, remove() { stage.children = stage.children.filter(child => child !== this); } };
+  const stage = { dataset: {homePreview: "photography"}, children: [fallback],
+    querySelectorAll() { return this.children; }, appendChild(img) { this.children.push(img); },
+    closest() { return card; } };
+  const card = { events: {}, addEventListener(name, callback) { this.events[name] = callback; } };
+  const motion = { matches: reduced, addEventListener(name, callback) { this.change = callback; } };
+  const doc = { hidden: false, querySelectorAll: () => [stage], createElement: image,
+    addEventListener(name, callback) { events[name] = callback; } };
+  const window = { matchMedia: query => query.includes("reduced") ? motion : { matches: !touch },
+    IntersectionObserver: true, PORTFOLIO_PHOTOS: [
+      { file: "DSCF1024_edit_crop.jpg", alt: "Temple", thumbnail: "temple.webp", thumbnailVersion: "new" },
+      { file: "DSCF3546_crop.jpg", alt: "Court", thumbnail: "court.webp" },
+      { file: "DSCF0179.jpg", alt: "Hidden", visible: false }] };
+  vm.runInNewContext(source, { document: doc, window,
+    IntersectionObserver: class { constructor(callback) { observer = callback; } observe() {} },
+    setTimeout(callback, ms) { const id = ++timerId; timers.set(id, {callback, ms}); return id; },
+    clearTimeout(id) { timers.delete(id); } });
+  await flush();
+  observer([{isIntersecting: true}]);
+  function tick(ms) {
+    const entry = [...timers.entries()].find(([, timer]) => timer.ms === ms);
     assert(entry, `Expected ${ms}ms timer`);
-    timers.delete(entry[0]); await entry[1].fn();
+    timers.delete(entry[0]);
+    return entry[1].callback();
   }
-  return {stage, card, timers, tick};
+  return {stage, card, timers, tick, motion, doc, events, observer};
 }
 (async () => {
-  const h = harness();
-  assert.equal(h.stage.children.length,2,"Hidden catalog entries are excluded");
-  assert.equal(h.stage.children[0].src,"photography/thumbnails/temple.webp?v=new");
-  await h.tick(5000);
-  assert.equal(h.stage.children[1].style.opacity,"1");
-  await h.tick(1000);
-  assert.equal(h.stage.children[0].style.opacity,"0");
-  h.card.events.mouseenter(); assert.equal(h.timers.size,0,"Hover pauses rotation");
-  h.card.events.mouseleave(); assert.equal(h.timers.size,1);
-  h.card.events.focusin(); assert.equal(h.timers.size,0,"Focus pauses rotation");
+  const h = await harness();
+  assert.equal(h.stage.children.length, 2, "Hidden photos excluded and static fallback replaced");
+  assert.equal(h.stage.children[0].src, "photography/thumbnails/temple.webp?v=new");
+  const advancing = h.tick(3500);
+  await flush();
+  assert.equal(h.stage.children[1].style.opacity, "1");
+  h.tick(1000);
+  await advancing;
+  assert.equal(h.stage.children[0].style.opacity, "0");
+  h.card.events.mouseenter(); assert.equal(h.timers.size, 0, "Mouse hover pauses");
+  h.card.events.mouseleave(); assert.equal(h.timers.size, 1);
+  h.card.events.focusin(); assert.equal(h.timers.size, 0, "Keyboard focus pauses");
   h.card.events.focusout();
-  h.stage.children[0].decode = async () => {throw Error("missing");};
-  await h.tick(5000);
-  assert(h.stage.children[0].removed,"Failed image is removed");
-  assert.equal(h.timers.size,0,"One remaining image stays still");
-  assert.equal(harness(true).timers.size,0,"Reduced motion disables rotation");
-  console.log("Passed preview fades, live catalog, hover/focus pause, failed image, and reduced motion checks.");
-})();
+  h.doc.hidden = true; h.events.visibilitychange(); assert.equal(h.timers.size, 0);
+  h.doc.hidden = false; h.events.visibilitychange(); assert.equal(h.timers.size, 1);
+  h.observer([{isIntersecting: false}]); assert.equal(h.timers.size, 0);
+  h.observer([{isIntersecting: true}]);
+  const outgoing = h.stage.children[0];
+  outgoing.decode = async () => { throw Error("removed after startup"); };
+  await h.tick(3500);
+  assert(outgoing.removed, "Failed rotating image is removed");
+  assert.equal(h.timers.size, 0, "One remaining image stays still");
+  assert.equal((await harness({reduced: true})).timers.size, 0, "Reduced motion disables rotation");
+  const touch = await harness({touch: true});
+  touch.card.events.mouseenter(); assert.equal(touch.timers.size, 1, "Synthetic touch hover does not pause");
+  const failed = await harness({failFirst: true});
+  assert.equal(failed.stage.children.length, 1, "Invalid candidates never enter the slideshow");
+  assert(failed.stage.children[0].src.includes("court"));
+  console.log("Passed decoded startup, fades, catalog exclusions, hover/focus/visibility pauses, image failures, touch, and reduced motion.");
+})().catch(error => { console.error(error); process.exitCode = 1; });

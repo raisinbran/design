@@ -17,6 +17,7 @@ XMP_HEADER = b"http://ns.adobe.com/xap/1.0/\0"
 
 
 def export_exif():
+    """EXIF for every export: author, copyright, software and the AI-training notice only."""
     exif = author_exif()
     exif[305] = f"{APP_NAME} {VERSION}"
     exif[37510] = b"ASCII\0\0\0" + NOTICE.encode("ascii")
@@ -76,6 +77,7 @@ def rights_segments(data):
 
 
 def without_rights_metadata(data):
+    """The JPEG with its EXIF and XMP APP1 segments removed."""
     for start,end,_kind,_payload in reversed(list(rights_segments(data))):
         data=data[:start]+data[end:]
     return data

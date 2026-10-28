@@ -6,6 +6,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/portfolio-studio'))
+import archive_catalog
 import catalog_tools
 import engineering_catalog
 
@@ -24,6 +25,12 @@ def validate(root):
     expected = catalog_tools.generated_js(media)
     if (root / 'js/photography-catalog.js').read_text(encoding='utf-8') != expected:
         raise ValueError('Published photography references differ from media catalog')
+    archive = catalog_tools.read_json(root / 'data/archive-catalog.json')
+    archive_catalog.validate(archive, root)
+    # The Archive editor compares its stored template byte-for-byte with the page.
+    for field, name in (('sourceHtml', 'creativedesign.html'), ('settingsSource', 'js/archive-photo-settings.js')):
+        if archive[field].encode('utf-8') != (root / name).read_bytes():
+            raise ValueError(f'Archive catalog template differs from {name}')
     print(f'Validated {count} photos and {len(engineering["projects"])} projects; no files written.')
 
 

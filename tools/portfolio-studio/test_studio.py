@@ -6,6 +6,7 @@ import copy
 import hashlib
 import json
 import io
+import os
 from pathlib import Path
 import tempfile
 import tkinter as tk
@@ -19,8 +20,9 @@ import photo_studio
 import edit_tags
 import manage_published
 import window_state
+import platform_support
+import studio_preferences
 import publication_metadata
-import update_published_authors
 import recycle_bin
 import gallery_thumbnails
 import export_rights
@@ -277,17 +279,6 @@ class AuthorshipTests(unittest.TestCase):
         Image.new("RGB",(600,400),(40,70,100)).save(buffer,format="JPEG",exif=exif,progressive=True)
         return buffer.getvalue()
 
-    def test_metadata_update_preserves_image_data_and_other_metadata(self):
-        before=self.jpeg();after=publication_metadata.set_authorship(before)
-        self.assertEqual(publication_metadata.without_exif(before),publication_metadata.without_exif(after))
-        with Image.open(io.BytesIO(after)) as image:
-            exif=image.getexif()
-            self.assertEqual(exif[315],"Brandon J. Chen")
-            self.assertEqual(bytes(exif[40093]).decode("utf-16le").rstrip("\0"),"Brandon J. Chen")
-            self.assertEqual(exif[271],"Existing camera")
-            self.assertEqual(exif[33432],publication_metadata.COPYRIGHT)
-        self.assertEqual(publication_metadata.set_authorship(after),after)
-
     def test_exports_get_authorship_without_source_metadata(self):
         with tempfile.TemporaryDirectory() as folder:
             source=Path(folder)/"source.jpg";source.write_bytes(self.jpeg())
@@ -298,16 +289,6 @@ class AuthorshipTests(unittest.TestCase):
                 self.assertIn(40093,image.getexif())
                 self.assertNotIn(271,image.getexif())
                 self.assertEqual(image.getexif()[33432],publication_metadata.COPYRIGHT)
-
-    def test_bulk_update_dry_run_backup_and_repeat(self):
-        with tempfile.TemporaryDirectory() as folder:
-            root=Path(folder);media=root/"photography"/"published";media.mkdir(parents=True)
-            target=media/"photo.jpg";before=self.jpeg();target.write_bytes(before)
-            self.assertEqual(update_published_authors.update(root),1)
-            self.assertEqual(target.read_bytes(),before)
-            self.assertEqual(update_published_authors.update(root,apply=True),1)
-            self.assertEqual(next((root/"_old").rglob("photo.jpg")).read_bytes(),before)
-            self.assertEqual(update_published_authors.update(root),0)
 
 
 class GalleryThumbnailTests(unittest.TestCase):
@@ -354,6 +335,84 @@ class GalleryThumbnailTests(unittest.TestCase):
         self.assertNotIn(str(self.source),data.read_text())
         self.assertNotIn(str(self.source),js.read_text())
 
+    def test_failed_catalog_write_removes_new_thumbnail_and_restores_catalog(self):
+        media=self.root/"photography"/"published";media.mkdir(parents=True)
+        full=processor.encode_publication(self.source)[0];(media/"source.jpg").write_bytes(full)
+        catalog={"schemaVersion":1,"photoTags":[],"photos":[{"file":"source.jpg","alt":"Synthetic photograph","aspectRatio":1.5,"tags":[]}]}
+        data=self.root/"data"/"media-catalog.json";data.parent.mkdir();data.write_text(json.dumps(catalog))
+        js=self.root/"js"/"photography-catalog.js";js.parent.mkdir();js.write_text(photo_studio.generated_js(catalog))
+        gallery_thumbnails.save_registry(self.root,{"source.jpg":gallery_thumbnails.source_record(self.source,photo_studio.new_settings(self.source),full)})
+        before={path:path.read_bytes() for path in (data,js)}
+        install=gallery_thumbnails.atomic
+        def fail_runtime(path,content):
+            if path==js and content!=before[js]:raise OSError("disk full")
+            install(path,content)
+        with patch.object(gallery_thumbnails,"atomic",side_effect=fail_runtime),self.assertRaises(OSError):
+            gallery_thumbnails.build_thumbnails(self.root,apply=True)
+        self.assertEqual({path:path.read_bytes() for path in before},before)
+        self.assertEqual(list((self.root/"photography"/"thumbnails").iterdir()),[])
+        self.assertEqual(sorted(p.name for p in self.root.rglob(".studio-*")),[])
+
+
+
+class AtomicWriteTests(unittest.TestCase):
+    def setUp(self):
+        folder=tempfile.TemporaryDirectory();self.addCleanup(folder.cleanup)
+        self.root=Path(folder.name)
+        self.catalog=self.root/"data"/"media-catalog.json";self.runtime=self.root/"js"/"photography-catalog.js"
+        for path,text in ((self.catalog,'{"photos": []}\n'),(self.runtime,"window.PORTFOLIO_PHOTOS = [];\n")):
+            path.parent.mkdir();path.write_text(text,encoding="utf-8")
+        paths=patch.multiple(edit_tags,ROOT=self.root,C_PATH=self.catalog,J_PATH=self.runtime)
+        paths.start();self.addCleanup(paths.stop)
+
+    def tree(self):
+        return {p.relative_to(self.root):None if p.is_dir() else p.read_bytes() for p in self.root.rglob("*")}
+
+    def test_unencodable_catalog_leaves_no_backup_or_temp_file(self):
+        before=self.tree()
+        with self.assertRaises(UnicodeEncodeError):
+            edit_tags.atomic_catalog_pair('{"photos": [{"alt": "\ud800"}]}\n',"window.PORTFOLIO_PHOTOS = [1];\n")
+        self.assertEqual(self.tree(),before)
+
+    def test_failed_second_file_restores_first_file_exactly(self):
+        before={path:path.read_bytes() for path in (self.catalog,self.runtime)}
+        install=gallery_thumbnails.atomic
+        def fail_runtime(path,data):
+            if path==self.runtime:raise OSError("disk full")
+            install(path,data)
+        with patch.object(gallery_thumbnails,"atomic",side_effect=fail_runtime),self.assertRaises(OSError):
+            edit_tags.atomic_catalog_pair('{"photos": [1]}\n',"window.PORTFOLIO_PHOTOS = [1];\n")
+        self.assertEqual({path:path.read_bytes() for path in before},before)
+        self.assertEqual([p.name for p in self.catalog.parent.iterdir()],[self.catalog.name])
+        self.assertEqual([p.name for p in self.runtime.parent.iterdir()],[self.runtime.name])
+        backup=next((self.root/"_old").iterdir())
+        self.assertEqual((backup/self.catalog.name).read_bytes(),before[self.catalog])
+
+    def test_atomic_fsyncs_and_removes_temp_file_when_fsync_fails(self):
+        target=self.root/"data"/"sources.json"
+        with patch.object(gallery_thumbnails.os,"fsync",wraps=os.fsync) as fsync:
+            gallery_thumbnails.atomic(target,b"saved")
+        fsync.assert_called_once()
+        with patch.object(gallery_thumbnails.os,"fsync",side_effect=OSError("I/O error")),self.assertRaises(OSError):
+            gallery_thumbnails.atomic(target,b"lost")
+        self.assertEqual(target.read_bytes(),b"saved")
+        self.assertEqual(sorted(p.name for p in target.parent.iterdir()),[self.catalog.name,target.name])
+
+    def test_failed_removal_restores_catalog_pair_and_archived_photo(self):
+        media=self.root/"photography"/"published";media.mkdir(parents=True)
+        photo=media/"a.jpg";photo.write_bytes(b"jpeg bytes")
+        paths=patch.multiple(manage_published,DATA=self.catalog,JS=self.runtime,MEDIA=media,JOURNAL=self.root/"_old"/"journal")
+        paths.start();self.addCleanup(paths.stop)
+        before={path:path.read_bytes() for path in (self.catalog,self.runtime)}
+        install=manage_published.atomic
+        def fail_runtime(path,data):
+            if path==self.runtime and data!=before[self.runtime]:raise OSError("disk full")
+            install(path,data)
+        with patch.object(manage_published,"atomic",side_effect=fail_runtime),self.assertRaises(OSError):
+            manage_published.save_transaction({"schemaVersion":1,"photoTags":[],"photos":[]},archive_files=[photo])
+        self.assertEqual({path:path.read_bytes() for path in before},before)
+        self.assertEqual(photo.read_bytes(),b"jpeg bytes")
+        self.assertEqual(sorted(p.name for p in self.root.rglob(".studio-*")),[])
 
 class PublicationTests(unittest.TestCase):
     def setUp(self):
@@ -472,9 +531,9 @@ class WindowMemoryTests(unittest.TestCase):
         path=self.path.with_name("preferences.json")
         photo_studio.save_preferences({"maxSide":1440,"openAfterPublish":False},path)
         photo_studio.save_preferences({"maxSide":720},path)
-        self.assertEqual(photo_studio.load_preferences(path),{"maxSide":720,"openAfterPublish":False})
+        self.assertEqual(photo_studio.load_preferences(path),{"maxSide":720,"openAfterPublish":False,"appearance":"system"})
         photo_studio.save_preferences({"openAfterPublish":True},path)
-        self.assertEqual(photo_studio.load_preferences(path),{"maxSide":720,"openAfterPublish":True})
+        self.assertEqual(photo_studio.load_preferences(path),{"maxSide":720,"openAfterPublish":True,"appearance":"system"})
 
     def setUp(self):
         folder=tempfile.TemporaryDirectory();self.addCleanup(folder.cleanup)
@@ -537,6 +596,10 @@ class WindowTests(unittest.TestCase):
         source_path.start();self.addCleanup(source_path.stop)
         state_path=patch.object(window_state,"window_state_path",return_value=Path(self.temp.name)/"windows.json")
         state_path.start();self.addCleanup(state_path.stop)
+        preferences=patch.object(studio_preferences,"preferences_path",return_value=Path(self.temp.name)/"preferences.json")
+        preferences.start();self.addCleanup(preferences.stop)
+        private=patch.object(platform_support,"local_data_path",return_value=Path(self.temp.name)/"private")
+        private.start();self.addCleanup(private.stop)
         self.path=Path(self.temp.name)/"source.png"
         Image.new("RGB",(1200,800),(30,60,90)).save(self.path)
 
@@ -759,6 +822,24 @@ class WindowTests(unittest.TestCase):
             self.assertEqual(str(arranger.apply_button.cget("state")),"disabled")
             self.assertEqual(str(arranger.restore_button.cget("state")),"disabled")
 
+    def test_closing_arranger_refreshes_only_a_clean_editor(self):
+        editor,media,data=self.isolated_editor()
+        arranger=Mock();arranger.poll.return_value=None
+        with patch("subprocess.Popen",return_value=arranger) as launch:editor.open_arranger()
+        self.assertEqual(launch.call_args.args[0][1],str(Path(edit_tags.__file__).with_name("arrange_gallery.py")))
+        catalog=json.loads(data.read_text(encoding="utf-8"));catalog["photos"].reverse()
+        data.write_text(json.dumps(catalog),encoding="utf-8")
+        editor._poll_arranger()
+        self.assertEqual([p["file"] for p in editor.photos],["a.jpg","b.jpg"])
+        arranger.poll.return_value=0;editor._poll_arranger()
+        self.assertEqual([p["file"] for p in editor.photos],["b.jpg","a.jpg"])
+        with patch("subprocess.Popen",return_value=arranger):editor.open_arranger()
+        editor.alt.set("Unsaved description")
+        with patch.object(editor,"refresh") as refresh:editor._poll_arranger()
+        refresh.assert_not_called()
+        self.assertEqual(editor.status.get(),"Arrange Gallery closed. Save or reset Catalog edits before Refresh.")
+        self.assertIn("Unsaved description",[p["alt"] for p in editor.photos])
+
     def test_all_catalog_remove_actions_confirm_and_cancel_without_mutating(self):
         editor,media,data=self.isolated_editor()
         before=data.read_bytes();files={p.name:p.read_bytes() for p in media.iterdir()}
@@ -823,8 +904,7 @@ class WindowTests(unittest.TestCase):
                 self.assertEqual(str(button.cget("state")),"disabled")
 
     def test_catalog_loading_cached_photo_and_reset(self):
-        editor=edit_tags.Editor();self.windows.append(editor)
-        editor.update_idletasks()
+        editor,media,data=self.isolated_editor()
         editor.load(0);editor.load(1);editor.load(0)
         initial=copy.deepcopy(editor.catalog)
         self.assertEqual(editor.status.get().startswith("Cannot show"),False)
@@ -835,7 +915,8 @@ class WindowTests(unittest.TestCase):
         with patch.object(edit_tags.messagebox,"askyesno",return_value=True):editor.reset_all()
         self.assertEqual(editor.catalog,initial)
         self.assertEqual(str(editor.save_button.cget("state")),"disabled")
-        self.assertEqual(len(editor.tabs.tabs()),1)
+        # A non-primary editor has no workspace tab bar: its page fills the window.
+        self.assertIs(editor.catalog_page.master,editor)
         self.assertIs(editor.management_toolbar.master,editor.catalog_page)
         self.assertIsNotNone(editor.viewport.source)
 
@@ -1188,7 +1269,9 @@ class WindowTests(unittest.TestCase):
         studio=self.studio();studio.show_export_settings();dialog=studio._export_dialog
         studio.filename_suffix.set("_custom");studio.jpeg_quality.set("85");studio.publish_scope.set("highlighted")
         studio.show_export_settings();self.assertIs(studio._export_dialog,dialog)
-        controls=[child for frame in dialog.winfo_children() for child in frame.winfo_children() if isinstance(child,photo_studio.ttk.Combobox)]
+        def descendants(widget):
+            for child in widget.winfo_children():yield child;yield from descendants(child)
+        controls=[child for child in descendants(dialog) if isinstance(child,photo_studio.ttk.Combobox)]
         self.assertEqual([c.get() for c in controls],["85","_custom","highlighted"])
         studio.files_list.selection_clear(0,"end");studio.refresh_action_states()
         studio.hidden_actions=list(studio.action_buttons);studio.populate_action_menu()

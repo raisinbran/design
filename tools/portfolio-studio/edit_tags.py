@@ -1,8 +1,15 @@
-"""Edit the site's existing photo metadata, using free-aspect-ratio crop outlines."""
+"""Portfolio Studio main window and the Photography tab (workflow step 4).
+
+Editor(primary=True) is the application shell: Photography, Engineering and
+Archive tabs plus Process New Photos, Settings and About. The Photography tab
+manages already-published photos: descriptions, tags, priority, gallery crops,
+ordering (via Arrange Gallery) and adding or removing gallery entries.
+
+Edits stay in memory until Save, which writes the catalog pair locally.
+Making them public is a separate GitHub Desktop commit and push.
+"""
 import copy
 import json
-import os
-import tempfile
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk, messagebox, simpledialog
@@ -45,33 +52,29 @@ def legacy_framing(p):
 
 
 def atomic_catalog_pair(c_text, j_text):
+    """Save the media catalog and its generated gallery script together.
+
+    Copies both current files to _old/ first, then replaces them as one
+    transaction so the website never sees a mismatched pair.
+    """
     import datetime
+    # Encode and parse first, so an invalid save leaves no backup or temp file.
+    c_bytes, j_bytes = c_text.encode("utf-8"), j_text.encode("utf-8")
+    json.loads(c_bytes)
     backup = ROOT / "_old" / ("portfolio-studio-catalog-" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f"))
     backup.mkdir(parents=True, exist_ok=False)
-    targets = [(C_PATH, c_text), (J_PATH, j_text)]
-    old = {}
-    staged = {}
-    try:
-        for path, content in targets:
-            old[path] = path.read_bytes()
-            (backup / path.name).write_bytes(old[path])
-            fd, name = tempfile.mkstemp(dir=path.parent, suffix=".staged")
-            with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as stream:
-                stream.write(content)
-            staged[path] = Path(name)
-        json.loads(staged[C_PATH].read_text(encoding="utf-8"))
-        for path, _ in targets:
-            os.replace(staged[path], path)
-    except BaseException:
-        for path in old:
-            if path.exists() and path.read_bytes() != old[path]:
-                path.write_bytes(old[path])
-        raise
-    finally:
-        for p in staged.values():
-            p.unlink(missing_ok=True)
+    for path in (C_PATH, J_PATH):
+        (backup / path.name).write_bytes(path.read_bytes())
+    # Installs both files atomically and restores the first if the second fails.
+    with asset_transaction({C_PATH: c_bytes, J_PATH: j_bytes}):
+        pass
 
 class Editor(ManagementActions, tk.Tk):
+    """Photography catalog editor; with primary=True, also the main application window.
+
+    self.initial is the catalog as last read from disk. Comparing it with the
+    file on disk detects changes made by another window before saving.
+    """
     def __init__(self,primary=False):
         super().__init__()
         apply_appearance(self,load_preferences().get('appearance','system'))
@@ -280,6 +283,7 @@ class Editor(ManagementActions, tk.Tk):
             self.dimensions_text.set(f"Dimensions unavailable: {exc}")
 
     def populate_photo_list(self):
+        """List catalog photos in gallery order, then published files not yet in the catalog."""
         files={path.name.casefold() for path in enumerate_files()}
         self.photo_rows=[]
         self.listbox.delete(0,"end")
@@ -308,6 +312,7 @@ class Editor(ManagementActions, tk.Tk):
         return [(self.photo_rows[row][0],self.photo_rows[row][1]) for row in self.listbox.curselection()]
 
     def run_management(self,action):
+        """Run an add/remove/rename action only when there are no unsaved edits and no outside changes."""
         self.refresh_dirty()
         if self.catalog!=self.initial or self.crop_pending:
             messagebox.showwarning("Save changes first",
@@ -320,6 +325,7 @@ class Editor(ManagementActions, tk.Tk):
         action()
 
     def refresh(self):
+        """Reload the catalog from disk, discarding unsaved edits, and keep the current selection."""
         _state,name=self.selected()
         names={filename for _state,filename in self.selected_rows()}
         self.catalog=read_json(C_PATH)
@@ -466,6 +472,7 @@ class Editor(ManagementActions, tk.Tk):
         else:self.load(index,preserve_selection=True)
 
     def store(self):
+        """Copy the controls into the current photo's catalog entry, touching only changed fields."""
         if self.index is None or self.suspend: return
         photo = self.photos[self.index]
         tags = [tag for tag, var in self.tags.items() if var.get()]
@@ -488,6 +495,7 @@ class Editor(ManagementActions, tk.Tk):
             photo.pop("focusY", None)
 
     def load(self, index, preserve_selection=False):
+        """Show a published photo and its catalog fields for editing."""
         self.index = index
         photo = self.photos[index]
         row=next(i for i,(_,name,_) in enumerate(self.photo_rows) if name==photo["file"])
@@ -610,6 +618,7 @@ class Editor(ManagementActions, tk.Tk):
         if callable(callback):callback()
 
     def workspace_changed(self,event=None):
+        """Build the Engineering or Archive editor the first time its tab opens, to keep startup fast."""
         if not self.primary:return
         page=self.workspace_tabs.select()
         if page==str(self.engineering_page) and self.engineering_editor is None:
@@ -630,6 +639,7 @@ class Editor(ManagementActions, tk.Tk):
                 self.workspace_tabs.select(self.catalog_page)
 
     def open_new_photos_processor(self):
+        """Open the New Photos Processor (workflow steps 1-3) as a separate process."""
         import subprocess,sys
         if not self.primary:return
         process=getattr(self,'_processor',None)
@@ -652,13 +662,25 @@ class Editor(ManagementActions, tk.Tk):
             self.after(1200,self._poll_new_photos_processor)
             return
         self._processor=None
+        self._refresh_after_closing('Processor')
+
+    def _poll_arranger(self):
+        process=getattr(self,'_arranger',None)
+        if process is None:return
+        if process.poll() is None:
+            self.after(1200,self._poll_arranger)
+            return
+        self._arranger=None
+        self._refresh_after_closing('Arrange Gallery')
+
+    def _refresh_after_closing(self,window):
         # Only refresh automatically if there are no unsaved Catalog edits;
-        # never silently discard changes made while processor was open.
+        # never silently discard changes made while the other window was open.
         self.refresh_dirty()
         if self.catalog==self.initial and not self.crop_pending:
             try:self.refresh()
-            except (OSError,ValueError) as exc:self.status.set(f'Processor closed. Refresh manually: {exc}')
-        else:self.status.set('Processor closed. Save or reset Catalog edits before Refresh.')
+            except (OSError,ValueError) as exc:self.status.set(f'{window} closed. Refresh manually: {exc}')
+        else:self.status.set(f'{window} closed. Save or reset Catalog edits before Refresh.')
 
     def close_editor(self):
         self.refresh_dirty()
@@ -671,19 +693,24 @@ class Editor(ManagementActions, tk.Tk):
         self.destroy()
 
     def open_arranger(self):
+        """Open Arrange Gallery as a separate window; requires saved edits so orders cannot clash."""
         import subprocess, sys
         self.refresh_dirty()
         if self.catalog != self.initial:
             messagebox.showwarning("Save first", "Save or reset your catalog edits before opening Arrange Gallery.")
             return
-        subprocess.Popen([sys.executable, str(Path(__file__).with_name("arrange_gallery.py"))])
+        self._arranger = subprocess.Popen([sys.executable, str(Path(__file__).with_name("arrange_gallery.py"))])
+        self.after(1200, self._poll_arranger)
 
     def save(self):
+        """Save Photography edits locally: rebuild changed thumbnails, then write the catalog pair."""
         self.store()
         try:
+            # Conflict check: the Processor or Arrange may have saved since this catalog was loaded.
             if read_json(C_PATH)!=self.initial:raise ValueError("Catalog changed in another window. Reopen or refresh before saving.")
             updates={};record_updates={};records=read_registry(ROOT)
             original={photo["file"]:photo for photo in self.initial["photos"]}
+            # A changed gallery crop needs a new thumbnail, rebuilt from the private original.
             for photo in self.photos:
                 if photo.get("thumbnail") and photo_framing(photo)!=photo_framing(original[photo["file"]]):
                     from photo_studio import LOGO
@@ -696,6 +723,7 @@ class Editor(ManagementActions, tk.Tk):
                     normalize_crop(p["galleryCrop"])
             new_catalog = json.dumps(self.catalog, ensure_ascii=False, indent=2) + "\n"
             new_js = generated_js(self.catalog)
+            # Thumbnails are restored if the catalog pair cannot be saved.
             with asset_transaction(updates):
                 validate_catalog(self.catalog, ROOT)
                 atomic_catalog_pair(new_catalog, new_js)

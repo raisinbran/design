@@ -9,6 +9,7 @@ function element() {
   return { children: [], dataset: {}, handlers: {}, attributes: {},
     style: { setProperty(name, value) { this[name] = value; } },
     classList: { add() {} }, clientWidth: 1136,
+    getBoundingClientRect() { return {width: 70, height: 44}; },
     setAttribute(key, value) { this.attributes[key] = value; },
     addEventListener(name, callback) { this.handlers[name] = callback; },
     appendChild(child) {
@@ -21,7 +22,13 @@ function element() {
 function harness(customPhotos, customRatios) {
   const nodes = { "photo-gallery": element(), "photo-filters": element(), "photo-empty": element() };
   const resizeHandlers = {};
-  const context = vm.createContext({ window: { addEventListener(name, callback) {
+  const pendingImages = [];
+  const context = vm.createContext({
+    Image: class { set src(value) { pendingImages.push(this); } },
+    localStorage: { getItem() { return null; }, setItem() {} },
+    getComputedStyle: () => ({columnGap: "7px"}),
+    window: { innerWidth: 1440, innerHeight: 900,
+      matchMedia() { return {matches: this.innerWidth <= 720}; }, addEventListener(name, callback) {
     (resizeHandlers[name] ||= []).push(callback);
   } },
     document: { getElementById: id => nodes[id], createElement: element, querySelector: () => null },
@@ -31,7 +38,7 @@ function harness(customPhotos, customRatios) {
     context.window.PORTFOLIO_PHOTOS = customPhotos;
     context.window.PHOTO_ASPECT_RATIOS = customRatios;
   }
-  for (const file of ["photography-gallery.js", "photography-tags.js"]) {
+  for (const file of ["photography.js"]) {
     vm.runInContext(fs.readFileSync(path.join(root, "js", file), "utf8"), context);
   }
   const api = context.window.PortfolioPhotographyGallery;
@@ -47,7 +54,15 @@ function harness(customPhotos, customRatios) {
     const expected = all.filter(photo => !tags.length || tags.some(tag => (photo.tags || []).includes(tag)));
     const rows = nodes["photo-gallery"].children;
     const rendered = rows.flatMap(row => row.children.map(tile => tile.dataset.file));
-    assert.deepEqual(rendered, Array.from(expected, photo => photo.file), `Order/count: ${width}, ${tags}`);
+    const expectedFiles = Array.from(expected, photo => photo.file);
+    assert.deepEqual([...rendered].sort(), [...expectedFiles].sort(), `Membership: ${width}, ${tags}`);
+    if (viewportWidth > 720) assert.deepEqual(rendered, expectedFiles, "Desktop retains catalog order");
+    else {
+      for (const isPortrait of [true, false]) {
+        const orientation = file => ((ratios[file] || 1.5) < .95) === isPortrait;
+        assert.deepEqual(rendered.filter(orientation), expectedFiles.filter(orientation), "Mobile preserves order within each orientation");
+      }
+    }
     const gap = width < 720 ? 8 : 12;
     for (const row of rows) {
       const files = row.children.map(tile => tile.dataset.file);
@@ -60,9 +75,12 @@ function harness(customPhotos, customRatios) {
       const priority = expected.filter(photo => files.includes(photo.file)).some(photo =>
         ["featured", "portraitBoost"].includes(photo.displayPriority) || photo.featured);
       const cap = width < 720 ? Math.min(priority ? 640 : 590, width * 1.2) : priority ? 640 : 590;
-      if (cappedRows) assert(height <= viewingCap + 0.01, "Mobile row exceeds viewing height");
-      if (row === rows.at(-1)) assert(height <= cap + 0.01, "Final row exceeds standard height limit");
-      else if (!cappedRows) assert(Math.abs(used - width) < 0.01, "Interior rows must fill the width regardless of height");
+      const standaloneNonPortrait = files.length === 1 && nonPortraits === 1;
+      if (viewportWidth <= 720) assert(nonPortraits === 0 || files.length === 1, "Mobile separates orientations and gives landscapes their own row");
+      if (cappedRows && !standaloneNonPortrait) assert(height <= viewingCap + 0.01, "Portrait/multi-photo row exceeds viewing height");
+      if (standaloneNonPortrait) assert(Math.abs(used - width) < 0.01, "Standalone landscapes fill the gallery width");
+      if (row === rows.at(-1) && !standaloneNonPortrait) assert(height <= cap + 0.01, "Final portrait/multi-photo row exceeds height limit");
+      else if (row !== rows.at(-1) && !cappedRows) assert(Math.abs(used - width) < 0.01, "Interior rows must fill the width regardless of height");
       assert(used <= width + 0.01, "Horizontal overflow");
       const ratioSum = files.reduce((sum, file) => sum + (ratios[file] || 1.5), 0);
       const exact = (width - gap * (files.length - 1)) / ratioSum;
@@ -72,7 +90,7 @@ function harness(customPhotos, customRatios) {
     }
     return rows;
   }
-  return { check, all, nodes, context, resizeHandlers };
+  return { check, all, nodes, context, resizeHandlers, pendingImages };
 }
 const gallery = harness();
 const tags = gallery.context.window.PHOTO_TAG_LABELS;
@@ -88,6 +106,7 @@ for (const [viewportWidth, viewportHeight, galleryWidth] of [[844,390,781],[932,
   for (const selected of [[], ...tags.map(tag => [tag]), ...tags.flatMap((a,i) => tags.slice(i+1).map(b => [a,b])), ["unknown"]]) {
     const rows = gallery.check(selected, galleryWidth, viewportHeight, viewportWidth);
     for (const row of rows.slice(0,-1)) {
+      if (row.children.length === 1 && (gallery.context.window.PHOTO_ASPECT_RATIOS[row.children[0].dataset.file] || 1.5) >= .95) continue;
       const height = parseFloat(row.children[0].style.height);
       assert(viewportHeight - 159 - height - 12 >= 24, "Next row must remain recognizable below landscape photos");
     }
@@ -106,6 +125,7 @@ gallery.check([],781,844,844);
 gallery.context.window.innerHeight = 390;
 gallery.resizeHandlers.resize.forEach(callback => callback());
 assert(gallery.nodes["photo-gallery"].children.every(row =>
+  (row.children.length === 1 && (gallery.context.window.PHOTO_ASPECT_RATIOS[row.children[0].dataset.file] || 1.5) >= .95) ||
   parseFloat(row.children[0].style.height) <= 390 * .48 + .01),"Height-only mobile resize must cap existing rows");
 const photos = Array.from({ length: 6 }, (_, index) => ({ file: `${index}.jpg`, alt: "Synthetic photograph", tags: [] }));
 const portraits = harness(photos, Object.fromEntries(photos.map(photo => [photo.file, 2 / 3])));
@@ -135,11 +155,19 @@ assert.equal(gallery.nodes["photo-empty"].hidden, true);
 assert.equal(gallery.nodes["photo-gallery"].children.flatMap(row => row.children).length, gallery.all.length);
 console.log(`Passed ${cases} tag/viewport layout cases, portrait triplets, landscape pairs, and All reset.`);
 
-const mobileSelect = gallery.nodes["photo-filters"].children[1].children[0];
-assert.equal(mobileSelect.children.length, tags.length + 1);
-mobileSelect.value = tags[0];
-mobileSelect.handlers.change();
-assert.equal(chips.find(chip => chip.textContent === tags[0]).attributes["aria-pressed"], "true");
-mobileSelect.value = "";
-mobileSelect.handlers.change();
-assert.equal(chips[0].attributes["aria-pressed"], "true");
+// Complete asynchronous color sampling through its supported image-error fallback.
+(async () => {
+  const selectedTag = tags[0];
+  chips.find(chip => chip.textContent === selectedTag).handlers.click();
+  for (let turn = 0; turn < 100; turn++) {
+    gallery.pendingImages.splice(0).forEach(image => image.onerror());
+    await Promise.resolve();
+  }
+  const rendered = gallery.nodes["photo-gallery"].children.flatMap(row => row.children.map(tile => tile.dataset.file));
+  const expected = gallery.all.filter(photo => photo.tags.includes(selectedTag)).map(photo => photo.file);
+  assert.deepEqual([...rendered].sort(), [...expected].sort(), "Async sorting must preserve active filter membership");
+  assert.equal(gallery.context.window.PortfolioPhotographySelectedTags[0], selectedTag);
+  const sorted = gallery.context.window.PortfolioSortedPhotos(gallery.all);
+  assert.deepEqual(Array.from(sorted, photo => photo.file).sort(), Array.from(gallery.all, photo => photo.file).sort(), "Sorting preserves catalog membership");
+  console.log("Passed async color-sort fallback and selected-filter preservation.");
+})().catch(error => { console.error(error); process.exitCode = 1; });

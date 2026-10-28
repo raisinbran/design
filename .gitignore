@@ -26,3 +26,10 @@ out/
 
 # Optional Electron QA artifacts
 electron-qa-artifacts/
+# macOS Finder metadata
+.DS_Store
+
+# Portfolio Studio temporary files left by an interrupted save
+*.staged
+.studio-*
+.photography-catalog-*.tmp

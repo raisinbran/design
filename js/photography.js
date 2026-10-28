@@ -1,3 +1,114 @@
+/* Photography runtime: color ordering, justified gallery, and filter controls. */
+
+(() => {
+  "use strict";
+  // Match Portfolio Studio's Color harmony weights and greedy nearest-neighbor
+  // strategy. Keep the resulting order consistent across viewports.
+  const catalog = (window.PORTFOLIO_PHOTOS || []).filter(photo =>
+    photo.visible !== false && photo.file && photo.alt);
+  const ratios = window.PHOTO_ASPECT_RATIOS || {};
+  const key = "portfolio-color-features-v1";
+  let stored = {};
+  try { stored = JSON.parse(localStorage.getItem(key) || "{}"); }
+  catch (_) { stored = {}; }
+  const features = new Map();
+  const orderCache = new Map();
+  let ready = false;
+
+  function measure(photo) {
+    const revision = photo.thumbnailVersion || photo.mediaVersion || "";
+    const previous = stored[photo.file];
+    if (previous && previous.revision === revision && Array.isArray(previous.rgb)) {
+      features.set(photo.file, previous.rgb);
+      return Promise.resolve();
+    }
+    return new Promise(resolve => {
+      const image = new Image();
+      image.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const scale = Math.min(1, 110 / Math.max(image.naturalWidth, image.naturalHeight));
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          const context = canvas.getContext("2d", { willReadFrequently: true });
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          const bytes = context.getImageData(0, 0, canvas.width, canvas.height).data;
+          const rgb = [0, 0, 0];
+          for (let i = 0; i < bytes.length; i += 4) {
+            rgb[0] += bytes[i];
+            rgb[1] += bytes[i + 1];
+            rgb[2] += bytes[i + 2];
+          }
+          for (let channel = 0; channel < 3; channel++) rgb[channel] /= bytes.length / 4;
+          features.set(photo.file, rgb);
+          stored[photo.file] = { revision, rgb };
+        } catch (_) { features.set(photo.file, [128, 128, 128]); }
+        resolve();
+      };
+      image.onerror = () => { features.set(photo.file, [128, 128, 128]); resolve(); };
+      image.src = photo.thumbnail
+        ? "photography/thumbnails/" + encodeURIComponent(photo.thumbnail) +
+          (photo.thumbnailVersion ? "?v=" + encodeURIComponent(photo.thumbnailVersion) : "")
+        : "photography/published/" + encodeURIComponent(photo.file);
+    });
+  }
+
+  function proximity(first, second) {
+    const a = features.get(first.file) || [128, 128, 128];
+    const b = features.get(second.file) || [128, 128, 128];
+    const color = Math.hypot(...a.map((value, index) => value - b[index])) / 441.67;
+    const brightness = Math.abs(a.reduce((sum, v) => sum + v, 0) -
+      b.reduce((sum, v) => sum + v, 0)) / 765;
+    const saturation = Math.abs((Math.max(...a) - Math.min(...a)) -
+      (Math.max(...b) - Math.min(...b))) / 255;
+    const aTags = new Set(first.tags || []);
+    const bTags = new Set(second.tags || []);
+    const intersection = [...aTags].filter(tag => bTags.has(tag)).length;
+    const union = new Set([...aTags, ...bTags]).size;
+    const theme = 1 - intersection / Math.max(1, union);
+    const aRatio = ratios[first.file] || first.aspectRatio || 1.5;
+    const bRatio = ratios[second.file] || second.aspectRatio || 1.5;
+    const shape = Math.min(1, Math.abs(Math.log(Math.max(.1, aRatio) /
+      Math.max(.1, bRatio))) / 2);
+    return .64 * color + .22 * brightness + .06 * saturation +
+      .04 * theme + .04 * shape;
+  }
+
+  window.PortfolioSortedPhotos = candidates => {
+    if (!ready || candidates.length < 2) return candidates;
+    const signature = candidates.map(photo => photo.file).join("|");
+    if (orderCache.has(signature)) return orderCache.get(signature);
+    const remaining = candidates.slice();
+    const proposed = [remaining.shift()];
+    while (remaining.length) {
+      const current = proposed[proposed.length - 1];
+      let best = 0;
+      for (let index = 1; index < remaining.length; index++) {
+        if (proximity(current, remaining[index]) < proximity(current, remaining[best]))
+          best = index;
+      }
+      proposed.push(remaining.splice(best, 1)[0]);
+    }
+    // Use the same Color harmony order across desktop and mobile.
+    const result = proposed;
+    orderCache.set(signature, result);
+    return result;
+  };
+
+  async function initialize() {
+    // Limit parallel decoding to keep mobile browsers responsive.
+    for (let offset = 0; offset < catalog.length; offset += 4)
+      await Promise.all(catalog.slice(offset, offset + 4).map(measure));
+    try { localStorage.setItem(key, JSON.stringify(stored)); }
+    catch (_) { /* Storage is optional. */ }
+    ready = true;
+    window.PortfolioPhotographyGallery?.setFilters(
+      window.PortfolioPhotographySelectedTags || []);
+  }
+  initialize();
+})();
+
+
 (() => {
   "use strict";
 
@@ -164,6 +275,60 @@
       gallery.appendChild(wrapper);
     }
 
+    // On phones, separate orientations while retaining the order within each
+    // orientation. Pair portraits; an unpaired portrait is always the last row.
+    // Landscape photographs get the full row individually.
+    if ((window.innerWidth || width) <= 720) {
+      const portraitIndices = [];
+      const landscapeIndices = [];
+      for (let index = 0; index < n; index++) {
+        (r[index] < 0.95 ? portraitIndices : landscapeIndices).push(index);
+      }
+      // Group portrait pairs by the position of their first photograph,
+      // leaving a final unmatched portrait until after every complete row.
+      const groups = landscapeIndices.map(index => ({ index, members:[index] }));
+      for (let offset = 0; offset + 1 < portraitIndices.length; offset += 2) {
+        groups.push({
+          index:portraitIndices[offset],
+          members:portraitIndices.slice(offset, offset + 2)
+        });
+      }
+      groups.sort((left, right) => left.index - right.index);
+      if (portraitIndices.length % 2) {
+        groups.push({
+          index:portraitIndices[portraitIndices.length - 1],
+          members:[portraitIndices[portraitIndices.length - 1]]
+        });
+      }
+      for (const group of groups) {
+        const rowRatios = group.members.map(index => r[index]);
+        const count = group.members.length;
+        const exact = (width - gap * (count - 1)) /
+          rowRatios.reduce((total, ratio) => total + ratio, 0);
+        const portraitRow = rowRatios[0] < 0.95;
+        const limit = Math.min(360, viewportHeight * 0.48);
+        const desired = portraitRow ? Math.min(420, width * 0.9) : 270;
+        // Single non-portrait images fill the full row at natural aspect ratio.
+        // Portrait pairs retain the mobile height limit.
+        const height = portraitRow ? Math.min(exact, limit, desired) : exact;
+        const wrapper = document.createElement("div");
+        wrapper.className = "photo-justified-row";
+        if (portraitRow) wrapper.classList.add("photo-portrait-row");
+        if (group.members.length === 1 && portraitRow) {
+          wrapper.classList.add("photo-final-row");
+        }
+        wrapper.style.gap = gap + "px";
+        for (const index of group.members) {
+          const tile = tiles[index];
+          tile.style.width = (height * r[index]) + "px";
+          tile.style.height = height + "px";
+          wrapper.appendChild(tile);
+        }
+        gallery.appendChild(wrapper);
+      }
+      return;
+    }
+
     // Plan the entire filtered set together, including the final row. Natural
     // aspect ratios and catalog order are preserved; no image is cropped here.
     const dp = Array(n + 1).fill(Infinity);
@@ -195,7 +360,11 @@
         // Desktop interior rows fill the gallery. Mobile rows may leave side space
         // to keep tall photographs within a comfortable viewing height.
         const cap = count === 1 ? Math.min(maximum, desired + (hasPortrait ? 15 : 40)) : maximum;
-        const height = cappedRows || end === n ? Math.min(exact, cap) : exact;
+        // A standalone landscape or square tile must span the entire row.
+        // Keep portrait and multi-image row sizing as before.
+        const standaloneNonPortrait = count === 1 && !hasPortrait;
+        const height = standaloneNonPortrait ? exact :
+          (cappedRows || end === n ? Math.min(exact, cap) : exact);
         const used = sum * height + gap * (count - 1);
         let penalty = 10 + 110 * Math.pow(Math.log(height / desired), 2);
         penalty += 180 * Math.pow(Math.max(0, width - used) / width, 2);
@@ -238,6 +407,7 @@
       photos = active.size === 0 ? allPhotos : allPhotos.filter(photo =>
         [...active].some(tag => Array.isArray(photo.tags) && photo.tags.includes(tag))
       );
+      if (window.PortfolioSortedPhotos) photos = window.PortfolioSortedPhotos(photos);
       tiles = photos.map(photo => allTiles[allPhotos.indexOf(photo)]);
       const empty = document.getElementById("photo-empty");
       if (empty) {
@@ -252,4 +422,58 @@
   });
 
   render();
+})();
+
+
+(() => {
+  "use strict";
+  const gallery = window.PortfolioPhotographyGallery;
+  const host = document.getElementById("photo-filters");
+  if (!gallery || !host) return;
+  const labels = window.PHOTO_TAG_LABELS || [];
+  if (!Array.isArray(labels) || !labels.length) return;
+
+  const selection = new Set();
+  const group = document.createElement("div");
+  group.className = "photo-filter-chips";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-label", "Filter photographs by tag");
+
+  const buttons = new Map();
+  function createChip(text, isAll) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "photo-filter-chip";
+    button.textContent = text;
+    button.setAttribute("aria-pressed", isAll ? "true" : "false");
+    button.addEventListener("click", () => {
+      selection.clear();
+      if (!isAll) selection.add(text);
+      update();
+    });
+    group.appendChild(button);
+    buttons.set(text, button);
+  }
+  createChip("All", true);
+  labels.forEach(label => createChip(label, false));
+  host.append(group);
+
+  function update() {
+    window.PortfolioPhotographySelectedTags = Array.from(selection);
+    buttons.get("All").setAttribute("aria-pressed", String(selection.size === 0));
+    labels.forEach(tag => buttons.get(tag).setAttribute("aria-pressed", String(selection.has(tag))));
+    gallery.setFilters(Array.from(selection));
+  }
+  const nav = document.querySelector(".site-nav-2026");
+  function updateTop() {
+    if (!nav) return;
+    const h = Math.ceil(nav.getBoundingClientRect().height);
+    host.style.setProperty("--photo-filter-top", `${h}px`);
+  }
+  if (nav && typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(updateTop).observe(nav);
+  }
+  window.addEventListener("resize", updateTop, { passive: true });
+  updateTop();
+  update();
 })();

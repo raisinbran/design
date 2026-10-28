@@ -8,7 +8,6 @@ import datetime
 import hashlib
 import json
 import math
-import os
 import re
 from pathlib import Path
 from urllib.parse import unquote
@@ -16,6 +15,7 @@ from urllib.parse import unquote
 from bs4 import BeautifulSoup
 import archive_catalog as archive
 from gallery_thumbnails import asset_transaction
+from platform_support import backup_root
 
 SETTINGS_RE = re.compile(r'(window\.ARCHIVE_PHOTO_PROMINENCE\s*=\s*Object\.freeze\()\{.*?\}(\)\s*;)', re.S)
 
@@ -125,6 +125,7 @@ def validate(data, root, pending=None):
 
 
 def _prominence(data):
+    """Non-default photo prominence by lower-case filename, as the settings script stores it."""
     result = {}
     for collection in data['collections']:
         for media in collection['media']:
@@ -135,6 +136,7 @@ def _prominence(data):
 
 
 def render_settings(data):
+    """The prominence settings script; unchanged settings return the original bytes."""
     original = data['settingsSource']
     overrides = _prominence(data)
     if overrides == data['prominenceOverrides']:
@@ -147,6 +149,7 @@ def render_settings(data):
 
 
 def render_page(data, root, page=None, pending=None):
+    """Render creativedesign.html from the catalog, refusing if page differs from its template."""
     validate(data, root, pending)
     source = data['sourceHtml']
     if page is not None and page != source.encode('utf-8'):
@@ -162,8 +165,8 @@ def render_page(data, root, page=None, pending=None):
     for collection in data['collections']:
         original, raw = lookup.get(collection['id'], template)
         safe = copy.deepcopy(collection)
-        # Archive's Phase 5A renderer rejects prominence edits. The paired
-        # settings writer below owns those changes, so mask only for HTML.
+        # Prominence lives in the settings script, not the HTML, and
+        # render_collection rejects changes to it. Mask it for the HTML pass.
         old_priority = {m['id']: m['prominence'] for m in original['media']}
         for item in safe['media']:
             item['prominence'] = old_priority.get(item['id'], 'normal')
@@ -186,6 +189,11 @@ def render_page(data, root, page=None, pending=None):
 
 
 def save(root, data, expected_catalog, expected_page, expected_settings, pending=None):
+    """Save the Archive page, settings script, catalog and new media together.
+
+    expected_* are the bytes the editor loaded; any difference on disk refuses
+    the save. Returns the backup folder, or None when nothing changed.
+    """
     root = Path(root).resolve()
     cat = root / 'data/archive-catalog.json'
     html = root / 'creativedesign.html'
@@ -209,8 +217,7 @@ def save(root, data, expected_catalog, expected_page, expected_settings, pending
     if page_bytes == expected_page and settings_bytes == expected_settings and catalog_bytes == expected_catalog and not pending:
         return None
     stamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f')
-    backups = Path(os.environ.get('LOCALAPPDATA', Path.home() / '.cache')) / 'PortfolioStudio' / 'archive-backups'
-    folder = backups / stamp
+    folder = backup_root('archive-backups') / stamp
     folder.mkdir(parents=True, exist_ok=False)
     (folder / html.name).write_bytes(expected_page)
     (folder / settings.name).write_bytes(expected_settings)

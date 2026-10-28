@@ -142,6 +142,7 @@ class ArchiveEditor(ttk.Frame):
             else:items[self.media_index][key]=raw
 
     def store(self):
+        """Copy the form into the selected collection; edits stay in memory until Save."""
         if self.loading or self.index is None:return
         self.store_media()
         c=self.data['collections'][self.index]
@@ -242,6 +243,7 @@ class ArchiveEditor(ttk.Frame):
         if self.history:self.data=self.history.pop();self.populate(self.index or 0)
 
     def add_media(self):
+        """Add images; files from outside the repository are queued in self.pending until Save."""
         if self.index is None:return
         names=filedialog.askopenfilenames(parent=self,title='Add Archive images',
                    filetypes=[('Web images','*.jpg *.jpeg *.png *.webp'),('All files','*.*')])
@@ -309,12 +311,14 @@ class ArchiveEditor(ttk.Frame):
             dest.write_bytes(self.pending[path]);open_path(dest)
 
     def used_pending(self):
+        """Queued new files that a collection still references."""
         used=set()
         for c in self.data['collections']:
             used.add(c['cover']);used.update(m['src'] for m in c['media'])
         return {path:blob for path,blob in self.pending.items() if path.relative_to(self.root).as_posix() in used}
 
     def preview(self):
+        """Open the rendered page from a private cache folder; the repository is not written."""
         self.store()
         try:
             pending=self.used_pending()
@@ -333,6 +337,7 @@ class ArchiveEditor(ttk.Frame):
             messagebox.showerror('Archive preview failed',str(exc),parent=self)
 
     def save(self):
+        """Save the Archive page, settings and catalog locally; returns False if cancelled or failed."""
         self.store();pending=self.used_pending()
         if self.data==self.initial and not pending:return True
         if not messagebox.askyesno('Save changes locally',

@@ -9,6 +9,7 @@ MAX_MIN, MAX_MAX = 300, 6000
 
 
 def preferences_path():
+    """Per-user preferences file; the private original-file registry sits beside it."""
     if sys.platform=="darwin":return Path.home()/"Library"/"Application Support"/"PortfolioStudio"/"preferences.json"
     home = os.environ.get("APPDATA")
     if home:
@@ -16,16 +17,31 @@ def preferences_path():
     return Path.home() / ".config" / "PortfolioStudio" / "preferences.json"
 
 
+def saved_settings(target):
+    """Return the stored settings, or nothing when the file is missing or damaged."""
+    try:
+        data = json.loads(target.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def saved_size(value):
+    """A stored maximum side, or the default when it is invalid or out of range."""
+    try:
+        size = int(value)
+    except (TypeError, ValueError, OverflowError):
+        return DEFAULTS["maxSide"]
+    return size if MAX_MIN <= size <= MAX_MAX else DEFAULTS["maxSide"]
+
+
 def load_preferences(path=None):
+    """Current preferences, with defaults for anything missing or invalid."""
     target = Path(path) if path else preferences_path()
     result = dict(DEFAULTS)
-    if not target.exists():
-        return result
-    data = json.loads(target.read_text(encoding="utf-8"))
-    size = int(data.get("maxSide", DEFAULTS["maxSide"]))
-    if not MAX_MIN <= size <= MAX_MAX:
-        raise ValueError("Saved maximum side is outside the supported range.")
-    result["maxSide"] = size
+    # A damaged file must never block startup; saving rewrites it cleanly.
+    data = saved_settings(target)
+    result["maxSide"] = saved_size(data.get("maxSide", DEFAULTS["maxSide"]))
     result["openAfterPublish"] = data.get("openAfterPublish",True) if type(data.get("openAfterPublish",True)) is bool else True
     appearance=data.get('appearance','system')
     result['appearance']=appearance if appearance in ('system','light','dark') else 'system'
@@ -33,6 +49,7 @@ def load_preferences(path=None):
 
 
 def save_preferences(defaults, path=None):
+    """Validate and merge new values into the saved preferences; returns the file path."""
     target = Path(path) if path else preferences_path()
     settings=load_preferences(target)
     settings.update(defaults)
