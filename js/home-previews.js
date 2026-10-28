@@ -1,4 +1,4 @@
-/* Small, decorative photo previews: no controls or slide announcements. */
+/* Decorative homepage previews with catalog-based, self-healing photography picks. */
 (() => {
   "use strict";
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -7,73 +7,128 @@
     "assets/homepage-2026/engineering-field.jpg",
     "images/PCJPB/IMG_0355_edit.jpg"
   ];
-  // Curated photographs, resolved through the live publication catalog so that
-  // hidden/removed entries disappear and new exports use their current versions.
-  const picks = ["DSCF1024_edit_crop.jpg", "DSCF3546_crop.jpg",
-    "DSCF1024_edit.jpg", "DSCF3546.jpg", "IMG_2553_edit.jpg", "DSCF0179.jpg"];
-  const photos = window.PORTFOLIO_PHOTOS || [];
-  const photography = picks.flatMap(file => {
-    const photo = photos.find(p => p.file === file && p.visible !== false);
-    if (!photo) return [];
-    const folder = photo.thumbnail ? "thumbnails" : "published";
+
+  // Curated visual preferences, spanning landscape, architecture, wildlife,
+  // night scenes and light. A catalog entry is required for every photo.
+  const preferred = [
+    "DSCF0179_crop.jpg", "DSCF1024_edit_crop.jpg",
+    "DSCF3655_crop.jpg", "DSCF2848_crop.jpg",
+    "20220511_191505848_iOS_crop.jpg", "DSCF1359_crop.jpg",
+    "DSCF1464_crop.jpg", "IMG_8889_edit_crop.jpg",
+    "20241012_222059210_iOS_crop.jpg", "DSCF1520_crop.jpg",
+    "DSCF3546_crop.jpg", "DSCF1972_crop.jpg"
+  ];
+  const desiredCount = 12;
+  const catalog = (window.PORTFOLIO_PHOTOS || []).filter(photo =>
+    photo.visible !== false && photo.file && photo.alt);
+  const byName = new Map(catalog.map(photo => [photo.file, photo]));
+  const photographyCandidates = [
+    ...preferred.map(file => byName.get(file)).filter(Boolean),
+    ...catalog.filter(photo => !preferred.includes(photo.file))
+  ];
+  const photoUrl = photo => {
     const name = photo.thumbnail || photo.file;
+    const folder = photo.thumbnail ? "thumbnails" : "published";
     const version = photo.thumbnail ? photo.thumbnailVersion : photo.mediaVersion;
-    return [`photography/${folder}/${encodeURIComponent(name)}${version ? `?v=${encodeURIComponent(version)}` : ""}`];
-  });
+    return "photography/" + folder + "/" + encodeURIComponent(name) +
+      (version ? "?v=" + encodeURIComponent(version) : "");
+  };
 
   document.querySelectorAll("[data-home-preview]").forEach(stage => {
-    const sources = stage.dataset.homePreview === "engineering" ? engineering : photography;
-    if (!sources.length) return;
+    const isPhotography = stage.dataset.homePreview === "photography";
     const card = stage.closest("a");
-    const slides = sources.map((src, i) => {
-      const img = i === 0 ? stage.querySelector("img") : document.createElement("img");
-      img.alt = "";
-      img.decoding = "async";
-      img.loading = "lazy";
-      img.src = src;
-      img.style.opacity = i === 0 ? "1" : "0";
-      if (i) stage.appendChild(img);
-      return img;
-    });
-    let current = 0, timer = null, inView = false, hovered = false, focused = false;
+    const pool = isPhotography
+      ? photographyCandidates.map(photoUrl)
+      : engineering;
+    const slides = [];
+    let nextCandidate = 0;
+    let current = 0;
+    let timer = null;
+    let inView = false;
+    let hovered = false;
+    let focused = false;
     let busy = false;
-    const allowed = () => slides.length > 1 && inView && !document.hidden &&
-      !motion.matches && !hovered && !focused;
+    const used = new Set();
+
+    function createSlide(source) {
+      const image = document.createElement("img");
+      image.alt = "";
+      image.decoding = "async";
+      image.loading = "lazy";
+      image.src = source;
+      image.style.opacity = "0";
+      image.style.zIndex = "0";
+      return image;
+    }
+
+    // Validate candidates before display. Broken or delisted items are replaced
+    // from the remaining published catalog, without introducing a blank slide.
+    async function addNextPhoto() {
+      while (nextCandidate < pool.length) {
+        const source = pool[nextCandidate++];
+        if (used.has(source)) continue;
+        used.add(source);
+        const image = createSlide(source);
+        try {
+          await image.decode();
+          slides.push(image);
+          stage.appendChild(image);
+          return true;
+        } catch {
+          // Invalid images never enter the rotating set.
+        }
+      }
+      return false;
+    }
+
+    async function refill() {
+      const target = isPhotography ? Math.min(15, desiredCount) : pool.length;
+      while (slides.length < target && await addNextPhoto()) {
+        // Fill from currently published photos, excluding broken files.
+      }
+    }
+
+    function allowed() {
+      return slides.length > 1 && inView && !document.hidden &&
+        !motion.matches && !hovered && !focused;
+    }
     function schedule() {
       clearTimeout(timer);
       timer = null;
       if (allowed() && !busy) timer = setTimeout(advance, 5000);
     }
+
     async function advance() {
       timer = null;
       if (!allowed()) return;
       busy = true;
-      const next = (current + 1) % slides.length;
-      const incoming = slides[next], outgoing = slides[current];
+      let next = (current + 1) % slides.length;
+      const incoming = slides[next];
+      const outgoing = slides[current];
       try {
-        // Decode before fading: a missing/slow image never blanks the card.
+        // Revalidate on rotation in case an asset disappears after initial load.
         await incoming.decode();
-        if (!allowed()) { busy = false; schedule(); return; }
+        if (!allowed()) return;
         incoming.style.zIndex = "2";
         outgoing.style.zIndex = "1";
         incoming.style.opacity = "1";
-        setTimeout(() => {
-          outgoing.style.opacity = "0";
-          incoming.style.zIndex = "1";
-          outgoing.style.zIndex = "0";
-          current = next;
-          busy = false;
-          schedule();
-        }, 1000);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        outgoing.style.opacity = "0";
+        incoming.style.zIndex = "1";
+        incoming.style.zIndex = "0";
+        current = next;
       } catch {
-        // Remove failed slides and continue with the remaining photographs.
         incoming.remove();
         slides.splice(next, 1);
         if (next < current) current--;
+        if (current >= slides.length) current = 0;
+        await refill();
+      } finally {
         busy = false;
         schedule();
       }
     }
+
     card.addEventListener("mouseenter", () => { hovered = true; schedule(); });
     card.addEventListener("mouseleave", () => { hovered = false; schedule(); });
     card.addEventListener("focusin", () => { focused = true; schedule(); });
@@ -84,7 +139,23 @@
       new IntersectionObserver(entries => {
         inView = entries[0].isIntersecting;
         schedule();
-      }, {threshold: 0.15}).observe(stage);
-    } else { inView = true; schedule(); }
+      }, { threshold: 0.15 }).observe(stage);
+    } else {
+      inView = true;
+    }
+
+    (async () => {
+      await refill();
+      const initial = stage.querySelector("img:not([data-preview-generated])");
+      // Remove the static fallback only after verified replacements are ready.
+      if (slides.length) {
+        stage.querySelectorAll("img").forEach(image => {
+          if (!slides.includes(image)) image.remove();
+        });
+        slides[0].style.opacity = "1";
+        slides[0].style.zIndex = "1";
+      }
+      schedule();
+    })();
   });
 })();
