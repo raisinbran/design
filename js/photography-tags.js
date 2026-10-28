@@ -57,6 +57,7 @@
   host.appendChild(mobileLabel);
 
   function update() {
+    window.PortfolioPhotographySelectedTags = Array.from(selection);
     buttons.get("All").setAttribute("aria-pressed", String(selection.size === 0));
     labels.forEach(tag => buttons.get(tag).setAttribute("aria-pressed", String(selection.has(tag))));
     select.value = Array.from(selection)[0] || "";
