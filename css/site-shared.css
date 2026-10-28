@@ -94,3 +94,26 @@ html body video {
 /* A single centered name beside the grape mark on every public page. */
 .site-nav-2026 .nav-brand {align-items:center;}
 .site-nav-2026 .nav-name {margin:0;font-weight:500;}
+
+/* Mobile navigation uses the compact Photography header dimensions site-wide. */
+@media (max-width:680px) {
+  body .site-nav-2026 .nav-inner {
+    padding-block:6px;
+    gap:0;
+  }
+  body .site-nav-2026 .nav-logo { width:36px; height:36px; }
+  body .site-nav-2026 .nav-brand { min-height:40px; gap:8px; }
+  body .site-nav-2026 .nav-links { width:100%; gap:0 24px; }
+  body .site-nav-2026 .nav-links a {
+    display:flex;
+    align-items:center;
+    min-height:44px;
+    padding-block:8px;
+  }
+  /* Images inside the home link must not intercept the first tap. */
+  .site-nav-2026 .nav-logo img { pointer-events:none; }
+}
+@media (max-width:680px) and (hover:none) {
+  /* Prevent iOS from requiring a first tap to activate the hover artwork. */
+  body .site-nav-2026 .nav-brand:hover .nav-logo .hover { opacity:0; }
+}
