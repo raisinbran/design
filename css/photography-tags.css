@@ -102,33 +102,30 @@
 }
 .photography-page .photo-filter-status { display: none !important; }
 
-/* Mobile retains the desktop chips and allows a maximum of two visual rows. */
+/* Mobile chips wrap sequentially, without fixed-width grid columns.
+   The bar shows up to two rows; any additional tags remain scrollable. */
 .photo-filter-mobile { display:none; }
 @media (max-width:720px) {
   .photography-page .photo-filter-chips {
-    display:grid;
-    grid-template-rows:repeat(2, max-content);
-    grid-auto-columns:max-content;
-    justify-content:start;
-    overflow-x:auto;
-    overflow-y:hidden;
+    display:flex;
+    flex-wrap:wrap;
+    align-content:flex-start;
+    align-items:flex-start;
     width:100%;
     flex-basis:100%;
     gap:7px;
+    max-height:calc(2 * (15px + 16px + 2px) + 7px + 7px);
+    overflow-x:hidden;
+    overflow-y:auto;
     scrollbar-width:thin;
     -webkit-overflow-scrolling:touch;
   }
-  .photography-page .photo-filter-chip { padding:8px 12px; }
-  .photography-page .photo-filter-mobile { display:none; }
-  .photography-page .photo-justified-row { justify-content:center; }
-}
-
-/* Keep the original padding; prevent short labels (All, Day) from
-   stretching to match longer labels in the same mobile grid column. */
-@media (max-width:720px) {
   .photography-page .photo-filter-chip {
+    flex:0 0 auto;
     width:max-content;
     min-width:0;
-    justify-self:start;
+    padding:8px 12px;
   }
+  .photography-page .photo-filter-mobile { display:none; }
+  .photography-page .photo-justified-row { justify-content:center; }
 }
