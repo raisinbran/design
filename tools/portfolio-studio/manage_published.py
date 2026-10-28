@@ -5,6 +5,8 @@ from tkinter import ttk, messagebox, simpledialog
 from PIL import Image,ImageOps,ImageTk
 from catalog_tools import read_json,generated_js,validate_catalog
 from window_state import remember_window
+from studio_preferences import load_preferences
+from studio_theme import apply_appearance,install_dialog_placement
 from recycle_bin import recycle_files
 from platform_support import trash_label
 from gallery_thumbnails import thumbnail_name,read_registry,thumbnail_fields,digest,asset_transaction,save_registry
@@ -350,5 +352,8 @@ if __name__=="__main__":
     root.title("Portfolio Studio | Manage Published Photos")
     root.geometry("1160x740")
     remember_window(root,"legacy-photo-manager")
+    apply_appearance(root,load_preferences().get('appearance','system'))
     Manager(root).pack(fill="both",expand=True)
+    apply_appearance(root,load_preferences().get('appearance','system'))
+    install_dialog_placement(root)
     root.mainloop()

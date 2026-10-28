@@ -12,7 +12,12 @@ from PIL import Image, ImageOps
 from catalog_tools import read_json, generated_js, validate_catalog
 from photo_viewport import PhotoViewport, normalize_crop
 from thumbnail_list import ThumbnailList
-from studio_notifications import notify
+from studio_notifications import notify, preferences as show_preferences
+from studio_about import show_about
+from modern_scale import create_scale
+from workspace_tabs_ui import create_workspace_tabs
+from studio_preferences import load_preferences
+from studio_theme import apply_appearance,install_dialog_placement
 from manage_published import ManagementActions, enumerate_files
 from responsive_toolbar import ResponsiveToolbar, choices
 from window_state import remember_window
@@ -67,9 +72,12 @@ def atomic_catalog_pair(c_text, j_text):
             p.unlink(missing_ok=True)
 
 class Editor(ManagementActions, tk.Tk):
-    def __init__(self):
+    def __init__(self,primary=False):
         super().__init__()
-        self.title("Portfolio Studio | Published Photo Catalog")
+        apply_appearance(self,load_preferences().get('appearance','system'))
+        self.primary=bool(primary)
+        self.preferences=load_preferences()
+        self.title('Portfolio Studio' if self.primary else 'Portfolio Studio | Published Photo Catalog')
         self.geometry(f"{max(960,min(1430,self.winfo_screenwidth()-60))}x{max(620,min(910,self.winfo_screenheight()-85))}")
         self.minsize(960, 620)
         self.catalog_root=ROOT
@@ -92,15 +100,41 @@ class Editor(ManagementActions, tk.Tk):
         self.crop_pending = False
         self.suspend = False
         self.cache = {}
-        self.tabs=ttk.Notebook(self)
-        self.tabs.pack(fill="both",expand=True)
-        self.catalog_page=ttk.Frame(self.tabs)
-        self.tabs.add(self.catalog_page,text="Edit published photos")
+        if self.primary:
+            # Preserve all existing Published Catalog actions as the primary
+            # Photography editor. Engineering and Archive editors are lazy.
+            # One header row: Photography / Engineering / Archive on the left,
+            # Process New Photos / Settings / About on the right, in that order.
+            self.workspace_tabs=create_workspace_tabs(
+                self,('Photography','Engineering','Archive'),
+                trailing_actions=(
+                    ('Process New Photos…',self.open_new_photos_processor),
+                    ('Settings',lambda:show_preferences(self)),
+                    ('About',lambda:show_about(self)),
+                ))
+            self.workspace_tabs.pack(fill='both',expand=True)
+            self.catalog_page=ttk.Frame(self.workspace_tabs)
+            self.engineering_page=ttk.Frame(self.workspace_tabs)
+            self.archive_page=ttk.Frame(self.workspace_tabs)
+            for page,label in ((self.catalog_page,'Photography'),
+                               (self.engineering_page,'Engineering'),
+                               (self.archive_page,'Archive')):
+                self.workspace_tabs.add(page,text=label)
+            self.engineering_editor=None
+            self.archive_editor=None
+            self.workspace_tabs.bind('<<NotebookTabChanged>>',self.workspace_changed,add='+')
+        else:
+            self.catalog_page=ttk.Frame(self)
+            self.catalog_page.pack(fill='both',expand=True)
         self.setup()
+        apply_appearance(self,load_preferences().get('appearance','system'))
+        install_dialog_placement(self)
         self.alt.trace_add("write", self.description_changed)
         for variable in [self.alt,self.review_var,self.priority,*self.tags.values()]:
             variable.trace_add("write", lambda *_: self.after_idle(self.refresh_dirty))
-        self.protocol("WM_DELETE_WINDOW", self.close_editor)
+        self.protocol('WM_DELETE_WINDOW', self.close_editor)
+        if self.primary:
+            self.after_idle(self._repaint_shell)
         self.refresh_dirty()
 
     def description_changed(self, *_):
@@ -135,7 +169,7 @@ class Editor(ManagementActions, tk.Tk):
         for label, call in (
             ("Reset selected", self.reset_selected),
             ("Reset all unsaved", self.reset_all),
-            ("Use full photo", self.full_crop),
+            ("Clear gallery crop", self.full_crop),
         ):
             ttk.Button(bar, text=label, command=call).pack(side="left", padx=(0, 6))
         self.save_button.pack(side="left",padx=(0,6))
@@ -163,11 +197,11 @@ class Editor(ManagementActions, tk.Tk):
 
         viewer = ttk.Frame(right, padding=(0, 4))
         viewer.pack(fill="x")
-        ttk.Label(viewer, text="Inspect").pack(side="left", padx=(0, 5))
+        ttk.Label(viewer, text="Zoom").pack(side="left", padx=(0, 5))
         for label, value in (("100%", 1), ("200%", 2), ("400%", 4)):
             ttk.Button(viewer, text=label, width=6,
                        command=lambda v=value: self.set_zoom(v)).pack(side="left", padx=2)
-        ttk.Scale(viewer, variable=self.zoom, from_=1, to=4,
+        create_scale(viewer, variable=self.zoom, from_=1, to=4,
                   command=self.set_zoom).pack(side="left", fill="x", expand=True, padx=9)
         crop_toolbar=ResponsiveToolbar(right,padding=(0,4))
         self.crop_toolbar=crop_toolbar
@@ -217,7 +251,7 @@ class Editor(ManagementActions, tk.Tk):
             ttk.Checkbutton(tags, text=name, variable=var).pack(side="left", padx=(0, 12))
         self.edit_control_frames=(info,tags,crop_toolbar)
 
-        ttk.Label(right, textvariable=self.dimensions_text,foreground="#3a5960",
+        ttk.Label(right, textvariable=self.dimensions_text,
                   padding=(0,4)).pack(fill="x")
         ttk.Label(self.catalog_page, textvariable=self.status, padding=(10, 0, 10, 5),
                   wraplength=1170).pack(fill="x")
@@ -563,11 +597,77 @@ class Editor(ManagementActions, tk.Tk):
         self.save_button.configure(state="normal" if changed else "disabled")
         self.dirty_label.configure(text="Unsaved changes" if changed else "")
 
+    def set_appearance(self,mode):
+        from studio_preferences import save_preferences
+        from studio_theme import apply_appearance
+        save_preferences({'appearance':mode})
+        self.preferences['appearance']=mode
+        apply_appearance(self,mode)
+        if self.primary:self._repaint_shell()
+
+    def _repaint_shell(self):
+        callback=getattr(self,'_studio_paint_tabs',None)
+        if callable(callback):callback()
+
+    def workspace_changed(self,event=None):
+        if not self.primary:return
+        page=self.workspace_tabs.select()
+        if page==str(self.engineering_page) and self.engineering_editor is None:
+            try:
+                from engineering_editor import EngineeringEditor
+                self.engineering_editor=EngineeringEditor(self.engineering_page)
+                self.engineering_editor.pack(fill='both',expand=True)
+            except Exception as exc:
+                messagebox.showerror('Engineering editor unavailable',str(exc),parent=self)
+                self.workspace_tabs.select(self.catalog_page)
+        elif page==str(self.archive_page) and self.archive_editor is None:
+            try:
+                from archive_editor import ArchiveEditor
+                self.archive_editor=ArchiveEditor(self.archive_page)
+                self.archive_editor.pack(fill='both',expand=True)
+            except Exception as exc:
+                messagebox.showerror('Archive editor unavailable',str(exc),parent=self)
+                self.workspace_tabs.select(self.catalog_page)
+
+    def open_new_photos_processor(self):
+        import subprocess,sys
+        if not self.primary:return
+        process=getattr(self,'_processor',None)
+        if process is not None and process.poll() is None:
+            self.status.set('New Photos Processor is already open. Switch to its window.')
+            return
+        script=Path(__file__).with_name('photo_studio.py')
+        try:
+            self._processor=subprocess.Popen([sys.executable,str(script),'--processor'],cwd=str(script.parent))
+        except OSError as exc:
+            messagebox.showerror('New Photos Processor unavailable',str(exc),parent=self)
+            return
+        self.status.set('New Photos Processor opened in a separate window.')
+        self.after(1200,self._poll_new_photos_processor)
+
+    def _poll_new_photos_processor(self):
+        process=getattr(self,'_processor',None)
+        if process is None:return
+        if process.poll() is None:
+            self.after(1200,self._poll_new_photos_processor)
+            return
+        self._processor=None
+        # Only refresh automatically if there are no unsaved Catalog edits;
+        # never silently discard changes made while processor was open.
+        self.refresh_dirty()
+        if self.catalog==self.initial and not self.crop_pending:
+            try:self.refresh()
+            except (OSError,ValueError) as exc:self.status.set(f'Processor closed. Refresh manually: {exc}')
+        else:self.status.set('Processor closed. Save or reset Catalog edits before Refresh.')
+
     def close_editor(self):
         self.refresh_dirty()
         if self.catalog != self.initial:
             if not messagebox.askyesno("Unsaved changes", "Discard unsaved catalog changes and close?"):
                 return
+        if self.primary:
+            for child in (self.engineering_editor,self.archive_editor):
+                if child is not None and not child.can_close():return
         self.destroy()
 
     def open_arranger(self):

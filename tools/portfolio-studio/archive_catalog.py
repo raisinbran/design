@@ -116,7 +116,7 @@ def validate(catalog,root=ROOT):
     overrides=catalog.get('prominenceOverrides')
     if overrides!=settings_values(settings):raise ValueError("Archive prominence settings mismatch")
     baseline=parse_collections(source,overrides)
-    if len(catalog['collections'])!=len(baseline):raise ValueError("Collection boundaries cannot be added/removed in Phase 5A")
+    if not catalog['collections']:raise ValueError("Keep at least one Archive collection")
     ids=set();media_ids=set();sources=set()
     for collection in catalog['collections']:
         if not isinstance(collection,dict) or any(k not in collection for k in FIELDS):raise ValueError("Incomplete Archive collection")
@@ -131,7 +131,7 @@ def validate(catalog,root=ROOT):
         if not isinstance(collection['headerMinHeight'],str) or not re.fullmatch(r'\d+(?:\.\d+)?(?:em|rem|px)',collection['headerMinHeight']):
             raise ValueError("Invalid cover height")
         if not local_asset(root,collection['cover']).is_file():raise ValueError("Missing Archive cover")
-        if not isinstance(collection['media'],list) or not collection['media']:raise ValueError("Archive collection needs media")
+        if not isinstance(collection['media'],list):raise ValueError("Archive media must be a list")
         for media in collection['media']:
             if not isinstance(media,dict) or any(k not in media for k in ('id','src','alt','caption','credit','cropMode','displayRatio','position','prominence','figureAttributes','imageAttributes')):
                 raise ValueError("Incomplete Archive media")
@@ -150,7 +150,6 @@ def validate(catalog,root=ROOT):
                 attrs=media[field]
                 allowed={'class','style','data-display-ratio','data-crop-mode'} if field=='figureAttributes' else {'class','style','loading','decoding','width','height','title'}
                 if not isinstance(attrs,dict) or any(k not in allowed or not isinstance(v,(str,list)) or (isinstance(v,list) and (k!='class' or not all(isinstance(s,str) for s in v))) for k,v in attrs.items()):raise ValueError("Invalid media attributes")
-    if ids!={c['id'] for c in baseline}:raise ValueError("Unknown collection boundary")
     names={Path(unquote(m['src'])).name.lower() for c in catalog['collections'] for m in c['media']}
     if any(not isinstance(k,str) or k not in names or not isinstance(v,str) or v not in PRIORITIES for k,v in overrides.items()):raise ValueError("Invalid prominence reference")
     return sum(len(c['media']) for c in catalog['collections'])
@@ -210,15 +209,7 @@ def render_collection(collection,original,raw):
 
 
 def render(catalog,root=ROOT,page=None):
-    validate(catalog,root)
-    source=catalog['sourceHtml'];encoded=source.encode('utf-8')
-    if page is not None and page!=encoded:raise ValueError("Archive page changed; reload before rendering")
-    baseline=parse_collections(source,catalog['prominenceOverrides']);bounds=sections(source)
-    originals={c['id']:(c,raw) for c,(_,_,raw) in zip(baseline,bounds)}
-    result=source;replacements=[]
-    # Slots preserve all separators/chrome; catalog order determines section order.
-    for collection,(start,end,_) in zip(catalog['collections'],bounds):
-        original,raw=originals[collection['id']]
-        replacements.append((start,end,render_collection(collection,original,raw)))
-    for start,end,fragment in reversed(replacements):result=result[:start]+fragment+result[end:]
-    return result.encode('utf-8')
+    # The Phase 5B renderer supports variable collection counts and paired
+    # prominence settings while retaining exact no-op HTML bytes.
+    from archive_writer import render_page
+    return render_page(catalog,root,page)

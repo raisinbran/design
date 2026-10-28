@@ -6,11 +6,14 @@ from PIL import Image, ImageOps, ImageStat, ImageTk
 from catalog_tools import read_json, generated_js, validate_catalog
 from edit_tags import ROOT, C_PATH, J_PATH, atomic_catalog_pair
 from window_state import remember_window
+from studio_preferences import load_preferences
+from studio_theme import apply_appearance,install_dialog_placement
 from platform_support import wheel_units
 
 class Arrange(tk.Tk):
     def __init__(self):
         super().__init__()
+        apply_appearance(self,load_preferences().get('appearance','system'))
         self.title("Portfolio Studio | Arrange Gallery")
         self.geometry("1150x750")
         remember_window(self,"arrange-gallery")
@@ -26,6 +29,8 @@ class Arrange(tk.Tk):
         self.images={}
         self.cache={}
         self.build()
+        apply_appearance(self,load_preferences().get('appearance','system'))
+        install_dialog_placement(self)
         self.populate()
         self.mode.trace_add("write",lambda *_:self.refresh_buttons())
     def build(self):

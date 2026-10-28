@@ -7,6 +7,7 @@ rectangles, not image pixels. No originals are modified.
 import math
 import tkinter as tk
 from tkinter import ttk
+from modern_scrollbar import create_scrollbar
 from PIL import Image, ImageTk
 
 MIN_CROP = 0.012
@@ -52,12 +53,14 @@ class PhotoViewport(ttk.Frame):
 
     def __init__(self, parent, *, on_crop=None, on_horizon=None, on_vertical=None, status=None):
         super().__init__(parent)
-        self.canvas = tk.Canvas(self, bg="#e7e9eb", highlightthickness=0)
-        self.xbar = ttk.Scrollbar(self, orient="horizontal", command=self.scroll_x)
-        self.ybar = ttk.Scrollbar(self, orient="vertical", command=self.scroll_y)
+        colors=getattr(self.winfo_toplevel(),'_studio_colors',{})
+        self.canvas = tk.Canvas(self,bg=colors.get('canvas','#E9EDF2'),highlightthickness=0,bd=0)
+        self.xbar = create_scrollbar(self, orient="horizontal", command=self.scroll_x)
+        self.ybar = create_scrollbar(self, orient="vertical", command=self.scroll_y)
         self.canvas.grid(row=0, column=0, sticky="nsew")
         self.ybar.grid(row=0, column=1, sticky="ns")
         self.xbar.grid(row=1, column=0, sticky="ew")
+        self.xbar.grid_remove();self.ybar.grid_remove()
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -115,6 +118,7 @@ class PhotoViewport(ttk.Frame):
             self._start = self._candidate = self._edit = self._drag_pan = None
             self.canvas.configure(cursor="arrow")
             self.canvas.delete("all")
+            self.xbar.grid_remove();self.ybar.grid_remove()
             return
         if not isinstance(image, Image.Image):
             raise TypeError("Image must be PIL.Image")
@@ -372,10 +376,15 @@ class PhotoViewport(ttk.Frame):
         self._update_scrollbars(iw, ih, vw, vh)
 
     def _update_scrollbars(self, iw, ih, vw, vh):
-        if iw <= vw: self.xbar.set(0, 1)
-        else: self.xbar.set(self.pan_x / iw, (self.pan_x + vw) / iw)
-        if ih <= vh: self.ybar.set(0, 1)
-        else: self.ybar.set(self.pan_y / ih, (self.pan_y + vh) / ih)
+        # Avoid permanently reserving ugly scrollbars in the empty/fit view.
+        if self.source is not None and iw > vw+2:
+            self.xbar.grid();self.xbar.set(self.pan_x/iw,(self.pan_x+vw)/iw)
+        else:
+            self.xbar.grid_remove();self.xbar.set(0,1)
+        if self.source is not None and ih > vh+2:
+            self.ybar.grid();self.ybar.set(self.pan_y/ih,(self.pan_y+vh)/ih)
+        else:
+            self.ybar.grid_remove();self.ybar.set(0,1)
 
     def _draw_overlay(self):
         self.canvas.delete("overlay")

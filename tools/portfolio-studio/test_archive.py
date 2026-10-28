@@ -95,7 +95,9 @@ class ArchiveTests(unittest.TestCase):
         c=copy.deepcopy(self.catalog);c['sourceHtml']+='changed'
         with self.assertRaises(ValueError):archive.validate(c,self.root)
         c=copy.deepcopy(self.catalog);c['collections'].pop()
-        with self.assertRaises(ValueError):archive.validate(c,self.root)
+        # Phase 5B permits removing a collection while retaining the site chrome.
+        self.assertEqual(archive.validate(c,self.root),1)
+        self.assertNotIn(b'id="design"',archive.render(c,self.root))
         with self.assertRaises(ValueError):archive.migrate(b'<main></main>',SETTINGS)
 
     def test_prominence_reference_and_script_literal_validation(self):
@@ -108,8 +110,8 @@ class ArchiveTests(unittest.TestCase):
         root=archive.ROOT;page=(root/'creativedesign.html').read_bytes()
         settings=(root/'js/archive-photo-settings.js').read_bytes()
         catalog=archive.read_catalog(root)
-        self.assertEqual([(c['title'],len(c['media'])) for c in catalog['collections']],[('Art',7),('Industrial Design',11)])
-        self.assertEqual(archive.validate(catalog,root),18)
+        self.assertTrue(catalog['collections'])
+        self.assertEqual(archive.validate(catalog,root),sum(len(c['media']) for c in catalog['collections']))
         self.assertEqual(archive.render(catalog,root,page),page)
         self.assertEqual(catalog['settingsSource'].encode('utf-8'),settings)
         self.assertEqual((root/'creativedesign.html').read_bytes(),page)

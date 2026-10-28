@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-DEFAULTS = {"maxSide": 1080, "openAfterPublish": True}
+DEFAULTS = {"maxSide": 1080, "openAfterPublish": True, "appearance": "system"}
 MAX_MIN, MAX_MAX = 300, 6000
 
 
@@ -27,6 +27,8 @@ def load_preferences(path=None):
         raise ValueError("Saved maximum side is outside the supported range.")
     result["maxSide"] = size
     result["openAfterPublish"] = data.get("openAfterPublish",True) if type(data.get("openAfterPublish",True)) is bool else True
+    appearance=data.get('appearance','system')
+    result['appearance']=appearance if appearance in ('system','light','dark') else 'system'
     return result
 
 
@@ -40,6 +42,8 @@ def save_preferences(defaults, path=None):
     target.parent.mkdir(parents=True, exist_ok=True)
     tmp = target.with_suffix(".tmp")
     if type(settings["openAfterPublish"]) is not bool:raise ValueError("Open after publishing must be on or off.")
+    if settings.get('appearance') not in ('system','light','dark'):
+        raise ValueError('Appearance must be System, Light or Dark.')
     settings["maxSide"]=value
     tmp.write_text(json.dumps(settings, indent=2)+"\n", encoding="utf-8")
     tmp.replace(target)

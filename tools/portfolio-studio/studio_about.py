@@ -9,6 +9,7 @@ from importlib.metadata import version, PackageNotFoundError
 from studio_info import APP_NAME, VERSION, BUILD, LAST_UPDATED, AUTHOR, COPYRIGHT
 from export_rights import NOTICE, DATA_MINING
 from window_state import remember_window
+from studio_theme import palette
 
 
 def component_versions():
@@ -77,7 +78,48 @@ def show_about(parent):
     heading = ttk.Frame(win, padding=(20,18,20,12)); heading.pack(fill="x")
     ttk.Label(heading, text=APP_NAME, font=("Segoe UI",22,"normal")).pack(anchor="w")
     ttk.Label(heading, text="Local photography and Engineering project publishing").pack(anchor="w",pady=(4,0))
-    notebook = ttk.Notebook(win); notebook.pack(fill="both",expand=True,padx=16)
+    # Keep Notebook as a direct child for existing automation and keyboard use.
+    # Hide the unstable native tab strip and render a fixed-size, flat navigation.
+    if sys.platform!='win32':
+        notebook=ttk.Notebook(win)
+        notebook.pack(fill='both',expand=True,padx=16)
+    else:
+        colors=lambda:getattr(parent,'_studio_colors',None) or palette('system')
+        nav=tk.Frame(win,bd=0,highlightthickness=0)
+        nav.pack(fill='x',padx=16)
+        style=ttk.Style(win)
+        style.layout('About.Hidden.TNotebook.Tab',[])
+        notebook=ttk.Notebook(win,style='About.Hidden.TNotebook')
+        notebook.pack(fill="both",expand=True,padx=16)
+        labels=('Overview','Photo export','Rights & privacy','Components')
+        buttons=[];hover=[-1]
+        def paint(_event=None):
+            try:active=notebook.index('current') if notebook.tabs() else 0
+            except tk.TclError:active=0
+            c=colors();nav.configure(bg=c['bg'])
+            for i,(item,line) in enumerate(buttons):
+                selected=i==active
+                bg=c['selected'] if selected else c['hover'] if hover[0]==i else c['bg']
+                item.configure(bg=bg,fg=c['text'] if selected else c['muted'],
+                               activebackground=c['hover'],activeforeground=c['text'],
+                               font=('TkDefaultFont',10,'normal'))
+                line.configure(bg=c['accent'] if selected else c['bg'])
+        for i,label in enumerate(labels):
+            slot=tk.Frame(nav,bd=0,highlightthickness=0)
+            slot.pack(side='left',padx=(5 if i==0 else 1,0))
+            item=tk.Button(slot,text=label,font=('TkDefaultFont',10,'normal'),padx=9,pady=5,
+                           bd=0,relief='flat',highlightthickness=0,cursor='hand2',
+                           command=lambda i=i:notebook.select(i))
+            item.pack(fill='x')
+            line=tk.Frame(slot,height=2,bd=0);line.pack(fill='x')
+            def enter(_event,i=i):hover[0]=i;paint()
+            def leave(_event):hover[0]=-1;paint()
+            slot.bind('<Enter>',enter,add='+');slot.bind('<Leave>',leave,add='+')
+            item.bind('<Enter>',enter,add='+');item.bind('<Leave>',leave,add='+')
+            buttons.append((item,line))
+        notebook.bind('<<NotebookTabChanged>>',paint,add='+')
+        win._studio_paint_detail_tabs=paint
+        win.after_idle(paint)
     overview = ttk.Frame(notebook,padding=18); notebook.add(overview,text="Overview")
     for row,(label,value) in enumerate((("Version",VERSION),("Build",BUILD),
             ("Last updated",LAST_UPDATED),("Author",AUTHOR),

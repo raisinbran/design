@@ -35,125 +35,6 @@ window.PORTFOLIO_PHOTOS = [
     "mediaVersion": "7b5ea98f325a"
   },
   {
-    "file": "DSCF0179_crop.jpg",
-    "alt": "windmill light rays",
-    "visible": true,
-    "featured": true,
-    "displayPriority": "featured",
-    "tags": [
-      "Moody",
-      "Sky"
-    ],
-    "thumbnail": "DSCF0179_crop.jpg.webp",
-    "thumbnailVersion": "64e30c31b7ef",
-    "thumbnailWidth": 800,
-    "thumbnailHeight": 533,
-    "thumbnailFramed": true,
-    "mediaVersion": "82c2fd449bbd"
-  },
-  {
-    "file": "DSCF1972_crop.jpg",
-    "alt": "dusk sky",
-    "visible": true,
-    "featured": false,
-    "displayPriority": "normal",
-    "tags": [
-      "Sky",
-      "Dusk"
-    ],
-    "thumbnail": "DSCF1972_crop.jpg.webp",
-    "thumbnailVersion": "27d890c793f5",
-    "thumbnailWidth": 800,
-    "thumbnailHeight": 450,
-    "thumbnailFramed": true,
-    "mediaVersion": "b714d87b291e"
-  },
-  {
-    "file": "DSCF1520_crop.jpg",
-    "alt": "sunrise",
-    "visible": true,
-    "featured": false,
-    "displayPriority": "normal",
-    "tags": [
-      "Sky",
-      "Dusk"
-    ],
-    "thumbnail": "DSCF1520_crop.jpg.webp",
-    "thumbnailVersion": "efc45b59de0b",
-    "thumbnailWidth": 533,
-    "thumbnailHeight": 800,
-    "thumbnailFramed": true,
-    "mediaVersion": "9ca096adb938"
-  },
-  {
-    "file": "DSCF0272_crop.jpg",
-    "alt": "city",
-    "visible": true,
-    "featured": false,
-    "displayPriority": "normal",
-    "tags": [
-      "Day",
-      "Concrete Jungle"
-    ],
-    "thumbnail": "DSCF0272_crop.jpg.webp",
-    "thumbnailVersion": "4aea3f3a60ff",
-    "thumbnailWidth": 533,
-    "thumbnailHeight": 800,
-    "thumbnailFramed": true,
-    "mediaVersion": "193ff31a4d60"
-  },
-  {
-    "file": "DSCF7534_crop.jpg",
-    "alt": "hermiting",
-    "visible": true,
-    "featured": false,
-    "displayPriority": "normal",
-    "tags": [
-      "Moody",
-      "\"It's just rocks\""
-    ],
-    "thumbnail": "DSCF7534_crop.jpg.webp",
-    "thumbnailVersion": "88a137cb7300",
-    "thumbnailWidth": 800,
-    "thumbnailHeight": 450,
-    "thumbnailFramed": true,
-    "mediaVersion": "42a9eb9763e3"
-  },
-  {
-    "file": "20230904_182542788_iOS_fix.jpg",
-    "alt": "mountain river",
-    "visible": true,
-    "featured": false,
-    "displayPriority": "normal",
-    "tags": [
-      "Day",
-      "\"It's just rocks\""
-    ],
-    "thumbnail": "20230904_182542788_iOS_fix.jpg.webp",
-    "thumbnailVersion": "581c625dd55b",
-    "thumbnailWidth": 800,
-    "thumbnailHeight": 450,
-    "thumbnailFramed": true,
-    "mediaVersion": "20bee6528211"
-  },
-  {
-    "file": "20221006_190227289_iOS_fix.jpg",
-    "alt": "mountain valley",
-    "visible": true,
-    "featured": false,
-    "displayPriority": "normal",
-    "tags": [
-      "Day",
-      "\"It's just rocks\""
-    ],
-    "thumbnail": "20221006_190227289_iOS_fix.jpg.webp",
-    "thumbnailVersion": "85e73324f1d2",
-    "thumbnailWidth": 800,
-    "thumbnailHeight": 450,
-    "thumbnailFramed": true,
-    "mediaVersion": "46afdd0fcb99"
-  },
-  {
     "file": "DSCF1464_crop.jpg",
     "alt": "cat",
     "visible": true,
@@ -257,6 +138,40 @@ window.PORTFOLIO_PHOTOS = [
     "mediaVersion": "5c5853cec7d3"
   },
   {
+    "file": "20230904_182542788_iOS_fix.jpg",
+    "alt": "mountain river",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "tags": [
+      "Day",
+      "\"It's just rocks\""
+    ],
+    "thumbnail": "20230904_182542788_iOS_fix.jpg.webp",
+    "thumbnailVersion": "581c625dd55b",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 450,
+    "thumbnailFramed": true,
+    "mediaVersion": "20bee6528211"
+  },
+  {
+    "file": "20221006_190227289_iOS_fix.jpg",
+    "alt": "mountain valley",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "tags": [
+      "Day",
+      "\"It's just rocks\""
+    ],
+    "thumbnail": "20221006_190227289_iOS_fix.jpg.webp",
+    "thumbnailVersion": "85e73324f1d2",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 450,
+    "thumbnailFramed": true,
+    "mediaVersion": "46afdd0fcb99"
+  },
+  {
     "file": "DSCF2527_crop.jpg",
     "alt": "duck mountain",
     "visible": true,
@@ -272,6 +187,57 @@ window.PORTFOLIO_PHOTOS = [
     "thumbnailHeight": 751,
     "thumbnailFramed": true,
     "mediaVersion": "ae76ffe0f2f0"
+  },
+  {
+    "file": "DSCF0272_crop.jpg",
+    "alt": "city",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "tags": [
+      "Day",
+      "Concrete Jungle"
+    ],
+    "thumbnail": "DSCF0272_crop.jpg.webp",
+    "thumbnailVersion": "4aea3f3a60ff",
+    "thumbnailWidth": 533,
+    "thumbnailHeight": 800,
+    "thumbnailFramed": true,
+    "mediaVersion": "193ff31a4d60"
+  },
+  {
+    "file": "DSCF7534_crop.jpg",
+    "alt": "hermiting",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "tags": [
+      "Moody",
+      "\"It's just rocks\""
+    ],
+    "thumbnail": "DSCF7534_crop.jpg.webp",
+    "thumbnailVersion": "88a137cb7300",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 450,
+    "thumbnailFramed": true,
+    "mediaVersion": "42a9eb9763e3"
+  },
+  {
+    "file": "DSCF1520_crop.jpg",
+    "alt": "sunrise",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "tags": [
+      "Sky",
+      "Dusk"
+    ],
+    "thumbnail": "DSCF1520_crop.jpg.webp",
+    "thumbnailVersion": "efc45b59de0b",
+    "thumbnailWidth": 533,
+    "thumbnailHeight": 800,
+    "thumbnailFramed": true,
+    "mediaVersion": "9ca096adb938"
   },
   {
     "file": "IMG_2553_edit_crop.jpg",
@@ -328,33 +294,21 @@ window.PORTFOLIO_PHOTOS = [
     "mediaVersion": "533eeb11ced8"
   },
   {
-    "file": "R0000753_crop.jpg",
-    "alt": "wind town",
+    "file": "DSCF7939_edit_crop.jpg",
+    "alt": "espana",
     "visible": true,
     "featured": false,
     "displayPriority": "normal",
     "tags": [
-      "Dusk",
+      "Moody",
       "Concrete Jungle"
     ],
-    "mediaVersion": "5a1bad205abd"
-  },
-  {
-    "file": "DSCF0815_crop.jpg",
-    "alt": "eastern capital",
-    "visible": true,
-    "featured": false,
-    "displayPriority": "normal",
-    "tags": [
-      "Dusk",
-      "Concrete Jungle"
-    ],
-    "thumbnail": "DSCF0815_crop.jpg.webp",
-    "thumbnailVersion": "e78cb02fd290",
-    "thumbnailWidth": 533,
-    "thumbnailHeight": 800,
+    "thumbnail": "DSCF7939_edit_crop.jpg.webp",
+    "thumbnailVersion": "2284dd5232dc",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 450,
     "thumbnailFramed": true,
-    "mediaVersion": "a7cbb59a9f9d"
+    "mediaVersion": "0f54f156c90e"
   },
   {
     "file": "DSCF2848_crop.jpg",
@@ -374,21 +328,33 @@ window.PORTFOLIO_PHOTOS = [
     "mediaVersion": "fe127dddc4ec"
   },
   {
-    "file": "DSCF7939_edit_crop.jpg",
-    "alt": "espana",
+    "file": "DSCF0815_crop.jpg",
+    "alt": "eastern capital",
     "visible": true,
     "featured": false,
     "displayPriority": "normal",
     "tags": [
-      "Moody",
+      "Dusk",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF7939_edit_crop.jpg.webp",
-    "thumbnailVersion": "2284dd5232dc",
-    "thumbnailWidth": 800,
-    "thumbnailHeight": 450,
+    "thumbnail": "DSCF0815_crop.jpg.webp",
+    "thumbnailVersion": "e78cb02fd290",
+    "thumbnailWidth": 533,
+    "thumbnailHeight": 800,
     "thumbnailFramed": true,
-    "mediaVersion": "0f54f156c90e"
+    "mediaVersion": "a7cbb59a9f9d"
+  },
+  {
+    "file": "R0000753_crop.jpg",
+    "alt": "wind town",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "tags": [
+      "Dusk",
+      "Concrete Jungle"
+    ],
+    "mediaVersion": "5a1bad205abd"
   },
   {
     "file": "DSCF2447_edit_crop.jpg",
@@ -406,6 +372,23 @@ window.PORTFOLIO_PHOTOS = [
     "thumbnailHeight": 450,
     "thumbnailFramed": true,
     "mediaVersion": "45ffa9c078e5"
+  },
+  {
+    "file": "DSCF0179_crop.jpg",
+    "alt": "windmill light rays",
+    "visible": true,
+    "featured": true,
+    "displayPriority": "featured",
+    "tags": [
+      "Moody",
+      "Sky"
+    ],
+    "thumbnail": "DSCF0179_crop.jpg.webp",
+    "thumbnailVersion": "64e30c31b7ef",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 533,
+    "thumbnailFramed": true,
+    "mediaVersion": "82c2fd449bbd"
   },
   {
     "file": "DSCF2868_crop.jpg",
@@ -473,36 +456,53 @@ window.PORTFOLIO_PHOTOS = [
     "thumbnailHeight": 800,
     "thumbnailFramed": true,
     "mediaVersion": "d099ba7b3d47"
+  },
+  {
+    "file": "DSCF1972_crop.jpg",
+    "alt": "dusk sky",
+    "visible": true,
+    "featured": false,
+    "displayPriority": "normal",
+    "tags": [
+      "Sky",
+      "Dusk"
+    ],
+    "thumbnail": "DSCF1972_crop.jpg.webp",
+    "thumbnailVersion": "27d890c793f5",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 450,
+    "thumbnailFramed": true,
+    "mediaVersion": "b714d87b291e"
   }
 ];
 window.PHOTO_ASPECT_RATIOS = {
   "DSCF3655_crop.jpg": 0.56296296,
   "DSCF1024_edit_crop.jpg": 1.5,
-  "DSCF0179_crop.jpg": 1.5,
-  "DSCF1972_crop.jpg": 1.77631579,
-  "DSCF1520_crop.jpg": 0.66666667,
-  "DSCF0272_crop.jpg": 0.66666667,
-  "DSCF7534_crop.jpg": 1.77631579,
-  "20230904_182542788_iOS_fix.jpg": 1.77631579,
-  "20221006_190227289_iOS_fix.jpg": 1.77924217,
   "DSCF1464_crop.jpg": 1.5,
   "IMG_8889_edit_crop.jpg": 1.35678392,
   "IMG_5598_edit_crop.jpg": 1.33333333,
   "20221006_210129324_iOS_fix.jpg": 1.77631579,
   "20230904_205424749_iOS_crop.jpg": 1.77924217,
   "20220511_191505848_iOS_crop.jpg": 1.77631579,
+  "20230904_182542788_iOS_fix.jpg": 1.77631579,
+  "20221006_190227289_iOS_fix.jpg": 1.77924217,
   "DSCF2527_crop.jpg": 1.06508876,
+  "DSCF0272_crop.jpg": 0.66666667,
+  "DSCF7534_crop.jpg": 1.77631579,
+  "DSCF1520_crop.jpg": 0.66666667,
   "IMG_2553_edit_crop.jpg": 1.33333333,
   "20241012_222059210_iOS_crop.jpg": 1.5,
   "DSCF3546_crop.jpg": 1.77631579,
-  "R0000753_crop.jpg": 0.75,
-  "DSCF0815_crop.jpg": 0.66666667,
-  "DSCF2848_crop.jpg": 1.5,
   "DSCF7939_edit_crop.jpg": 1.77924217,
+  "DSCF2848_crop.jpg": 1.5,
+  "DSCF0815_crop.jpg": 0.66666667,
+  "R0000753_crop.jpg": 0.75,
   "DSCF2447_edit_crop.jpg": 1.77631579,
+  "DSCF0179_crop.jpg": 1.5,
   "DSCF2868_crop.jpg": 1.0,
   "Clipboard Jan 31, 2024 at 7.49 PM_edit_crop.jpg": 1.33333333,
   "DSCF1108_crop.jpg": 0.66666667,
-  "DSCF1359_crop.jpg": 0.66666667
+  "DSCF1359_crop.jpg": 0.66666667,
+  "DSCF1972_crop.jpg": 1.77631579
 };
 window.PHOTO_TAG_LABELS = ["Day", "Moody", "Dusk", "Night", "Concrete Jungle", "\"It's just rocks\"", "Sky"];

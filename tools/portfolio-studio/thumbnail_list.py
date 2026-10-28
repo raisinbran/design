@@ -1,18 +1,33 @@
 """Thumbnail rows with the small Listbox interface used by the catalog editor."""
 import tkinter as tk
 from tkinter import ttk
+from modern_scrollbar import create_scrollbar
 from PIL import Image, ImageOps, ImageTk, ImageDraw
+from thumbnail_ui import THUMB_SIZE, ROW_HEIGHT, cover_thumbnail
+from video_preview import image_frame, VIDEO_SUFFIXES
+from pathlib import Path
 
 
 class ThumbnailList(ttk.Frame):
     def __init__(self,parent):
         super().__init__(parent)
-        ttk.Style(self).configure("CatalogPhotos.Treeview",rowheight=76)
+        ttk.Style(self).configure("CatalogPhotos.Treeview",rowheight=ROW_HEIGHT)
         self.tree=ttk.Treeview(self,show="tree",selectmode="extended",style="CatalogPhotos.Treeview")
         self.tree.column("#0",width=355,minwidth=270,stretch=True)
-        scrollbar=ttk.Scrollbar(self,orient="vertical",command=self.tree.yview)
+        scrollbar=create_scrollbar(self,orient="vertical",command=self.tree.yview,autohide=True)
+        self.scrollbar=scrollbar
         self.tree.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right",fill="y");self.tree.pack(fill="both",expand=True)
+        # Tk Treeview reports changing fractions when rows resize or a scrollbar
+        # itself disappears; refresh once after layout to avoid persistent rails.
+        def refresh_scrollbar(_event=None):
+            def update():
+                try:
+                    if self.tree.winfo_exists():scrollbar.set(*self.tree.yview())
+                except tk.TclError:pass
+            self.after_idle(update)
+        self.tree.bind('<Configure>',refresh_scrollbar,add='+')
+        self.after_idle(refresh_scrollbar)
         self.images={};self.rows=[];self.pending=None;self.queue=[]
         self.bind("<Destroy>",self._destroyed,add="+")
 
@@ -38,15 +53,17 @@ class ThumbnailList(ttk.Frame):
         for _ in range(min(6,len(self.queue))):
             item,path,placeholder=self.queue.pop(0)
             if not self.tree.exists(item):continue
-            canvas=Image.new("RGB",(94,66),"#e7e9eb")
+            canvas=Image.new("RGB",THUMB_SIZE,"#e7e9eb")
             try:
                 if path is None:raise ValueError("No image preview")
-                with Image.open(path) as source:
-                    image=ImageOps.exif_transpose(source).convert("RGB")
-                    image.thumbnail((94,66),Image.Resampling.LANCZOS)
-                    canvas.paste(image,((94-image.width)//2,(66-image.height)//2))
+                if Path(path).suffix.lower() in VIDEO_SUFFIXES:
+                    frame=image_frame(path,max_side=192)
+                    if frame is None:raise ValueError('Video frame unavailable')
+                    canvas=ImageOps.fit(frame,THUMB_SIZE,method=Image.Resampling.LANCZOS)
+                else:
+                    with Image.open(path) as source:canvas=cover_thumbnail(source)
             except (OSError,ValueError,TypeError):
-                ImageDraw.Draw(canvas).text((9,25),placeholder,fill="#59636b")
+                ImageDraw.Draw(canvas).text((4,18),placeholder[:10],fill="#59636b")
             photo=ImageTk.PhotoImage(canvas,master=self.tree)
             self.images[item]=photo;self.tree.item(item,image=photo)
         if self.queue:self.pending=self.after(1,self._load_batch)

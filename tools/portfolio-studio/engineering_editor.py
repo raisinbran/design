@@ -12,6 +12,8 @@ from PIL import Image,ImageOps
 import engineering_catalog as catalog
 from thumbnail_list import ThumbnailList
 from photo_viewport import PhotoViewport
+from editor_tabs import create_editor_tabs
+from video_preview import image_frame
 from rich_text import RichText
 from platform_support import open_path,cache_path
 
@@ -24,17 +26,20 @@ class EngineeringEditor(ttk.Frame):
         self.expected_catalog=self.catalog_path.read_bytes() if self.catalog_path.exists() else None
         self.expected_page=self.page_path.read_bytes()
         bar=ttk.Frame(self,padding=(10,4));bar.pack(fill="x")
-        for label,command in (("Reload",self.reload),("Add project…",self.add_project),("Duplicate",self.duplicate),
+        for label,command in (("Reset",self.reload),("Add project…",self.add_project),("Duplicate",self.duplicate),
                 ("Remove project…",self.remove),("Move up",lambda:self.move(-1)),("Move down",lambda:self.move(1)),
                 ("Undo",self.undo),("Preview page",self.preview)):
-            ttk.Button(bar,text=label,command=command).pack(side="left",padx=3)
+            btn=ttk.Button(bar,text=label,command=command)
+            btn.pack(side="left",padx=3)
+            if label=="Reset":self.reset_button=btn
+            if label=="Undo":self.undo_button=btn
         self.save_button=ttk.Button(bar,text="Save changes locally",command=self.save);self.save_button.pack(side="left",padx=3)
         body=ttk.Frame(self,padding=(10,0,10,5));body.pack(fill="both",expand=True)
         left=ttk.Frame(body);left.pack(side="left",fill="y",padx=(0,12))
         ttk.Label(left,text="Engineering projects • drafts stay off the website").pack(anchor="w",pady=(0,4))
         self.projects=ThumbnailList(left);self.projects.pack(fill="both",expand=True)
         self.projects.tree.configure(selectmode="browse");self.projects.bind("<<ListboxSelect>>",self.select)
-        tabs=ttk.Notebook(body);tabs.pack(fill="both",expand=True)
+        self.secondary_tab_holder,tabs=create_editor_tabs(body,("Project details","Project media"))
         details=ttk.Frame(tabs,padding=10);tabs.add(details,text="Project details")
         self.values={key:tk.StringVar() for key in ("title","heading","context","cover","coverPosition")}
         details.columnconfigure(1,weight=1)
@@ -70,9 +75,17 @@ class EngineeringEditor(ttk.Frame):
     @property
     def page_path(self):return self.root/"engineeringdesign.html"
     def changed(self):
-        if not self.loading:self.save_button.configure(state="normal")
+        if self.loading:return
+        self.store()
+        self._refresh_actions()
+
+    def _refresh_actions(self):
+        modified=self.data!=self.initial or bool(self.pending)
+        self.save_button.configure(state="normal" if modified else "disabled")
+        self.reset_button.configure(state="normal" if modified else "disabled")
+        self.undo_button.configure(state="normal" if self.history else "disabled")
     def checkpoint(self):
-        self.store();self.history.append(copy.deepcopy(self.data));self.history=self.history[-30:]
+        self.store();self.history.append(copy.deepcopy(self.data));self.history=self.history[-30:];self._refresh_actions()
     def store_media(self):
         if self.index is None or self.media_index is None or self.loading:return
         items=self.data["projects"][self.index]["media"]
@@ -94,7 +107,7 @@ class EngineeringEditor(ttk.Frame):
     def populate(self,selected=0):
         self.projects.delete(0,"end");self.index=None;self.media_index=None
         for p in self.data["projects"]:
-            self.projects.insert("end",("" if p["visible"] else "[Draft] ")+p["title"],self.asset_preview(p.get("cover","")),placeholder="No cover")
+            self.projects.insert("end","  "+("" if p["visible"] else "[Draft] ")+p["title"],self.asset_preview(p.get("cover","")),placeholder="No cover")
         if self.data["projects"]:
             selected=min(selected,len(self.data["projects"])-1);self.projects.selection_set(selected);self.projects.activate(selected);self.load(selected)
         else:
@@ -103,7 +116,7 @@ class EngineeringEditor(ttk.Frame):
             self.visible.set(False);self.expanded.set(False);self.content.set_html("")
             self.media.delete(0,"end");self.viewport.set_source(None)
             self.loading=False;self.status.set("Add a project to begin.")
-        self.save_button.configure(state="normal" if self.data!=self.initial else "disabled")
+        self._refresh_actions()
     def select(self,_event=None):
         selected=self.projects.curselection()
         if selected and selected[0]!=self.index:self.store();self.load(selected[0])
@@ -128,8 +141,14 @@ class EngineeringEditor(ttk.Frame):
         for key,value in self.media_values.items():value.set(item.get(key,""))
         self.loading=False
         try:
+            if item["kind"]=="video":
+                image=image_frame(self.asset_preview(item["src"]),max_side=1200)
+                if image is None:self.viewport.set_source(None);return
+                self.viewport.set_source(image,identity=(item["src"],"video-still"))
+                return
             if item["kind"]!="image":self.viewport.set_source(None);return
-            with Image.open(self.asset_preview(item["src"])) as raw:image=ImageOps.exif_transpose(raw).convert("RGB");image.thumbnail((1800,1800))
+            with Image.open(self.asset_preview(item["src"])) as raw:
+                image=ImageOps.exif_transpose(raw).convert("RGB");image.thumbnail((1800,1800))
             self.viewport.set_source(image,identity=item["src"])
         except (OSError,ValueError):self.viewport.set_source(None)
     def unique_id(self,title):

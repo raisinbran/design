@@ -15,11 +15,13 @@ from catalog_tools import read_json, validate_catalog, generated_js
 from processor import conservative_level, publish_image, unique_destination, straighten_and_crop, rotation_crop_size
 from photo_viewport import PhotoViewport, normalize_crop
 from studio_preferences import load_preferences, save_preferences
+from studio_theme import apply_appearance, install_dialog_placement, center_window
 from studio_notifications import notify, preferences
 from responsive_toolbar import ResponsiveToolbar, choices
 from window_state import remember_window
 from export_preview import show_export_preview
 from platform_support import open_path
+from modern_scale import create_scale,ModernScale
 from studio_about import show_about
 from gallery_thumbnails import thumbnail_name,source_record,save_registry,VERSION,photo_framing
 
@@ -154,8 +156,8 @@ class Studio(tk.Tk):
         self.publish_scope = tk.StringVar(value="current")
         self.crop_action = tk.StringVar(value="export")
         self.crop_status = tk.StringVar(value="Full photograph")
-        self.custom_width = tk.StringVar(value="7")
-        self.custom_height = tk.StringVar(value="5")
+        self.custom_width = tk.StringVar(value="")
+        self.custom_height = tk.StringVar(value="")
         self.ratio_var = tk.StringVar(value="Free")
         self.status = tk.StringVar(value="Choose original photos stored outside your public GitHub repository.")
         try:
@@ -165,7 +167,12 @@ class Studio(tk.Tk):
         self.tag_vars = {tag: tk.BooleanVar(value=False) for tag in catalog_tags}
         self.crop_rect = None
         self.dimensions_text = tk.StringVar(value="Source: none    |    Selected crop: none    |    Exported image: none")
+        self._appearance_mode=self.preferences.get("appearance","system")
+        apply_appearance(self,self._appearance_mode)
         self.setup_ui()
+        self._photo_disabled_snapshot=None
+        self._update_photo_control_availability()
+        install_dialog_placement(self)
         self.after(100,self.update_toolbar_overflow)
         self.bind("<Configure>",self.schedule_toolbar_overflow,add="+")
         self.deg_var.trace_add("write", self.rotation_changed)
@@ -215,13 +222,13 @@ class Studio(tk.Tk):
             if label=="Settings":self.settings_button=button
             if label=="About":self.about_button=button
             button.pack(side="left",padx=2)
-        self.more_actions_button=ttk.Button(action,text="More actions ▼", command=self.show_action_menu)
+        self.more_actions_button=ttk.Button(self.action_left,text="More actions ▼", command=self.show_action_menu)
         self.action_menu.configure(postcommand=self.populate_action_menu)
         self.more_actions_button.pack(side="left")
         self.publish_group=ttk.Frame(action)
         self.publish_group.pack(side="right")
         self.export_fields=ttk.Frame(self.publish_group)
-        self.build_export_fields(self.export_fields)
+        self.build_export_fields(self.export_fields,track=True)
         self.export_settings_button=ttk.Button(self.publish_group,text="Export settings…",command=self.show_export_settings)
         self.export_preview_button=ttk.Button(self.publish_group,text="Preview publish",command=self.preview_export)
         self.publish_button=ttk.Button(self.publish_group,text="Publish",command=self.publish)
@@ -237,14 +244,20 @@ class Studio(tk.Tk):
         action.pack_propagate(False)
         self._export_dialog=None
 
-        self.workspace_tabs=ttk.Notebook(self)
+        # A visibly raised, keyboard-focusable tab strip replaces the faint
+        # native Windows notebook tabs without changing page management.
+        from workspace_tabs_ui import create_workspace_tabs
+        self.workspace_tabs=create_workspace_tabs(self)
         self.workspace_tabs.pack(fill="both",expand=True)
         self.photography_page=ttk.Frame(self.workspace_tabs)
         self.engineering_page=ttk.Frame(self.workspace_tabs)
+        self.archive_page=ttk.Frame(self.workspace_tabs)
         self.workspace_tabs.add(self.photography_page,text="Photography")
         self.workspace_tabs.add(self.engineering_page,text="Engineering")
+        self.workspace_tabs.add(self.archive_page,text="Archive")
         self.engineering_editor=None
-        self.workspace_tabs.bind("<<NotebookTabChanged>>",self.workspace_changed)
+        self.archive_editor=None
+        self.workspace_tabs.bind("<<NotebookTabChanged>>",self.workspace_changed,add="+")
         self.protocol("WM_DELETE_WINDOW",self.close_studio)
         body = ttk.Frame(self.photography_page, padding=(10, 0, 10, 6))
         body.pack(fill="both", expand=True)
@@ -303,11 +316,11 @@ class Studio(tk.Tk):
         settings_bar.pack(fill="x")
         inspect = settings_bar.group("Inspect", lambda menu: choices(menu, self.inspect_zoom,
             (1, 2, 4), lambda: self.set_zoom(self.inspect_zoom.get())), 4)
-        ttk.Label(inspect, text="Inspect").pack(side="left", padx=(0, 5))
+        ttk.Label(inspect, text="Zoom").pack(side="left", padx=(0, 5))
         for label, zoom in (("100%", 1), ("200%", 2), ("400%", 4)):
             ttk.Button(inspect, text=label, width=5,
                        command=lambda z=zoom: self.set_zoom(z)).pack(side="left", padx=2)
-        ttk.Scale(inspect, variable=self.inspect_zoom, from_=1, to=4, length=75,
+        create_scale(inspect, variable=self.inspect_zoom, from_=1, to=4, length=95,
                   command=self.set_zoom).pack(side="left", padx=4)
         preview_group = settings_bar.group("Full photo", self.preview_menu, 3)
         ttk.Button(preview_group, text="Full photo", command=self.full_crop).pack(side="left", padx=2)
@@ -342,7 +355,7 @@ class Studio(tk.Tk):
         self.accessible_row = accessible
         accessible.pack(fill="x")
         ttk.Label(accessible, text="Accessible description").pack(side="left", padx=(0, 6))
-        ttk.Entry(accessible, textvariable=self.alt_var).pack(side="left", fill="x", expand=True)
+        ttk.Entry(accessible, textvariable=self.alt_var, width=55).pack(side="left", fill="x", expand=False)
         ttk.Checkbutton(accessible, text="Reviewed", variable=self.review_var
                         ).pack(side="left", padx=(7, 0))
 
@@ -351,7 +364,7 @@ class Studio(tk.Tk):
         for name, var in self.tag_vars.items():
             ttk.Checkbutton(tags, text=name, variable=var).pack(side="left", padx=(0, 12))
 
-        ttk.Label(right,textvariable=self.dimensions_text,foreground="#3a5960",
+        ttk.Label(right,textvariable=self.dimensions_text,
                   padding=(0,4)).pack(fill="x")
         ttk.Label(self, textvariable=self.status, padding=(10, 0, 10, 5),
                   wraplength=1220).pack(fill="x")
@@ -381,7 +394,7 @@ class Studio(tk.Tk):
 
     def prompt_custom_ratio(self):
         value = simpledialog.askstring("Crop Ratio", "Width:height (for example 7:5)",
-            initialvalue=f"{self.custom_width.get()}:{self.custom_height.get()}", parent=self)
+            initialvalue=f"{self.custom_width.get() or '7'}:{self.custom_height.get() or '5'}", parent=self)
         if value is None: return
         try:
             width, height = value.split(":")
@@ -419,6 +432,16 @@ class Studio(tk.Tk):
             if variable is self.deg_var:self.apply_rotation(str(value))
             else:variable.set(str(int(value)) if variable is self.max_var else str(value))
 
+    def set_appearance(self,mode):
+        if mode not in ('system','light','dark'):
+            raise ValueError('Unsupported appearance mode')
+        save_preferences({'appearance':mode})
+        self.preferences['appearance']=mode
+        apply_appearance(self,mode)
+        self.update_idletasks()
+        self._last_toolbar_width=None
+        self.update_toolbar_overflow()
+
     def save_open_after_publish(self):
         try:
             save_preferences({"openAfterPublish":self.open_after_publish.get()})
@@ -436,9 +459,39 @@ class Studio(tk.Tk):
         for label, button, command in getattr(self, "hidden_actions", []):
             self.action_menu.add_command(label=label, command=command, state=str(button.cget("state")))
 
+    def _update_photo_control_availability(self):
+        """Disable actual editing widgets until an original photo is loaded."""
+        if not hasattr(self,'photography_page'):return
+        active=self.current is not None
+        if active and getattr(self,'_photo_disabled_snapshot',None) is not None:
+            for widget,disabled in self._photo_disabled_snapshot.items():
+                try:
+                    if widget.winfo_exists():widget.state(['disabled'] if disabled else ['!disabled'])
+                except tk.TclError:pass
+            self._photo_disabled_snapshot=None
+            return
+        if active or getattr(self,'_photo_disabled_snapshot',None) is not None:return
+        controls={}
+        def visit(parent):
+            for widget in parent.winfo_children():
+                if isinstance(widget,(ttk.Button,ttk.Entry,ttk.Combobox,ttk.Radiobutton,
+                                      ttk.Checkbutton,ttk.Scale,ttk.Spinbox,ModernScale)):
+                    controls[widget]='disabled' in widget.state()
+                    widget.state(['disabled'])
+                visit(widget)
+        visit(self.photography_page)
+        self._photo_disabled_snapshot=controls
+
     def refresh_action_states(self):
         if not hasattr(self,"action_buttons"):return
+        self._update_photo_control_availability()
+        active=self.current is not None
         self.export_preview_button.configure(state="normal" if selected_originals(self) else "disabled")
+        self.publish_button.configure(state="normal" if selected_originals(self) else "disabled")
+        self.export_settings_button.configure(state="normal" if active else "disabled")
+        for field in self.export_fields.winfo_children():
+            if isinstance(field,ttk.Combobox):
+                field.state(['!disabled'] if active else ['disabled'])
         current_settings=self.settings.get(str(self.current),{}) if self.current else {}
         defaults=new_settings(self.current,self.preferences["maxSide"]) if self.current else {}
         def defaults_for(path):
@@ -468,7 +521,8 @@ class Studio(tk.Tk):
             self.undo_button.configure(state="normal" if getattr(self,"_previous_rotation",None) is not None else "disabled")
 
     def workspace_changed(self,_event=None):
-        if self.workspace_tabs.select()==str(self.engineering_page) and self.engineering_editor is None:
+        selected=self.workspace_tabs.select()
+        if selected==str(self.engineering_page) and self.engineering_editor is None:
             try:
                 from engineering_editor import EngineeringEditor
                 self.engineering_editor=EngineeringEditor(self.engineering_page)
@@ -476,11 +530,20 @@ class Studio(tk.Tk):
             except Exception as exc:
                 messagebox.showerror("Engineering editor unavailable",str(exc),parent=self)
                 self.workspace_tabs.select(self.photography_page)
+        if selected==str(self.archive_page) and self.archive_editor is None:
+            try:
+                from archive_editor import ArchiveEditor
+                self.archive_editor=ArchiveEditor(self.archive_page)
+                self.archive_editor.pack(fill="both",expand=True)
+            except Exception as exc:
+                messagebox.showerror("Archive editor unavailable",str(exc),parent=self)
+                self.workspace_tabs.select(self.photography_page)
         self._last_toolbar_width=None
         self.update_toolbar_overflow()
 
     def close_studio(self):
         if self.engineering_editor is not None and not self.engineering_editor.can_close():return
+        if self.archive_editor is not None and not self.archive_editor.can_close():return
         self.destroy()
 
     def schedule_toolbar_overflow(self,event=None):
@@ -489,16 +552,23 @@ class Studio(tk.Tk):
         self._overflow_queued=True
         self.after_idle(self.update_toolbar_overflow)
 
-    def build_export_fields(self,parent):
-        for label,variable,values,width,editable in (
-                ("JPEG quality",self.jpeg_quality,("80","85","90","95"),4,False),
-                ("Filename suffix",self.filename_suffix,("_crop","_edit","_fix","_small","Custom…"),8,True),
-                ("Publish scope",self.publish_scope,("current","highlighted","all"),11,False)):
-            ttk.Label(parent,text=label).pack(side="left",padx=(0,3))
-            control=ttk.Combobox(parent,textvariable=variable,values=values,width=width,
+    def build_export_fields(self,parent,track=False):
+        # Label + selected value are indivisible layout groups. The dialog uses
+        # separate widgets bound to the same Tk variables as the toolbar.
+        groups={}
+        for key,label,variable,values,width,editable in (
+                ("quality","JPEG quality",self.jpeg_quality,("80","85","90","95"),4,False),
+                ("suffix","Filename suffix",self.filename_suffix,("_crop","_edit","_fix","_small","Custom…"),8,True),
+                ("scope","Publish scope",self.publish_scope,("current","highlighted","all"),11,False)):
+            group=ttk.Frame(parent)
+            ttk.Label(group,text=label).pack(side="left",padx=(0,3))
+            control=ttk.Combobox(group,textvariable=variable,values=values,width=width,
                 state="normal" if editable else "readonly")
             control.pack(side="left",padx=(0,7))
             if editable:control.bind("<<ComboboxSelected>>",self.choose_filename_suffix)
+            group.pack(side="left")
+            groups[key]=group
+        if track:self.export_field_groups=groups
 
     def show_export_settings(self):
         if self._export_dialog is not None and self._export_dialog.winfo_exists():
@@ -509,11 +579,12 @@ class Studio(tk.Tk):
         self.build_export_fields(frame)
         ttk.Button(dialog,text="Close",command=dialog.destroy).pack(pady=(0,10))
         dialog.bind("<Escape>",lambda _event:dialog.destroy())
+        center_window(dialog,self)
 
     def update_toolbar_overflow(self):
         self._overflow_queued=False
         if not hasattr(self,"action_buttons"):return
-        engineering=self.workspace_tabs.select()==str(self.engineering_page)
+        engineering=self.workspace_tabs.select()!=str(self.photography_page)
         current_width=self.toolbar_action.winfo_width()
         key=(current_width,engineering)
         if getattr(self,"_last_toolbar_width",None)==key:return
@@ -526,28 +597,58 @@ class Studio(tk.Tk):
                 if label in ("Settings","About"):button.pack(side="left",padx=2)
             return
         self.publish_group.pack(side="right")
+        priority=["Add original","Published Catalog","Remove original from list"]
         sizes={label:button.winfo_reqwidth()+4 for label,button,_ in self.action_buttons}
-        primary=["Add original","Published Catalog","Remove original from list"]
-        more=self.more_actions_button.winfo_reqwidth()
         fixed=self.export_preview_button.winfo_reqwidth()+5+self.publish_button.winfo_reqwidth()
-        full_right=fixed+self.export_fields.winfo_reqwidth()
-        # Only show inline fields when all actions also fit. The dialog always
-        # shares the original variables, including custom suffix and scope.
-        inline=sum(sizes.values())+full_right<=current_width-16
+        more=self.more_actions_button.winfo_reqwidth()+4
+        settings=self.export_settings_button.winfo_reqwidth()+5
+        fields=self.export_field_groups
+        field_sizes={key:group.winfo_reqwidth() for key,group in fields.items()}
+        # The three primary actions and the publish commands take precedence.
+        # Secondary actions yield space to Filename suffix and Publish scope.
+        reserve=sum(sizes[label] for label in priority)+more
+        budget=max(0,current_width-16-fixed-reserve)
+        field_order=("suffix","scope","quality")
+        selected=[]
+        for name in field_order:
+            required=field_sizes[name]
+            # Reserve the Export settings shortcut whenever some fields remain hidden.
+            if required+sum(field_sizes[k] for k in selected)+settings<=budget:
+                selected.append(name)
+        if len(selected)==len(fields) and sum(field_sizes.values())<=budget:
+            selected=list(field_order)
+        else:
+            while selected and sum(field_sizes[k] for k in selected)+settings>budget:
+                selected.pop()
+        # Re-pack whole label/value frames, never individual labels or selectors.
+        for group in fields.values():group.pack_forget()
+        for name in field_order:
+            if name in selected:fields[name].pack(side="left")
         self.export_fields.pack_forget();self.export_settings_button.pack_forget()
-        if inline:self.export_fields.pack(side="left",before=self.export_preview_button)
-        else:self.export_settings_button.pack(side="left",padx=(0,5),before=self.export_preview_button)
-        right=full_right if inline else fixed+self.export_settings_button.winfo_reqwidth()+5
-        available=max(0,current_width-16-right)
-        total=sum(sizes.values())
-        usable=available-(more if total>available else 0)
-        visible_labels=set();remaining=usable
-        for label in primary+[label for label,_,_ in self.action_buttons if label not in primary]:
-            if sizes[label]<=remaining:
-                visible_labels.add(label);remaining-=sizes[label]
-        self.hidden_actions=[item for item in self.action_buttons if item[0] not in visible_labels]
+        if selected:self.export_fields.pack(side="left",before=self.export_preview_button)
+        if len(selected)<len(fields):
+            self.export_settings_button.pack(side="left",padx=(0,5),before=self.export_preview_button)
+        right=fixed+sum(field_sizes[k] for k in selected)+(settings if len(selected)<len(fields) else 0)
+        usable=max(0,current_width-16-right)
+        visible=[]
+        for label in priority:
+            if sizes[label]<=usable:
+                visible.append(label);usable-=sizes[label]
+        secondary=[label for label,_,_ in self.action_buttons if label not in priority]
+        # Reserve overflow menu space if any actions are hidden.
+        for label in secondary:
+            remaining=len(self.action_buttons)-len(visible)
+            if sizes[label]+(more if remaining>1 else 0)<=usable:
+                visible.append(label);usable-=sizes[label]
+        self.hidden_actions=[item for item in self.action_buttons if item[0] not in visible]
+        if self.hidden_actions:
+            while visible and usable<more:
+                removed=visible.pop();usable+=sizes[removed]
+            self.hidden_actions=[item for item in self.action_buttons if item[0] not in visible]
         for label,button,_ in self.action_buttons:
-            if label in visible_labels:button.pack(side="left",padx=2)
+            if label in visible:button.pack(side="left",padx=2)
+        # The overflow control is a child of action_left, packed directly after
+        # its last visible action: it never sticks beside the publishing controls.
         if self.hidden_actions:self.more_actions_button.pack(side="left")
 
     def manage_published(self):
@@ -1210,4 +1311,17 @@ if __name__ == "__main__":
     if not CATALOG.is_file():
         messagebox.showerror("Catalog missing", "Install Stage 6B first.")
         sys.exit(1)
-    Studio().mainloop()
+    # Legacy Studio remains directly constructible for regression tests. Its
+    # processor-only entry point hides the redundant Engineering/Archive tabs.
+    if '--processor' in sys.argv:
+        application=Studio()
+        application.title('Portfolio Studio | New Photos Processor')
+        for page in (application.engineering_page,application.archive_page):
+            if str(page) in application.workspace_tabs.tabs():
+                application.workspace_tabs.forget(page)
+        if hasattr(application,'workspace_nav'):
+            application.workspace_nav.pack_forget()
+        application.mainloop()
+    else:
+        from edit_tags import Editor
+        Editor(primary=True).mainloop()

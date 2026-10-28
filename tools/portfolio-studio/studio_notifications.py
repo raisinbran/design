@@ -3,7 +3,9 @@ import json, os, math, wave, struct, tempfile, threading, tkinter as tk
 from pathlib import Path
 import sys, subprocess
 from studio_preferences import preferences_path
-from tkinter import ttk
+from tkinter import ttk, messagebox
+from modern_scale import create_scale
+from studio_theme import center_window
 
 CONFIG = preferences_path().with_name("notifications.json")
 
@@ -63,6 +65,7 @@ def notify(parent,title,message,kind="info"):
     win.bind("<Escape>",lambda _:win.destroy())
     win.update_idletasks()
     win.geometry(f"490x{max(130,win.winfo_reqheight())}")
+    center_window(win,parent)
     win.wait_window()
 
 def preferences(parent):
@@ -71,6 +74,12 @@ def preferences(parent):
     mode=tk.StringVar(value=opts["mode"])
     vol=tk.IntVar(value=opts["volume"])
     frm=ttk.Frame(win,padding=18);frm.pack()
+    ttk.Label(frm,text="Appearance").pack(anchor="w",pady=(0,5))
+    appearance=tk.StringVar(value=getattr(parent,'preferences',{}).get('appearance','system'))
+    appearance_row=ttk.Frame(frm);appearance_row.pack(anchor="w",fill="x",pady=(0,15))
+    for title,value in (("System","system"),("Light","light"),("Dark","dark")):
+        ttk.Radiobutton(appearance_row,text=title,variable=appearance,value=value).pack(side="left",padx=(0,12))
+    ttk.Separator(frm).pack(fill="x",pady=(0,13))
     ttk.Label(frm,text="Notifications").pack(anchor="w",pady=(0,10))
     def preview():
         options={"mode":mode.get(),"volume":vol.get()}
@@ -83,13 +92,19 @@ def preferences(parent):
     def volume_preview(_value):
         if pending[0] is not None:win.after_cancel(pending[0])
         pending[0]=win.after(250,preview)
-    ttk.Scale(frm,from_=0,to=100,variable=vol,command=volume_preview).pack(fill="x")
+    create_scale(frm,from_=0,to=100,variable=vol,command=volume_preview,length=225).pack(fill="x")
     def cancel_pending(event):
         if event.widget is win and pending[0] is not None:
             try:win.after_cancel(pending[0])
             except tk.TclError:pass
     win.bind("<Destroy>",cancel_pending,add="+")
     def commit():
-        save_settings(mode.get(),vol.get());win.destroy()
+        try:
+            if hasattr(parent,'set_appearance'):parent.set_appearance(appearance.get())
+            save_settings(mode.get(),vol.get())
+        except (OSError,ValueError) as exc:
+            messagebox.showerror('Settings could not be saved',str(exc),parent=win);return
+        win.destroy()
     ttk.Button(frm,text="Save preferences",command=commit).pack(pady=12)
+    center_window(win,parent)
     return win
