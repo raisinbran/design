@@ -249,7 +249,11 @@
         // Desktop interior rows fill the gallery. Mobile rows may leave side space
         // to keep tall photographs within a comfortable viewing height.
         const cap = count === 1 ? Math.min(maximum, desired + (hasPortrait ? 15 : 40)) : maximum;
-        const height = cappedRows || end === n ? Math.min(exact, cap) : exact;
+        // A standalone landscape or square tile must span the entire row.
+        // Keep portrait and multi-image row sizing as before.
+        const standaloneNonPortrait = count === 1 && !hasPortrait;
+        const height = standaloneNonPortrait ? exact :
+          (cappedRows || end === n ? Math.min(exact, cap) : exact);
         const used = sum * height + gap * (count - 1);
         let penalty = 10 + 110 * Math.pow(Math.log(height / desired), 2);
         penalty += 180 * Math.pow(Math.max(0, width - used) / width, 2);
