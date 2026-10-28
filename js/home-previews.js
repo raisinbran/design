@@ -115,7 +115,7 @@
         await new Promise(resolve => setTimeout(resolve, 1000));
         outgoing.style.opacity = "0";
         incoming.style.zIndex = "1";
-        incoming.style.zIndex = "0";
+        outgoing.style.zIndex = "0";
         current = next;
       } catch {
         incoming.remove();
@@ -146,7 +146,6 @@
 
     (async () => {
       await refill();
-      const initial = stage.querySelector("img:not([data-preview-generated])");
       // Remove the static fallback only after verified replacements are ready.
       if (slides.length) {
         stage.querySelectorAll("img").forEach(image => {
