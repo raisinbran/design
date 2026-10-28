@@ -122,3 +122,14 @@
   .photography-page .photo-filter-mobile { display:none; }
   .photography-page .photo-justified-row { justify-content:center; }
 }
+
+/* Size short tag chips to their labels, including inside the mobile grid. */
+.photography-page .photo-filter-chip {
+  width:max-content;
+  min-width:0;
+  padding-inline:8px;
+  justify-self:start;
+}
+@media (max-width:720px) {
+  .photography-page .photo-filter-chip { padding-inline:8px; }
+}
