@@ -47,6 +47,7 @@
     let inView = false;
     let hovered = false;
     let focused = false;
+    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
     let busy = false;
     const used = new Set();
 
@@ -90,12 +91,12 @@
 
     function allowed() {
       return slides.length > 1 && inView && !document.hidden &&
-        !motion.matches && !hovered && !focused;
+        !motion.matches && (!canHover.matches || !hovered) && !focused;
     }
     function schedule() {
       clearTimeout(timer);
       timer = null;
-      if (allowed() && !busy) timer = setTimeout(advance, 5000);
+      if (allowed() && !busy) timer = setTimeout(advance, 3500);
     }
 
     async function advance() {
@@ -129,7 +130,8 @@
       }
     }
 
-    card.addEventListener("mouseenter", () => { hovered = true; schedule(); });
+    // Touch devices synthesize hover events; only pause for an actual mouse.
+    card.addEventListener("mouseenter", () => { if (canHover.matches) { hovered = true; schedule(); } });
     card.addEventListener("mouseleave", () => { hovered = false; schedule(); });
     card.addEventListener("focusin", () => { focused = true; schedule(); });
     card.addEventListener("focusout", () => { focused = false; schedule(); });
@@ -145,7 +147,10 @@
     }
 
     (async () => {
-      await refill();
+      // Show the first two verified slides immediately instead of waiting for
+      // all 12 photos to download on a mobile connection.
+      await addNextPhoto();
+      await addNextPhoto();
       // Remove the static fallback only after verified replacements are ready.
       if (slides.length) {
         stage.querySelectorAll("img").forEach(image => {
@@ -155,6 +160,8 @@
         slides[0].style.zIndex = "1";
       }
       schedule();
+      // Remaining slides populate without blocking rotation startup.
+      refill().then(schedule);
     })();
   });
 })();
