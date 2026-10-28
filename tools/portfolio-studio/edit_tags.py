@@ -1,8 +1,6 @@
 """Edit the site's existing photo metadata, using free-aspect-ratio crop outlines."""
 import copy
 import json
-import os
-import tempfile
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk, messagebox, simpledialog
@@ -46,30 +44,16 @@ def legacy_framing(p):
 
 def atomic_catalog_pair(c_text, j_text):
     import datetime
+    # Encode and parse first, so an invalid save leaves no backup or temp file.
+    c_bytes, j_bytes = c_text.encode("utf-8"), j_text.encode("utf-8")
+    json.loads(c_bytes)
     backup = ROOT / "_old" / ("portfolio-studio-catalog-" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f"))
     backup.mkdir(parents=True, exist_ok=False)
-    targets = [(C_PATH, c_text), (J_PATH, j_text)]
-    old = {}
-    staged = {}
-    try:
-        for path, content in targets:
-            old[path] = path.read_bytes()
-            (backup / path.name).write_bytes(old[path])
-            fd, name = tempfile.mkstemp(dir=path.parent, suffix=".staged")
-            with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as stream:
-                stream.write(content)
-            staged[path] = Path(name)
-        json.loads(staged[C_PATH].read_text(encoding="utf-8"))
-        for path, _ in targets:
-            os.replace(staged[path], path)
-    except BaseException:
-        for path in old:
-            if path.exists() and path.read_bytes() != old[path]:
-                path.write_bytes(old[path])
-        raise
-    finally:
-        for p in staged.values():
-            p.unlink(missing_ok=True)
+    for path in (C_PATH, J_PATH):
+        (backup / path.name).write_bytes(path.read_bytes())
+    # Installs both files atomically and restores the first if the second fails.
+    with asset_transaction({C_PATH: c_bytes, J_PATH: j_bytes}):
+        pass
 
 class Editor(ManagementActions, tk.Tk):
     def __init__(self,primary=False):
@@ -652,13 +636,25 @@ class Editor(ManagementActions, tk.Tk):
             self.after(1200,self._poll_new_photos_processor)
             return
         self._processor=None
+        self._refresh_after_closing('Processor')
+
+    def _poll_arranger(self):
+        process=getattr(self,'_arranger',None)
+        if process is None:return
+        if process.poll() is None:
+            self.after(1200,self._poll_arranger)
+            return
+        self._arranger=None
+        self._refresh_after_closing('Arrange Gallery')
+
+    def _refresh_after_closing(self,window):
         # Only refresh automatically if there are no unsaved Catalog edits;
-        # never silently discard changes made while processor was open.
+        # never silently discard changes made while the other window was open.
         self.refresh_dirty()
         if self.catalog==self.initial and not self.crop_pending:
             try:self.refresh()
-            except (OSError,ValueError) as exc:self.status.set(f'Processor closed. Refresh manually: {exc}')
-        else:self.status.set('Processor closed. Save or reset Catalog edits before Refresh.')
+            except (OSError,ValueError) as exc:self.status.set(f'{window} closed. Refresh manually: {exc}')
+        else:self.status.set(f'{window} closed. Save or reset Catalog edits before Refresh.')
 
     def close_editor(self):
         self.refresh_dirty()
@@ -676,7 +672,8 @@ class Editor(ManagementActions, tk.Tk):
         if self.catalog != self.initial:
             messagebox.showwarning("Save first", "Save or reset your catalog edits before opening Arrange Gallery.")
             return
-        subprocess.Popen([sys.executable, str(Path(__file__).with_name("arrange_gallery.py"))])
+        self._arranger = subprocess.Popen([sys.executable, str(Path(__file__).with_name("arrange_gallery.py"))])
+        self.after(1200, self._poll_arranger)
 
     def save(self):
         self.store()

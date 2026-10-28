@@ -17,3 +17,11 @@ tools/portfolio-studio/originals/
 
 # Portfolio Studio generated backups
 _old/
+
+# macOS Finder metadata
+.DS_Store
+
+# Portfolio Studio temporary files left by an interrupted save
+*.staged
+.studio-*
+.photography-catalog-*.tmp

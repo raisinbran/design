@@ -8,6 +8,7 @@ from pathlib import Path
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
 from gallery_thumbnails import asset_transaction
+from platform_support import backup_root
 
 ROOT=Path(__file__).resolve().parents[2]
 FIELDS=("id","title","heading","context","bodyHtml","cover","coverPosition","media","visible","expanded")
@@ -163,8 +164,8 @@ def save_catalog(root,catalog,expected_catalog,expected_page,pending=None):
     if (target.read_bytes() if target.exists() else None)!=expected_catalog or page.read_bytes()!=expected_page:
         raise ValueError("Engineering content changed elsewhere. Reload before saving.")
     updated=render_page(catalog,expected_page.decode("utf-8")).encode("utf-8")
-    import datetime,os,tempfile
-    backup=Path(os.environ.get("LOCALAPPDATA",Path.home()/".cache"))/"PortfolioStudio"/"project-backups"/datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    import datetime
+    backup=backup_root("project-backups")/datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     backup.mkdir(parents=True,exist_ok=False);(backup/page.name).write_bytes(expected_page)
     if expected_catalog is not None:(backup/target.name).write_bytes(expected_catalog)
     payload=dict(pending);payload[page]=updated

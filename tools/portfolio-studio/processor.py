@@ -299,20 +299,6 @@ def publish_image(source,destination,max_side=1080,degrees=0,logo=None,quality=9
         raise
     return dimensions
 
-def unique_destination(media_dir,source):
-    stem=Path(source).stem
-    stem="".join(c if c.isalnum() or c in "-_" else "_" for c in stem).strip("_") or "photo"
-    media_dir=Path(media_dir)
-    if not stem.casefold().endswith("_edit"):
-        stem += "_edit"
-    dst=media_dir/(stem+".jpg")
-    i=2
-    while dst.exists():
-        dst=media_dir/(f"{stem}_{i}.jpg")
-        i+=1
-    return dst
-
-
 def framing_translation(zoom, focus_x, focus_y):
     """Return pixel-independent CSS translations for a zoomed justified-row tile.
 

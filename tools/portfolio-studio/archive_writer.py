@@ -8,7 +8,6 @@ import datetime
 import hashlib
 import json
 import math
-import os
 import re
 from pathlib import Path
 from urllib.parse import unquote
@@ -16,6 +15,7 @@ from urllib.parse import unquote
 from bs4 import BeautifulSoup
 import archive_catalog as archive
 from gallery_thumbnails import asset_transaction
+from platform_support import backup_root
 
 SETTINGS_RE = re.compile(r'(window\.ARCHIVE_PHOTO_PROMINENCE\s*=\s*Object\.freeze\()\{.*?\}(\)\s*;)', re.S)
 
@@ -209,8 +209,7 @@ def save(root, data, expected_catalog, expected_page, expected_settings, pending
     if page_bytes == expected_page and settings_bytes == expected_settings and catalog_bytes == expected_catalog and not pending:
         return None
     stamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f')
-    backups = Path(os.environ.get('LOCALAPPDATA', Path.home() / '.cache')) / 'PortfolioStudio' / 'archive-backups'
-    folder = backups / stamp
+    folder = backup_root('archive-backups') / stamp
     folder.mkdir(parents=True, exist_ok=False)
     (folder / html.name).write_bytes(expected_page)
     (folder / settings.name).write_bytes(expected_settings)

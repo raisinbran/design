@@ -16,16 +16,29 @@ def preferences_path():
     return Path.home() / ".config" / "PortfolioStudio" / "preferences.json"
 
 
+def saved_settings(target):
+    """Return the stored settings, or nothing when the file is missing or damaged."""
+    try:
+        data = json.loads(target.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def saved_size(value):
+    try:
+        size = int(value)
+    except (TypeError, ValueError, OverflowError):
+        return DEFAULTS["maxSide"]
+    return size if MAX_MIN <= size <= MAX_MAX else DEFAULTS["maxSide"]
+
+
 def load_preferences(path=None):
     target = Path(path) if path else preferences_path()
     result = dict(DEFAULTS)
-    if not target.exists():
-        return result
-    data = json.loads(target.read_text(encoding="utf-8"))
-    size = int(data.get("maxSide", DEFAULTS["maxSide"]))
-    if not MAX_MIN <= size <= MAX_MAX:
-        raise ValueError("Saved maximum side is outside the supported range.")
-    result["maxSide"] = size
+    # A damaged file must never block startup; saving rewrites it cleanly.
+    data = saved_settings(target)
+    result["maxSide"] = saved_size(data.get("maxSide", DEFAULTS["maxSide"]))
     result["openAfterPublish"] = data.get("openAfterPublish",True) if type(data.get("openAfterPublish",True)) is bool else True
     appearance=data.get('appearance','system')
     result['appearance']=appearance if appearance in ('system','light','dark') else 'system'

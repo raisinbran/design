@@ -12,7 +12,7 @@ from tkinter import filedialog, messagebox, simpledialog, ttk
 
 from PIL import Image, ImageOps
 from catalog_tools import read_json, validate_catalog, generated_js
-from processor import conservative_level, publish_image, unique_destination, straighten_and_crop, rotation_crop_size
+from processor import conservative_level, publish_image, straighten_and_crop, rotation_crop_size
 from photo_viewport import PhotoViewport, normalize_crop
 from studio_preferences import load_preferences, save_preferences
 from studio_theme import apply_appearance, install_dialog_placement, center_window
@@ -85,10 +85,6 @@ def generic_description(filename="", known_description=""):
     return next((label.capitalize() for label,terms in GENERIC_SUBJECTS if words.intersection(terms)), "Photograph")
 
 
-def filename_suggestion(filename):
-    return generic_description(filename)
-
-
 def local_caption(image):
     """Local CPU classifier; no downloads or network activity during analysis."""
     from offline_descriptions import describe
@@ -107,7 +103,9 @@ def new_settings(path, maximum=1080):
 
 
 def open_exported_photos(paths):
-    """Open committed exports in the Windows default viewer; report launch failures."""
+    """Open committed exports in the default viewer; report launch failures.
+
+    On macOS and Linux the viewer starts in the background, so its own errors are not seen."""
     errors=[]
     for path in paths:
         try:
@@ -650,10 +648,6 @@ class Studio(tk.Tk):
         # The overflow control is a child of action_left, packed directly after
         # its last visible action: it never sticks beside the publishing controls.
         if self.hidden_actions:self.more_actions_button.pack(side="left")
-
-    def manage_published(self):
-        subprocess.Popen([sys.executable,str(Path(__file__).with_name("manage_published.py"))],
-                         cwd=str(Path(__file__).parent))
 
     def edit_tags(self):
         script = Path(__file__).with_name("edit_tags.py")

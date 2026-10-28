@@ -48,7 +48,7 @@ def atomic(path,data):
     path.parent.mkdir(parents=True,exist_ok=True)
     fd,name=tempfile.mkstemp(dir=path.parent,prefix=".studio-")
     try:
-        with os.fdopen(fd,"wb") as stream:stream.write(data)
+        with os.fdopen(fd,"wb") as stream:stream.write(data);stream.flush();os.fsync(stream.fileno())
         os.replace(name,path)
     finally:Path(name).unlink(missing_ok=True)
 

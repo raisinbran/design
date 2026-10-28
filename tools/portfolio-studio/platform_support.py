@@ -16,6 +16,10 @@ def local_data_path():
     return Path(os.environ.get("LOCALAPPDATA",Path.home()/".local"/"share"))/"PortfolioStudio"
 
 
+def backup_root(kind):
+    return local_data_path()/kind
+
+
 def cache_path():
     if sys.platform=="darwin":return Path.home()/"Library"/"Caches"/"PortfolioStudio"
     return local_data_path()

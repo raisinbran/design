@@ -1,4 +1,6 @@
-"""Archive collections foundation. Reads/renders only; no editor or save entrypoint.
+"""Archive collections foundation: migrate, validate and render collection HTML.
+
+archive_writer saves edits and owns the paired prominence settings script.
 
 The UTF-8 source template is retained verbatim, including CRLF/BOM. Unchanged
 records return original bytes; edits replace only the bounded collection region.
@@ -192,7 +194,8 @@ def render_collection(collection,original,raw):
         else:fig['data-crop-mode']=media['cropMode']
         set_style(fig,'--media-position',media['position'])
         # Prominence belongs to the settings script, not an HTML attribute.
-        # Refuse such edits until Phase 5B supplies a paired settings writer.
+        # archive_writer masks prominence before rendering and writes it to
+        # the settings script; any other caller must not change it here.
         if media['prominence']!=next((m['prominence'] for m in original['media'] if m['id']==media['id']),'normal'):
             raise ValueError("Prominence editing requires the Phase 5B settings writer")
         old=fig.find('figcaption')
