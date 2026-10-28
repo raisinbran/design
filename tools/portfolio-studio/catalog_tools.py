@@ -1,11 +1,14 @@
 """Portfolio media catalog: stable single source for public Photography gallery.
 
+data/media-catalog.json is the source of truth. js/photography-catalog.js is
+generated from it, because the static website loads the gallery as a script.
+Every catalog writer saves the two files together.
+
 This file is local development tooling, not executed by website visitors.
 """
 import json
 import math
 import os
-import re
 import sys
 import tempfile
 from pathlib import Path
@@ -19,71 +22,11 @@ def read_json(path):
     with Path(path).open("r",encoding="utf-8") as f:
         return json.load(f)
 
-def json_blob(js, variable, opener, closer):
-    # Handles the existing literal JSON payloads, without eval or executing JavaScript.
-    m = re.search(r"window\." + re.escape(variable) + r"\s*=\s*", js)
-    if not m:
-        raise ValueError("Missing window." + variable)
-    begin = js.find(opener,m.end())
-    if begin == -1 or js[m.end():begin].strip():
-        raise ValueError("Expected literal JSON in " + variable)
-    decoder=json.JSONDecoder()
-    # Existing R24/R79 gallery data uses a trailing comma before ] or }.
-    # Strip those commas without evaluating or rewriting JavaScript expressions.
-    raw=js[begin:]
-    raw=re.sub(r",(\s*[\]}])",r"\1",raw)
-    data,off=decoder.raw_decode(raw)
-    if raw[off:off+1] not in (';','\n',' ','\r','\t'):
-        raise ValueError("Unexpected text after " + variable)
-    return data
-
-def suggest_tags(description):
-    """Explicitly provisional keyword matches; never inferred from pixels."""
-    s = (" " + description.casefold() + " ")
-    rules={
-      "Moody": ["fog","mist","dark","storm","twilight","blue hour","silhouett","haze"],
-      "Sky": ["sky","cloud","sunset","rainbow","moon","sunlight","sunlit","balloon","haze"],
-      "Night": ["night","dusk","twilight","illuminat","blue hour","evening"],
-      "Dusk": ["dusk","twilight","sunset","blue hour"],
-      "Day": ["sunlit","sunlight","afternoon","daylight","bright","rainbow","golden hour"],
-      "Concrete Jungle": ["city","urban","street","skyline","building","tower","railway","architecture","waterfront"],
-      '"It\'s just rocks"': ["rock","stone","canyon","pebble","mountain","desert","aqueduct"]
-    }
-    return [tag for tag in TAGS if any(keyword in s for keyword in rules[tag])]
-
-def migrate_legacy(items_js,ratio_js,media_dir):
-    items = json_blob(items_js,"PORTFOLIO_PHOTOS","[","]")
-    ratios = json_blob(ratio_js,"PHOTO_ASPECT_RATIOS","{","}")
-    if not isinstance(items,list) or not isinstance(ratios,dict) or not items:
-        raise ValueError("Legacy photo data has unexpected structure")
-    result=[]
-    seen=set()
-    for i,entry in enumerate(items):
-        if not isinstance(entry,dict):
-            raise ValueError(f"Photo item {i} is not an object")
-        name=entry.get("file")
-        if not isinstance(name,str) or '/' in name or '\\' in name or '..' in name or not name:
-            raise ValueError("Invalid or unsafe photo filename")
-        if name.casefold() in seen:
-            raise ValueError(f"Duplicate photo {name}")
-        seen.add(name.casefold())
-        if not isinstance(entry.get("alt"),str) or not entry["alt"].strip():
-            raise ValueError(f"Missing alt text: {name}")
-        img = Path(media_dir)/name
-        if not img.is_file():
-            raise ValueError(f"Missing publication image: {img}")
-        r=ratios.get(name)
-        if not isinstance(r,(float,int)) or r <= 0:
-            raise ValueError(f"Missing aspect ratio for {name}")
-        data=dict(entry)
-        data["aspectRatio"]=r
-        if not isinstance(data.get("tags"),list):
-            data["tags"]=suggest_tags(data.get("alt",""))
-            data["tagStatus"]="suggested-from-alt-text"
-        result.append(data)
-    return {"schemaVersion":1,"photoTags":list(TAGS),"photos":result}
-
 def validate_catalog(catalog,repo=None):
+    """Raise ValueError if the catalog is malformed; with repo, also require each photo file.
+
+    Returns the photo count.
+    """
     if catalog.get("schemaVersion") != 1:
         raise ValueError("Expected media catalog schemaVersion 1")
     tags=catalog.get("photoTags")
@@ -132,6 +75,7 @@ def validate_catalog(catalog,repo=None):
     return len(photos)
 
 def generated_js(catalog):
+    """The website's gallery script for a validated catalog (editor-only fields removed)."""
     validate_catalog(catalog)
     photos=[]
     ratios={}
@@ -139,6 +83,7 @@ def generated_js(catalog):
         keep={k:v for k,v in p.items() if k not in ("aspectRatio","tagStatus","altNeedsReview")}
         photos.append(keep)
         crop=p.get("galleryCrop")
+        # The gallery lays out tiles by their cropped shape, not the full photo's.
         ratios[p["file"]]=p["aspectRatio"] * crop["width"]/crop["height"] if crop else p["aspectRatio"]
     return (
        SENTINEL +
@@ -148,6 +93,7 @@ def generated_js(catalog):
     )
 
 def sync(repo):
+    """Regenerate js/photography-catalog.js from the catalog if it is out of date (repair CLI)."""
     repo=Path(repo).resolve()
     c=read_json(repo/"data"/"media-catalog.json")
     count=validate_catalog(c,repo)

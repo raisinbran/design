@@ -13,7 +13,7 @@ import catalog_tools
 class CatalogSyncTests(unittest.TestCase):
     def setUp(self):
         self.folder=tempfile.TemporaryDirectory();self.addCleanup(self.folder.cleanup)
-        self.root=Path(self.folder.name)
+        self.root=Path(self.folder.name).resolve()
         (self.root/'data').mkdir();(self.root/'js').mkdir()
         media=self.root/'photography'/'published';media.mkdir(parents=True)
         (media/'synthetic.jpg').write_bytes(b'synthetic existence fixture; not a real photograph')

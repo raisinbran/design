@@ -1,4 +1,10 @@
-"""Reusable corner-only gallery derivatives and private original-file records."""
+"""Gallery thumbnails and the private registry of each photo's original file.
+
+Thumbnails are always rebuilt from clean original pixels, never from a
+watermarked export, so the gallery can be re-cropped without quality loss.
+The registry (stored with the user's preferences, outside the repository)
+remembers which original produced each published file.
+"""
 import argparse
 import copy
 import hashlib
@@ -19,17 +25,20 @@ VERSION=2
 
 
 def photo_framing(photo):
+    """The catalog fields that decide how a photo is framed in its gallery tile."""
     return {"galleryCrop":photo.get("galleryCrop"),"galleryZoom":photo.get("galleryZoom",1),
         "focusX":photo.get("focusX",.5),"focusY":photo.get("focusY",.5)}
 
 
 def encode_for_gallery(clean,photo,logo):
+    """Encode a thumbnail using the photo's gallery crop, or its legacy zoom framing."""
     if not photo.get("galleryCrop") and float(photo.get("galleryZoom",1) or 1)>1:
         clean=framed_preview(clean,photo["galleryZoom"],photo.get("focusX",.5),photo.get("focusY",.5))
     return encode_gallery_thumbnail(clean,logo,photo.get("galleryCrop"))
 
 
 def thumbnail_name(filename):
+    """Thumbnail filename for a published photo; rejects names that could escape the folder."""
     if Path(filename).name!=filename or ".." in filename:raise ValueError("Unsafe publication filename")
     return filename+".webp"
 
@@ -45,15 +54,17 @@ def read_registry(root):
 
 
 def atomic(path,data):
+    """Replace a file in one step: write a flushed temp file beside it, then rename."""
     path.parent.mkdir(parents=True,exist_ok=True)
     fd,name=tempfile.mkstemp(dir=path.parent,prefix=".studio-")
     try:
-        with os.fdopen(fd,"wb") as stream:stream.write(data)
+        with os.fdopen(fd,"wb") as stream:stream.write(data);stream.flush();os.fsync(stream.fileno())
         os.replace(name,path)
     finally:Path(name).unlink(missing_ok=True)
 
 
 def save_registry(root,records):
+    """Merge original-file records for one repository into the private registry."""
     try:data=read_json(registry_path())
     except (OSError,ValueError):data={}
     key=str(Path(root).resolve()).casefold()
@@ -62,6 +73,7 @@ def save_registry(root,records):
 
 
 def signature(path):
+    """Cheap change detector for an original: size and modification time."""
     stat=Path(path).stat()
     return [stat.st_size,stat.st_mtime_ns]
 
@@ -70,6 +82,7 @@ def digest(data):return hashlib.sha256(data).hexdigest()
 
 
 def source_record(source,settings,published):
+    """Registry entry linking a published file to its original and edit settings."""
     return {"source":str(Path(source).resolve()),"signature":signature(source),
         "settings":{key:copy.deepcopy(settings.get(key)) for key in
             ("maxSide","degrees","cropApplied","cropAction","galleryCrop")},"publishedHash":digest(published)}
@@ -96,6 +109,7 @@ def asset_transaction(updates):
 
 
 def clean_from_record(record,reference):
+    """Rebuild a published photo's clean (unwatermarked) pixels from its original."""
     source=Path(record["source"])
     if signature(source)!=record["signature"]:raise ValueError("Original changed; rebuild its source match")
     if record.get("transform"):
@@ -157,6 +171,7 @@ def match_original(source,reference):
 
 
 def create_thumbnail(root,photo,record,logo=None):
+    """Build one thumbnail from a known original; refuses if the export has changed since."""
     reference=Path(root)/"photography"/"published"/photo["file"]
     if record["publishedHash"]!=digest(reference.read_bytes()):raise ValueError("Full-size export changed; rebuild its source match")
     clean=clean_from_record(record,reference)
@@ -166,6 +181,13 @@ def create_thumbnail(root,photo,record,logo=None):
 
 
 def build_thumbnails(root=ROOT,originals_dir=None,names=None,apply=False,progress=None,logo=None):
+    """Rebuild gallery thumbnails for published photos, then optionally save them.
+
+    Each photo is skipped when its thumbnail is current, rebuilt from its
+    registry record when possible, and otherwise matched to an original in
+    originals_dir. With apply=True, thumbnails and the catalog pair are written
+    together and rolled back together.
+    """
     root=Path(root);catalog_path=root/"data"/"media-catalog.json";js_path=root/"js"/"photography-catalog.js"
     before={catalog_path:catalog_path.read_bytes(),js_path:js_path.read_bytes()}
     catalog=json.loads(before[catalog_path]);records=read_registry(root)
@@ -187,6 +209,7 @@ def build_thumbnails(root=ROOT,originals_dir=None,names=None,apply=False,progres
                         and photo.get("thumbnailVersion")==digest(thumb.read_bytes())[:12])
                 except OSError:pass
             if cached:report["skipped"].append(name);continue
+            # Prefer the recorded original; fall back to searching originals_dir.
             clean=None
             if record:
                 try:data,fields,record=create_thumbnail(root,photo,record,logo)
@@ -212,6 +235,7 @@ def build_thumbnails(root=ROOT,originals_dir=None,names=None,apply=False,progres
         except (OSError,ValueError) as exc:report["errors"].append(f"{name}: {exc}")
     if progress:progress(len(selected),len(selected),"Ready")
     if apply and updates:
+        # Conflict check: refuse if the catalog or a photo changed while building.
         if any(path.read_bytes()!=data for path,data in before.items()):raise ValueError("Catalog changed during thumbnail building. Please retry.")
         for name,record in new_records.items():
             if digest((root/"photography"/"published"/name).read_bytes())!=record["publishedHash"]:
@@ -229,6 +253,7 @@ def build_thumbnails(root=ROOT,originals_dir=None,names=None,apply=False,progres
 
 
 def run_builder(parent):
+    """Build thumbnails from the Photography tab, asking for an originals folder only if needed."""
     from tkinter import filedialog,messagebox,ttk
     import tkinter as tk
     from photo_studio import LOGO

@@ -1,4 +1,9 @@
-"""Engineering project catalog and lossless migration of existing case studies."""
+"""Engineering project catalog and lossless migration of existing case studies.
+
+data/engineering-catalog.json stores each project's editable fields plus its
+original HTML. Saving re-renders engineeringdesign.html: unchanged projects
+keep their original HTML byte for byte, and only edited projects are rebuilt.
+"""
 import copy
 import hashlib
 import html
@@ -8,16 +13,19 @@ from pathlib import Path
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
 from gallery_thumbnails import asset_transaction
+from platform_support import backup_root
 
 ROOT=Path(__file__).resolve().parents[2]
 FIELDS=("id","title","heading","context","bodyHtml","cover","coverPosition","media","visible","expanded")
 
 
 def snapshot(project):
+    """A project's editable fields; compared with its baseline to detect edits."""
     return {key:copy.deepcopy(project.get(key)) for key in FIELDS}
 
 
 def parse_media(figure):
+    """Editable fields of one gallery <figure>, keeping its original HTML."""
     image=figure.find("img");video=figure.find("video");link=figure.find("a")
     kind="image" if image else "video" if video else "document"
     source=image or (video.find("source") or video if video else link)
@@ -29,6 +37,7 @@ def parse_media(figure):
 
 
 def migrate(page):
+    """Build a catalog from the page's <details> project sections without losing markup."""
     matches=list(re.finditer(r"<details\b.*?</details>",page,re.S|re.I))
     if not matches:raise ValueError("No Engineering project sections found")
     projects=[]
@@ -52,6 +61,7 @@ def migrate(page):
 
 
 def read_catalog(root=ROOT):
+    """The saved catalog, or one migrated from the live page if none exists yet."""
     root=Path(root);path=root/"data"/"engineering-catalog.json"
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else migrate((root/"engineeringdesign.html").read_text(encoding="utf-8"))
 
@@ -71,6 +81,7 @@ def local_asset(root,name):
 
 
 def validate(catalog,root=ROOT,pending=()):
+    """Raise ValueError for invalid projects or missing media; pending files count as present."""
     if catalog.get("schemaVersion")!=1 or not isinstance(catalog.get("projects"),list):raise ValueError("Invalid Engineering catalog")
     seen=set();pending={Path(p).resolve() for p in pending}
     for p in catalog["projects"]:
@@ -91,6 +102,7 @@ def validate(catalog,root=ROOT,pending=()):
 
 
 def media_html(media):
+    """Render one media item, updating its original <figure> where possible."""
     soup=BeautifulSoup(media.get("html") or '<figure class="project-media"></figure>',"html.parser")
     fig=soup.find("figure")
     if media["kind"]=="image":
@@ -121,6 +133,7 @@ def media_html(media):
 
 
 def render_project(project):
+    """HTML for one project: the original markup when unedited, else a rebuilt section."""
     if not project.get("visible",True):return ""
     if project.get("legacyHtml") and snapshot(project)==project.get("baseline"):return project["legacyHtml"]
     template=project.get("legacyHtml") or '<details class="project"><summary class="project-header"><span class="project-header-bg" aria-hidden="true"></span><span class="project-header-shade" aria-hidden="true"></span><span class="project-header-text"></span><span class="project-chevron-wrap" aria-hidden="true"><span class="project-chevron"></span></span></summary><div class="project-body"><h2></h2><p class="lead"></p><hr class="project-title-divider"><div class="project-prose"></div><div class="project-gallery" data-justified-gallery></div></div></details>'
@@ -142,6 +155,7 @@ END="<!-- portfolio-studio:engineering:end -->"
 
 
 def render_page(catalog,page):
+    """Replace the page's project sections with the rendered catalog."""
     content="".join(render_project(p)+p.get("separator","\n") for p in catalog["projects"] if p.get("visible",True))
     if START in page and END in page:
         a=page.index(START)+len(START);b=page.index(END)
@@ -155,6 +169,11 @@ def render_page(catalog,page):
 
 
 def save_catalog(root,catalog,expected_catalog,expected_page,pending=None):
+    """Save the Engineering page, catalog and new media files together; returns the backup folder.
+
+    expected_* are the bytes the editor loaded; if either file differs on disk,
+    the save is refused. pending maps new media paths to their bytes.
+    """
     root=Path(root);target=root/"data"/"engineering-catalog.json";page=root/"engineeringdesign.html"
     pending=pending or {};validate(catalog,root,pending)
     for path,data in pending.items():
@@ -163,8 +182,8 @@ def save_catalog(root,catalog,expected_catalog,expected_page,pending=None):
     if (target.read_bytes() if target.exists() else None)!=expected_catalog or page.read_bytes()!=expected_page:
         raise ValueError("Engineering content changed elsewhere. Reload before saving.")
     updated=render_page(catalog,expected_page.decode("utf-8")).encode("utf-8")
-    import datetime,os,tempfile
-    backup=Path(os.environ.get("LOCALAPPDATA",Path.home()/".cache"))/"PortfolioStudio"/"project-backups"/datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    import datetime
+    backup=backup_root("project-backups")/datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     backup.mkdir(parents=True,exist_ok=False);(backup/page.name).write_bytes(expected_page)
     if expected_catalog is not None:(backup/target.name).write_bytes(expected_catalog)
     payload=dict(pending);payload[page]=updated

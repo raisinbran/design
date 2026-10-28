@@ -1,9 +1,12 @@
 """Synthetic, read-only appearance and thumbnail tests. No public media are written."""
 import tempfile
+import tkinter as tk
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from PIL import Image
 import studio_preferences
+import studio_theme
 from studio_theme import palette, COLORS
 from thumbnail_ui import cover_thumbnail, THUMB_SIZE
 
@@ -28,6 +31,26 @@ class ThemeTests(unittest.TestCase):
             self.assertEqual(studio_preferences.load_preferences(target)['appearance'],'dark')
             with self.assertRaises(ValueError):studio_preferences.save_preferences({'appearance':'hotpink'},target)
             self.assertEqual(studio_preferences.load_preferences(target)['appearance'],'dark')
+
+    def test_damaged_preferences_load_as_defaults_and_save_cleanly(self):
+        damaged={'truncated':'{"maxSide": 100','list':'[1080]','out of range':'{"maxSide": 100}',
+            'not a number':'{"maxSide": "large"}','not text':b'\xff\xfe'}
+        for name,content in damaged.items():
+            with self.subTest(file=name),tempfile.TemporaryDirectory() as tmp:
+                target=Path(tmp)/'prefs.json'
+                if isinstance(content,bytes):target.write_bytes(content)
+                else:target.write_text(content,encoding='utf-8')
+                self.assertEqual(studio_preferences.load_preferences(target),studio_preferences.DEFAULTS)
+                studio_preferences.save_preferences({'appearance':'dark'},target)
+                self.assertEqual(studio_preferences.load_preferences(target),{**studio_preferences.DEFAULTS,'appearance':'dark'})
+                with self.assertRaises(ValueError):studio_preferences.save_preferences({'maxSide':100},target)
+
+    def test_mapping_a_themed_window_does_not_query_system_appearance(self):
+        root=tk.Tk();root.withdraw();self.addCleanup(root.destroy)
+        root._studio_colors=palette('light');studio_theme.install_dialog_placement(root)
+        with patch.object(studio_theme,'system_dark') as system_dark,patch.object(studio_theme,'_native_titlebar') as titlebar:
+            root.deiconify();root.update()
+        system_dark.assert_not_called();titlebar.assert_called_with(root,COLORS['light'])
 
     def test_thumbnail_fills_canvas_without_letterboxing(self):
         wide=Image.new('RGB',(300,60),(226,40,70))

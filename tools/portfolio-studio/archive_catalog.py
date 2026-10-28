@@ -1,4 +1,8 @@
-"""Archive collections foundation. Reads/renders only; no editor or save entrypoint.
+"""Archive collections foundation: migrate, validate and render collection HTML.
+
+The Archive tab edits creativedesign.html's collection sections. Each
+collection's fields are parsed from that page into data/archive-catalog.json;
+archive_writer saves edits and owns the paired prominence settings script.
 
 The UTF-8 source template is retained verbatim, including CRLF/BOM. Unchanged
 records return original bytes; edits replace only the bounded collection region.
@@ -19,6 +23,7 @@ FIELDS=("id","title","heading","context","cover","coverPosition","coverSize",
 
 
 def local_asset(root,name):
+    """Resolve a page-relative asset path, rejecting anything that could leave the repository."""
     if not isinstance(name,str) or not name or any(c in name for c in '\\:\x00?#'):
         raise ValueError("Expected a repository-relative Archive asset")
     decoded=unquote(name)
@@ -89,6 +94,7 @@ def parse_collections(source,overrides):
 
 
 def migrate(page,settings):
+    """Build the Archive catalog from the page and prominence settings script, keeping both verbatim."""
     source=page.decode('utf-8') if isinstance(page,bytes) else page
     settings=settings.decode('utf-8') if isinstance(settings,bytes) else settings
     overrides=settings_values(settings)
@@ -164,6 +170,7 @@ def set_style(node,key,value):
 
 
 def render_collection(collection,original,raw):
+    """HTML for one collection: the original bytes when unchanged, else its section updated in place."""
     if collection==original:return raw
     soup=BeautifulSoup(raw,'html.parser');section=soup.find('details')
     section.select_one('.project-header-text').string=collection['title']
@@ -192,7 +199,8 @@ def render_collection(collection,original,raw):
         else:fig['data-crop-mode']=media['cropMode']
         set_style(fig,'--media-position',media['position'])
         # Prominence belongs to the settings script, not an HTML attribute.
-        # Refuse such edits until Phase 5B supplies a paired settings writer.
+        # archive_writer masks prominence before rendering and writes it to
+        # the settings script; any other caller must not change it here.
         if media['prominence']!=next((m['prominence'] for m in original['media'] if m['id']==media['id']),'normal'):
             raise ValueError("Prominence editing requires the Phase 5B settings writer")
         old=fig.find('figcaption')
@@ -209,7 +217,6 @@ def render_collection(collection,original,raw):
 
 
 def render(catalog,root=ROOT,page=None):
-    # The Phase 5B renderer supports variable collection counts and paired
-    # prominence settings while retaining exact no-op HTML bytes.
+    """Render the full Archive page; an unchanged catalog returns the original bytes."""
     from archive_writer import render_page
     return render_page(catalog,root,page)

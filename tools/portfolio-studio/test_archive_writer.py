@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 import archive_catalog as archive
 import archive_writer as writer
+import platform_support
 from test_archive import section
 
 SETTINGS='// retained comment\nwindow.ARCHIVE_PHOTO_PROMINENCE = Object.freeze({});\n'
@@ -17,6 +18,10 @@ class ArchiveWriterTests(unittest.TestCase):
     def setUp(self):
         folder=tempfile.TemporaryDirectory();self.addCleanup(folder.cleanup)
         self.root=Path(folder.name)
+        private=tempfile.TemporaryDirectory();self.addCleanup(private.cleanup)
+        self.private=Path(private.name)
+        backups=patch.object(platform_support,'local_data_path',return_value=self.private)
+        backups.start();self.addCleanup(backups.stop)
         (self.root/'images').mkdir()
         (self.root/'data').mkdir()
         (self.root/'js').mkdir()
@@ -77,6 +82,7 @@ class ArchiveWriterTests(unittest.TestCase):
         self.assertIn(b'"one.jpg":"featured"',new_settings)
         backup=writer.save(self.root,data,self.cat,self.page,self.settings)
         self.assertTrue((backup/'creativedesign.html').exists())
+        self.assertEqual(backup.parent,self.private/'archive-backups')
         self.assertEqual((self.root/'creativedesign.html').read_bytes(),self.page)
         self.assertEqual((self.root/'js/archive-photo-settings.js').read_bytes(),new_settings)
         saved=archive.read_catalog(self.root)

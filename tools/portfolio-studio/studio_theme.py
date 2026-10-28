@@ -214,7 +214,7 @@ def install_dialog_placement(root):
     def mapped(event):
         win=event.widget
         if win is root:
-            _native_titlebar(root,getattr(root,'_studio_colors',palette()))
+            _native_titlebar(root,getattr(root,'_studio_colors',None) or palette())
             return
         if not isinstance(win,tk.Toplevel):return
         def check():

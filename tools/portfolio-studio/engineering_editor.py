@@ -92,6 +92,7 @@ class EngineeringEditor(ttk.Frame):
         if self.media_index<len(items):
             for key,value in self.media_values.items():items[self.media_index][key]=value.get()
     def store(self):
+        """Copy the form into the selected project; edits stay in memory until Save."""
         if self.index is None or self.loading:return
         self.store_media();p=self.data["projects"][self.index]
         for key,value in self.values.items():p[key]=value.get()
@@ -175,6 +176,7 @@ class EngineeringEditor(ttk.Frame):
     def undo(self):
         if self.history:self.data=self.history.pop();self.populate(min(self.index or 0,max(0,len(self.data["projects"])-1)))
     def add_media(self):
+        """Attach media; files from outside the repository are queued in self.pending until Save."""
         if self.index is None:return
         sources=filedialog.askopenfilenames(parent=self,title="Add project media",filetypes=[("Project media","*.jpg *.jpeg *.png *.webp *.tif *.tiff *.heic *.heif *.mp4 *.webm *.pdf"),("All files","*.*")])
         if not sources:return
@@ -188,6 +190,7 @@ class EngineeringEditor(ttk.Frame):
                         with Image.open(source) as raw:im=ImageOps.exif_transpose(raw).convert("RGBA" if suffix==".png" else "RGB");im.thumbnail((1800,1800))
                         out=io.BytesIO();im.save(out,"PNG" if suffix==".png" else "JPEG",**({"optimize":True} if suffix==".png" else {"quality":90,"optimize":True}));data=out.getvalue();suffix=".png" if suffix==".png" else ".jpg"
                     else:data=source.read_bytes()
+                    # A content hash in the name keeps different files from colliding.
                     stem=re.sub(r"[^A-Za-z0-9_-]+","-",source.stem).strip('-') or "media"
                     name=f"assets/engineering/{p['id']}/{stem}-{hashlib.sha256(data).hexdigest()[:8]}{suffix}"
                     self.pending[self.root/name]=data
@@ -211,6 +214,7 @@ class EngineeringEditor(ttk.Frame):
     def open_media(self):
         if self.index is not None and self.media_index is not None:open_path(self.asset_preview(self.data["projects"][self.index]["media"][self.media_index]["src"]))
     def preview(self):
+        """Open the rendered page from a private cache folder; the repository is not written."""
         self.store()
         try:
             preview_data=copy.deepcopy(self.data)
@@ -225,7 +229,9 @@ class EngineeringEditor(ttk.Frame):
             path=folder/"engineering-preview.html";path.write_text(page,encoding="utf-8");open_path(path)
         except (OSError,ValueError) as exc:messagebox.showerror("Preview unavailable",str(exc),parent=self)
     def save(self):
+        """Save the Engineering page and catalog locally; returns False if cancelled or failed."""
         self.store()
+        # Only add queued media that a project still uses.
         used={catalog.local_asset(self.root,name) for p in self.data["projects"] for name in [p.get("cover")]+[m["src"] for m in p["media"]] if name}
         self.pending={path:data for path,data in self.pending.items() if path.resolve() in used}
         if self.data==self.initial and not self.pending:return True

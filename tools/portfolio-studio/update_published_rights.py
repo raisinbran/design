@@ -3,12 +3,12 @@ import argparse
 import datetime
 import hashlib
 import json
-import os
 from pathlib import Path
 
 from catalog_tools import generated_js, validate_catalog
 from export_rights import set_jpeg_rights
 from gallery_thumbnails import atomic, registry_path
+from platform_support import backup_root
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -47,7 +47,7 @@ def update(root=ROOT,apply=False,backup_dir=None):
                 record["publishedHash"]=hashes[name][1];changed=True
         if changed:changes[registry]=(before,(json.dumps(data,indent=2)+"\n").encode())
     if not apply:return count
-    base=Path(backup_dir) if backup_dir else Path(os.environ.get("LOCALAPPDATA",Path.home()))/"PortfolioStudio"/"metadata-backups"
+    base=Path(backup_dir) if backup_dir else backup_root("metadata-backups")
     backup=base/("published-rights-"+datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f"))
     backup.mkdir(parents=True,exist_ok=False)
     for path,(before,_after) in changes.items():

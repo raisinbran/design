@@ -1,15 +1,17 @@
-"""Review additions, removal, and file reconciliation for published photographs."""
-import copy, datetime, json, os, shutil, tempfile, tkinter as tk
+"""Review additions, removal, and file reconciliation for published photographs.
+
+Backs the Photography tab's add/remove actions. Each action re-reads the
+catalog to refuse stale writes and keeps a backup under _old/ first.
+Original source photos are never touched.
+"""
+import copy, datetime, json, shutil, tkinter as tk
 from pathlib import Path
 from tkinter import ttk, messagebox, simpledialog
-from PIL import Image,ImageOps,ImageTk
+from PIL import Image,ImageOps
 from catalog_tools import read_json,generated_js,validate_catalog
-from window_state import remember_window
-from studio_preferences import load_preferences
-from studio_theme import apply_appearance,install_dialog_placement
 from recycle_bin import recycle_files
 from platform_support import trash_label
-from gallery_thumbnails import thumbnail_name,read_registry,thumbnail_fields,digest,asset_transaction,save_registry
+from gallery_thumbnails import thumbnail_name,read_registry,thumbnail_fields,digest,asset_transaction,save_registry,atomic
 
 ROOT=Path(__file__).resolve().parents[2]
 DATA=ROOT/"data"/"media-catalog.json"
@@ -17,15 +19,8 @@ JS=ROOT/"js"/"photography-catalog.js"
 MEDIA=ROOT/"photography"/"published"
 JOURNAL=ROOT/"_old"/"portfolio-photo-management"
 
-def atomic(path,data):
-    fd,tmp=tempfile.mkstemp(dir=path.parent,prefix=".studio-")
-    try:
-        with os.fdopen(fd,"wb") as fp:fp.write(data);fp.flush();os.fsync(fp.fileno())
-        os.replace(tmp,path)
-    finally:
-        if os.path.exists(tmp):os.unlink(tmp)
-
 def publication_path(name):
+    """Path of a published photo; rejects names or symlinks that could escape the folder."""
     path=MEDIA/name
     if Path(name).name!=name or path.resolve().parent!=MEDIA.resolve() or path.is_symlink():
         raise ValueError("Invalid publication file path")
@@ -33,6 +28,7 @@ def publication_path(name):
 
 
 def paired_thumbnail(name,catalog):
+    """Path of a published photo's gallery thumbnail, with the same safety checks."""
     photo=next((photo for photo in catalog["photos"] if photo["file"]==name),{})
     filename=photo.get("thumbnail",thumbnail_name(name))
     if Path(filename).name!=filename or '..' in filename:raise ValueError("Unsafe thumbnail path")
@@ -41,12 +37,16 @@ def paired_thumbnail(name,catalog):
     return path
 
 
-def save_transaction(catalog, *, archive_file=None, archive_files=()):
-    """Write the catalog pair; only the explicit Archive action backs up JPEGs."""
+def save_transaction(catalog, *, archive_files=()):
+    """Write the catalog pair; only the explicit Archive action backs up JPEGs.
+
+    archive_files are copied into the backup before being removed. On any
+    failure, removed files and the previous catalog pair are restored.
+    """
     validate_catalog(catalog)
     newdata=(json.dumps(catalog,indent=2,ensure_ascii=False)+"\n").encode("utf-8")
     newjs=generated_js(catalog).encode("utf-8")
-    archives=list(archive_files)+([archive_file] if archive_file is not None else [])
+    archives=list(archive_files)
     allowed={MEDIA.resolve(),(MEDIA.parent/"thumbnails").resolve()}
     if any(path.resolve().parent not in allowed or path.is_symlink() for path in archives):raise ValueError("Invalid publication asset path")
     if any(not path.is_file() for path in archives):raise FileNotFoundError("A selected publication file is missing")
@@ -70,6 +70,7 @@ def save_transaction(catalog, *, archive_file=None, archive_files=()):
 
 
 def enumerate_files():
+    """Published photo files on disk, sorted by name."""
     return sorted((p for p in MEDIA.iterdir() if p.is_file() and p.suffix.casefold() in (".jpg",".jpeg",".png",".webp")),
                   key=lambda p:p.name.casefold())
 
@@ -121,11 +122,13 @@ class ManagementActions:
         return [(state,name) for state,name in rows if state in states]
 
     def latest_catalog(self):
+        """Catalog from disk; raises if another window changed it since this one loaded."""
         latest=read_json(DATA)
         if latest!=self.catalog:raise ValueError("The catalog changed. Refresh before trying again.")
         return latest
 
     def import_unlisted(self):
+        """Add published files that are not in the catalog yet, after asking for descriptions."""
         rows=self.action_rows({"Unlisted file"})
         if not rows:
             messagebox.showinfo("Select unlisted photos","Select one or more [Unlisted] photos, then choose Add to gallery.");return
@@ -141,6 +144,7 @@ class ManagementActions:
                     image=ImageOps.exif_transpose(src);w,h=image.size
                 new["photos"].append({"file":name,"alt":descriptions[name],"visible":True,
                     "featured":False,"displayPriority":"normal","aspectRatio":w/h,"tags":[]})
+                # Reuse an existing thumbnail only if it was made from this exact file.
                 thumb=paired_thumbnail(name,new)
                 record=read_registry(ROOT).get(name,{})
                 if thumb.is_file() and record.get("publishedHash")==digest(publication_path(name).read_bytes()):
@@ -153,6 +157,7 @@ class ManagementActions:
         messagebox.showinfo("Added locally",f"Imported {len(names)} photo(s).\nCatalog backup: {backup}")
 
     def remove(self,archive):
+        """Remove gallery entries; with archive=True, also move their files into the backup."""
         states={"Published","Missing file","Unlisted file"} if archive else {"Published","Missing file"}
         rows=self.action_rows(states)
         if not rows:
@@ -174,6 +179,7 @@ class ManagementActions:
         messagebox.showinfo("Removed locally",f"Updated {len(names)} photo(s).\nBackup: {backup}")
 
     def delete_published(self):
+        """Send published files to the system Trash/Recycle Bin and drop their gallery entries."""
         rows=self.action_rows({"Published","Unlisted file"})
         if not rows:
             messagebox.showinfo("Select photo files","Select one or more published or unlisted photo files to recycle.");return
@@ -211,6 +217,7 @@ class ManagementActions:
         messagebox.showinfo(f"Moved to {trash_label()}",f"Recycled {len(names)} photo(s).\nRestore them through {trash_label()} if needed.")
 
     def match_rename(self):
+        """Re-link [Missing] entries to files renamed outside Studio, keeping their metadata."""
         rows=self.action_rows({"Missing file"})
         if not rows:
             messagebox.showinfo("Select missing entries","Select one or more [Missing] photo entries.");return
@@ -251,109 +258,3 @@ class ManagementActions:
                 except (OSError,ValueError):pass
         except Exception as exc:messagebox.showerror("Match failed",str(exc));return
         self.refresh()
-
-
-class Manager(ManagementActions, ttk.Frame):
-    def __init__(self,master):
-        super().__init__(master)
-        self.catalog=read_json(DATA)
-        self.files=[]
-        self.build()
-        self.refresh()
-    def build(self):
-        head=ttk.Frame(self,padding=12);head.pack(fill="x")
-        ttk.Label(head,text="Published gallery management",font=("Segoe UI",14,"bold")).pack(side="left")
-        ttk.Button(head,text="Refresh",command=self.refresh).pack(side="right")
-        ttk.Label(self,text="Choose a row, then review the action. Removing a gallery entry does not touch your originals.",
-                  padding=(12,0,12,8)).pack(fill="x")
-        columns=("state","name","dimensions")
-        mid=ttk.Frame(self,padding=(12,0,12,0));mid.pack(fill="both",expand=True)
-        self.table=ttk.Treeview(mid,columns=columns,show="headings",selectmode="extended")
-        for c,label,width in (("state","Status",140),("name","Published filename",570),("dimensions","Published dimensions",185)):
-            self.table.heading(c,text=label);self.table.column(c,width=width,stretch=True)
-        self.table.pack(side="left",fill="both",expand=True)
-        preview=ttk.Frame(mid,width=320)
-        preview.pack(side="right",fill="both",padx=(12,0))
-        ttk.Label(preview,text="Selected published photograph").pack(anchor="w")
-        self.preview=tk.Label(preview,text="Select a photograph",bg="#eeeeee",width=36)
-        self.preview.pack(fill="both",expand=True,pady=6)
-        self.preview_image=None
-        self.table.bind("<<TreeviewSelect>>",self.update_preview)
-
-        ops=ttk.Frame(self,padding=12);ops.pack(fill="x")
-        for label,fn in (
-            ("Import unlisted photo...",self.import_unlisted),
-            ("Remove gallery entry",lambda:self.remove(False)),
-            ("Remove and archive JPEG",lambda:self.remove(True)),
-            ("Remove from repository…",self.delete_published),
-            ("Match renamed JPEG...",self.match_rename),
-        ):
-            ttk.Button(ops,text=label,command=fn).pack(side="left",padx=(0,7))
-        self.feedback=tk.StringVar(value="")
-        ttk.Label(self,textvariable=self.feedback,padding=(12,0,12,10)).pack(fill="x")
-    def refresh(self):
-        try:self.catalog=read_json(DATA)
-        except (OSError,ValueError) as exc:
-            messagebox.showerror("Catalog invalid",str(exc));return
-        self.table.delete(*self.table.get_children())
-        files=enumerate_files()
-        keys={f.name.casefold():f for f in files}
-        tracked=set()
-        self.rows={}
-        for entry in self.catalog["photos"]:
-            name=entry["file"];tracked.add(name.casefold())
-            state="Published" if name.casefold() in keys else "Missing file"
-            self.add_row(state,name,keys.get(name.casefold()))
-        for file in files:
-            if file.name.casefold() not in tracked:self.add_row("Unlisted file",file.name,file)
-        self.feedback.set(f"{len(self.catalog['photos'])} catalog entries | "
-                          f"{sum(1 for p in self.rows.values() if p[0]=='Unlisted file')} unlisted JPEGs")
-        rows = self.table.get_children()
-        if rows:
-            self.table.selection_set(rows[0])
-            self.table.focus(rows[0])
-            self.update_preview()
-        else:
-            self.preview_image = None
-            self.preview.configure(image="", text="No published photographs")
-    def add_row(self,state,name,path):
-        size="Unknown"
-        if path:
-            try:
-                with Image.open(path) as image:
-                    w,h=ImageOps.exif_transpose(image).size
-                    size=f"{w} × {h} px"
-            except (OSError,ValueError):pass
-        iid=self.table.insert("",tk.END,values=(state,name,size))
-        self.rows[iid]=(state,name)
-    def selected_rows(self):
-        return [self.rows[row] for row in self.table.selection()]
-
-    def selected(self):
-        rows=self.table.selection()
-        if not rows:return None,None
-        return self.rows[rows[0]]
-    def update_preview(self,_event=None):
-        state,name=self.selected()
-        if not name:return
-        path=MEDIA/name
-        try:
-            with Image.open(path) as img:
-                image=ImageOps.exif_transpose(img).convert("RGB")
-                image.thumbnail((330,360),Image.Resampling.LANCZOS)
-            self.preview_image=ImageTk.PhotoImage(image)
-            self.preview.configure(image=self.preview_image,text="")
-        except (OSError,ValueError):
-            self.preview_image=None
-            self.preview.configure(image="",text=f"No preview available\n{name}")
-
-if __name__=="__main__":
-    root=tk.Tk()
-    root.title("Portfolio Studio | Manage Published Photos")
-    root.geometry("1160x740")
-    remember_window(root,"legacy-photo-manager")
-    apply_appearance(root,load_preferences().get('appearance','system'))
-    Manager(root).pack(fill="both",expand=True)
-    apply_appearance(root,load_preferences().get('appearance','system'))
-    install_dialog_placement(root)
-    root.mainloop()

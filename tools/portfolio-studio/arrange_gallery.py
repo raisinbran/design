@@ -1,4 +1,9 @@
-"""Reviewable local gallery arrangement based on image appearance, not semantic AI."""
+"""Reviewable local gallery arrangement based on image appearance, not semantic AI.
+
+Arrange Gallery runs as its own window. The list order is the gallery order.
+Suggestions reorder unlocked photos by color, brightness, saturation, tags and
+shape; nothing is saved until the user applies the reviewed order.
+"""
 import copy, json, math, tkinter as tk
 from pathlib import Path
 from tkinter import ttk, messagebox
@@ -11,6 +16,7 @@ from studio_theme import apply_appearance,install_dialog_placement
 from platform_support import wheel_units
 
 class Arrange(tk.Tk):
+    """Arrange Gallery window: suggest, adjust, lock and save the Photography order."""
     def __init__(self):
         super().__init__()
         apply_appearance(self,load_preferences().get('appearance','system'))
@@ -103,6 +109,7 @@ class Arrange(tk.Tk):
         self.working=list(self.original);self.locks.clear();self.suggestion_generated=False
         self.reverse_button.configure(state="disabled");self.populate()
     def features(self,p):
+        """Cached appearance of a photo's gallery crop: mean color, brightness, saturation, preview."""
         name=p["file"]
         if name not in self.cache:
             path=ROOT/"photography"/"published"/name
@@ -124,6 +131,11 @@ class Arrange(tk.Tk):
                 self.cache[name]=([128,128,128],128,0,None)
         return self.cache[name]
     def cost(self,a,b):
+        """How poorly photo b follows photo a under the chosen strategy (lower is a better neighbor).
+
+        Combines color, brightness, saturation, tag overlap and shape. Visual
+        contrast negates the score so unlike photos become neighbors.
+        """
         am,ab,ass,_=self.features(a);bm,bb,bss,_=self.features(b)
         rgb=math.sqrt(sum((x-y)**2 for x,y in zip(am,bm)))/441.67
         tone=abs(ab-bb)/255
@@ -133,6 +145,7 @@ class Arrange(tk.Tk):
         ra=float(a.get("aspectRatio",1.5) or 1.5);rb=float(b.get("aspectRatio",1.5) or 1.5)
         ratio=min(1,abs(math.log(max(.1,ra)/max(.1,rb)))/2)
         strategy=self.mode.get()
+        # Weights for (color, brightness, saturation, tags, shape).
         weights={"Balanced":(.38,.20,.14,.16,.12),
                  "Color harmony":(.64,.22,.06,.04,.04),
                  "Thematic groups":(.14,.12,.08,.60,.06),
@@ -141,6 +154,7 @@ class Arrange(tk.Tk):
         c=sum(w*x for w,x in zip(weights,components))
         return -c if strategy=="Visual contrast" else c
     def suggest(self):
+        """Propose an order by repeatedly appending the closest remaining photo."""
         if not self.working or (self.mode.get(),self.order())==self.generated_state:return
         # A greedy path with both ends considered. Locked positions remain exactly fixed.
         original=self.working[:]
@@ -162,6 +176,7 @@ class Arrange(tk.Tk):
         self.populate()
         self.info.set("Suggestion generated. Review thumbnails and manually adjust before applying.")
     def reverse_suggestion(self):
+        """Reverse the unlocked photos' order, leaving locked photos in place."""
         if not self.suggestion_generated:return
         selected=self.selection()
         name=self.working[selected]["file"] if selected is not None else None
@@ -191,6 +206,7 @@ class Arrange(tk.Tk):
             c.configure(yscrollincrement=40)
             self.scrollbar_done=True
     def save(self):
+        """Save the reviewed order to the local catalog pair after confirmation."""
         if self.order()==self.applied_order:return
         if not messagebox.askyesno("Apply gallery arrangement",
                                    "Save this photo order to the local catalog and regenerate gallery data?"):
