@@ -1,5 +1,9 @@
 """Portfolio media catalog: stable single source for public Photography gallery.
 
+data/media-catalog.json is the source of truth. js/photography-catalog.js is
+generated from it, because the static website loads the gallery as a script.
+Every catalog writer saves the two files together.
+
 This file is local development tooling, not executed by website visitors.
 """
 import json
@@ -19,6 +23,10 @@ def read_json(path):
         return json.load(f)
 
 def validate_catalog(catalog,repo=None):
+    """Raise ValueError if the catalog is malformed; with repo, also require each photo file.
+
+    Returns the photo count.
+    """
     if catalog.get("schemaVersion") != 1:
         raise ValueError("Expected media catalog schemaVersion 1")
     tags=catalog.get("photoTags")
@@ -67,6 +75,7 @@ def validate_catalog(catalog,repo=None):
     return len(photos)
 
 def generated_js(catalog):
+    """The website's gallery script for a validated catalog (editor-only fields removed)."""
     validate_catalog(catalog)
     photos=[]
     ratios={}
@@ -74,6 +83,7 @@ def generated_js(catalog):
         keep={k:v for k,v in p.items() if k not in ("aspectRatio","tagStatus","altNeedsReview")}
         photos.append(keep)
         crop=p.get("galleryCrop")
+        # The gallery lays out tiles by their cropped shape, not the full photo's.
         ratios[p["file"]]=p["aspectRatio"] * crop["width"]/crop["height"] if crop else p["aspectRatio"]
     return (
        SENTINEL +
@@ -83,6 +93,7 @@ def generated_js(catalog):
     )
 
 def sync(repo):
+    """Regenerate js/photography-catalog.js from the catalog if it is out of date (repair CLI)."""
     repo=Path(repo).resolve()
     c=read_json(repo/"data"/"media-catalog.json")
     count=validate_catalog(c,repo)

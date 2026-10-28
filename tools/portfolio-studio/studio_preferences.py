@@ -9,6 +9,7 @@ MAX_MIN, MAX_MAX = 300, 6000
 
 
 def preferences_path():
+    """Per-user preferences file; the private original-file registry sits beside it."""
     if sys.platform=="darwin":return Path.home()/"Library"/"Application Support"/"PortfolioStudio"/"preferences.json"
     home = os.environ.get("APPDATA")
     if home:
@@ -26,6 +27,7 @@ def saved_settings(target):
 
 
 def saved_size(value):
+    """A stored maximum side, or the default when it is invalid or out of range."""
     try:
         size = int(value)
     except (TypeError, ValueError, OverflowError):
@@ -34,6 +36,7 @@ def saved_size(value):
 
 
 def load_preferences(path=None):
+    """Current preferences, with defaults for anything missing or invalid."""
     target = Path(path) if path else preferences_path()
     result = dict(DEFAULTS)
     # A damaged file must never block startup; saving rewrites it cleanly.
@@ -46,6 +49,7 @@ def load_preferences(path=None):
 
 
 def save_preferences(defaults, path=None):
+    """Validate and merge new values into the saved preferences; returns the file path."""
     target = Path(path) if path else preferences_path()
     settings=load_preferences(target)
     settings.update(defaults)

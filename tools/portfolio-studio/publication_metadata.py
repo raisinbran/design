@@ -9,6 +9,7 @@ COPYRIGHT_TAG = 33432
 
 
 def author_exif():
+    """EXIF with the author (standard Artist and Windows Author tags) and copyright."""
     # Fresh exports deliberately receive only this public metadata.
     exif=Image.Exif()
     exif[ARTIST]=AUTHOR

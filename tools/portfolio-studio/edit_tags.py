@@ -1,4 +1,13 @@
-"""Edit the site's existing photo metadata, using free-aspect-ratio crop outlines."""
+"""Portfolio Studio main window and the Photography tab (workflow step 4).
+
+Editor(primary=True) is the application shell: Photography, Engineering and
+Archive tabs plus Process New Photos, Settings and About. The Photography tab
+manages already-published photos: descriptions, tags, priority, gallery crops,
+ordering (via Arrange Gallery) and adding or removing gallery entries.
+
+Edits stay in memory until Save, which writes the catalog pair locally.
+Making them public is a separate GitHub Desktop commit and push.
+"""
 import copy
 import json
 import tkinter as tk
@@ -43,6 +52,11 @@ def legacy_framing(p):
 
 
 def atomic_catalog_pair(c_text, j_text):
+    """Save the media catalog and its generated gallery script together.
+
+    Copies both current files to _old/ first, then replaces them as one
+    transaction so the website never sees a mismatched pair.
+    """
     import datetime
     # Encode and parse first, so an invalid save leaves no backup or temp file.
     c_bytes, j_bytes = c_text.encode("utf-8"), j_text.encode("utf-8")
@@ -56,6 +70,11 @@ def atomic_catalog_pair(c_text, j_text):
         pass
 
 class Editor(ManagementActions, tk.Tk):
+    """Photography catalog editor; with primary=True, also the main application window.
+
+    self.initial is the catalog as last read from disk. Comparing it with the
+    file on disk detects changes made by another window before saving.
+    """
     def __init__(self,primary=False):
         super().__init__()
         apply_appearance(self,load_preferences().get('appearance','system'))
@@ -264,6 +283,7 @@ class Editor(ManagementActions, tk.Tk):
             self.dimensions_text.set(f"Dimensions unavailable: {exc}")
 
     def populate_photo_list(self):
+        """List catalog photos in gallery order, then published files not yet in the catalog."""
         files={path.name.casefold() for path in enumerate_files()}
         self.photo_rows=[]
         self.listbox.delete(0,"end")
@@ -292,6 +312,7 @@ class Editor(ManagementActions, tk.Tk):
         return [(self.photo_rows[row][0],self.photo_rows[row][1]) for row in self.listbox.curselection()]
 
     def run_management(self,action):
+        """Run an add/remove/rename action only when there are no unsaved edits and no outside changes."""
         self.refresh_dirty()
         if self.catalog!=self.initial or self.crop_pending:
             messagebox.showwarning("Save changes first",
@@ -304,6 +325,7 @@ class Editor(ManagementActions, tk.Tk):
         action()
 
     def refresh(self):
+        """Reload the catalog from disk, discarding unsaved edits, and keep the current selection."""
         _state,name=self.selected()
         names={filename for _state,filename in self.selected_rows()}
         self.catalog=read_json(C_PATH)
@@ -450,6 +472,7 @@ class Editor(ManagementActions, tk.Tk):
         else:self.load(index,preserve_selection=True)
 
     def store(self):
+        """Copy the controls into the current photo's catalog entry, touching only changed fields."""
         if self.index is None or self.suspend: return
         photo = self.photos[self.index]
         tags = [tag for tag, var in self.tags.items() if var.get()]
@@ -472,6 +495,7 @@ class Editor(ManagementActions, tk.Tk):
             photo.pop("focusY", None)
 
     def load(self, index, preserve_selection=False):
+        """Show a published photo and its catalog fields for editing."""
         self.index = index
         photo = self.photos[index]
         row=next(i for i,(_,name,_) in enumerate(self.photo_rows) if name==photo["file"])
@@ -594,6 +618,7 @@ class Editor(ManagementActions, tk.Tk):
         if callable(callback):callback()
 
     def workspace_changed(self,event=None):
+        """Build the Engineering or Archive editor the first time its tab opens, to keep startup fast."""
         if not self.primary:return
         page=self.workspace_tabs.select()
         if page==str(self.engineering_page) and self.engineering_editor is None:
@@ -614,6 +639,7 @@ class Editor(ManagementActions, tk.Tk):
                 self.workspace_tabs.select(self.catalog_page)
 
     def open_new_photos_processor(self):
+        """Open the New Photos Processor (workflow steps 1-3) as a separate process."""
         import subprocess,sys
         if not self.primary:return
         process=getattr(self,'_processor',None)
@@ -667,6 +693,7 @@ class Editor(ManagementActions, tk.Tk):
         self.destroy()
 
     def open_arranger(self):
+        """Open Arrange Gallery as a separate window; requires saved edits so orders cannot clash."""
         import subprocess, sys
         self.refresh_dirty()
         if self.catalog != self.initial:
@@ -676,11 +703,14 @@ class Editor(ManagementActions, tk.Tk):
         self.after(1200, self._poll_arranger)
 
     def save(self):
+        """Save Photography edits locally: rebuild changed thumbnails, then write the catalog pair."""
         self.store()
         try:
+            # Conflict check: the Processor or Arrange may have saved since this catalog was loaded.
             if read_json(C_PATH)!=self.initial:raise ValueError("Catalog changed in another window. Reopen or refresh before saving.")
             updates={};record_updates={};records=read_registry(ROOT)
             original={photo["file"]:photo for photo in self.initial["photos"]}
+            # A changed gallery crop needs a new thumbnail, rebuilt from the private original.
             for photo in self.photos:
                 if photo.get("thumbnail") and photo_framing(photo)!=photo_framing(original[photo["file"]]):
                     from photo_studio import LOGO
@@ -693,6 +723,7 @@ class Editor(ManagementActions, tk.Tk):
                     normalize_crop(p["galleryCrop"])
             new_catalog = json.dumps(self.catalog, ensure_ascii=False, indent=2) + "\n"
             new_js = generated_js(self.catalog)
+            # Thumbnails are restored if the catalog pair cannot be saved.
             with asset_transaction(updates):
                 validate_catalog(self.catalog, ROOT)
                 atomic_catalog_pair(new_catalog, new_js)

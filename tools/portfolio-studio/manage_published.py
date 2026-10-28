@@ -1,4 +1,9 @@
-"""Review additions, removal, and file reconciliation for published photographs."""
+"""Review additions, removal, and file reconciliation for published photographs.
+
+Backs the Photography tab's add/remove actions. Each action re-reads the
+catalog to refuse stale writes and keeps a backup under _old/ first.
+Original source photos are never touched.
+"""
 import copy, datetime, json, shutil, tkinter as tk
 from pathlib import Path
 from tkinter import ttk, messagebox, simpledialog
@@ -15,6 +20,7 @@ MEDIA=ROOT/"photography"/"published"
 JOURNAL=ROOT/"_old"/"portfolio-photo-management"
 
 def publication_path(name):
+    """Path of a published photo; rejects names or symlinks that could escape the folder."""
     path=MEDIA/name
     if Path(name).name!=name or path.resolve().parent!=MEDIA.resolve() or path.is_symlink():
         raise ValueError("Invalid publication file path")
@@ -22,6 +28,7 @@ def publication_path(name):
 
 
 def paired_thumbnail(name,catalog):
+    """Path of a published photo's gallery thumbnail, with the same safety checks."""
     photo=next((photo for photo in catalog["photos"] if photo["file"]==name),{})
     filename=photo.get("thumbnail",thumbnail_name(name))
     if Path(filename).name!=filename or '..' in filename:raise ValueError("Unsafe thumbnail path")
@@ -31,7 +38,11 @@ def paired_thumbnail(name,catalog):
 
 
 def save_transaction(catalog, *, archive_files=()):
-    """Write the catalog pair; only the explicit Archive action backs up JPEGs."""
+    """Write the catalog pair; only the explicit Archive action backs up JPEGs.
+
+    archive_files are copied into the backup before being removed. On any
+    failure, removed files and the previous catalog pair are restored.
+    """
     validate_catalog(catalog)
     newdata=(json.dumps(catalog,indent=2,ensure_ascii=False)+"\n").encode("utf-8")
     newjs=generated_js(catalog).encode("utf-8")
@@ -59,6 +70,7 @@ def save_transaction(catalog, *, archive_files=()):
 
 
 def enumerate_files():
+    """Published photo files on disk, sorted by name."""
     return sorted((p for p in MEDIA.iterdir() if p.is_file() and p.suffix.casefold() in (".jpg",".jpeg",".png",".webp")),
                   key=lambda p:p.name.casefold())
 
@@ -110,11 +122,13 @@ class ManagementActions:
         return [(state,name) for state,name in rows if state in states]
 
     def latest_catalog(self):
+        """Catalog from disk; raises if another window changed it since this one loaded."""
         latest=read_json(DATA)
         if latest!=self.catalog:raise ValueError("The catalog changed. Refresh before trying again.")
         return latest
 
     def import_unlisted(self):
+        """Add published files that are not in the catalog yet, after asking for descriptions."""
         rows=self.action_rows({"Unlisted file"})
         if not rows:
             messagebox.showinfo("Select unlisted photos","Select one or more [Unlisted] photos, then choose Add to gallery.");return
@@ -130,6 +144,7 @@ class ManagementActions:
                     image=ImageOps.exif_transpose(src);w,h=image.size
                 new["photos"].append({"file":name,"alt":descriptions[name],"visible":True,
                     "featured":False,"displayPriority":"normal","aspectRatio":w/h,"tags":[]})
+                # Reuse an existing thumbnail only if it was made from this exact file.
                 thumb=paired_thumbnail(name,new)
                 record=read_registry(ROOT).get(name,{})
                 if thumb.is_file() and record.get("publishedHash")==digest(publication_path(name).read_bytes()):
@@ -142,6 +157,7 @@ class ManagementActions:
         messagebox.showinfo("Added locally",f"Imported {len(names)} photo(s).\nCatalog backup: {backup}")
 
     def remove(self,archive):
+        """Remove gallery entries; with archive=True, also move their files into the backup."""
         states={"Published","Missing file","Unlisted file"} if archive else {"Published","Missing file"}
         rows=self.action_rows(states)
         if not rows:
@@ -163,6 +179,7 @@ class ManagementActions:
         messagebox.showinfo("Removed locally",f"Updated {len(names)} photo(s).\nBackup: {backup}")
 
     def delete_published(self):
+        """Send published files to the system Trash/Recycle Bin and drop their gallery entries."""
         rows=self.action_rows({"Published","Unlisted file"})
         if not rows:
             messagebox.showinfo("Select photo files","Select one or more published or unlisted photo files to recycle.");return
@@ -200,6 +217,7 @@ class ManagementActions:
         messagebox.showinfo(f"Moved to {trash_label()}",f"Recycled {len(names)} photo(s).\nRestore them through {trash_label()} if needed.")
 
     def match_rename(self):
+        """Re-link [Missing] entries to files renamed outside Studio, keeping their metadata."""
         rows=self.action_rows({"Missing file"})
         if not rows:
             messagebox.showinfo("Select missing entries","Select one or more [Missing] photo entries.");return

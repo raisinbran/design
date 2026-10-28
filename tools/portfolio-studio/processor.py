@@ -1,5 +1,10 @@
 """Offline photographic publication processing for the Portfolio Studio.
 No network calls, original files are opened read-only, all published images are derived copies.
+
+Pipeline for one photo: prepare_publication (orient, straighten, crop, resize)
+-> encode_jpeg (watermark, authorship and rights metadata) plus
+encode_gallery_thumbnail (small corner-watermarked WebP) -> publish_image
+(write both without overwriting anything).
 """
 import hashlib
 import io
@@ -21,6 +26,7 @@ except ImportError:
     np=None
 
 def font(size):
+    """Watermark font: the first installed system font, else Pillow's built-in one."""
     for candidate in (
         "C:/Windows/Fonts/segoeui.ttf", "C:/Windows/Fonts/arial.ttf",
         "/System/Library/Fonts/Supplemental/Arial.ttf", "/System/Library/Fonts/Helvetica.ttc",
@@ -68,6 +74,7 @@ def conservative_level(image, max_degrees=8.0):
 
 
 def rotation_crop_size(w, h, degrees):
+    """Largest same-aspect rectangle that fits inside a w x h image rotated by degrees."""
     degrees=float(degrees)
     if abs(degrees)<0.00001: return w,h
     a=math.radians(abs(degrees))
@@ -220,9 +227,11 @@ def prepare_publication(source,max_side=1080,degrees=0,export_crop=None):
         raise ValueError("Max side must be between 300 and 6000 px")
     if not -35<=float(degrees)<=35:
         raise ValueError("Rotation must be within +/-35 degrees")
+    # Apply camera orientation first so straightening and crops match the preview.
     with Image.open(source) as im:
         img=ImageOps.exif_transpose(im).convert("RGB")
     img=straighten_and_crop(img,degrees)
+    # export_crop is a fraction-of-image rectangle chosen in the editor.
     if export_crop:
         from math import floor, ceil
         c=export_crop
@@ -237,6 +246,7 @@ def prepare_publication(source,max_side=1080,degrees=0,export_crop=None):
 
 
 def encode_jpeg(image,quality=90,logo=None):
+    """Watermark a prepared image and encode the public JPEG with authorship and rights notices."""
     image=watermark(image,logo=logo)
     stream=io.BytesIO()
     image.save(stream,"JPEG",quality=int(quality),subsampling=0,optimize=True,progressive=True,exif=export_exif())
@@ -259,11 +269,16 @@ def encode_gallery_thumbnail(clean_image,logo=None,gallery_crop=None):
 
 
 def encode_publication(source,max_side=1080,degrees=0,logo=None,quality=90,export_crop=None):
+    """Encode only the full-size JPEG; returns its bytes and dimensions."""
     image=prepare_publication(source,max_side,degrees,export_crop)
     return encode_jpeg(image,quality,logo),{"width":image.width,"height":image.height,"aspectRatio":round(image.width/image.height,8)}
 
 
 def encode_publication_pair(source,max_side=1080,degrees=0,logo=None,quality=90,export_crop=None,gallery_crop=None):
+    """Encode the full-size JPEG and its gallery thumbnail from one prepared image.
+
+    The returned short hashes become cache-busting versions in the catalog.
+    """
     image=prepare_publication(source,max_side,degrees,export_crop)
     full=encode_jpeg(image,quality,logo)
     thumbnail,size=encode_gallery_thumbnail(image,logo,gallery_crop)
@@ -274,6 +289,11 @@ def encode_publication_pair(source,max_side=1080,degrees=0,logo=None,quality=90,
 
 
 def publish_image(source,destination,max_side=1080,degrees=0,logo=None,quality=90,export_crop=None,thumbnail_destination=None,gallery_crop=None):
+    """Encode and write a publication JPEG (and optional thumbnail) as new files.
+
+    Refuses to overwrite the original or any existing file; removes partial
+    output on failure. Callers stage destinations and install them afterwards.
+    """
     source=Path(source);destination=Path(destination)
     if source.resolve()==destination.resolve():raise ValueError("Output may not overwrite the original.")
     if destination.exists():raise FileExistsError("Would overwrite an existing publication image: "+str(destination))

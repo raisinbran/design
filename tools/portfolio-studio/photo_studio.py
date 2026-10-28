@@ -1,4 +1,12 @@
-"""Portfolio Studio: private local image preparation and catalog publishing."""
+"""Portfolio Studio entry point and the New Photos Processor window.
+
+Running this file opens the main window (edit_tags.Editor). With --processor it
+opens the New Photos Processor instead, which covers the first three workflow
+steps: import private originals, edit and prepare them, then publish
+web-ready JPEGs, thumbnails and catalog entries into the local repository.
+"Publish" here only writes local files; the owner makes them public later by
+committing and pushing with GitHub Desktop.
+"""
 import json
 import math
 import re
@@ -92,6 +100,7 @@ def local_caption(image):
 
 
 def new_settings(path, maximum=1080):
+    """Default per-photo edit settings for a newly imported original."""
     return {
         "maxSide": str(maximum), "degrees": "0", "alt": generic_description(str(path)),
         "_initialAlt": generic_description(str(path)),
@@ -116,6 +125,7 @@ def open_exported_photos(paths):
 
 
 def selected_originals(studio):
+    """Originals covered by the publish scope: current photo, highlighted rows, or all."""
     scope=studio.publish_scope.get()
     if scope=="current":return [studio.current] if studio.current else []
     if scope=="highlighted":return [studio.files[index] for index in studio.files_list.curselection()]
@@ -123,6 +133,11 @@ def selected_originals(studio):
 
 
 class Studio(tk.Tk):
+    """New Photos Processor: prepares private originals and publishes local web copies.
+
+    Edits live only in self.settings (keyed by original path) until Publish;
+    original files are never modified.
+    """
     def __init__(self):
         super().__init__()
         self.title("Portfolio Studio | Local Photo Publisher")
@@ -673,6 +688,7 @@ class Studio(tk.Tk):
             messagebox.showerror("Preferences could not be saved", str(exc))
 
     def choose(self):
+        """Workflow step 1: add original photographs to the working list."""
         files = filedialog.askopenfilenames(
             title="Choose original photos outside public repository",
             filetypes=[("Photographs", "*.jpg *.jpeg *.png *.webp *.tif *.tiff *.heic *.heif"), ("All files", "*.*")]
@@ -680,6 +696,7 @@ class Studio(tk.Tk):
         if not files:
             return
         paths = [Path(name).resolve() for name in files]
+        # Originals must stay private: refuse any file inside the public repository.
         if any(p == ROOT or ROOT in p.parents for p in paths):
             messagebox.showerror("Originals location", "Choose originals stored outside the Git working copy.")
             return
@@ -707,6 +724,7 @@ class Studio(tk.Tk):
         self.load_current(index)
 
     def save_current(self):
+        """Copy the on-screen controls into the current photo's settings."""
         self.commit_rotation_edit()
         if self.current is None or self.suspend:
             return
@@ -726,6 +744,7 @@ class Studio(tk.Tk):
         }
 
     def load_current(self, index):
+        """Workflow step 2: show a photo's saved settings in the editing controls."""
         if getattr(self, "_rotation_pending", None):
             self.after_cancel(self._rotation_pending)
             self._rotation_pending = None
@@ -737,6 +756,7 @@ class Studio(tk.Tk):
         self._last_rotation = s["degrees"]
         self._rotation_edit_start=None
         self._previous_rotation = s.get("undoRotation")
+        # Suggest a description once, until the user has reviewed one.
         if not s.get("alt") or (s.get("alt")=="Photograph" and not s.get("altReviewed")):
             s["alt"]=self.automatic_description(self.current)
             s["_initialAlt"]=s["alt"]
@@ -759,6 +779,7 @@ class Studio(tk.Tk):
         self.refresh_action_states()
 
     def _image_for_preview(self):
+        """Return an orientation-corrected, straightened preview of the current original."""
         if self.current is None:
             return None, None
         try:
@@ -818,6 +839,7 @@ class Studio(tk.Tk):
         finally:self._setting_rotation=False
 
     def automatic_description(self,path):
+        """Suggest an accessible description: reuse a published twin's words, else classify locally."""
         try:
             photos=read_json(CATALOG)["photos"]
             stem=re.sub(r"(?i)(?:_edit\d*|_crop|_fix|_small)+$", "", Path(path).stem).casefold()
@@ -1141,12 +1163,19 @@ class Studio(tk.Tk):
             return False
 
     def publish(self):
+        """Workflow step 3: write web-ready photos, thumbnails and catalog entries locally.
+
+        Validates and plans every photo first, asks for confirmation, encodes into
+        a staging folder, then installs all files together. Any failure restores
+        every file it replaced. Nothing is committed or pushed.
+        """
         if not self.files:
             return
         self.save_current()
         if not CATALOG.is_file() or not RUNTIME.is_file():
             messagebox.showerror("Catalog missing", "Photo catalog not found.")
             return
+        # Plan: validate the catalog and every selected photo before writing anything.
         try:
             catalog = read_json(CATALOG)
             try:
@@ -1180,6 +1209,7 @@ class Studio(tk.Tk):
                     dest=PHOTO_DIR/(base+".jpg")
                 else:
                     dest=PHOTO_DIR/(base+suffix+".jpg")
+                # Name collisions: ask before overwriting; otherwise number the copy.
                 overwrite = False
                 numbered = dest.name.casefold() in names
                 if dest.exists() and not numbered:
@@ -1216,6 +1246,7 @@ class Studio(tk.Tk):
             return
         try:
             PHOTO_DIR.mkdir(parents=True, exist_ok=True)
+            # Staging sits on the same volume as the targets so os.replace is atomic.
             with tempfile.TemporaryDirectory(prefix=".studio-publish-",dir=PHOTO_DIR) as folder:
                 stage=Path(folder)
                 backups={};source_records={}
@@ -1223,6 +1254,8 @@ class Studio(tk.Tk):
                 metadata={CATALOG:CATALOG.read_bytes(),RUNTIME:RUNTIME.read_bytes()}
                 if json.loads(metadata[CATALOG]) != catalog:
                     raise ValueError("Catalog changed while confirming publication. Please try again.")
+                # Encode each photo and thumbnail into staging, remembering the
+                # bytes it will replace, and build its catalog entry.
                 for index,(p, s, dest, crop, overwrite) in enumerate(planned):
                     if p.resolve()==dest.resolve():raise ValueError("Output may not overwrite the original.")
                     if dest.exists() and not overwrite:raise FileExistsError(f"File appeared after planning: {dest.name}")
@@ -1264,8 +1297,10 @@ class Studio(tk.Tk):
                 new_js = generated_js(catalog)
                 (stage/"catalog.json").write_text(new_catalog,encoding="utf-8")
                 (stage/"catalog.js").write_text(new_js,encoding="utf-8")
+                # Conflict check: refuse if another window changed the catalog while encoding.
                 if any(target.read_bytes()!=content for target,content in metadata.items()):
                     raise ValueError("Gallery metadata changed during export. Please try again.")
+                # Install photos, then the catalog pair; on any error restore every file.
                 try:
                     for index,(_,_,dest,_,_) in enumerate(planned):
                         thumbnail_dest=PHOTO_DIR.parent/"thumbnails"/thumbnail_name(dest.name)
@@ -1291,6 +1326,8 @@ class Studio(tk.Tk):
             messagebox.showerror("Publishing stopped", f"Changes were rolled back: {exc}")
             return
         self.status.set(f"Published {len(planned)} photo(s). Originals and crop settings remain open for review.")
+        # The private registry links each published file to its original so
+        # thumbnails can later be rebuilt without re-importing.
         try:save_registry(ROOT,source_records)
         except (OSError,ValueError) as exc:
             self.status.set(f"Published successfully. Could not save local original-file records: {exc}")
@@ -1317,5 +1354,6 @@ if __name__ == "__main__":
             application.workspace_nav.pack_forget()
         application.mainloop()
     else:
+        # Normal launch: the main window with Photography, Engineering and Archive tabs.
         from edit_tags import Editor
         Editor(primary=True).mainloop()
