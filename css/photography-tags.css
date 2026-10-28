@@ -106,12 +106,13 @@
 .photo-filter-mobile { display:none; }
 @media (max-width:720px) {
   .photography-page .photo-filter-chips {
-    display:flex;
-    flex-wrap:wrap;
-    align-content:flex-start;
+    display:grid;
+    grid-auto-flow:column;
+    grid-template-rows:repeat(2, max-content);
+    grid-auto-columns:max-content;
+    justify-content:start;
     overflow-x:auto;
     overflow-y:hidden;
-    max-height:calc(2 * (15px + 16px + 2px) + 7px + 7px);
     width:100%;
     flex-basis:100%;
     gap:7px;
