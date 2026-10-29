@@ -33,3 +33,4 @@ electron-qa-artifacts/
 *.staged
 .studio-*
 .photography-catalog-*.tmp
+*.portfolio-studio-tmp

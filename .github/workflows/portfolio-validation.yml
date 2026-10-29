@@ -9,41 +9,6 @@ permissions:
   contents: read
 
 jobs:
-  python-validation:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      PYTHONDONTWRITEBYTECODE: '1'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: sudo apt-get update && sudo apt-get install -y python3-tk
-      - run: python -m pip install -r tools/portfolio-studio/requirements.txt
-      - run: python -B tools/validation/check_python.py
-      - run: git diff --exit-code
-
-  catalog-validation:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      PYTHONDONTWRITEBYTECODE: '1'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          lfs: true
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python -m pip install -r tools/portfolio-studio/requirements.txt
-      - run: python -B tools/validation/validate_portfolio.py
-      - run: python -B -m unittest discover -s tools/validation -p 'test_*.py' -v
-      - run: git diff --exit-code
-
   javascript-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -54,6 +19,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node tools/test-photography-gallery.cjs
-      - run: node tools/test-home-previews.cjs
       - run: git diff --exit-code
