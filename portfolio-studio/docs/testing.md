@@ -30,6 +30,8 @@ Run the tests with `xvfb-run -a npm test`, so their windows stay off the screen.
 
 `backend/storage/portfolio.test.ts` saves into a copy of this repository and compares every file before and after. A save without edits changes nothing, which also shows that the generators reproduce the committed site files. An edit to one photo changes only its catalog entry and, unless it is a lock, the photography script. An edit to one Engineering body or Archive caption changes only that record and its page section. A body with a script, an event handler and a `javascript:` link reaches the page without them. A save that fails while writing leaves every file as it was. `backend/storage/images.test.ts` checks that the image protocol serves a site image and refuses files outside the image folders.
 
+`backend/imaging/render.test.ts` renders a HEIC and a rotated JPEG and checks that each comes out as an upright WebP, at most 800 px on the long side, with the rights in EXIF and XMP and the AI-training notice. It checks that a JPEG with GPS and a camera's metadata keeps none of it, and that a straightened white image has no dark corners. The HEIC is `backend/imaging/fixtures/rotated.heic`, a 64 × 32 red and blue image stored with a HEIF rotation; the JPEGs are images from this repository. `backend/storage/add.test.ts` adds a photo to a copy of this repository and checks that only the image, the catalog and the photography script change, with the new tag at the end of the tags. It also checks that a new photo named like an existing one, ignoring case, changes nothing, that Overwrite replaces that photo's image, description and tags in place, keeping its visibility, priority and lock, and that Edit Image replaces only the image and its size.
+
 `frontend/photography/arrangement.test.ts` checks that drags and Suggest Arrangement leave locked photos at their indexes. `frontend/app/editor.test.ts` checks that an edit made while a save runs stays unsaved. `frontend/app/ItemList.test.ts` checks that two items with the same title get distinct ids, which become page anchors. `backend/site/gallery.test.ts` runs the website's `js/photography.js` on the real catalog with a small fake DOM, and checks that the gallery shows visible photos in catalog order, with and without a tag filter.
 
 The owner checks the rest by hand with the release checklist.
@@ -46,5 +48,8 @@ Copy this list into the PR description and fill it in for each platform.
 - [ ] Photography, Engineering and Archive list their items with images, and Preview opens each page in the default browser.
 - [ ] In Photography, an edit, a lock, a drag and Suggest Arrangement each save, undo and redo work, and the saved page shows the new order.
 - [ ] In Engineering and Archive, an edit, an added item and a drag each save, and only their sections of the page change.
+- [ ] In the Photo Editor, a phone HEIC imports, and rotate, straighten and the crop handles work with a mouse and a trackpad. Add to Photo Catalog changes only the new image, `data/media-catalog.json` and `js/photography-catalog.js`.
+- [ ] The added image shows the watermark, and `exiftool` lists the author, copyright, usage terms and AI-training notice, and no GPS.
+- [ ] After a relaunch, the draft list still shows an unfinished import. Edit Image reopens an added photo, and after moving its original, Relink finds it.
 - [ ] After a discard in GitHub Desktop, Reload shows the discarded state.
 - [ ] Linux from source: after the setup above, `Launch.sh` starts the app.
