@@ -1,4 +1,4 @@
-/* Decorative homepage previews with catalog-based, self-healing photography picks. */
+/* Decorative homepage previews; photography shows the first visible catalog photos. */
 (() => {
   "use strict";
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -8,26 +8,10 @@
     "images/PCJPB/IMG_0355_edit.jpg"
   ];
 
-  // Curated visual preferences, spanning landscape, architecture, wildlife,
-  // night scenes and light. A catalog entry is required for every photo.
-  const preferred = [
-    "DSCF0179_crop.jpg", "DSCF1024_edit_crop.jpg",
-    "DSCF3655_crop.jpg", "DSCF2848_crop.jpg",
-    "20220511_191505848_iOS_crop.jpg", "DSCF1359_crop.jpg",
-    "DSCF1464_crop.jpg", "IMG_8889_edit_crop.jpg",
-    "20241012_222059210_iOS_crop.jpg", "DSCF1520_crop.jpg",
-    "DSCF3546_crop.jpg", "DSCF1972_crop.jpg"
-  ];
   const desiredCount = 12;
   const catalog = (window.PORTFOLIO_PHOTOS || []).filter(photo =>
     photo.visible !== false && photo.file && photo.alt);
-  const byName = new Map(catalog.map(photo => [photo.file, photo]));
-  const photographyCandidates = [
-    ...preferred.map(file => byName.get(file)).filter(Boolean),
-    ...catalog.filter(photo => !preferred.includes(photo.file))
-  ];
   const photoUrl = photo => {
-    if (photo.publishedImage && !photo.thumbnail) return "";
     const name = photo.thumbnail || photo.file;
     const folder = photo.thumbnail ? "thumbnails" : "published";
     const version = photo.thumbnail ? photo.thumbnailVersion : photo.mediaVersion;
@@ -39,7 +23,7 @@
     const isPhotography = stage.dataset.homePreview === "photography";
     const card = stage.closest("a");
     const pool = isPhotography
-      ? photographyCandidates.map(photoUrl)
+      ? catalog.map(photoUrl)
       : engineering;
     const slides = [];
     let nextCandidate = 0;

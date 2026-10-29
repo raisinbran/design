@@ -1,6 +1,7 @@
 import { Button, Group, Stack, Table, Text, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { AppInfo, PortfolioView } from "../../backend/api/api";
+import { confirmDiscard } from "../app/editor";
 import { call } from "../app/portfolio";
 
 interface SettingsProps {
@@ -17,6 +18,7 @@ export function Settings({ view, onFolderChosen }: SettingsProps) {
   }, []);
 
   async function chooseFolder() {
+    if (!confirmDiscard()) return;
     try {
       const chosen = await call(window.portfolio["portfolio.choose"]());
       if (chosen) onFolderChosen(chosen);
