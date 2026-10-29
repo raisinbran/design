@@ -28,9 +28,9 @@ Run the tests with `xvfb-run -a npm test`, so their windows stay off the screen.
 
 `backend/launch.test.ts` saves a settings file in a fresh user data folder, then launches the built app with the sandbox on. It checks that the page renders, that the renderer runs in the OS sandbox, that `window.portfolio` exists and `window.require` doesn't, and that the app opens the saved folder. It then edits one photo description, presses Save, and compares the catalog and the photography script with the expected bytes. The folder is a copy of this repository, so the test never touches the real checkout.
 
-`backend/storage/portfolio.test.ts` saves into a copy of this repository and compares every file before and after. A save without edits changes nothing, which also shows that the generators reproduce the committed site files. An edit to one photo changes only its catalog entry and, unless it is a lock, the photography script. A save that fails while writing leaves every file as it was. `backend/storage/images.test.ts` checks that the image protocol serves a site image and refuses files outside the image folders.
+`backend/storage/portfolio.test.ts` saves into a copy of this repository and compares every file before and after. A save without edits changes nothing, which also shows that the generators reproduce the committed site files. An edit to one photo changes only its catalog entry and, unless it is a lock, the photography script. An edit to one Engineering body or Archive caption changes only that record and its page section. A body with a script, an event handler and a `javascript:` link reaches the page without them. A save that fails while writing leaves every file as it was. `backend/storage/images.test.ts` checks that the image protocol serves a site image and refuses files outside the image folders.
 
-`frontend/photography/arrangement.test.ts` checks that drags and Suggest Arrangement leave locked photos at their indexes. `frontend/app/editor.test.ts` checks that an edit made while a save runs stays unsaved. `backend/site/gallery.test.ts` runs the website's `js/photography.js` on the real catalog with a small fake DOM, and checks that the gallery shows visible photos in catalog order, with and without a tag filter.
+`frontend/photography/arrangement.test.ts` checks that drags and Suggest Arrangement leave locked photos at their indexes. `frontend/app/editor.test.ts` checks that an edit made while a save runs stays unsaved. `frontend/app/ItemList.test.ts` checks that two items with the same title get distinct ids, which become page anchors. `backend/site/gallery.test.ts` runs the website's `js/photography.js` on the real catalog with a small fake DOM, and checks that the gallery shows visible photos in catalog order, with and without a tag filter.
 
 The owner checks the rest by hand with the release checklist.
 
@@ -45,5 +45,6 @@ Copy this list into the PR description and fill it in for each platform.
 - [ ] After closing the window on a second monitor and unplugging that monitor, the app opens on the remaining display.
 - [ ] Photography, Engineering and Archive list their items with images, and Preview opens each page in the default browser.
 - [ ] In Photography, an edit, a lock, a drag and Suggest Arrangement each save, undo and redo work, and the saved page shows the new order.
+- [ ] In Engineering and Archive, an edit, an added item and a drag each save, and only their sections of the page change.
 - [ ] After a discard in GitHub Desktop, Reload shows the discarded state.
 - [ ] Linux from source: after the setup above, `Launch.sh` starts the app.

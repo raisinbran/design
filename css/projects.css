@@ -177,6 +177,7 @@ body.engineering-option-a {
 .project-prose {
   font: 400 15px/1.6 Inter,"Segoe UI",Arial,sans-serif;
   color: #333;
+  hyphens: auto;
 }
 
 .project-prose p {
