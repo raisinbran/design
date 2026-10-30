@@ -22,6 +22,14 @@ The photography page and the home page show the visible photos in catalog order,
 
 Unsaved edits live in one zustand store, `frontend/app/editor.ts`, with zundo keeping the undo history. Saving or loading clears the history, because git keeps the history of saved work. In a text field, the undo and redo shortcuts act on that field's typing, as the browser does. The Engineering body editor, TipTap, keeps its own undo history while it has focus. Elsewhere the shortcuts step through the app's history, which also holds the field and body edits. A save keeps any edit made while it ran as an unsaved edit.
 
+## Photos and images
+
+The Photo Editor never sees an original's path. The backend registers each original and gives the UI an id. Every proxy and render runs in a worker thread, one at a time, because decoding a phone's HEIC takes about a second and would otherwise freeze the window. A new job or Cancel ends the running one, so an old render never becomes the image that Add writes. Add writes the latest render, which the backend holds in memory, and the editor keeps Add off while a render runs or after the recipe changes.
+
+A crop is measured inside the safe rectangle: the largest rectangle with the original's shape that fits inside the straightened photo. The proxy shows exactly that rectangle and the crop handles draw over it, so the frontend needs no rotation geometry and no crop shows blank corners.
+
+Adding a photo writes its image, `data/media-catalog.json` and the photography script in one save. Add and Edit Image need saved edits, because that save checks the files against the loaded revision, as every save does.
+
 ## Security
 
 The renderer runs in the OS sandbox with context isolation and no Node, and the app denies navigation and new windows. The sandbox stays on everywhere, because the app edits the owner's files. On Linux, running from source needs the one-time setup in `testing.md`.
@@ -30,7 +38,7 @@ The renderer sees images only through the read-only `portfolio:` protocol, which
 
 ## Private data
 
-Settings (`settings.json`) and the window state (`window-state.json`) are electron-store files in Electron's user data folder:
+Three electron-store files live in Electron's user data folder: the settings, including the watermark and rights (`settings.json`), the window state (`window-state.json`), and the Photo Editor's drafts and the original and recipe of each added photo (`photos.json`). The originals themselves stay where the owner keeps them. The folder is:
 
 - Linux: `~/.config/Portfolio Studio/`
 - Windows: `%APPDATA%\Portfolio Studio\`
