@@ -1,4 +1,4 @@
-import { cpSync, mkdtempSync, readlinkSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdtempSync, readFileSync, readlinkSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { _electron as electron } from "playwright";
@@ -18,7 +18,7 @@ function launch(userData: string) {
 }
 
 describe("app launch", () => {
-  it("app launches sandboxed and opens folder", async () => {
+  it("app launches sandboxed and saves", async () => {
     const userData = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-user-"));
     const copy = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-repo-"));
     try {
@@ -27,6 +27,14 @@ describe("app launch", () => {
         filter: (source) => !SKIPPED_IN_COPY.has(path.basename(source)),
       });
       writeFileSync(path.join(userData, "settings.json"), JSON.stringify({ folder: copy }));
+      const read = (file: string) => readFileSync(path.join(copy, file), "utf8");
+      // The first photo is DSCF3655_crop.jpg, described as "mountains".
+      const expected = Object.fromEntries(
+        ["data/media-catalog.json", "js/photography-catalog.js"].map((file) => [
+          file,
+          read(file).replace('"alt": "mountains"', '"alt": "snowy mountains"'),
+        ]),
+      );
 
       const studio = await launch(userData);
       const page = await studio.firstWindow();
@@ -48,11 +56,18 @@ describe("app launch", () => {
         require: typeof (window as { require?: unknown }).require,
       }));
       const opened = await page.evaluate(() => window.portfolio["portfolio.load"]());
+      await page.getByLabel("Description", { exact: true }).fill("snowy mountains");
+      await page.getByRole("button", { name: "Save" }).click();
+      // The script is replaced after the catalog, so once it changes the save is done.
+      await expect
+        .poll(() => read("js/photography-catalog.js"), { timeout: 10_000 })
+        .toBe(expected["js/photography-catalog.js"]);
       await studio.close();
 
       expect(rendererSandboxed).toBe(true);
       expect(globals).toEqual({ portfolio: "object", require: "undefined" });
       expect(opened).toMatchObject({ ok: true, value: { folder: copy } });
+      expect(read("data/media-catalog.json")).toBe(expected["data/media-catalog.json"]);
     } finally {
       rmSync(userData, { recursive: true, force: true });
       rmSync(copy, { recursive: true, force: true });

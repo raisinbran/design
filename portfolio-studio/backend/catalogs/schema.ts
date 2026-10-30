@@ -13,7 +13,8 @@ export const Photo = z
     /** Shown as "Unlist", so checked means false. */
     visible: z.boolean(),
     displayPriority: z.enum(["low", "normal", "portraitBoost", "featured"]),
-    aspectRatio: z.number().positive(),
+    /** Only on a photo without a gallery image; the site uses it for that photo's shape. */
+    aspectRatio: z.number().positive().optional(),
     tags: z.array(z.string()),
     /** Keeps its index during arrangement; never written to the site. */
     locked: z.literal(true).optional(),

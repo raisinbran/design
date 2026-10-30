@@ -14,6 +14,12 @@ The frontend imports `backend/api/` with `import type` only, so no backend code 
 
 The three catalogs in `data/` hold the website's content. Every save regenerates four files from them: `js/photography-catalog.js`, `js/archive-photo-settings.js`, and the marked regions of `engineeringdesign.html` and `creativedesign.html`. A save skips each file whose bytes would not change, so saving without edits changes nothing. A save refuses to write when any of these files changed after the app loaded it, because saving stale data after a pull would undo the pulled work. The owner then presses Reload.
 
+The photography page and the home page show the visible photos in catalog order, so the order in the app is the order on the site. A lock (`locked`) lives only in the catalog; the generated script leaves it out.
+
+## Unsaved edits and undo
+
+Unsaved edits live in one zustand store, `frontend/app/editor.ts`, with zundo keeping the undo history. Saving or loading clears the history, because git keeps the history of saved work. In a text field, the undo and redo shortcuts act on that field's typing, as the browser does; elsewhere they step through the history, which also holds the field edits. A save keeps any edit made while it ran as an unsaved edit.
+
 ## Security
 
 The renderer runs in the OS sandbox with context isolation and no Node, and the app denies navigation and new windows. The sandbox stays on everywhere, because the app edits the owner's files. On Linux, running from source needs the one-time setup in `testing.md`.
