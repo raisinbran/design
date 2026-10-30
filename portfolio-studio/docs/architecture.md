@@ -14,11 +14,13 @@ The frontend imports `backend/api/` with `import type` only, so no backend code 
 
 The three catalogs in `data/` hold the website's content. Every save regenerates four files from them: `js/photography-catalog.js`, `js/archive-photo-settings.js`, and the marked regions of `engineeringdesign.html` and `creativedesign.html`. A save skips each file whose bytes would not change, so saving without edits changes nothing. A save refuses to write when any of these files changed after the app loaded it, because saving stale data after a pull would undo the pulled work. The owner then presses Reload.
 
+Engineering project text is HTML. A save passes each body that differs from the saved catalog through sanitize-html, which keeps only the tags the rich text editor makes, so a script or event handler from the renderer never reaches the site. Unedited bodies are left alone, because sanitizing rewrites markup such as entities and inline styles, and a save without edits must change nothing. The first edit to a body therefore also tidies it: inline styles, classes and layout `div`s go, and entities such as `&rtrif;` become characters.
+
 The photography page and the home page show the visible photos in catalog order, so the order in the app is the order on the site. A lock (`locked`) lives only in the catalog; the generated script leaves it out.
 
 ## Unsaved edits and undo
 
-Unsaved edits live in one zustand store, `frontend/app/editor.ts`, with zundo keeping the undo history. Saving or loading clears the history, because git keeps the history of saved work. In a text field, the undo and redo shortcuts act on that field's typing, as the browser does; elsewhere they step through the history, which also holds the field edits. A save keeps any edit made while it ran as an unsaved edit.
+Unsaved edits live in one zustand store, `frontend/app/editor.ts`, with zundo keeping the undo history. Saving or loading clears the history, because git keeps the history of saved work. In a text field, the undo and redo shortcuts act on that field's typing, as the browser does. The Engineering body editor, TipTap, keeps its own undo history while it has focus. Elsewhere the shortcuts step through the app's history, which also holds the field and body edits. A save keeps any edit made while it ran as an unsaved edit.
 
 ## Security
 
