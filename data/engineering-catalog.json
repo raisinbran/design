@@ -6,7 +6,7 @@
       "title": "Positive Train Control and Signal Systems",
       "heading": "Caltrain",
       "context": "at RSE, Inc.",
-      "bodyHtml": "<p class=\"card-text\">​<strong>The Rail Safety Improvement Act of 2008</strong> mandated the use of PTC (positive train control) technology to prevent accidents on US railroads. In September 2019, Caltrain began the Revenue Service Demonstration phase, operating PTC on regular passenger trains, on the San Francisco Peninsula. PTC interoperability work continues with the adjacent Union Pacific, Altamont Corridor Express, and Amtrak railways.</p><p class=\"card-text\"><strong>Year</strong> ▸ 2019-2021</p><p class=\"card-text\"><strong>Signals and Crossings</strong><br/>▸ Updated signal diagram drawings systemwide<br/>▸ Worked with client in conjunction with the upcoming track and train electrification, positive train control, and ongoing construction projects<br/>▸ Assigned tasks to other engineers as needed</p><p class=\"card-text\"><strong>\"I-EMTS\" PTC System</strong><br/>▸ Represented client as a witness and test engineer during contractor field equipment verification</p>",
+      "bodyHtml": "<p class=\"card-text\">​<strong>The Rail Safety Improvement Act of 2008</strong> mandated the use of PTC (positive train control) technology to prevent accidents on US railroads. In September 2019, Caltrain began the Revenue Service Demonstration phase, operating PTC on regular passenger trains, on the San Francisco Peninsula. PTC interoperability work continues with the adjacent Union Pacific, Altamont Corridor Express, and Amtrak railways.</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2019-2021</p><p class=\"card-text\"><strong>Signals and Crossings</strong><br>&rtrif; Updated signal diagram drawings systemwide<br>&rtrif; Worked with client in conjunction with the upcoming track and train electrification, positive train control, and ongoing construction projects<br>&rtrif; Assigned tasks to other engineers as needed</p><p class=\"card-text\"><strong>\"I-EMTS\" PTC System</strong><br>&rtrif; Represented client as a witness and test engineer during contractor field equipment verification</p>",
       "cover": "images/PCJPB/IMG_1242_edit.jpg",
       "coverPosition": "50% 40%",
       "media": [
@@ -15,132 +15,71 @@
           "src": "video/PCJPB/Caltrain - Brisbane to SSF_D.mp4",
           "alt": "",
           "caption": "Brake testing",
-          "credit": "PTC Implementation",
-          "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/PCJPB/Caltrain - Brisbane to SSF_D.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">Brake testing</span><small>PTC Implementation</small></figcaption></figure>"
+          "credit": "PTC Implementation"
         },
         {
           "kind": "video",
           "src": "video/PCJPB/IMG_0935_edit_E.mp4",
           "alt": "",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/PCJPB/IMG_0935_edit_E.mp4\" type=\"video/mp4\"/></video></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/PCJPB/IMG_0355_edit.jpg",
           "alt": "Signal gantry testing",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"Signal gantry testing\" decoding=\"async\" loading=\"lazy\" src=\"images/PCJPB/IMG_0355_edit.jpg\"/></figure>"
+          "credit": ""
         },
         {
           "kind": "video",
           "src": "video/PCJPB/IMG_0225_stable-2.mp4",
           "alt": "",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/PCJPB/IMG_0225_stable-2.mp4\" type=\"video/mp4\"/></video></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/PCJPB/IMG_1242_edit.jpg",
           "alt": "Caltrain MP36PH-3C unit over maintenance pit",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"Caltrain MP36PH-3C unit over maintenance pit\" decoding=\"async\" loading=\"lazy\" src=\"images/PCJPB/IMG_1242_edit.jpg\"/></figure>"
+          "credit": ""
         }
       ],
       "visible": true,
       "expanded": true,
-      "legacyHtml": "<details class=\"project project--hero\" id=\"collapseSignal\" open><summary class=\"project-header\"><span class=\"project-header-bg\" style=\"background-image: url(&#x27;images/PCJPB/IMG_1242_edit.jpg&#x27;); background-position: 50% 40%\" aria-hidden=\"true\"></span><span class=\"project-header-shade\" aria-hidden=\"true\"></span><span class=\"project-header-text\">Positive Train Control and Signal Systems</span><span class=\"project-chevron-wrap\" aria-hidden=\"true\"><span class=\"project-chevron\"></span></span></summary><div class=\"project-body\"><h2>Caltrain</h2><p class=\"lead\">at RSE, Inc.</p><hr class=\"project-title-divider\"><div class=\"project-prose\"><p class=\"card-text\">​<strong>The Rail Safety Improvement Act of 2008</strong> mandated the use of PTC (positive train control) technology to prevent accidents on US railroads. In September 2019, Caltrain began the Revenue Service Demonstration phase, operating PTC on regular passenger trains, on the San Francisco Peninsula. PTC interoperability work continues with the adjacent Union Pacific, Altamont Corridor Express, and Amtrak railways.</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2019-2021</p><p class=\"card-text\"><strong>Signals and Crossings</strong><br>&rtrif; Updated signal diagram drawings systemwide<br>&rtrif; Worked with client in conjunction with the upcoming track and train electrification, positive train control, and ongoing construction projects<br>&rtrif; Assigned tasks to other engineers as needed</p><p class=\"card-text\"><strong>\"I-EMTS\" PTC System</strong><br>&rtrif; Represented client as a witness and test engineer during contractor field equipment verification</p></div><div class=\"project-gallery\" data-justified-gallery><figure class=\"project-media\"><video muted autoplay loop playsinline preload=\"metadata\"><source src=\"video/PCJPB/Caltrain - Brisbane to SSF_D.mp4\" type=\"video/mp4\"></video><figcaption><span class=\"caption-main\">Brake testing</span><small>PTC Implementation</small></figcaption></figure><figure class=\"project-media\"><video muted autoplay loop playsinline preload=\"metadata\"><source src=\"video/PCJPB/IMG_0935_edit_E.mp4\" type=\"video/mp4\"></video></figure><figure class=\"project-media\"><img src=\"images/PCJPB/IMG_0355_edit.jpg\" alt=\"Signal gantry testing\" loading=\"lazy\" decoding=\"async\"></figure><figure class=\"project-media\"><video muted autoplay loop playsinline preload=\"metadata\"><source src=\"video/PCJPB/IMG_0225_stable-2.mp4\" type=\"video/mp4\"></video></figure><figure class=\"project-media\"><img src=\"images/PCJPB/IMG_1242_edit.jpg\" alt=\"Caltrain MP36PH-3C unit over maintenance pit\" loading=\"lazy\" decoding=\"async\"></figure></div></div></details>",
-      "separator": "\n",
-      "baseline": {
-        "id": "collapseSignal",
-        "title": "Positive Train Control and Signal Systems",
-        "heading": "Caltrain",
-        "context": "at RSE, Inc.",
-        "bodyHtml": "<p class=\"card-text\">​<strong>The Rail Safety Improvement Act of 2008</strong> mandated the use of PTC (positive train control) technology to prevent accidents on US railroads. In September 2019, Caltrain began the Revenue Service Demonstration phase, operating PTC on regular passenger trains, on the San Francisco Peninsula. PTC interoperability work continues with the adjacent Union Pacific, Altamont Corridor Express, and Amtrak railways.</p><p class=\"card-text\"><strong>Year</strong> ▸ 2019-2021</p><p class=\"card-text\"><strong>Signals and Crossings</strong><br/>▸ Updated signal diagram drawings systemwide<br/>▸ Worked with client in conjunction with the upcoming track and train electrification, positive train control, and ongoing construction projects<br/>▸ Assigned tasks to other engineers as needed</p><p class=\"card-text\"><strong>\"I-EMTS\" PTC System</strong><br/>▸ Represented client as a witness and test engineer during contractor field equipment verification</p>",
-        "cover": "images/PCJPB/IMG_1242_edit.jpg",
-        "coverPosition": "50% 40%",
-        "media": [
-          {
-            "kind": "video",
-            "src": "video/PCJPB/Caltrain - Brisbane to SSF_D.mp4",
-            "alt": "",
-            "caption": "Brake testing",
-            "credit": "PTC Implementation",
-            "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/PCJPB/Caltrain - Brisbane to SSF_D.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">Brake testing</span><small>PTC Implementation</small></figcaption></figure>"
-          },
-          {
-            "kind": "video",
-            "src": "video/PCJPB/IMG_0935_edit_E.mp4",
-            "alt": "",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/PCJPB/IMG_0935_edit_E.mp4\" type=\"video/mp4\"/></video></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/PCJPB/IMG_0355_edit.jpg",
-            "alt": "Signal gantry testing",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"Signal gantry testing\" decoding=\"async\" loading=\"lazy\" src=\"images/PCJPB/IMG_0355_edit.jpg\"/></figure>"
-          },
-          {
-            "kind": "video",
-            "src": "video/PCJPB/IMG_0225_stable-2.mp4",
-            "alt": "",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/PCJPB/IMG_0225_stable-2.mp4\" type=\"video/mp4\"/></video></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/PCJPB/IMG_1242_edit.jpg",
-            "alt": "Caltrain MP36PH-3C unit over maintenance pit",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"Caltrain MP36PH-3C unit over maintenance pit\" decoding=\"async\" loading=\"lazy\" src=\"images/PCJPB/IMG_1242_edit.jpg\"/></figure>"
-          }
-        ],
-        "visible": true,
-        "expanded": true
-      }
+      "hero": true
     },
     {
       "id": "collapseFiltran",
       "title": "Automotive Filtration Systems",
       "heading": "Filtran",
       "context": "",
-      "bodyHtml": "<p class=\"card-text\">​<strong>Filtran is a leading global supplier </strong> of automatic transmission filtration solutions to automotive OEM's and the automotive aftermarket. Filtran is ISO-9000, ISO-14001, &amp; TS-16949 certified.</p><p class=\"card-text\"><strong>Year</strong> ▸ 2016</p><p class=\"card-text\"><strong>Responsibilities</strong><br/>▸ Designed conceptual transmission fluid filters for major auto manufacturing clients, including an exclusivity contract with Ford Motor Company<br/>▸ Redesigned testing equipment and shortened turnaround times of QA department's performance qualification and vibration tests</p>",
+      "bodyHtml": "<p class=\"card-text\">​<strong>Filtran is a leading global supplier </strong> of automatic transmission filtration solutions to automotive OEM's and the automotive aftermarket. Filtran is ISO-9000, ISO-14001, &amp; TS-16949 certified.</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2016</p><p class=\"card-text\"><strong>Responsibilities</strong><br>&rtrif; Designed conceptual transmission fluid filters for major auto manufacturing clients, including an exclusivity contract with Ford Motor Company<br>&rtrif; Redesigned testing equipment and shortened turnaround times of QA department's performance qualification and vibration tests</p>",
       "cover": "images/Filtran/160803 Ford 6F35 Helical 2 wide.jpg",
       "coverPosition": "70% 25.5%",
+      "coverSize": "145% auto",
       "media": [
         {
           "kind": "image",
           "src": "images/Filtran/160714 AAM check valve 2_edit.jpg",
           "alt": "",
           "caption": "Metal spring-loaded check valve",
-          "credit": "American Axle &amp; Manufacturing",
-          "html": "<figure class=\"project-media media-zoom-check-valve\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160714 AAM check valve 2_edit.jpg\"/><figcaption><span class=\"caption-main\">Metal spring-loaded check valve</span><small>American Axle &amp;amp; Manufacturing</small></figcaption></figure>"
+          "credit": "American Axle & Manufacturing"
         },
         {
           "kind": "image",
           "src": "images/Filtran/160714 AAM check valve 1 crop.JPG",
           "alt": "",
           "caption": "Plastic check valve \"prior art\"",
-          "credit": "American Axle &amp; Manufacturing",
-          "html": "<figure class=\"project-media media-zoom-check-valve\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160714 AAM check valve 1 crop.JPG\"/><figcaption><span class=\"caption-main\">Plastic check valve \"prior art\"</span><small>American Axle &amp;amp; Manufacturing</small></figcaption></figure>"
+          "credit": "American Axle & Manufacturing"
         },
         {
           "kind": "image",
           "src": "images/Filtran/160908 Allison TC10 sf 1.jpg",
           "alt": "",
           "caption": "Suction filter shelf fit extension",
-          "credit": "Allison Transmission",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160908 Allison TC10 sf 1.jpg\"/><figcaption><span class=\"caption-main\">Suction filter shelf fit extension</span><small>Allison Transmission</small></figcaption></figure>"
+          "credit": "Allison Transmission"
         },
         {
           "kind": "image",
@@ -148,7 +87,7 @@
           "alt": "",
           "caption": "Proposed self-positioning suction filter",
           "credit": "General Motors",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 85% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/Slide - GM X72 New Suction Filter blur.jpg\"/><figcaption><span class=\"caption-main\">Proposed self-positioning suction filter</span><small>General Motors</small></figcaption></figure>"
+          "position": "85% 50%"
         },
         {
           "kind": "image",
@@ -156,7 +95,8 @@
           "alt": "",
           "caption": "Checking for collisions in a multi-test vibration robustness fixture",
           "credit": "Filtran QA department",
-          "html": "<figure class=\"project-media media-level-vibration-fixture\" style=\"--media-position: 31% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg\"/><figcaption><span class=\"caption-main\">Checking for collisions in a multi-test vibration robustness fixture</span><small>Filtran QA department</small></figcaption></figure>"
+          "position": "31% 50%",
+          "variant": "media-level-vibration-fixture"
         },
         {
           "kind": "image",
@@ -164,99 +104,29 @@
           "alt": "",
           "caption": "Hybrid nozzle with fluid flow guide ribs",
           "credit": "Ford",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 40% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160803 Ford 6F35 Helical 2.jpg\"/><figcaption><span class=\"caption-main\">Hybrid nozzle with fluid flow guide ribs</span><small>Ford</small></figcaption></figure>"
+          "position": "40% 50%"
         },
         {
           "kind": "image",
           "src": "images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg",
           "alt": "",
           "caption": "Hybrid nozzle",
-          "credit": "Ford",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg\"/><figcaption><span class=\"caption-main\">Hybrid nozzle</span><small>Ford</small></figcaption></figure>"
+          "credit": "Ford"
         }
       ],
       "visible": true,
       "expanded": false,
-      "legacyHtml": "<details class=\"project\" id=\"collapseFiltran\"><summary class=\"project-header\"><span class=\"project-header-bg\" style=\"background-image: url(&#x27;images/Filtran/160803 Ford 6F35 Helical 2 wide.jpg&#x27;); background-position: 70% 25.5%; background-size: 145% auto\" aria-hidden=\"true\"></span><span class=\"project-header-shade\" aria-hidden=\"true\"></span><span class=\"project-header-text\">Automotive Filtration Systems</span><span class=\"project-chevron-wrap\" aria-hidden=\"true\"><span class=\"project-chevron\"></span></span></summary><div class=\"project-body\"><h2>Filtran</h2><hr class=\"project-title-divider\"><div class=\"project-prose\"><p class=\"card-text\">​<strong>Filtran is a leading global supplier </strong> of automatic transmission filtration solutions to automotive OEM's and the automotive aftermarket. Filtran is ISO-9000, ISO-14001, &amp; TS-16949 certified.</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2016</p><p class=\"card-text\"><strong>Responsibilities</strong><br>&rtrif; Designed conceptual transmission fluid filters for major auto manufacturing clients, including an exclusivity contract with Ford Motor Company<br>&rtrif; Redesigned testing equipment and shortened turnaround times of QA department's performance qualification and vibration tests</p></div><div class=\"project-gallery\" data-justified-gallery><figure class=\"project-media media-zoom-check-valve\"><img src=\"images/Filtran/160714 AAM check valve 2_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Metal spring-loaded check valve</span><small>American Axle &amp;amp; Manufacturing</small></figcaption></figure><figure class=\"project-media media-zoom-check-valve\"><img src=\"images/Filtran/160714 AAM check valve 1 crop.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Plastic check valve &quot;prior art&quot;</span><small>American Axle &amp;amp; Manufacturing</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/Filtran/160908 Allison TC10 sf 1.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Suction filter shelf fit extension</span><small>Allison Transmission</small></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 85% 50%\"><img src=\"images/Filtran/Slide - GM X72 New Suction Filter blur.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Proposed self-positioning suction filter</span><small>General Motors</small></figcaption></figure><figure class=\"project-media media-level-vibration-fixture\" style=\"--media-position: 31% 50%\"><img src=\"images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Checking for collisions in a multi-test vibration robustness fixture</span><small>Filtran QA department</small></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 40% 50%\"><img src=\"images/Filtran/160803 Ford 6F35 Helical 2.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Hybrid nozzle with fluid flow guide ribs</span><small>Ford</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Hybrid nozzle</span><small>Ford</small></figcaption></figure></div></div></details>",
-      "separator": "\n",
-      "baseline": {
-        "id": "collapseFiltran",
-        "title": "Automotive Filtration Systems",
-        "heading": "Filtran",
-        "context": "",
-        "bodyHtml": "<p class=\"card-text\">​<strong>Filtran is a leading global supplier </strong> of automatic transmission filtration solutions to automotive OEM's and the automotive aftermarket. Filtran is ISO-9000, ISO-14001, &amp; TS-16949 certified.</p><p class=\"card-text\"><strong>Year</strong> ▸ 2016</p><p class=\"card-text\"><strong>Responsibilities</strong><br/>▸ Designed conceptual transmission fluid filters for major auto manufacturing clients, including an exclusivity contract with Ford Motor Company<br/>▸ Redesigned testing equipment and shortened turnaround times of QA department's performance qualification and vibration tests</p>",
-        "cover": "images/Filtran/160803 Ford 6F35 Helical 2 wide.jpg",
-        "coverPosition": "70% 25.5%",
-        "media": [
-          {
-            "kind": "image",
-            "src": "images/Filtran/160714 AAM check valve 2_edit.jpg",
-            "alt": "",
-            "caption": "Metal spring-loaded check valve",
-            "credit": "American Axle &amp; Manufacturing",
-            "html": "<figure class=\"project-media media-zoom-check-valve\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160714 AAM check valve 2_edit.jpg\"/><figcaption><span class=\"caption-main\">Metal spring-loaded check valve</span><small>American Axle &amp;amp; Manufacturing</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Filtran/160714 AAM check valve 1 crop.JPG",
-            "alt": "",
-            "caption": "Plastic check valve \"prior art\"",
-            "credit": "American Axle &amp; Manufacturing",
-            "html": "<figure class=\"project-media media-zoom-check-valve\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160714 AAM check valve 1 crop.JPG\"/><figcaption><span class=\"caption-main\">Plastic check valve \"prior art\"</span><small>American Axle &amp;amp; Manufacturing</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Filtran/160908 Allison TC10 sf 1.jpg",
-            "alt": "",
-            "caption": "Suction filter shelf fit extension",
-            "credit": "Allison Transmission",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160908 Allison TC10 sf 1.jpg\"/><figcaption><span class=\"caption-main\">Suction filter shelf fit extension</span><small>Allison Transmission</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Filtran/Slide - GM X72 New Suction Filter blur.jpg",
-            "alt": "",
-            "caption": "Proposed self-positioning suction filter",
-            "credit": "General Motors",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 85% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/Slide - GM X72 New Suction Filter blur.jpg\"/><figcaption><span class=\"caption-main\">Proposed self-positioning suction filter</span><small>General Motors</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg",
-            "alt": "",
-            "caption": "Checking for collisions in a multi-test vibration robustness fixture",
-            "credit": "Filtran QA department",
-            "html": "<figure class=\"project-media media-level-vibration-fixture\" style=\"--media-position: 31% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg\"/><figcaption><span class=\"caption-main\">Checking for collisions in a multi-test vibration robustness fixture</span><small>Filtran QA department</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Filtran/160803 Ford 6F35 Helical 2.jpg",
-            "alt": "",
-            "caption": "Hybrid nozzle with fluid flow guide ribs",
-            "credit": "Ford",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 40% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/160803 Ford 6F35 Helical 2.jpg\"/><figcaption><span class=\"caption-main\">Hybrid nozzle with fluid flow guide ribs</span><small>Ford</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg",
-            "alt": "",
-            "caption": "Hybrid nozzle",
-            "credit": "Ford",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg\"/><figcaption><span class=\"caption-main\">Hybrid nozzle</span><small>Ford</small></figcaption></figure>"
-          }
-        ],
-        "visible": true,
-        "expanded": false
-      }
+      "hero": false
     },
     {
       "id": "collapseBolt",
       "title": "Prototype Low-Cost Motorized Peeler",
       "heading": "Trees That Feed Foundation",
       "context": "with Northwestern University",
-      "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto;\">​<strong>A common sight in Jamaica and Haiti, breadfruit</strong> can potentially strengthen food security and en­tre­pre­neurial ventures on the island. ​The <a href=\"http://treesthatfeed.org/\" rel=\"noopener\" target=\"_blank\">Trees That Feed Foundation</a> aims to improve the throughput of breadfruit processing, which involves peeling, shredding, drying, and packaging.<br/><br/>The \"Bolt\", our motorized prototype peeler, removes the breadfruit's sticky, rough skin in as little as 10 seconds compared to up to a minute with hand-peeling. For material selection and complexity of assembly, local manu­fac­tur­ing and supply costs as well as an alternative manual operation feature were taken into consideration.</p><p class=\"card-text\"><strong>Year</strong> ▸ 2016</p><p class=\"card-text\"><strong>Lead</strong><br/>▸ Mockup builds, computer modeling design and file management, material procurement, and construction of a prototype deliverable to the client and end users</p><p class=\"card-text\"><strong>Contributor</strong><br/>▸ User interviews, user testing and performance testing</p><p class=\"card-text\"><strong>Also...</strong> We were featured in <a href=\"http://ideas.northwestern.edu/projects/breadfruit-peeler.html\" rel=\"noopener\" target=\"_blank\">Northwestern Ideas: Breadfruit Peeler</a>.</p><p class=\"card-text\"><strong>For more on breadfruit's role</strong> in a changing world, refer to <a href=\"https://news.northwestern.edu/stories/2022/08/climate-resilient-breadfruit-might-be-the-food-of-the-future\" rel=\"noopener\" target=\"_blank\">an August 2022 study</a> between the university and the Chicago Botanic Garden.</p>",
+      "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto;\">​<strong>A common sight in Jamaica and Haiti, breadfruit</strong> can potentially strengthen food security and en&shy;tre&shy;pre&shy;neurial ventures on the island. ​The <a href=\"http://treesthatfeed.org/\" target=\"_blank\" rel=\"noopener\">Trees That Feed Foundation</a> aims to improve the throughput of breadfruit processing, which involves peeling, shredding, drying, and packaging.<br><br>The \"Bolt\", our motorized prototype peeler, removes the breadfruit's sticky, rough skin in as little as 10 seconds compared to up to a minute with hand-peeling. For material selection and complexity of assembly, local manu&shy;fac&shy;tur&shy;ing and supply costs as well as an alternative manual operation feature were taken into consideration.</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2016</p><p class=\"card-text\"><strong>Lead</strong><br>&rtrif; Mockup builds, computer modeling design and file management, material procurement, and construction of a prototype deliverable to the client and end users</p><p class=\"card-text\"><strong>Contributor</strong><br>&rtrif; User interviews, user testing and performance testing</p><p class=\"card-text\"><strong>Also...</strong> We were featured in <a href=\"http://ideas.northwestern.edu/projects/breadfruit-peeler.html\" target=\"_blank\" rel=\"noopener\">Northwestern Ideas: Breadfruit Peeler</a>.</p><p class=\"card-text\"><strong>For more on breadfruit's role</strong> in a changing world, refer to <a href=\"https://news.northwestern.edu/stories/2022/08/climate-resilient-breadfruit-might-be-the-food-of-the-future\" target=\"_blank\" rel=\"noopener\">an August 2022 study</a> between the university and the Chicago Botanic Garden.</p>",
       "cover": "images/Bolt/Bolt Final C Render A_sd.jpg",
       "coverPosition": "0% 55%",
+      "coverSize": "125%",
       "media": [
         {
           "kind": "video",
@@ -264,7 +134,7 @@
           "alt": "",
           "caption": "Early mockup motion simulation",
           "credit": "SolidWorks",
-          "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" poster=\"images/Bolt/Copy of Bike Peeler B Render A_edit.jpg\" preload=\"metadata\"><source src=\"video/Bolt/Bike Peeler B E 896x480.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">Early mockup motion simulation</span><small>SolidWorks</small></figcaption></figure>"
+          "poster": "images/Bolt/Copy of Bike Peeler B Render A_edit.jpg"
         },
         {
           "kind": "video",
@@ -272,7 +142,7 @@
           "alt": "",
           "caption": "User testing of mockup cutting edge",
           "credit": "",
-          "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" poster=\"images/Bolt/IMG_4406_Moment_Moment.jpg\" preload=\"metadata\"><source src=\"video/Bolt/IMG_4403_header.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">User testing of mockup cutting edge</span></figcaption></figure>"
+          "poster": "images/Bolt/IMG_4406_Moment_Moment.jpg"
         },
         {
           "kind": "image",
@@ -280,15 +150,14 @@
           "alt": "",
           "caption": "Final prototype",
           "credit": "",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 50% 10%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/20160726_144633_edit.jpg\"/><figcaption><span class=\"caption-main\">Final prototype</span></figcaption></figure>"
+          "position": "50% 10%"
         },
         {
           "kind": "image",
           "src": "images/Bolt/Bolt Final C Render A_sd.jpg",
           "alt": "",
           "caption": "Final prototype rendering",
-          "credit": "SolidWorks",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Bolt Final C Render A_sd.jpg\"/><figcaption><span class=\"caption-main\">Final prototype rendering</span><small>SolidWorks</small></figcaption></figure>"
+          "credit": "SolidWorks"
         },
         {
           "kind": "image",
@@ -296,7 +165,7 @@
           "alt": "",
           "caption": "Initial brainstorming",
           "credit": "",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 50% 20%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/DSGN 384 Initial Sketches_sd.jpg\"/><figcaption><span class=\"caption-main\">Initial brainstorming</span></figcaption></figure>"
+          "position": "50% 20%"
         },
         {
           "kind": "image",
@@ -304,39 +173,35 @@
           "alt": "",
           "caption": "Early mockup",
           "credit": "",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 60% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Bike Peeler Render A.JPG\"/><figcaption><span class=\"caption-main\">Early mockup</span></figcaption></figure>"
+          "position": "60% 50%"
         },
         {
           "kind": "image",
           "src": "images/Bolt/IMG_0088_crop.jpg",
           "alt": "",
           "caption": "A field trip to our end users",
-          "credit": "Montego Bay, Jamaica",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/IMG_0088_crop.jpg\"/><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Montego Bay, Jamaica</small></figcaption></figure>"
+          "credit": "Montego Bay, Jamaica"
         },
         {
           "kind": "image",
           "src": "images/Bolt/File_000_edit.jpg",
           "alt": "",
           "caption": "A field trip to our end users",
-          "credit": "Jamaica",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/File_000_edit.jpg\"/><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Jamaica</small></figcaption></figure>"
+          "credit": "Jamaica"
         },
         {
           "kind": "image",
           "src": "images/Bolt/IMG_3647_editB.jpg",
           "alt": "",
           "caption": "A field trip to our end users",
-          "credit": "Jamaica",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/IMG_3647_editB.jpg\"/><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Jamaica</small></figcaption></figure>"
+          "credit": "Jamaica"
         },
         {
           "kind": "image",
           "src": "images/Bolt/IMG_3619_edit.jpg",
           "alt": "",
           "caption": "",
-          "credit": "A homecooked meal by our host, including breadfruit-flour bread and fried breadfruit slices.",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/IMG_3619_edit.jpg\"/><figcaption><small>A homecooked meal by our host, including breadfruit-flour bread and fried breadfruit slices.</small></figcaption></figure>"
+          "credit": "A homecooked meal by our host, including breadfruit-flour bread and fried breadfruit slices."
         },
         {
           "kind": "image",
@@ -344,7 +209,7 @@
           "alt": "",
           "caption": "Mockup",
           "credit": "",
-          "html": "<figure class=\"project-media media-zoom-ubertato\" style=\"--media-position: 65% 100%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Ubertato C Render B.JPG\"/><figcaption><span class=\"caption-main\">Mockup</span></figcaption></figure>"
+          "position": "65% 100%"
         },
         {
           "kind": "image",
@@ -352,7 +217,7 @@
           "alt": "",
           "caption": "Mockup testing",
           "credit": "",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 30% 70%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/File_003_edit.jpg\"/><figcaption><span class=\"caption-main\">Mockup testing</span></figcaption></figure>"
+          "position": "30% 70%"
         },
         {
           "kind": "image",
@@ -360,7 +225,7 @@
           "alt": "",
           "caption": "Mockup CAD model",
           "credit": "",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 76% 58%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Lathe Cutting Mech G Render C_crop.jpg\"/><figcaption><span class=\"caption-main\">Mockup CAD model</span></figcaption></figure>"
+          "position": "76% 58%"
         },
         {
           "kind": "image",
@@ -368,402 +233,133 @@
           "alt": "",
           "caption": "Designing the motor rotation",
           "credit": "",
-          "html": "<figure class=\"project-media\" style=\"--media-position: 100% 45%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/File_005_edit.jpg\"/><figcaption><span class=\"caption-main\">Designing the motor rotation</span></figcaption></figure>"
+          "position": "100% 45%"
         }
       ],
       "visible": true,
       "expanded": false,
-      "legacyHtml": "<details class=\"project\" id=\"collapseBolt\"><summary class=\"project-header\"><span class=\"project-header-bg\" style=\"background-image: url(&#x27;images/Bolt/Bolt Final C Render A_sd.jpg&#x27;); background-position: 0% 55%; background-size: 125%\" aria-hidden=\"true\"></span><span class=\"project-header-shade\" aria-hidden=\"true\"></span><span class=\"project-header-text\">Prototype Low-Cost Motorized Peeler</span><span class=\"project-chevron-wrap\" aria-hidden=\"true\"><span class=\"project-chevron\"></span></span></summary><div class=\"project-body\"><h2>Trees That Feed Foundation</h2><p class=\"lead\">with Northwestern University</p><hr class=\"project-title-divider\"><div class=\"project-prose\"><p class=\"card-text\" style=\"hyphens:auto;\">​<strong>A common sight in Jamaica and Haiti, breadfruit</strong> can potentially strengthen food security and en&shy;tre&shy;pre&shy;neurial ventures on the island. ​The <a href=\"http://treesthatfeed.org/\" target=\"_blank\" rel=\"noopener\">Trees That Feed Foundation</a> aims to improve the throughput of breadfruit processing, which involves peeling, shredding, drying, and packaging.<br><br>The \"Bolt\", our motorized prototype peeler, removes the breadfruit's sticky, rough skin in as little as 10 seconds compared to up to a minute with hand-peeling. For material selection and complexity of assembly, local manu&shy;fac&shy;tur&shy;ing and supply costs as well as an alternative manual operation feature were taken into consideration.</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2016</p><p class=\"card-text\"><strong>Lead</strong><br>&rtrif; Mockup builds, computer modeling design and file management, material procurement, and construction of a prototype deliverable to the client and end users</p><p class=\"card-text\"><strong>Contributor</strong><br>&rtrif; User interviews, user testing and performance testing</p><p class=\"card-text\"><strong>Also...</strong> We were featured in <a href=\"http://ideas.northwestern.edu/projects/breadfruit-peeler.html\" target=\"_blank\" rel=\"noopener\">Northwestern Ideas: Breadfruit Peeler</a>.</p><p class=\"card-text\"><strong>For more on breadfruit's role</strong> in a changing world, refer to <a href=\"https://news.northwestern.edu/stories/2022/08/climate-resilient-breadfruit-might-be-the-food-of-the-future\" target=\"_blank\" rel=\"noopener\">an August 2022 study</a> between the university and the Chicago Botanic Garden.</p></div><div class=\"project-gallery\" data-justified-gallery><figure class=\"project-media\"><video muted autoplay loop playsinline preload=\"metadata\" poster=\"images/Bolt/Copy of Bike Peeler B Render A_edit.jpg\"><source src=\"video/Bolt/Bike Peeler B E 896x480.mp4\" type=\"video/mp4\"></video><figcaption><span class=\"caption-main\">Early mockup motion simulation</span><small>SolidWorks</small></figcaption></figure><figure class=\"project-media\"><video muted autoplay loop playsinline preload=\"metadata\" poster=\"images/Bolt/IMG_4406_Moment_Moment.jpg\"><source src=\"video/Bolt/IMG_4403_header.mp4\" type=\"video/mp4\"></video><figcaption><span class=\"caption-main\">User testing of mockup cutting edge</span></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 50% 10%\"><img src=\"images/Bolt/20160726_144633_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Final prototype</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Bolt/Bolt Final C Render A_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Final prototype rendering</span><small>SolidWorks</small></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 50% 20%\"><img src=\"images/Bolt/DSGN 384 Initial Sketches_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Initial brainstorming</span></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 60% 50%\"><img src=\"images/Bolt/Bike Peeler Render A.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Early mockup</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Bolt/IMG_0088_crop.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Montego Bay, Jamaica</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/Bolt/File_000_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Jamaica</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/Bolt/IMG_3647_editB.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Jamaica</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/Bolt/IMG_3619_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><small>A homecooked meal by our host, including breadfruit-flour bread and fried breadfruit slices.</small></figcaption></figure><figure class=\"project-media media-zoom-ubertato\" style=\"--media-position: 65% 100%\"><img src=\"images/Bolt/Ubertato C Render B.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Mockup</span></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 30% 70%\"><img src=\"images/Bolt/File_003_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Mockup testing</span></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 76% 58%\"><img src=\"images/Bolt/Lathe Cutting Mech G Render C_crop.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Mockup CAD model</span></figcaption></figure><figure class=\"project-media\" style=\"--media-position: 100% 45%\"><img src=\"images/Bolt/File_005_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Designing the motor rotation</span></figcaption></figure></div></div></details>",
-      "separator": "\n",
-      "baseline": {
-        "id": "collapseBolt",
-        "title": "Prototype Low-Cost Motorized Peeler",
-        "heading": "Trees That Feed Foundation",
-        "context": "with Northwestern University",
-        "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto;\">​<strong>A common sight in Jamaica and Haiti, breadfruit</strong> can potentially strengthen food security and en­tre­pre­neurial ventures on the island. ​The <a href=\"http://treesthatfeed.org/\" rel=\"noopener\" target=\"_blank\">Trees That Feed Foundation</a> aims to improve the throughput of breadfruit processing, which involves peeling, shredding, drying, and packaging.<br/><br/>The \"Bolt\", our motorized prototype peeler, removes the breadfruit's sticky, rough skin in as little as 10 seconds compared to up to a minute with hand-peeling. For material selection and complexity of assembly, local manu­fac­tur­ing and supply costs as well as an alternative manual operation feature were taken into consideration.</p><p class=\"card-text\"><strong>Year</strong> ▸ 2016</p><p class=\"card-text\"><strong>Lead</strong><br/>▸ Mockup builds, computer modeling design and file management, material procurement, and construction of a prototype deliverable to the client and end users</p><p class=\"card-text\"><strong>Contributor</strong><br/>▸ User interviews, user testing and performance testing</p><p class=\"card-text\"><strong>Also...</strong> We were featured in <a href=\"http://ideas.northwestern.edu/projects/breadfruit-peeler.html\" rel=\"noopener\" target=\"_blank\">Northwestern Ideas: Breadfruit Peeler</a>.</p><p class=\"card-text\"><strong>For more on breadfruit's role</strong> in a changing world, refer to <a href=\"https://news.northwestern.edu/stories/2022/08/climate-resilient-breadfruit-might-be-the-food-of-the-future\" rel=\"noopener\" target=\"_blank\">an August 2022 study</a> between the university and the Chicago Botanic Garden.</p>",
-        "cover": "images/Bolt/Bolt Final C Render A_sd.jpg",
-        "coverPosition": "0% 55%",
-        "media": [
-          {
-            "kind": "video",
-            "src": "video/Bolt/Bike Peeler B E 896x480.mp4",
-            "alt": "",
-            "caption": "Early mockup motion simulation",
-            "credit": "SolidWorks",
-            "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" poster=\"images/Bolt/Copy of Bike Peeler B Render A_edit.jpg\" preload=\"metadata\"><source src=\"video/Bolt/Bike Peeler B E 896x480.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">Early mockup motion simulation</span><small>SolidWorks</small></figcaption></figure>"
-          },
-          {
-            "kind": "video",
-            "src": "video/Bolt/IMG_4403_header.mp4",
-            "alt": "",
-            "caption": "User testing of mockup cutting edge",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" poster=\"images/Bolt/IMG_4406_Moment_Moment.jpg\" preload=\"metadata\"><source src=\"video/Bolt/IMG_4403_header.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">User testing of mockup cutting edge</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/20160726_144633_edit.jpg",
-            "alt": "",
-            "caption": "Final prototype",
-            "credit": "",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 50% 10%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/20160726_144633_edit.jpg\"/><figcaption><span class=\"caption-main\">Final prototype</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/Bolt Final C Render A_sd.jpg",
-            "alt": "",
-            "caption": "Final prototype rendering",
-            "credit": "SolidWorks",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Bolt Final C Render A_sd.jpg\"/><figcaption><span class=\"caption-main\">Final prototype rendering</span><small>SolidWorks</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/DSGN 384 Initial Sketches_sd.jpg",
-            "alt": "",
-            "caption": "Initial brainstorming",
-            "credit": "",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 50% 20%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/DSGN 384 Initial Sketches_sd.jpg\"/><figcaption><span class=\"caption-main\">Initial brainstorming</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/Bike Peeler Render A.JPG",
-            "alt": "",
-            "caption": "Early mockup",
-            "credit": "",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 60% 50%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Bike Peeler Render A.JPG\"/><figcaption><span class=\"caption-main\">Early mockup</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/IMG_0088_crop.jpg",
-            "alt": "",
-            "caption": "A field trip to our end users",
-            "credit": "Montego Bay, Jamaica",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/IMG_0088_crop.jpg\"/><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Montego Bay, Jamaica</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/File_000_edit.jpg",
-            "alt": "",
-            "caption": "A field trip to our end users",
-            "credit": "Jamaica",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/File_000_edit.jpg\"/><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Jamaica</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/IMG_3647_editB.jpg",
-            "alt": "",
-            "caption": "A field trip to our end users",
-            "credit": "Jamaica",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/IMG_3647_editB.jpg\"/><figcaption><span class=\"caption-main\">A field trip to our end users</span><small>Jamaica</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/IMG_3619_edit.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "A homecooked meal by our host, including breadfruit-flour bread and fried breadfruit slices.",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/IMG_3619_edit.jpg\"/><figcaption><small>A homecooked meal by our host, including breadfruit-flour bread and fried breadfruit slices.</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/Ubertato C Render B.JPG",
-            "alt": "",
-            "caption": "Mockup",
-            "credit": "",
-            "html": "<figure class=\"project-media media-zoom-ubertato\" style=\"--media-position: 65% 100%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Ubertato C Render B.JPG\"/><figcaption><span class=\"caption-main\">Mockup</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/File_003_edit.jpg",
-            "alt": "",
-            "caption": "Mockup testing",
-            "credit": "",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 30% 70%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/File_003_edit.jpg\"/><figcaption><span class=\"caption-main\">Mockup testing</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/Lathe Cutting Mech G Render C_crop.jpg",
-            "alt": "",
-            "caption": "Mockup CAD model",
-            "credit": "",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 76% 58%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/Lathe Cutting Mech G Render C_crop.jpg\"/><figcaption><span class=\"caption-main\">Mockup CAD model</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Bolt/File_005_edit.jpg",
-            "alt": "",
-            "caption": "Designing the motor rotation",
-            "credit": "",
-            "html": "<figure class=\"project-media\" style=\"--media-position: 100% 45%\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Bolt/File_005_edit.jpg\"/><figcaption><span class=\"caption-main\">Designing the motor rotation</span></figcaption></figure>"
-          }
-        ],
-        "visible": true,
-        "expanded": false
-      }
+      "hero": false
     },
     {
       "id": "collapseSegal-OutletCovers",
       "title": "Redesigned Floor Outlet Covers",
       "heading": "Segal Design Institute",
       "context": "at Northwestern University",
-      "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto\">​<strong>At the time, the Segal building was approaching</strong> its 10th year of operation. One of the signs of age were the worn-out and broken floor power outlet covers, part of a more unusual below-floor utilities design meant for more flexible classroom layouts and efficient HVAC. As a first step, the school procured some in-house solutions.​​</p><p class=\"card-text\"><strong>Year</strong> ▸ 2015</p><p class=\"card-text\"><strong>Lead</strong> ▸ Ideation, product design, materials selection and prototype building</p><p class=\"card-text\"><strong>Contributor</strong> ▸ User interviews, user testing and performance testing</p>",
+      "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto\">​<strong>At the time, the Segal building was approaching</strong> its 10th year of operation. One of the signs of age were the worn-out and broken floor power outlet covers, part of a more unusual below-floor utilities design meant for more flexible classroom layouts and efficient HVAC. As a first step, the school procured some in-house solutions.​​</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2015</p><p class=\"card-text\"><strong>Lead</strong> &rtrif; Ideation, product design, materials selection and prototype building</p><p class=\"card-text\"><strong>Contributor</strong> &rtrif; User interviews, user testing and performance testing</p>",
       "cover": "images/ford-motor-company-engineering-design-center.jpg",
       "coverPosition": "50% 65%",
+      "coverSize": "100%",
       "media": [
         {
           "kind": "image",
           "src": "images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg",
           "alt": "",
           "caption": "The Segal building",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg\"/><figcaption><span class=\"caption-main\">The Segal building</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Feature0191_11x.jpg",
           "alt": "",
           "caption": "",
-          "credit": "Segal lecture hall. Note the floor power outlets and ventilation grills.",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Feature0191_11x.jpg\"/><figcaption><small>Segal lecture hall. Note the floor power outlets and ventilation grills.</small></figcaption></figure>"
+          "credit": "Segal lecture hall. Note the floor power outlets and ventilation grills."
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/20150702_141023[1]_editB.jpg",
           "alt": "",
           "caption": "Floor outlet interior",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/20150702_141023[1]_editB.jpg\"/><figcaption><span class=\"caption-main\">Floor outlet interior</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/20150702_141206[1]_edit.jpg",
           "alt": "",
           "caption": "Intact original floor outlet cover",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/20150702_141206[1]_edit.jpg\"/><figcaption><span class=\"caption-main\">Intact original floor outlet cover</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/IMG_2697_edit.jpg",
           "alt": "",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2697_edit.jpg\"/></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/IMG_2831_edit.jpg",
           "alt": "",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2831_edit.jpg\"/></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/Outlet H Assembly Render B_edit.jpg",
           "alt": "",
           "caption": "SolidWorks Photoview rendering of prototype",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/Outlet H Assembly Render B_edit.jpg\"/><figcaption><span class=\"caption-main\">SolidWorks Photoview rendering of prototype</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/IMG_2903_edit_sd.jpg",
           "alt": "",
           "caption": "",
-          "credit": "CNC plywood prototype, after a successful 6-month test run in one of the classrooms.",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2903_edit_sd.jpg\"/><figcaption><small>CNC plywood prototype, after a successful 6-month test run in one of the classrooms.</small></figcaption></figure>"
+          "credit": "CNC plywood prototype, after a successful 6-month test run in one of the classrooms."
         }
       ],
       "visible": true,
       "expanded": false,
-      "legacyHtml": "<details class=\"project\" id=\"collapseSegal-OutletCovers\"><summary class=\"project-header\"><span class=\"project-header-bg\" style=\"background-image: url(&#x27;images/ford-motor-company-engineering-design-center.jpg&#x27;); background-position: 50% 65%; background-size: 100%\" aria-hidden=\"true\"></span><span class=\"project-header-shade\" aria-hidden=\"true\"></span><span class=\"project-header-text\">Redesigned Floor Outlet Covers</span><span class=\"project-chevron-wrap\" aria-hidden=\"true\"><span class=\"project-chevron\"></span></span></summary><div class=\"project-body\"><h2>Segal Design Institute</h2><p class=\"lead\">at Northwestern University</p><hr class=\"project-title-divider\"><div class=\"project-prose\"><p class=\"card-text\" style=\"hyphens:auto\">​<strong>At the time, the Segal building was approaching</strong> its 10th year of operation. One of the signs of age were the worn-out and broken floor power outlet covers, part of a more unusual below-floor utilities design meant for more flexible classroom layouts and efficient HVAC. As a first step, the school procured some in-house solutions.​​</p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2015</p><p class=\"card-text\"><strong>Lead</strong> &rtrif; Ideation, product design, materials selection and prototype building</p><p class=\"card-text\"><strong>Contributor</strong> &rtrif; User interviews, user testing and performance testing</p></div><div class=\"project-gallery\" data-justified-gallery><figure class=\"project-media\"><img src=\"images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">The Segal building</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Feature0191_11x.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><small>Segal lecture hall. Note the floor power outlets and ventilation grills.</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/20150702_141023[1]_editB.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Floor outlet interior</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/20150702_141206[1]_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Intact original floor outlet cover</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/IMG_2697_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/IMG_2831_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/Outlet H Assembly Render B_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">SolidWorks Photoview rendering of prototype</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/IMG_2903_edit_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><small>CNC plywood prototype, after a successful 6-month test run in one of the classrooms.</small></figcaption></figure></div></div></details>",
-      "separator": "\n",
-      "baseline": {
-        "id": "collapseSegal-OutletCovers",
-        "title": "Redesigned Floor Outlet Covers",
-        "heading": "Segal Design Institute",
-        "context": "at Northwestern University",
-        "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto\">​<strong>At the time, the Segal building was approaching</strong> its 10th year of operation. One of the signs of age were the worn-out and broken floor power outlet covers, part of a more unusual below-floor utilities design meant for more flexible classroom layouts and efficient HVAC. As a first step, the school procured some in-house solutions.​​</p><p class=\"card-text\"><strong>Year</strong> ▸ 2015</p><p class=\"card-text\"><strong>Lead</strong> ▸ Ideation, product design, materials selection and prototype building</p><p class=\"card-text\"><strong>Contributor</strong> ▸ User interviews, user testing and performance testing</p>",
-        "cover": "images/ford-motor-company-engineering-design-center.jpg",
-        "coverPosition": "50% 65%",
-        "media": [
-          {
-            "kind": "image",
-            "src": "images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg",
-            "alt": "",
-            "caption": "The Segal building",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg\"/><figcaption><span class=\"caption-main\">The Segal building</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Feature0191_11x.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "Segal lecture hall. Note the floor power outlets and ventilation grills.",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Feature0191_11x.jpg\"/><figcaption><small>Segal lecture hall. Note the floor power outlets and ventilation grills.</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/20150702_141023[1]_editB.jpg",
-            "alt": "",
-            "caption": "Floor outlet interior",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/20150702_141023[1]_editB.jpg\"/><figcaption><span class=\"caption-main\">Floor outlet interior</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/20150702_141206[1]_edit.jpg",
-            "alt": "",
-            "caption": "Intact original floor outlet cover",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/20150702_141206[1]_edit.jpg\"/><figcaption><span class=\"caption-main\">Intact original floor outlet cover</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/IMG_2697_edit.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2697_edit.jpg\"/></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/IMG_2831_edit.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2831_edit.jpg\"/></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/Outlet H Assembly Render B_edit.jpg",
-            "alt": "",
-            "caption": "SolidWorks Photoview rendering of prototype",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/Outlet H Assembly Render B_edit.jpg\"/><figcaption><span class=\"caption-main\">SolidWorks Photoview rendering of prototype</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/IMG_2903_edit_sd.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "CNC plywood prototype, after a successful 6-month test run in one of the classrooms.",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2903_edit_sd.jpg\"/><figcaption><small>CNC plywood prototype, after a successful 6-month test run in one of the classrooms.</small></figcaption></figure>"
-          }
-        ],
-        "visible": true,
-        "expanded": false
-      }
+      "hero": false
     },
     {
       "id": "collapseSegal-WarmingPad",
       "title": "Infant Surgery Warming Pad Prototype",
-      "heading": "Segal Design Institute &amp; University of Ibadan",
+      "heading": "Segal Design Institute & University of Ibadan",
       "context": "",
-      "bodyHtml": "<div class=\"row my-2\">\n<div class=\"col-12 col-xl-6\">\n<p class=\"card-text\" style=\"hyphens:auto\">​​<strong>In Lagos, Nigeria, some infants are unable </strong>to undergo gastrointestinal surgery in a timely fashion due to financial and infrastructural complications. To address this need, doctors at the University of Ibadan are looking into alternatives to high-end operating room equipment. One particular concern was high heat loss from the patient's body during an operation, with practical or inexpensive solutions few to none.</p>\n</div>\n<div class=\"col-12 col-xl-6\">\n<p class=\"card-text\" style=\"hyphens:auto\">The prototype Infant Warming Pad is a low-cost, mass-manufacturable, and sanitary closed-system bed that maintains an infant's body temperature with convective heat during surgery.</p>\n</div>\n</div><p><br/></p><p class=\"card-text\"><strong>Year</strong> ▸ 2015</p><p class=\"card-text\"><strong>Lead</strong> ▸ Power supply unit designing and building</p><p class=\"card-text\"><strong>Contributor</strong> ▸ Hardware manufacturing &amp; assembly, quality verification</p>",
+      "bodyHtml": "<div class=\"row my-2\">\n            <div class=\"col-12 col-xl-6\">\n              <p class=\"card-text\" style=\"hyphens:auto\">​​<strong>In Lagos, Nigeria, some infants are unable </strong>to undergo gastrointestinal surgery in a timely fashion due to financial and infrastructural complications. To address this need, doctors at the University of Ibadan are looking into alternatives to high-end operating room equipment. One particular concern was high heat loss from the patient's body during an operation, with practical or inexpensive solutions few to none.</p>\n            </div>\n            <div class=\"col-12 col-xl-6\">\n              <p class=\"card-text\" style=\"hyphens:auto\">The prototype Infant Warming Pad is a low-cost, mass-manufacturable, and sanitary closed-system bed that maintains an infant's body temperature with convective heat during surgery.</p>\n\n            </div>\n          </div><p><br></p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2015</p><p class=\"card-text\"><strong>Lead</strong> &rtrif; Power supply unit designing and building</p><p class=\"card-text\"><strong>Contributor</strong> &rtrif; Hardware manufacturing &amp; assembly, quality verification</p>",
       "cover": "images/Segal Intern/10_edit_sd.jpg",
       "coverPosition": "0% 55%",
+      "coverSize": "100%",
       "media": [
         {
           "kind": "image",
           "src": "images/Segal Intern/IMG_2919_editB.jpg",
           "alt": "",
           "caption": "Assembled Prototype",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2919_editB.jpg\"/><figcaption><span class=\"caption-main\">Assembled Prototype</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/IMG_2921_edit.jpg",
           "alt": "",
           "caption": "Power supply internals",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2921_edit.jpg\"/><figcaption><span class=\"caption-main\">Power supply internals</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/10_edit_sd.jpg",
           "alt": "",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/10_edit_sd.jpg\"/></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg",
           "alt": "",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg\"/></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Segal Intern/Working GUI rotate_edit.jpg",
           "alt": "",
           "caption": "",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/Working GUI rotate_edit.jpg\"/></figure>"
+          "credit": ""
         }
       ],
       "visible": true,
       "expanded": false,
-      "legacyHtml": "<details class=\"project\" id=\"collapseSegal-WarmingPad\"><summary class=\"project-header\"><span class=\"project-header-bg\" style=\"background-image: url(&#x27;images/Segal Intern/10_edit_sd.jpg&#x27;); background-position: 0% 55%; background-size: 100%\" aria-hidden=\"true\"></span><span class=\"project-header-shade\" aria-hidden=\"true\"></span><span class=\"project-header-text\">Infant Surgery Warming Pad Prototype</span><span class=\"project-chevron-wrap\" aria-hidden=\"true\"><span class=\"project-chevron\"></span></span></summary><div class=\"project-body\"><h2>Segal Design Institute &amp;amp; University of Ibadan</h2><hr class=\"project-title-divider\"><div class=\"project-prose\"><div class=\"row my-2\">\n            <div class=\"col-12 col-xl-6\">\n              <p class=\"card-text\" style=\"hyphens:auto\">​​<strong>In Lagos, Nigeria, some infants are unable </strong>to undergo gastrointestinal surgery in a timely fashion due to financial and infrastructural complications. To address this need, doctors at the University of Ibadan are looking into alternatives to high-end operating room equipment. One particular concern was high heat loss from the patient's body during an operation, with practical or inexpensive solutions few to none.</p>\n            </div>\n            <div class=\"col-12 col-xl-6\">\n              <p class=\"card-text\" style=\"hyphens:auto\">The prototype Infant Warming Pad is a low-cost, mass-manufacturable, and sanitary closed-system bed that maintains an infant's body temperature with convective heat during surgery.</p>\n              \n            </div>\n          </div><p><br></p><p class=\"card-text\"><strong>Year</strong> &rtrif; 2015</p><p class=\"card-text\"><strong>Lead</strong> &rtrif; Power supply unit designing and building</p><p class=\"card-text\"><strong>Contributor</strong> &rtrif; Hardware manufacturing &amp; assembly, quality verification</p></div><div class=\"project-gallery\" data-justified-gallery><figure class=\"project-media\"><img src=\"images/Segal Intern/IMG_2919_editB.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Assembled Prototype</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/IMG_2921_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Power supply internals</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/10_edit_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"></figure><figure class=\"project-media\"><img src=\"images/Segal Intern/Working GUI rotate_edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"></figure></div></div></details>",
-      "separator": "\n",
-      "baseline": {
-        "id": "collapseSegal-WarmingPad",
-        "title": "Infant Surgery Warming Pad Prototype",
-        "heading": "Segal Design Institute &amp; University of Ibadan",
-        "context": "",
-        "bodyHtml": "<div class=\"row my-2\">\n<div class=\"col-12 col-xl-6\">\n<p class=\"card-text\" style=\"hyphens:auto\">​​<strong>In Lagos, Nigeria, some infants are unable </strong>to undergo gastrointestinal surgery in a timely fashion due to financial and infrastructural complications. To address this need, doctors at the University of Ibadan are looking into alternatives to high-end operating room equipment. One particular concern was high heat loss from the patient's body during an operation, with practical or inexpensive solutions few to none.</p>\n</div>\n<div class=\"col-12 col-xl-6\">\n<p class=\"card-text\" style=\"hyphens:auto\">The prototype Infant Warming Pad is a low-cost, mass-manufacturable, and sanitary closed-system bed that maintains an infant's body temperature with convective heat during surgery.</p>\n</div>\n</div><p><br/></p><p class=\"card-text\"><strong>Year</strong> ▸ 2015</p><p class=\"card-text\"><strong>Lead</strong> ▸ Power supply unit designing and building</p><p class=\"card-text\"><strong>Contributor</strong> ▸ Hardware manufacturing &amp; assembly, quality verification</p>",
-        "cover": "images/Segal Intern/10_edit_sd.jpg",
-        "coverPosition": "0% 55%",
-        "media": [
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/IMG_2919_editB.jpg",
-            "alt": "",
-            "caption": "Assembled Prototype",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2919_editB.jpg\"/><figcaption><span class=\"caption-main\">Assembled Prototype</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/IMG_2921_edit.jpg",
-            "alt": "",
-            "caption": "Power supply internals",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/IMG_2921_edit.jpg\"/><figcaption><span class=\"caption-main\">Power supply internals</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/10_edit_sd.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/10_edit_sd.jpg\"/></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg\"/></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Segal Intern/Working GUI rotate_edit.jpg",
-            "alt": "",
-            "caption": "",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Segal Intern/Working GUI rotate_edit.jpg\"/></figure>"
-          }
-        ],
-        "visible": true,
-        "expanded": false
-      }
+      "hero": false
     },
     {
       "id": "collapseSombrero",
@@ -773,137 +369,61 @@
       "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto\">​<strong>As part of a Chicago Public Schools STEM outreach program to promote engineering,</strong> a group of fourth graders tasked us with toys to manufacture using polypropylene. Applying our knowledge of color mixing and part size in an injection mold process, our team separated one toy, a \"candy sombrero\" figure, into three parts for assembly: the sombrero, the main body, and the mustache.</p>",
       "cover": "images/Sombrero/20160314_155323.jpg",
       "coverPosition": "50% 26%",
+      "coverSize": "100%",
       "media": [
         {
           "kind": "video",
           "src": "video/Sombrero/Core Manufacture 1.mp4",
           "alt": "",
           "caption": "Simulation of computer-aided manufacturing instruction code to CNC mill",
-          "credit": "Siemens NX",
-          "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/Sombrero/Core Manufacture 1.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">Simulation of computer-aided manufacturing instruction code to CNC mill</span><small>Siemens NX</small></figcaption></figure>"
+          "credit": "Siemens NX"
         },
         {
           "kind": "image",
           "src": "images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg",
           "alt": "",
           "caption": "Final prototype (polypropylene)",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg\"/><figcaption><span class=\"caption-main\">Final prototype (polypropylene)</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Sombrero/20160314_155323_sd.jpg",
           "alt": "",
           "caption": "Final prototype, production run 2",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/20160314_155323_sd.jpg\"/><figcaption><span class=\"caption-main\">Final prototype, production run 2</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Sombrero/IMG_3201_editB_sd.jpg",
           "alt": "",
           "caption": "Initial drawing from students",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/IMG_3201_editB_sd.jpg\"/><figcaption><span class=\"caption-main\">Initial drawing from students</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Sombrero/IMG_0547.JPG",
           "alt": "",
           "caption": "Initial prototype production run",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/IMG_0547.JPG\"/><figcaption><span class=\"caption-main\">Initial prototype production run</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Sombrero/20160308_175627_sd.jpg",
           "alt": "",
           "caption": "Initial prototype core mold",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/20160308_175627_sd.jpg\"/><figcaption><span class=\"caption-main\">Initial prototype core mold</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/Sombrero/core.jpg",
           "alt": "",
           "caption": "Sombrero hat core and cavity molds",
-          "credit": "Siemens NX",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/core.jpg\"/><figcaption><span class=\"caption-main\">Sombrero hat core and cavity molds</span><small>Siemens NX</small></figcaption></figure>"
+          "credit": "Siemens NX"
         }
       ],
       "visible": true,
       "expanded": false,
-      "legacyHtml": "<details class=\"project\" id=\"collapseSombrero\"><summary class=\"project-header\"><span class=\"project-header-bg\" style=\"background-image: url(&#x27;images/Sombrero/20160314_155323.jpg&#x27;); background-position: 50% 26%; background-size: 100%\" aria-hidden=\"true\"></span><span class=\"project-header-shade\" aria-hidden=\"true\"></span><span class=\"project-header-text\">Computer-Aided Manufactured Toy</span><span class=\"project-chevron-wrap\" aria-hidden=\"true\"><span class=\"project-chevron\"></span></span></summary><div class=\"project-body\"><h2>CPS STEM Outreach Program</h2><p class=\"lead\">with Northwestern University</p><hr class=\"project-title-divider\"><div class=\"project-prose\"><p class=\"card-text\" style=\"hyphens:auto\">​<strong>As part of a Chicago Public Schools STEM outreach program to promote engineering,</strong> a group of fourth graders tasked us with toys to manufacture using polypropylene. Applying our knowledge of color mixing and part size in an injection mold process, our team separated one toy, a \"candy sombrero\" figure, into three parts for assembly: the sombrero, the main body, and the mustache.</p></div><div class=\"project-gallery\" data-justified-gallery><figure class=\"project-media\"><video muted autoplay loop playsinline preload=\"metadata\"><source src=\"video/Sombrero/Core Manufacture 1.mp4\" type=\"video/mp4\"></video><figcaption><span class=\"caption-main\">Simulation of computer-aided manufacturing instruction code to CNC mill</span><small>Siemens NX</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Final prototype (polypropylene)</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Sombrero/20160314_155323_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Final prototype, production run 2</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Sombrero/IMG_3201_editB_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Initial drawing from students</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Sombrero/IMG_0547.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Initial prototype production run</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Sombrero/20160308_175627_sd.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Initial prototype core mold</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/Sombrero/core.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Sombrero hat core and cavity molds</span><small>Siemens NX</small></figcaption></figure></div></div></details>",
-      "separator": "\n",
-      "baseline": {
-        "id": "collapseSombrero",
-        "title": "Computer-Aided Manufactured Toy",
-        "heading": "CPS STEM Outreach Program",
-        "context": "with Northwestern University",
-        "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto\">​<strong>As part of a Chicago Public Schools STEM outreach program to promote engineering,</strong> a group of fourth graders tasked us with toys to manufacture using polypropylene. Applying our knowledge of color mixing and part size in an injection mold process, our team separated one toy, a \"candy sombrero\" figure, into three parts for assembly: the sombrero, the main body, and the mustache.</p>",
-        "cover": "images/Sombrero/20160314_155323.jpg",
-        "coverPosition": "50% 26%",
-        "media": [
-          {
-            "kind": "video",
-            "src": "video/Sombrero/Core Manufacture 1.mp4",
-            "alt": "",
-            "caption": "Simulation of computer-aided manufacturing instruction code to CNC mill",
-            "credit": "Siemens NX",
-            "html": "<figure class=\"project-media\"><video autoplay=\"\" loop=\"\" muted=\"\" playsinline=\"\" preload=\"metadata\"><source src=\"video/Sombrero/Core Manufacture 1.mp4\" type=\"video/mp4\"/></video><figcaption><span class=\"caption-main\">Simulation of computer-aided manufacturing instruction code to CNC mill</span><small>Siemens NX</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg",
-            "alt": "",
-            "caption": "Final prototype (polypropylene)",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg\"/><figcaption><span class=\"caption-main\">Final prototype (polypropylene)</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Sombrero/20160314_155323_sd.jpg",
-            "alt": "",
-            "caption": "Final prototype, production run 2",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/20160314_155323_sd.jpg\"/><figcaption><span class=\"caption-main\">Final prototype, production run 2</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Sombrero/IMG_3201_editB_sd.jpg",
-            "alt": "",
-            "caption": "Initial drawing from students",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/IMG_3201_editB_sd.jpg\"/><figcaption><span class=\"caption-main\">Initial drawing from students</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Sombrero/IMG_0547.JPG",
-            "alt": "",
-            "caption": "Initial prototype production run",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/IMG_0547.JPG\"/><figcaption><span class=\"caption-main\">Initial prototype production run</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Sombrero/20160308_175627_sd.jpg",
-            "alt": "",
-            "caption": "Initial prototype core mold",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/20160308_175627_sd.jpg\"/><figcaption><span class=\"caption-main\">Initial prototype core mold</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/Sombrero/core.jpg",
-            "alt": "",
-            "caption": "Sombrero hat core and cavity molds",
-            "credit": "Siemens NX",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/Sombrero/core.jpg\"/><figcaption><span class=\"caption-main\">Sombrero hat core and cavity molds</span><small>Siemens NX</small></figcaption></figure>"
-          }
-        ],
-        "visible": true,
-        "expanded": false
-      }
+      "hero": false
     },
     {
       "id": "collapseClipIt",
@@ -913,153 +433,68 @@
       "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto\">​<strong>The Clip-It prevents</strong> a trash bag from falling into a trash can, which dirties the can and complicates usage. It was developed using the human-centered design approach: user research testing, patent research, establishment of a white space, and an iterative design process. Prototypes were fabricated using 3D printing and fused deposition modeling.</p>",
       "cover": "images/HCPD/13410515_10154350748446414_1352083497_o.jpg",
       "coverPosition": "0% 35%",
+      "coverSize": "100%",
       "media": [
         {
           "kind": "image",
           "src": "images/HCPD/Mech Clip H Render A.JPG",
           "alt": "",
           "caption": "Prototype rendering",
-          "credit": "SolidWorks Photoview 360",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip H Render A.JPG\"/><figcaption><span class=\"caption-main\">Prototype rendering</span><small>SolidWorks Photoview 360</small></figcaption></figure>"
+          "credit": "SolidWorks Photoview 360"
         },
         {
           "kind": "image",
           "src": "images/HCPD/IMG_4553.JPG",
           "alt": "",
           "caption": "Stress testing",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/IMG_4553.JPG\"/><figcaption><span class=\"caption-main\">Stress testing</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/HCPD/IMG_4540.JPG",
           "alt": "",
           "caption": "Stress testing",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/IMG_4540.JPG\"/><figcaption><span class=\"caption-main\">Stress testing</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/HCPD/Mech Clip Trashed H Render A edit.jpg",
           "alt": "",
           "caption": "Prototype environment rendering",
-          "credit": "SolidWorks",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip Trashed H Render A edit.jpg\"/><figcaption><span class=\"caption-main\">Prototype environment rendering</span><small>SolidWorks</small></figcaption></figure>"
+          "credit": "SolidWorks"
         },
         {
           "kind": "image",
           "src": "images/HCPD/13410515_10154350748446414_1352083497_o.jpg",
           "alt": "",
           "caption": "Assembled prototypes",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/13410515_10154350748446414_1352083497_o.jpg\"/><figcaption><span class=\"caption-main\">Assembled prototypes</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/HCPD/FINAL PRESENTATION (1) b.jpg",
           "alt": "",
           "caption": "Mockups/Iterations",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/FINAL PRESENTATION (1) b.jpg\"/><figcaption><span class=\"caption-main\">Mockups/Iterations</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/HCPD/Mech Clip H 2.JPG",
           "alt": "",
           "caption": "Prototype draft, spring arm",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip H 2.JPG\"/><figcaption><span class=\"caption-main\">Prototype draft, spring arm</span></figcaption></figure>"
+          "credit": ""
         },
         {
           "kind": "image",
           "src": "images/HCPD/Mech Clip H.JPG",
           "alt": "",
           "caption": "Prototype draft, parts assembly",
-          "credit": "",
-          "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip H.JPG\"/><figcaption><span class=\"caption-main\">Prototype draft, parts assembly</span></figcaption></figure>"
+          "credit": ""
         }
       ],
       "visible": true,
       "expanded": false,
-      "legacyHtml": "<details class=\"project\" id=\"collapseClipIt\"><summary class=\"project-header\"><span class=\"project-header-bg\" style=\"background-image: url(&#x27;images/HCPD/13410515_10154350748446414_1352083497_o.jpg&#x27;); background-position: 0% 35%; background-size: 100%\" aria-hidden=\"true\"></span><span class=\"project-header-shade\" aria-hidden=\"true\"></span><span class=\"project-header-text\">Quality-of-Life Kitchen Product</span><span class=\"project-chevron-wrap\" aria-hidden=\"true\"><span class=\"project-chevron\"></span></span></summary><div class=\"project-body\"><h2></h2><p class=\"lead\">Northwestern University</p><hr class=\"project-title-divider\"><div class=\"project-prose\"><p class=\"card-text\" style=\"hyphens:auto\">​<strong>The Clip-It prevents</strong> a trash bag from falling into a trash can, which dirties the can and complicates usage. It was developed using the human-centered design approach: user research testing, patent research, establishment of a white space, and an iterative design process. Prototypes were fabricated using 3D printing and fused deposition modeling.</p></div><div class=\"project-gallery\" data-justified-gallery><figure class=\"project-media\"><img src=\"images/HCPD/Mech Clip H Render A.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Prototype rendering</span><small>SolidWorks Photoview 360</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/HCPD/IMG_4553.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Stress testing</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/HCPD/IMG_4540.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Stress testing</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/HCPD/Mech Clip Trashed H Render A edit.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Prototype environment rendering</span><small>SolidWorks</small></figcaption></figure><figure class=\"project-media\"><img src=\"images/HCPD/13410515_10154350748446414_1352083497_o.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Assembled prototypes</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/HCPD/FINAL PRESENTATION (1) b.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Mockups/Iterations</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/HCPD/Mech Clip H 2.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Prototype draft, spring arm</span></figcaption></figure><figure class=\"project-media\"><img src=\"images/HCPD/Mech Clip H.JPG\" alt=\"\" loading=\"lazy\" decoding=\"async\"><figcaption><span class=\"caption-main\">Prototype draft, parts assembly</span></figcaption></figure></div></div></details>",
-      "separator": "",
-      "baseline": {
-        "id": "collapseClipIt",
-        "title": "Quality-of-Life Kitchen Product",
-        "heading": "",
-        "context": "Northwestern University",
-        "bodyHtml": "<p class=\"card-text\" style=\"hyphens:auto\">​<strong>The Clip-It prevents</strong> a trash bag from falling into a trash can, which dirties the can and complicates usage. It was developed using the human-centered design approach: user research testing, patent research, establishment of a white space, and an iterative design process. Prototypes were fabricated using 3D printing and fused deposition modeling.</p>",
-        "cover": "images/HCPD/13410515_10154350748446414_1352083497_o.jpg",
-        "coverPosition": "0% 35%",
-        "media": [
-          {
-            "kind": "image",
-            "src": "images/HCPD/Mech Clip H Render A.JPG",
-            "alt": "",
-            "caption": "Prototype rendering",
-            "credit": "SolidWorks Photoview 360",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip H Render A.JPG\"/><figcaption><span class=\"caption-main\">Prototype rendering</span><small>SolidWorks Photoview 360</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/HCPD/IMG_4553.JPG",
-            "alt": "",
-            "caption": "Stress testing",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/IMG_4553.JPG\"/><figcaption><span class=\"caption-main\">Stress testing</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/HCPD/IMG_4540.JPG",
-            "alt": "",
-            "caption": "Stress testing",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/IMG_4540.JPG\"/><figcaption><span class=\"caption-main\">Stress testing</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/HCPD/Mech Clip Trashed H Render A edit.jpg",
-            "alt": "",
-            "caption": "Prototype environment rendering",
-            "credit": "SolidWorks",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip Trashed H Render A edit.jpg\"/><figcaption><span class=\"caption-main\">Prototype environment rendering</span><small>SolidWorks</small></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/HCPD/13410515_10154350748446414_1352083497_o.jpg",
-            "alt": "",
-            "caption": "Assembled prototypes",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/13410515_10154350748446414_1352083497_o.jpg\"/><figcaption><span class=\"caption-main\">Assembled prototypes</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/HCPD/FINAL PRESENTATION (1) b.jpg",
-            "alt": "",
-            "caption": "Mockups/Iterations",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/FINAL PRESENTATION (1) b.jpg\"/><figcaption><span class=\"caption-main\">Mockups/Iterations</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/HCPD/Mech Clip H 2.JPG",
-            "alt": "",
-            "caption": "Prototype draft, spring arm",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip H 2.JPG\"/><figcaption><span class=\"caption-main\">Prototype draft, spring arm</span></figcaption></figure>"
-          },
-          {
-            "kind": "image",
-            "src": "images/HCPD/Mech Clip H.JPG",
-            "alt": "",
-            "caption": "Prototype draft, parts assembly",
-            "credit": "",
-            "html": "<figure class=\"project-media\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"images/HCPD/Mech Clip H.JPG\"/><figcaption><span class=\"caption-main\">Prototype draft, parts assembly</span></figcaption></figure>"
-          }
-        ],
-        "visible": true,
-        "expanded": false
-      }
+      "hero": false
     }
   ]
 }

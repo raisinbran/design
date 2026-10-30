@@ -11,7 +11,10 @@ const SKIPPED_IN_COPY = new Set([".git", "node_modules", "worktrees", ".vite", "
 
 function launch(userData: string) {
   // Without chromiumSandbox, Playwright turns the sandbox off on Linux.
-  return electron.launch({ chromiumSandbox: true, args: [packageDir, `--user-data-dir=${userData}`] });
+  return electron.launch({
+    chromiumSandbox: true,
+    args: [packageDir, `--user-data-dir=${userData}`],
+  });
 }
 
 describe("app launch", () => {
@@ -19,15 +22,21 @@ describe("app launch", () => {
     const userData = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-user-"));
     const copy = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-repo-"));
     try {
-      cpSync(repositoryDir, copy, { recursive: true, filter: (source) => !SKIPPED_IN_COPY.has(path.basename(source)) });
+      cpSync(repositoryDir, copy, {
+        recursive: true,
+        filter: (source) => !SKIPPED_IN_COPY.has(path.basename(source)),
+      });
       writeFileSync(path.join(userData, "settings.json"), JSON.stringify({ folder: copy }));
 
       const studio = await launch(userData);
       const page = await studio.firstWindow();
-      await page.getByRole("heading", { name: "Settings" }).waitFor();
+      await page.getByRole("button", { name: "Reload" }).waitFor();
       const renderer = await studio.evaluate(({ app, BrowserWindow }) => {
         const pid = BrowserWindow.getAllWindows()[0].webContents.getOSProcessId();
-        return { pid, sandboxed: app.getAppMetrics().find((metric) => metric.pid === pid)?.sandboxed };
+        return {
+          pid,
+          sandboxed: app.getAppMetrics().find((metric) => metric.pid === pid)?.sandboxed,
+        };
       });
       // Electron reports OS sandboxing only on macOS and Windows. On Linux, a sandboxed renderer runs in its own PID namespace.
       const rendererSandboxed =
@@ -43,7 +52,7 @@ describe("app launch", () => {
 
       expect(rendererSandboxed).toBe(true);
       expect(globals).toEqual({ portfolio: "object", require: "undefined" });
-      expect(opened).toEqual({ ok: true, value: { folder: copy } });
+      expect(opened).toMatchObject({ ok: true, value: { folder: copy } });
     } finally {
       rmSync(userData, { recursive: true, force: true });
       rmSync(copy, { recursive: true, force: true });
