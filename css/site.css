@@ -584,21 +584,6 @@ html body video {
   }
 }
 
-@media (max-width:680px) {
-  body .site-nav-2026 .nav-inner {
-    align-items: center;
-  }
-
-  body .site-nav-2026 .nav-brand {
-    justify-content: center;
-  }
-
-  body .site-nav-2026 .nav-links {
-    justify-content: center;
-    gap: 0 24px;
-  }
-}
-
 :root {
   --site-shell-max: 1200px;
   --site-shell-gutter: 32px;
