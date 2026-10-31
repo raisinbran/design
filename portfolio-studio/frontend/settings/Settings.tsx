@@ -36,10 +36,22 @@ export function Settings({ view, onFolderChosen }: SettingsProps) {
       {info && (
         <Table>
           <Table.Tbody>
-            <Table.Tr><Table.Td>Portfolio Studio</Table.Td><Table.Td>{info.app}</Table.Td></Table.Tr>
-            <Table.Tr><Table.Td>Electron</Table.Td><Table.Td>{info.electron}</Table.Td></Table.Tr>
-            <Table.Tr><Table.Td>Sharp</Table.Td><Table.Td>{info.sharp}</Table.Td></Table.Tr>
-            <Table.Tr><Table.Td>libvips</Table.Td><Table.Td>{info.libvips}</Table.Td></Table.Tr>
+            <Table.Tr>
+              <Table.Td>Portfolio Studio</Table.Td>
+              <Table.Td>{info.app}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>Electron</Table.Td>
+              <Table.Td>{info.electron}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>Sharp</Table.Td>
+              <Table.Td>{info.sharp}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>libvips</Table.Td>
+              <Table.Td>{info.libvips}</Table.Td>
+            </Table.Tr>
           </Table.Tbody>
         </Table>
       )}

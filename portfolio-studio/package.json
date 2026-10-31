@@ -13,7 +13,9 @@
     "package": "npm run build && electron-forge package",
     "make": "npm run build && electron-forge make",
     "typecheck": "tsc -p tsconfig.json && tsc -p backend/api/tsconfig.json",
-    "test": "npm run build && vitest run"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run format:check && npm run build && vitest run"
   },
   "dependencies": {
     "sharp": "0.35.5"
@@ -34,6 +36,7 @@
     "electron-squirrel-startup": "1.0.1",
     "electron-store": "12.0.0",
     "playwright": "1.64.1",
+    "prettier": "3.9.10",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "typescript": "5.9.3",
