@@ -676,3 +676,9 @@ body > main {
   max-width: 1550px;
   object-fit: contain;
 }
+
+/* Keep the Design card directly below Photography in the two-column layout. */
+.r76-home .r63-entry--design { grid-column:2; }
+@media (max-width:650px) {
+  .r76-home .r63-entry--design { grid-column:1; }
+}
