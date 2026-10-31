@@ -14,7 +14,7 @@
   width: min(1120px,calc(100% - 48px));
   margin: auto;
   display: flex;
-  min-height: 94px;
+  min-height: 84px;
   justify-content: space-between;
   align-items: center;
   gap: 24px;
@@ -547,7 +547,7 @@ html body video {
 
 @media (max-width:680px) {
   body .site-nav-2026 .nav-inner {
-    padding-block: 6px;
+    padding-block: 3px;
     gap: 0;
   }
 
