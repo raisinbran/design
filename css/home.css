@@ -671,7 +671,7 @@ body > main {
 }
 
 .r76-home .hero-feature .fullbleed-hero img {
-  width: min(100%, 76.28vh, 1550px) !important;
+  width: 100% !important;
   height: auto !important;
   max-width: 1550px;
   object-fit: contain;
