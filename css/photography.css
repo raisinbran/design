@@ -379,7 +379,7 @@ body.photography-page .photo-intro .photo-deck {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 0 12px;
+  padding: 0 0 12px;
   background: rgba(255,255,255,.96);
   border-bottom: 1px solid rgba(27,47,51,.12);
   font-family: Inter, "Segoe UI", Arial, sans-serif;
@@ -396,7 +396,7 @@ body.photography-page .photo-intro .photo-deck {
   overflow-x: auto;
   scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
-  padding: 2px 1px 5px;
+  padding: 0 1px 5px;
 }
 
 .photography-page .photo-filter-chip {
@@ -440,7 +440,7 @@ body.photography-page .photo-intro .photo-deck {
   .photography-page .photo-filter-bar {
     gap: 7px;
     flex-wrap: wrap;
-    padding: 7px 0 8px;
+    padding: 0 0 8px;
   }
 
   .photography-page .photo-filter-chips {
