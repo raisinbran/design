@@ -1,0 +1,1047 @@
+{
+  "description": "Live non-Photography images; watermark from Portfolio Studio, corner-only",
+  "max_side": 1080,
+  "exceptions": [
+    "assets/homepage-2026/engineering-field.jpg",
+    "assets/homepage-2026/hero-guideway.jpg",
+    "images/Creative/The Cost v.1.0_th.jpg"
+  ],
+  "images": {
+    "assets/homepage-2026/engineering-field.jpg": {
+      "status": "watermarked",
+      "source_sha256": "483e54e85cd057338b0363b4dd07735aa715d49347ea5f4aa0a083adc474c816",
+      "sha256": "b4ca90801456d27d5f8ebf6bc8b5a33e752ac75f3f204065651b2e56d2473069",
+      "original_dimensions": [
+        2048,
+        1365
+      ],
+      "dimensions": [
+        2048,
+        1365
+      ],
+      "resize_exempt": true
+    },
+    "assets/homepage-2026/hero-guideway.jpg": {
+      "status": "watermarked",
+      "source_sha256": "a74b33301c1abedd6a7f7c849f036cb27ea48e1102b288ea129b69fba7bb0261",
+      "sha256": "87927a4afa3459f9f65f8643ba4c3a6d89ee92d4c4b8dc322c8088155ce01349",
+      "original_dimensions": [
+        2048,
+        1074
+      ],
+      "dimensions": [
+        2048,
+        1074
+      ],
+      "resize_exempt": true
+    },
+    "images/325/Chen_BottleRend_c_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "a982da23879c673ddc555ebddc3bdd5fa48a263441303fac5b72a924181388eb",
+      "sha256": "a74c87b023bbee08f1ec212eeaa883ec68cf022fbdf4f013b82f43bf563eba04",
+      "original_dimensions": [
+        720,
+        600
+      ],
+      "dimensions": [
+        720,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/325/Chen_MethodBottleRend_e_edited_b_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "adfbf3563662f0ae771eee07a834886c5f6bdace8350316f892e942f20f00456",
+      "sha256": "6294d6641fabc2cd644bbf382a4b642aed9e7efe2b8cdb94ffb4bf696c7cb8ed",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/325/Chen_Toothbrush_Rend_f_edit_th.jpg": {
+      "status": "watermarked",
+      "source_sha256": "8acf85a686d1f71b78a80eb872073c559d80df2f8adaf87fd8d216eed7c47d0f",
+      "sha256": "92469bb45829a41fdf57d654f150417fe9394617dad14efaec2e69077bca3511",
+      "original_dimensions": [
+        506,
+        365
+      ],
+      "dimensions": [
+        506,
+        365
+      ],
+      "resize_exempt": false
+    },
+    "images/325/Coca-Cola-OGB.jpg": {
+      "status": "watermarked",
+      "source_sha256": "176b8e7816dbefa35dfa736f9490761c3bc30721627e12e15780750e8e908c81",
+      "sha256": "56e5606a744fe563ba612410f2679207850356fbacbf4680fb859b292ce4e8fa",
+      "original_dimensions": [
+        800,
+        600
+      ],
+      "dimensions": [
+        800,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/325/Toothbrush construction.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c45c45817dd52227f06eb36773227925bed6e5e1fc0de698b96c3b38d15dbbea",
+      "sha256": "6ce5689465163d22d16e0232c5107b4df25ba2f9756623f2ae8d740d963df6fd",
+      "original_dimensions": [
+        1127,
+        556
+      ],
+      "dimensions": [
+        1080,
+        533
+      ],
+      "resize_exempt": false
+    },
+    "images/325/method - Side.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c4396d98dc1cc0f5ba387a1e8d82b1aa35fec9cc6de81f8087edf75bdf9d26a6",
+      "sha256": "52ac6ae0b9472a8fd33f2daee783e273b9ad2a59649df1f0a1cdd329b9b4ea79",
+      "original_dimensions": [
+        355,
+        485
+      ],
+      "dimensions": [
+        355,
+        485
+      ],
+      "resize_exempt": false
+    },
+    "images/47500c01691144b1b7b0b5fbcb63ee58.6e7b65d0.jpg": {
+      "status": "watermarked",
+      "source_sha256": "a46b76bc2d03f9454c3c0f4467c7da6d40a1cd93e956e5f770f6d7b013331ca1",
+      "sha256": "4dcd7d8be5671467f865c3dc4508a0b49f77743a04151f510abb62ca33631d63",
+      "original_dimensions": [
+        780,
+        519
+      ],
+      "dimensions": [
+        780,
+        519
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/20160726_144633_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "e74a9634985bb8ab58d9394a9173f3c42c5ba90a6e005e881acdc633a6f65bc3",
+      "sha256": "058aa352139c781eb2ff2e6002eb6df7f9cf47ec77d18c1bc5e1c171c880282e",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/Bike Peeler Render A.JPG": {
+      "status": "watermarked",
+      "source_sha256": "65bf7f0ea72de711c95bd3d0864b2389e1a456c9fbc84296d0bfcb80a693ba9b",
+      "sha256": "827cb777af969ff403d35ad87f39cb62106350db488b6206927b0f2307daef80",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/Bolt Final C Render A_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "466b6218030b742ee729edcf2a1921a1085f52abf83cd2ffe860d0403359b010",
+      "sha256": "30b4f11b1236b054167e387a151d02da514c721d01ec0f42f4fd79a84611f193",
+      "original_dimensions": [
+        1920,
+        1920
+      ],
+      "dimensions": [
+        1080,
+        1080
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/Copy of Bike Peeler B Render A_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "93e43b5a6b24d14f011cf3ef0b99a6cf83482a3dadf9247458e36c5a99e64ec0",
+      "sha256": "f4bbb845283897c7d6c6eb644832d65d26d63b08d4d5cb147201b74c3cdc96b7",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/DSGN 384 Initial Sketches_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "2992a23fceda3de2c298bc14b82e0f926aa6ab3a5ac54b87a7b0c1a9c6dad6bb",
+      "sha256": "3c6dda6e3c329b9d9fb21f532d7b4e479a4be813f755182b5b662a2d59745e5b",
+      "original_dimensions": [
+        600,
+        600
+      ],
+      "dimensions": [
+        600,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/File_000_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "34ab54b1e0557335890a302080187d6c048398e760fbc8afc580a8ba7b2a874b",
+      "sha256": "063fbb279208a5e72dd73d71f36b57def3914039a4e43ef779039a8631656251",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/File_003_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "3b0ac396f5fdfe38598573a252c6c40ff89c89f3f310c7caaba1fea8a1626ba2",
+      "sha256": "afccee3ee9886a4fee5993f8cea7eb43ed8b2e89ea52fac7fca7129413ff38b0",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/File_005_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "419d34b5519c015d5c2c6032c7572c7c2996827c78f20f3bd0558452d796c3d1",
+      "sha256": "02e9d662df5ca80bdb2594929c49a7a322d81be9adcdf665f6e9cfb552c2335d",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/IMG_0088_crop.jpg": {
+      "status": "watermarked",
+      "source_sha256": "1c1c50bf02442f3eac5d7a84d9d17a7bedcb9c1ea51cfde8d80bd41721489aa3",
+      "sha256": "2262e331b7f50b6f5a4546b422f34bb802a84cce66e54e8ff53f8320d3c694f2",
+      "original_dimensions": [
+        800,
+        600
+      ],
+      "dimensions": [
+        800,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/IMG_3619_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "be58b26a9f9e8294b99aa29533c4d2f23a63de327d2e33bc584392eafda32a4e",
+      "sha256": "f6d90c79f7c044decbcee5e519440f053398068d907b94ce3ff48b95f9479955",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/IMG_3647_editB.jpg": {
+      "status": "watermarked",
+      "source_sha256": "2d68ebc8975a50c9aafe675db70efc78ff276965d1a3fa486cdcb241e6800673",
+      "sha256": "31f382fe51d5a4d22ff60e3127013f51d6ede2af76eb70c4447895d8052609c9",
+      "original_dimensions": [
+        800,
+        600
+      ],
+      "dimensions": [
+        800,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/IMG_4406_Moment_Moment.jpg": {
+      "status": "watermarked",
+      "source_sha256": "6719532fab9023199dc3ff0d82953cd34d14fc54f605edec9e59a9c0b9b13cfe",
+      "sha256": "5233c76995e6e0f498a4920617991a1717fa425abcc3735235af93268a43e291",
+      "original_dimensions": [
+        338,
+        600
+      ],
+      "dimensions": [
+        338,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/Lathe Cutting Mech G Render C_crop.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c0cf2b414bbf8f143819c86854739c6d4ed485ba7cceef3811e8555109959858",
+      "sha256": "ad6c5ca111519f201cf9220283667d8319e185abface67b8a37267becab7e822",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Bolt/Ubertato C Render B.JPG": {
+      "status": "watermarked",
+      "source_sha256": "140da59579ddb104b0ee675eb14998665b6db05dd2f1ae7666f3df3495e65090",
+      "sha256": "5536c402158e2253134c4a143da8a12727dad41431797cc5b229d4b91ae24323",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/Brantor, Arnaskor icon_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "d217869f1326f559277cf04cb836e1397f030963e3ddcfc926b8b3837fde24f1",
+      "sha256": "18ed947a0ccdd925c7896f0d1ff6d9c55925c27c161e617787db61c32aec1793",
+      "original_dimensions": [
+        709,
+        600
+      ],
+      "dimensions": [
+        709,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/Forgotten 2nd Map v.1.1.7 icon.jpg": {
+      "status": "watermarked",
+      "source_sha256": "5faab2dffcc6adc0210ff60aa83f5c5424af934fdeb888fe267feac7095b25f5",
+      "sha256": "32181d9d72b068917a181345a3c7e14c2fee5ef85b331f1f20f380768564ec34",
+      "original_dimensions": [
+        817,
+        600
+      ],
+      "dimensions": [
+        817,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/IMG_2984_edit_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "627e98bd7e0fb5d3030e4e95e1d75f36f4dbc3457c90918f0f59cc597a045072",
+      "sha256": "bdbf49c9dd17748b8ee5f8d4482a909f0b51d9f7e2cec8ffb142caa0ebbe8cb6",
+      "original_dimensions": [
+        800,
+        600
+      ],
+      "dimensions": [
+        800,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/IMG_3035_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "37781d03e407a64ae43ffddea73b4b9f9a0dfc7efc10e470dafbb0f5d7b811e3",
+      "sha256": "c3b2fe25af88c763955ad20fa89372f771719276abd85a4c9611d4489db0748c",
+      "original_dimensions": [
+        1181,
+        720
+      ],
+      "dimensions": [
+        1080,
+        658
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/IMG_3036_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "2ffa1f3d7800b2416b69f4098e038997810687454dc66ea92e0fd3d7090ab0a5",
+      "sha256": "c9033762f18781e5453a6ab5a82ac15fbd87aaa7538d2e730abb9388a165f853",
+      "original_dimensions": [
+        720,
+        540
+      ],
+      "dimensions": [
+        720,
+        540
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/IMG_3092_edit-B_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "d7ba3cd34456029231fcc283ab7199142599af4023c97a104ea7160e12a80cca",
+      "sha256": "240077534542bba56d462886c4d4533c56d338abb3cb74440aeab7bf0bba1dcc",
+      "original_dimensions": [
+        960,
+        720
+      ],
+      "dimensions": [
+        960,
+        720
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/The Cost v.1.0 sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "859b03e412261725e71adcec4a99b022906807e421a6ffebcbc6df12d541c705",
+      "sha256": "3890a902b88fcd1cde6052629bb7f382ff91f1ae063e4db4bc4ae7071a353304",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Creative/The Cost v.1.0_th.jpg": {
+      "status": "watermarked",
+      "source_sha256": "eac9a25d239307bffc2bf23d221effbf2763af5607cb72b574bd1964962276e9",
+      "sha256": "5c2b227759cf29c4e43a8cdf27a0e78f47799a8c90ef598b524f36732899928c",
+      "original_dimensions": [
+        960,
+        540
+      ],
+      "dimensions": [
+        960,
+        540
+      ],
+      "resize_exempt": true
+    },
+    "images/Feature0191_11x.jpg": {
+      "status": "watermarked",
+      "source_sha256": "f72845989d28fd34e1aba99cd37dcdbe4a323573ce7e5cccbdf84330be1252ac",
+      "sha256": "fb65c3a9af2025b284cf090440c658b8bbaa7f26b157c23ae7993ee9dda8146a",
+      "original_dimensions": [
+        600,
+        399
+      ],
+      "dimensions": [
+        600,
+        399
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/160714 AAM check valve 1 crop.JPG": {
+      "status": "watermarked",
+      "source_sha256": "7582090a43015b8db57e9cda6c70625056a9116b994a201bc2262042f607a9c4",
+      "sha256": "3ae8f193713a05047b0ba222dada812adb880f20643d089c714253656c1b9e07",
+      "original_dimensions": [
+        480,
+        600
+      ],
+      "dimensions": [
+        480,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/160714 AAM check valve 2_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "1f20acde7c56101b0d9e05a2b683b46ffe61f2119801ed1f5a3e28a914cdc12c",
+      "sha256": "d8cd166bfce0b16b0bf9cbeb0803ba741fc2da85c05a4493a51746f59820a3a0",
+      "original_dimensions": [
+        567,
+        600
+      ],
+      "dimensions": [
+        567,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/160803 Ford 6F35 Helical 2 wide.jpg": {
+      "status": "watermarked",
+      "source_sha256": "7a894357334ad61837fe515a001a4953163103c6a96fe7670367efe79afb3f7f",
+      "sha256": "7cc8a306253692321ae5b0b311bffd82ec93962c8c46c92a31b54638dc109779",
+      "original_dimensions": [
+        1920,
+        600
+      ],
+      "dimensions": [
+        1080,
+        338
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/160803 Ford 6F35 Helical 2.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c4b348f005f1bb476c4ccf532d7b87f6aa48f1eb78baa1889d8103c181284889",
+      "sha256": "d80b034bfb14d818da16a0eccc454a7411e96b3fc522f4fa6608c322f55bddae",
+      "original_dimensions": [
+        1069,
+        529
+      ],
+      "dimensions": [
+        1069,
+        529
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/160823 AB1V Vib Fixture 5 placement.jpg": {
+      "status": "watermarked",
+      "source_sha256": "7b987ac9fc26bcb6e87fb47efa2aabfdd8ae4554e72d9415871a67f3dce99902",
+      "sha256": "a2f3f4fc471afc905592943dcb0b6522edf197c1e59a7f89ebdfb51a23b87462",
+      "original_dimensions": [
+        773,
+        600
+      ],
+      "dimensions": [
+        773,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/160908 Allison TC10 sf 1.jpg": {
+      "status": "watermarked",
+      "source_sha256": "aa5d121583871032c83705f2ac4d6ab0a034ea31964566278bf498f1a601951f",
+      "sha256": "5b50f55bc610ee4635b4cd3008a3b9e80c07f7459b334d9253949a141a7d9afe",
+      "original_dimensions": [
+        763,
+        600
+      ],
+      "dimensions": [
+        763,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/Slide - GM X72 New Suction Filter blur.jpg": {
+      "status": "watermarked",
+      "source_sha256": "29a478058028698b4d09271937f074a3916f3d2310c45a05e10c7d832de73e16",
+      "sha256": "9a73d62b0e6c0120f44b18295380f594ec1c86e6db76963ffa2cf5cd917e4a31",
+      "original_dimensions": [
+        968,
+        600
+      ],
+      "dimensions": [
+        968,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Filtran/ford 6f35 mid csf hybrid nozzle cfd 2.jpg": {
+      "status": "watermarked",
+      "source_sha256": "9a4878655b0eb42ac27bf5f19b388e8b47b06b109f05d73e22e2e583b04b04af",
+      "sha256": "9014678adccd30cbcd01a96dee1a6221b41d9c6f3c84d404e1ff3bb54e276400",
+      "original_dimensions": [
+        600,
+        421
+      ],
+      "dimensions": [
+        600,
+        421
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/13410515_10154350748446414_1352083497_o.jpg": {
+      "status": "watermarked",
+      "source_sha256": "7b5788906ed0dbc97b122b03c72261c6e0e5f080d03056721581e591b97b6bd5",
+      "sha256": "347e771d39507f021c48eeaf4e49c72ae2f13a088e67d316b5d4f8280207ae84",
+      "original_dimensions": [
+        1061,
+        600
+      ],
+      "dimensions": [
+        1061,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/FINAL PRESENTATION (1) b.jpg": {
+      "status": "watermarked",
+      "source_sha256": "74c13726e1ac3ea3a1cc305fffa068ad60583d78c6f4d08e35bdea5b6c57f52c",
+      "sha256": "ec4989bf54c28e1af946870b725fb563c18e47605db52a1342e98e55269045ae",
+      "original_dimensions": [
+        800,
+        600
+      ],
+      "dimensions": [
+        800,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/IMG_4540.JPG": {
+      "status": "watermarked",
+      "source_sha256": "ff39a0016941e4f549a1c83cab49ab5bc64e56672e417c92cf302236ff7cbeb0",
+      "sha256": "08754165c01c0c71fd98054c8d52e8f765be600400c58601db5521eed4265612",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/IMG_4553.JPG": {
+      "status": "watermarked",
+      "source_sha256": "6503ab8f2a5510b8aa4ff559af1b7c1061c59d5e9ccd65fca8290907412a6d82",
+      "sha256": "6b4e52bc0c36247596631b6f32c32316edb39d259ba3ed4ccef0cbf9275447e0",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/Mech Clip H 2.JPG": {
+      "status": "watermarked",
+      "source_sha256": "fed917544771dc4045dd57e2e25d2be050f726455fbb0554683361f23220d8c7",
+      "sha256": "3c3c37b1179c39d86eeabe19513537a7c6905f013b01b9d15cab6ed6f3c8cb5e",
+      "original_dimensions": [
+        776,
+        600
+      ],
+      "dimensions": [
+        776,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/Mech Clip H Render A.JPG": {
+      "status": "watermarked",
+      "source_sha256": "1778f0cb98522efa86cb3f4eef1a4137a0a2ae7ce8ff0630bd2f4e3741dbe657",
+      "sha256": "6147c9d898a2369d3784c35fa85c6f341f94b9abdec8b4293c817fac1c4603c5",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/Mech Clip H.JPG": {
+      "status": "watermarked",
+      "source_sha256": "7cbc11a93ceea5222b2777b1de965d178e1c814a1e166b26e701cca0a1ac6298",
+      "sha256": "f8fa6eb966fdb3d28417fbb0e770b1ad91ec8cac93197df79cc2e6573f14b605",
+      "original_dimensions": [
+        776,
+        600
+      ],
+      "dimensions": [
+        776,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/HCPD/Mech Clip Trashed H Render A edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "acd6cb50b631087ea95e2b08f9f0f7d1737b7278d1f5609bb7c31414b5a7f129",
+      "sha256": "500eaf01a557af10418a3f8e8d6a6820a0e0bf15dd1365c67dca21e26f9dd97b",
+      "original_dimensions": [
+        916,
+        600
+      ],
+      "dimensions": [
+        916,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Ind Dsgn/Furniture 1_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "56261073b2b766b4f1c00657fec35211aac3abd9da42dd66207b91cbd8f0083b",
+      "sha256": "ea8886ef1b7f367822297b9b6764f5da84dc7011800febfeb65d6e10f44cb5c6",
+      "original_dimensions": [
+        849,
+        600
+      ],
+      "dimensions": [
+        849,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Ind Dsgn/Furniture Boards 1_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "318f1b6a1fe6fb2a7299f5a0432bb9ba5ae272da844d4f95c0bbf459fc525f43",
+      "sha256": "5a83b062180ec3417fbd23e2407866c8a18b8d317c06d5b1ffe4143b245bb828",
+      "original_dimensions": [
+        618,
+        400
+      ],
+      "dimensions": [
+        618,
+        400
+      ],
+      "resize_exempt": false
+    },
+    "images/Ind Dsgn/Furniture Boards 2_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "f04d7091da5ba035c99fdb8b4f92fc7f97f91f83f62f490ac2dba892ab87b600",
+      "sha256": "0880355e519356f57b2414069fcc74777376df52682f568ce6b4d0ea3bdd63e3",
+      "original_dimensions": [
+        618,
+        400
+      ],
+      "dimensions": [
+        618,
+        400
+      ],
+      "resize_exempt": false
+    },
+    "images/Ind Dsgn/Furniture Design Stool B Render B crop_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "fd2f9744935c6a8ab3a66bf09f6e91d9d6d0a9c2771ef836eb141398eec248a2",
+      "sha256": "49a11e6790f9409aede6d73081edadf69e0f7a09c34ab93971df74d6f8b52337",
+      "original_dimensions": [
+        755,
+        440
+      ],
+      "dimensions": [
+        755,
+        440
+      ],
+      "resize_exempt": false
+    },
+    "images/Ind Dsgn/Furniture merge_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "0630d14b11bc398f4bd01eaf72154696d4a1f24a7b240a174a507f721e31b4f7",
+      "sha256": "4f691caad2ec69f7542ecea46f8f0d0b9a2ed1e0e4f82e3d37b2a20108161121",
+      "original_dimensions": [
+        933,
+        540
+      ],
+      "dimensions": [
+        933,
+        540
+      ],
+      "resize_exempt": false
+    },
+    "images/PCJPB/IMG_0355_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "8d10cea449bcface3df93148784ae898820c90754bfddf88a6ed3ca56f560b9a",
+      "sha256": "168763018f7f582dd90825e81121096a7ac766aa9de394d8c23c946d62ba357d",
+      "original_dimensions": [
+        569,
+        600
+      ],
+      "dimensions": [
+        569,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/PCJPB/IMG_1242_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "f711eda72e80a8d529f1852ccca7711a832c76cf847157391af4eed718ca8d27",
+      "sha256": "9026db75f98479bf065be74e3f8f9aec684dd7993a1590004d4f92af87b34291",
+      "original_dimensions": [
+        1065,
+        1102
+      ],
+      "dimensions": [
+        1044,
+        1080
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/10_edit_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "e28929f2ea993fe4a8ad473106ae48fc8a62187df1559579f79bed532666459a",
+      "sha256": "5f2e4d7792e5c1933ae4f32fcdadc3d8036556f12f2575d7b9e2b0b6a0518a9c",
+      "original_dimensions": [
+        1080,
+        611
+      ],
+      "dimensions": [
+        1080,
+        611
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/20150702_141023[1]_editB.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c19c194fda22a31c3b40057339a26599788bda06ba5a86baa76121643ef7d63e",
+      "sha256": "12b930c70b5bf005c4bec599296915fcf5f92232a31c37567ab413159d20b099",
+      "original_dimensions": [
+        428,
+        600
+      ],
+      "dimensions": [
+        428,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/20150702_141206[1]_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "72e415d7a31d003d0aa31725643f51ed54e008ea21530fa9e8638eb01d870e0f",
+      "sha256": "fe99c68a1558216570a30b5290d63cdc933d0d1a8033385fe8cb2767935d3933",
+      "original_dimensions": [
+        355,
+        600
+      ],
+      "dimensions": [
+        355,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/IMG_2697_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c47340c1573598479fa1bd6926f62cf19249e2f1c6f1f27a90a3bef9b878ae29",
+      "sha256": "23da3bc9cb5a7b75c4a4311a05e76467a0fc7160c433d6d21593a85809b58608",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/IMG_2831_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "60fc0afe20ebc7df8fa4e9bc5a9646002e388e6dfd44b9ea81d7c5027f4e7256",
+      "sha256": "3d8c03aa1dcbf842e948863d62494d42e01075fb436c8a82ff736f7e27a10faa",
+      "original_dimensions": [
+        450,
+        600
+      ],
+      "dimensions": [
+        450,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/IMG_2903_edit_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "0c04fae0b29bc83ac41d5f60f396eb557814396a9ef1892434c7a98a46b62b92",
+      "sha256": "ff87bd8a9f9806d3c3e86559f828edf622822a045b4dfaa6e90ceb7ec25eeb35",
+      "original_dimensions": [
+        801,
+        1080
+      ],
+      "dimensions": [
+        801,
+        1080
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/IMG_2919_editB.jpg": {
+      "status": "watermarked",
+      "source_sha256": "a8075d3f679dd43c32ee70c04ae78f29bc67d37c1c21e5cc2f2d1e03b1606fe1",
+      "sha256": "579a3d7f4e92cf5327a19cfb5075c0d475a079c7a26b2da0b930832611997042",
+      "original_dimensions": [
+        1104,
+        600
+      ],
+      "dimensions": [
+        1080,
+        587
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/IMG_2921_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c3b9765d4de475335d941ef09eebd0aebac78c5bafa415a6823a6906359fcc63",
+      "sha256": "df4fe0df42244960237f37a498cf93797b99263c038843ef124aa7d22f57f9d3",
+      "original_dimensions": [
+        800,
+        600
+      ],
+      "dimensions": [
+        800,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/Outlet H Assembly Render B_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "4e507eca712992f29286d601b172066c32498c3769a45bcae7012bd6048a9f3c",
+      "sha256": "1c4a4a13a51e63724c0b120eaba3dc2bf938dcab46dbbf0bc549b036ef9e8b43",
+      "original_dimensions": [
+        1200,
+        600
+      ],
+      "dimensions": [
+        1080,
+        540
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/Power supply _bounce_ upon turning on and off rapidly_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "e0e6c657f8dfca32207a1115130418dcb431a5fb4d4efae73be93b7a04d4f611",
+      "sha256": "e781f5561c8eca81f7fe5fb58ff4ee387cf743c89e966ec37b0243270661597b",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Segal Intern/Working GUI rotate_edit.jpg": {
+      "status": "watermarked",
+      "source_sha256": "e537dec3d86840fa93215bf14c880097c3ba0305808183cc0e78f68c2022ab90",
+      "sha256": "c90188e6fa19a57f3a505820298e0df92725adc5cf0b352e4cd2a42bebdc97aa",
+      "original_dimensions": [
+        588,
+        600
+      ],
+      "dimensions": [
+        588,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Sombrero/20160308_175627_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "e44e4e06533598877afbf945642a0428997bf70e4dd14e5d2087cc55616a44ec",
+      "sha256": "6a88aa775ecb192971916e92aad6a0cb2489e09f3a83fab8cc3ac807c0d2bf10",
+      "original_dimensions": [
+        407,
+        600
+      ],
+      "dimensions": [
+        407,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Sombrero/20160314_155323.jpg": {
+      "status": "watermarked",
+      "source_sha256": "63474207236211ac57160e03eb868a9ef446bb22b629e333e4be1baa709d8854",
+      "sha256": "5808ff337c60fef56254691d46ec43eccde002da495192dbd923ba314c0103a5",
+      "original_dimensions": [
+        5312,
+        2988
+      ],
+      "dimensions": [
+        1080,
+        608
+      ],
+      "resize_exempt": false
+    },
+    "images/Sombrero/20160314_155323_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "c8049955a5a7ef39b1698a400d08d410fa2e806a445f79ffc715be9886fd408f",
+      "sha256": "5581b332d9aa7c509e9485b2dfcc0b1dbe6ab516ae6299901d90155f3ef90f9f",
+      "original_dimensions": [
+        1067,
+        600
+      ],
+      "dimensions": [
+        1067,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/Sombrero/IMG_0547.JPG": {
+      "status": "watermarked",
+      "source_sha256": "ed87fdeb5051b04fe7435599b7b67bc1907cec3f14fba40ab52436655d114fe0",
+      "sha256": "f34f8f0e0f18a3daae9ff30019c7f3e6c41cba9b58fce664bb351c2d26a7bc5d",
+      "original_dimensions": [
+        639,
+        480
+      ],
+      "dimensions": [
+        639,
+        480
+      ],
+      "resize_exempt": false
+    },
+    "images/Sombrero/IMG_3201_editB_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "6d423828fd665096af3c7fdc6e1ddcbf23212f2716c327cd61403477ec9b2802",
+      "sha256": "19e178305c40d3fe06bd521bec8369d13b496efea99e0e152d7d9fd8ac128507",
+      "original_dimensions": [
+        710,
+        540
+      ],
+      "dimensions": [
+        710,
+        540
+      ],
+      "resize_exempt": false
+    },
+    "images/Sombrero/Snapchat-3808179944577413439_edit_sd.jpg": {
+      "status": "watermarked",
+      "source_sha256": "f9bd481a2e5d831ba3b9877a447441201ad1fe73ef69b764b767c8e152660f60",
+      "sha256": "27520beae05f1ab61534253dd250fc50cf4359c02beb78d3c4de5929b051f8f6",
+      "original_dimensions": [
+        898,
+        540
+      ],
+      "dimensions": [
+        898,
+        540
+      ],
+      "resize_exempt": false
+    },
+    "images/Sombrero/core.jpg": {
+      "status": "watermarked",
+      "source_sha256": "9781fa402a791d4416162c7ac5034e632b73e4be0e19d5b13936c14395c5f27c",
+      "sha256": "c4067d084cee77e63b0a7dc263072d82a6d6834c9950d2c7d738a4febe5a1042",
+      "original_dimensions": [
+        698,
+        600
+      ],
+      "dimensions": [
+        698,
+        600
+      ],
+      "resize_exempt": false
+    },
+    "images/ford-motor-company-engineering-design-center.jpg": {
+      "status": "watermarked",
+      "source_sha256": "270ed941153a4e63303100b1ff62a81cf8c6df11f50e83135ca62d9c09191cfe",
+      "sha256": "81d9251de2f2510f7bf5506040b200e6b4aa7e1f74ba2776034deb44591c4a2d",
+      "original_dimensions": [
+        930,
+        523
+      ],
+      "dimensions": [
+        930,
+        523
+      ],
+      "resize_exempt": false
+    }
+  }
+}

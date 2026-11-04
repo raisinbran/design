@@ -8,6 +8,12 @@
     "images/PCJPB/IMG_0355_edit.jpg"
   ];
 
+  const design = [
+    "images/Creative/The%20Cost%20v.1.0_th.jpg",
+    "images/Creative/Brantor%2C%20Arnaskor%20icon_sd.jpg",
+    "images/Creative/IMG_3092_edit-B_sd.jpg",
+    "images/Creative/IMG_3036_edit.jpg"
+  ];
   // Curated visual preferences, spanning landscape, architecture, wildlife,
   // night scenes and light. A catalog entry is required for every photo.
   const preferred = [
@@ -36,11 +42,12 @@
   };
 
   document.querySelectorAll("[data-home-preview]").forEach(stage => {
-    const isPhotography = stage.dataset.homePreview === "photography";
+    const previewType = stage.dataset.homePreview;
+    const isPhotography = previewType === "photography";
     const card = stage.closest("a");
     const pool = isPhotography
       ? photographyCandidates.map(photoUrl)
-      : engineering;
+      : previewType === "design" ? design : engineering;
     const slides = [];
     let nextCandidate = 0;
     let current = 0;
