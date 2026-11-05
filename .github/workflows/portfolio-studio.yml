@@ -1,0 +1,43 @@
+name: Portfolio Studio foundation
+
+on:
+  push:
+    paths:
+      - "portfolio-studio/**"
+      - ".github/workflows/portfolio-studio.yml"
+  pull_request:
+    paths:
+      - "portfolio-studio/**"
+      - ".github/workflows/portfolio-studio.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  foundation:
+    name: Foundation checks (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    defaults:
+      run:
+        working-directory: portfolio-studio
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: portfolio-studio/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run package
+      - run: git diff --exit-code
+        working-directory: .
