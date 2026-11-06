@@ -1,6 +1,0 @@
-Pillow>=10.0,<14.0
-numpy>=1.24
-opencv-python-headless>=4.8
-pillow-heif>=1.0
-beautifulsoup4>=4.12,<5
-Send2Trash>=1.8,<3
