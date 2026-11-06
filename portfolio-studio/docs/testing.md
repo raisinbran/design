@@ -26,7 +26,9 @@ Run the tests with `xvfb-run -a npm test`, so their windows stay off the screen.
 
 ## What the tests cover
 
-`backend/launch.test.ts` saves a settings file in a fresh user data folder, then launches the built app with the sandbox on. It checks that the page renders, that the renderer runs in the OS sandbox, that `window.portfolio` exists and `window.require` doesn't, and that the app opens the saved folder. The folder is an empty temporary folder, so the test never touches the real checkout.
+`backend/launch.test.ts` saves a settings file in a fresh user data folder, then launches the built app with the sandbox on. It checks that the page renders, that the renderer runs in the OS sandbox, that `window.portfolio` exists and `window.require` doesn't, and that the app opens the saved folder. The folder is a temporary folder holding copies of `data/`, `js/` and the two generated pages, so the test never touches the real checkout and skips the images.
+
+`backend/storage/portfolio.test.ts` saves into a copy of this repository and compares every file before and after. A save without edits changes nothing, which also shows that the generators reproduce the committed site files. An edit to one photo changes only its catalog entry and, unless it is a lock, the photography script. A save that fails while writing leaves every file as it was. `backend/storage/images.test.ts` checks that the image protocol serves a site image and refuses files outside the image folders.
 
 GitHub CI runs `.github/workflows/portfolio-studio.yml` on every pull request: on Linux, Windows and macOS it runs `npm ci`, the type check, `npm test` and `npm run make`, and keeps each installer as a workflow artifact. Download an installer from the run's Summary page to hand to a Windows or macOS tester.
 
@@ -41,4 +43,6 @@ Copy this list into the PR description and fill it in for each platform.
 - [ ] Choose folder picks the website checkout, and the app opens it after a relaunch.
 - [ ] A resized or maximized window comes back that way after a relaunch.
 - [ ] After closing the window on a second monitor and unplugging that monitor, the app opens on the remaining display.
+- [ ] Photography, Engineering and Archive list their items with images, and Preview opens each page in the default browser.
+- [ ] After a discard in GitHub Desktop, Reload shows the discarded state.
 - [ ] Linux from source: after the setup above, `Launch.sh` starts the app.

@@ -1,4 +1,9 @@
-import { BrowserWindow, screen, type BrowserWindowConstructorOptions, type Rectangle } from "electron";
+import {
+  BrowserWindow,
+  screen,
+  type BrowserWindowConstructorOptions,
+  type Rectangle,
+} from "electron";
 import Store from "electron-store";
 import { z } from "zod";
 
