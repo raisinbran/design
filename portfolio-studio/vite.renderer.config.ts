@@ -7,7 +7,8 @@ const backend = normalizePath(path.resolve(__dirname, "backend")) + "/";
 const keepBackendOut: Plugin = {
   name: "keep-backend-out",
   load(id) {
-    if (normalizePath(id).startsWith(backend)) this.error(`backend module in the renderer bundle: ${id}`);
+    if (normalizePath(id).startsWith(backend))
+      this.error(`backend module in the renderer bundle: ${id}`);
   },
 };
 
