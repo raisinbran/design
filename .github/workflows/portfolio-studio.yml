@@ -1,28 +1,21 @@
-name: Portfolio Studio foundation
+name: Portfolio Studio
 
 on:
-  push:
-    paths:
-      - "portfolio-studio/**"
-      - ".github/workflows/portfolio-studio.yml"
   pull_request:
-    paths:
-      - "portfolio-studio/**"
-      - ".github/workflows/portfolio-studio.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  foundation:
-    name: Foundation checks (${{ matrix.os }})
+  check:
+    name: Check and make (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     defaults:
       run:
         working-directory: portfolio-studio
@@ -36,8 +29,33 @@ jobs:
           cache: npm
           cache-dependency-path: portfolio-studio/package-lock.json
       - run: npm ci
+      # The one-time setup from docs/testing.md, because the launch test keeps the sandbox on.
+      - name: Linux sandbox setup
+        if: runner.os == 'Linux'
+        run: |
+          sudo tee /etc/apparmor.d/portfolio-studio-electron >/dev/null <<EOF
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile portfolio-studio-electron $PWD/node_modules/electron/dist/electron flags=(unconfined) {
+            userns,
+          }
+          EOF
+          sudo apparmor_parser -r /etc/apparmor.d/portfolio-studio-electron
+          sudo apt-get update
+          sudo apt-get install -y xvfb fakeroot
       - run: npm run typecheck
-      - run: npm test
-      - run: npm run package
+      - name: npm test
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm test
+      - name: npm test
+        if: runner.os != 'Linux'
+        run: npm test
+      - run: npm run make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-studio-${{ runner.os }}
+          path: portfolio-studio/out/make/
+          if-no-files-found: error
       - run: git diff --exit-code
         working-directory: .

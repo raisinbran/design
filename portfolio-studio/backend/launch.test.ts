@@ -15,7 +15,7 @@ function launch(userData: string) {
 describe("app launch", () => {
   it("app launches sandboxed and opens folder", async () => {
     const userData = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-user-"));
-  // Folder selection only needs an existing directory; avoid copying the entire website and its media assets.
+    // Folder selection only needs an existing directory; avoid copying the entire website and its media assets.
     const portfolioFolder = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-site-"));
     try {
       writeFileSync(path.join(userData, "settings.json"), JSON.stringify({ folder: portfolioFolder }));

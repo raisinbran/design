@@ -26,7 +26,9 @@ Run the tests with `xvfb-run -a npm test`, so their windows stay off the screen.
 
 ## What the tests cover
 
-`backend/launch.test.ts` saves a settings file in a fresh user data folder, then launches the built app with the sandbox on. It checks that the page renders, that the renderer runs in the OS sandbox, that `window.portfolio` exists and `window.require` doesn't, and that the app opens the saved folder. The folder is a copy of this repository, so the test never touches the real checkout.
+`backend/launch.test.ts` saves a settings file in a fresh user data folder, then launches the built app with the sandbox on. It checks that the page renders, that the renderer runs in the OS sandbox, that `window.portfolio` exists and `window.require` doesn't, and that the app opens the saved folder. The folder is an empty temporary folder, so the test never touches the real checkout.
+
+GitHub CI runs `.github/workflows/portfolio-studio.yml` on every pull request: on Linux, Windows and macOS it runs `npm ci`, the type check, `npm test` and `npm run make`, and keeps each installer as a workflow artifact. Download an installer from the run's Summary page to hand to a Windows or macOS tester.
 
 The owner checks the rest by hand with the release checklist.
 
