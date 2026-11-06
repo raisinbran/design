@@ -139,10 +139,11 @@ export function photoHandlers(
     },
     async "photos.render"(sourceId, recipe) {
       const settings = readSettings();
+      const siteFolder = folder();
       return preview(
         sourceId,
         "render",
-        (file) => ({ kind: "render", file, recipe, settings, fontFile: FONT_FILE }),
+        (file) => ({ kind: "render", file, recipe, settings, fontFile: FONT_FILE, siteFolder }),
         recipe,
       );
     },

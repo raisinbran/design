@@ -2,7 +2,6 @@ import {
   Button,
   Checkbox,
   Group,
-  NumberInput,
   Stack,
   Table,
   Text,
@@ -100,28 +99,10 @@ export function Settings({ view, onFolderChosen }: SettingsProps) {
             value={images.watermark.text}
             onChange={(event) => watermark({ text: event.currentTarget.value })}
           />
-          <Group>
-            <Checkbox
-              label="Tiled across the photo"
-              checked={images.watermark.tiled}
-              onChange={(event) => watermark({ tiled: event.currentTarget.checked })}
-            />
-            <Checkbox
-              label="Signature in the corner"
-              checked={images.watermark.corner}
-              onChange={(event) => watermark({ corner: event.currentTarget.checked })}
-            />
-          </Group>
-          <NumberInput
-            label="Watermark strength"
-            description="Opacity of the watermark"
-            suffix="%"
-            min={0}
-            max={100}
-            clampBehavior="strict"
-            w={200}
-            value={Math.round(images.watermark.strength * 100)}
-            onChange={(value) => watermark({ strength: (Number(value) || 0) / 100 })}
+          <Checkbox
+            label="Grape logo and watermark text in the corner"
+            checked={images.watermark.corner}
+            onChange={(event) => watermark({ corner: event.currentTarget.checked })}
           />
           <Group>
             <Button onClick={saveImageSettings}>Save settings</Button>
