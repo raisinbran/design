@@ -1,0 +1,44 @@
+{
+  "name": "portfolio-studio",
+  "productName": "Portfolio Studio",
+  "version": "0.1.0",
+  "description": "Desktop editor for the portfolio website",
+  "author": "Brandon J. Chen",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": ".vite/build/main.cjs",
+  "scripts": {
+    "build": "vite build -c vite.main.config.ts && vite build -c vite.preload.config.ts && vite build -c vite.renderer.config.ts",
+    "start": "npm run build && electron .",
+    "package": "npm run build && electron-forge package",
+    "make": "npm run build && electron-forge make",
+    "typecheck": "tsc -p tsconfig.json && tsc -p backend/api/tsconfig.json",
+    "test": "npm run build && vitest run"
+  },
+  "dependencies": {
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "8.0.1",
+    "@electron-forge/maker-deb": "8.0.1",
+    "@electron-forge/maker-dmg": "8.0.1",
+    "@electron-forge/maker-squirrel": "8.0.1",
+    "@electron-forge/shared-types": "8.0.1",
+    "@mantine/core": "9.7.4",
+    "@mantine/hooks": "9.7.4",
+    "@types/electron-squirrel-startup": "1.0.2",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "electron": "45.1.0",
+    "electron-squirrel-startup": "1.0.1",
+    "electron-store": "12.0.0",
+    "playwright": "1.64.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "typescript": "5.9.3",
+    "vite": "6.4.5",
+    "vitest": "5.0.5",
+    "zod": "4.6.7"
+  }
+}
