@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "types": [],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true
+  },
+  "include": ["*.ts"]
+}
