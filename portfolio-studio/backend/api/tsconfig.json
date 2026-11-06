@@ -6,7 +6,8 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "strict": true,
-    "noEmit": true
+    "noEmit": true,
+    "skipLibCheck": true
   },
   "include": ["*.ts"]
 }

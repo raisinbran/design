@@ -1,4 +1,4 @@
-import { mkdtempSync, readlinkSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdtempSync, readlinkSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { _electron as electron } from "playwright";
@@ -6,26 +6,42 @@ import { describe, expect, it } from "vitest";
 
 // Runs the app that `npm test` builds, with a fresh user data folder so the owner's settings stay untouched.
 const packageDir = path.resolve(import.meta.dirname, "..");
+const repositoryDir = path.resolve(packageDir, "..");
+// Loading reads only the catalogs and the files a save writes, so the test skips the website's images.
+const LOADED_ENTRIES = ["data", "js", "engineeringdesign.html", "creativedesign.html"];
 
 function launch(userData: string) {
   // Without chromiumSandbox, Playwright turns the sandbox off on Linux.
-  return electron.launch({ chromiumSandbox: true, args: [packageDir, `--user-data-dir=${userData}`] });
+  return electron.launch({
+    chromiumSandbox: true,
+    args: [packageDir, `--user-data-dir=${userData}`],
+  });
 }
 
 describe("app launch", () => {
   it("app launches sandboxed and opens folder", async () => {
     const userData = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-user-"));
-    // Folder selection only needs an existing directory; avoid copying the entire website and its media assets.
     const portfolioFolder = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-site-"));
     try {
-      writeFileSync(path.join(userData, "settings.json"), JSON.stringify({ folder: portfolioFolder }));
+      for (const entry of LOADED_ENTRIES) {
+        cpSync(path.join(repositoryDir, entry), path.join(portfolioFolder, entry), {
+          recursive: true,
+        });
+      }
+      writeFileSync(
+        path.join(userData, "settings.json"),
+        JSON.stringify({ folder: portfolioFolder }),
+      );
 
       const studio = await launch(userData);
       const page = await studio.firstWindow();
-      await page.getByRole("heading", { name: "Settings" }).waitFor();
+      await page.getByRole("button", { name: "Reload" }).waitFor();
       const renderer = await studio.evaluate(({ app, BrowserWindow }) => {
         const pid = BrowserWindow.getAllWindows()[0].webContents.getOSProcessId();
-        return { pid, sandboxed: app.getAppMetrics().find((metric) => metric.pid === pid)?.sandboxed };
+        return {
+          pid,
+          sandboxed: app.getAppMetrics().find((metric) => metric.pid === pid)?.sandboxed,
+        };
       });
       // Electron reports OS sandboxing only on macOS and Windows. On Linux, a sandboxed renderer runs in its own PID namespace.
       const rendererSandboxed =
@@ -41,7 +57,7 @@ describe("app launch", () => {
 
       expect(rendererSandboxed).toBe(true);
       expect(globals).toEqual({ portfolio: "object", require: "undefined" });
-      expect(opened).toEqual({ ok: true, value: { folder: portfolioFolder } });
+      expect(opened).toMatchObject({ ok: true, value: { folder: portfolioFolder } });
     } finally {
       rmSync(userData, { recursive: true, force: true });
       rmSync(portfolioFolder, { recursive: true, force: true });
