@@ -1,10 +1,10 @@
 import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import sharp from "sharp";
+import sharp, { type Sharp } from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { ImageSettings } from "../api/api";
-import { renderJob } from "./render";
+import { FONT_FAMILY, renderJob, SITE_LOGO, type Rendered } from "./render";
 
 const repositoryDir = path.resolve(import.meta.dirname, "../../..");
 const fontFile = path.resolve(import.meta.dirname, "../../assets/fonts/LiberationSans-Bold.ttf");
@@ -14,14 +14,14 @@ const settings: ImageSettings = {
     copyright: "Copyright (c) Test Author",
     usageTerms: "No AI training.",
   },
-  watermark: { text: "Test Author", tiled: true, corner: true, strength: 0.2 },
+  watermark: { text: "Test Author", corner: true },
 };
 
 // The first renders on GitHub's Windows and macOS runners take longer than Vitest's 5 s default.
 const RENDER_TIMEOUT_MS = 30_000;
 
 const render = (file: string, recipe = { rotation: 0, straighten: 0 } as const) =>
-  renderJob({ kind: "render", file, recipe, settings, fontFile });
+  renderJob({ kind: "render", file, recipe, settings, fontFile, siteFolder: repositoryDir });
 
 // Lists the tag ids of the first EXIF directory, which holds Make, Model and the GPS pointer.
 function exifTags(exif: Buffer): number[] {
@@ -40,6 +40,89 @@ beforeAll(() => {
   scratch = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-render-"));
 });
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
+
+/** A 2000 × 1500 image of one gray `level`, which renders at 800 × 600. */
+async function flatImage(level: number): Promise<string> {
+  const file = path.join(scratch, `flat-${level}.png`);
+  const background = { r: level, g: level, b: level };
+  await sharp({ create: { width: 2000, height: 1500, channels: 3, background } })
+    .png()
+    .toFile(file);
+  return file;
+}
+
+/** The box around pixels more than 4 levels from `level`, their mean and largest difference. */
+async function findMark(output: Rendered, level: number) {
+  const { data, info } = await sharp(output.bytes).raw().toBuffer({ resolveWithObject: true });
+  const box = { left: info.width, top: info.height, right: 0, bottom: 0 };
+  let [sum, count, peak] = [0, 0, 0];
+  for (let y = 0; y < info.height; y++) {
+    for (let x = 0; x < info.width; x++) {
+      const value = data[(y * info.width + x) * info.channels];
+      if (Math.abs(value - level) <= 4) continue;
+      [box.left, box.top] = [Math.min(box.left, x), Math.min(box.top, y)];
+      [box.right, box.bottom] = [Math.max(box.right, x + 1), Math.max(box.bottom, y + 1)];
+      [sum, count, peak] = [sum + value, count + 1, Math.max(peak, Math.abs(value - level))];
+    }
+  }
+  return { ...box, imageWidth: info.width, imageHeight: info.height, mean: sum / count, peak };
+}
+
+/** Renders a flat gray image with a one-letter watermark, so the logo is most of the mark. */
+const renderFlat = async (level: number) =>
+  renderJob({
+    kind: "render",
+    file: await flatImage(level),
+    recipe: { rotation: 0, straighten: 0 },
+    settings: { ...settings, watermark: { text: "I", corner: true } },
+    fontFile,
+    siteFolder: repositoryDir,
+  });
+
+/** The first channel of `image`, cropped to its ink, one byte per pixel. */
+async function inkOf(image: Sharp) {
+  const { data, info } = await image
+    .trim({ background: "#000000", threshold: 0 })
+    .extractChannel(0)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  return { data, width: info.width, height: info.height };
+}
+
+/**
+ * The best correlation, from -1 to 1, between `expected` and the output's distance from `level`,
+ * with `expected`'s bottom left corner within 3 px of `left` and `bottom`.
+ */
+async function matchInk(
+  output: Rendered,
+  level: number,
+  expected: { data: Buffer; width: number; height: number },
+  left: number,
+  bottom: number,
+) {
+  const { data, info } = await sharp(output.bytes).raw().toBuffer({ resolveWithObject: true });
+  const pixels = expected.width * expected.height;
+  let best = -1;
+  for (let dy = -3; dy <= 3; dy++) {
+    for (let dx = -3; dx <= 3; dx++) {
+      let [sumA, sumB, sumAB, sumAA, sumBB] = [0, 0, 0, 0, 0];
+      for (let y = 0; y < expected.height; y++) {
+        for (let x = 0; x < expected.width; x++) {
+          const row = bottom - expected.height + y + dy;
+          const at = (row * info.width + left + x + dx) * info.channels;
+          const a = Math.abs(data[at] - level);
+          const b = expected.data[y * expected.width + x];
+          [sumA, sumB, sumAB] = [sumA + a, sumB + b, sumAB + a * b];
+          [sumAA, sumBB] = [sumAA + a * a, sumBB + b * b];
+        }
+      }
+      const covariance = sumAB - (sumA * sumB) / pixels;
+      const spread = Math.sqrt((sumAA - sumA ** 2 / pixels) * (sumBB - sumB ** 2 / pixels));
+      best = Math.max(best, covariance / spread);
+    }
+  }
+  return best;
+}
 
 describe("rendering", () => {
   // rotated.heic is stored 64 × 32 with a HEIF rotation of 90 degrees; File_000.jpeg is
@@ -104,7 +187,14 @@ describe("rendering", () => {
 
       const outputs = await Promise.all(
         recipes.map((recipe) =>
-          renderJob({ kind: "render", file: white, recipe, settings, fontFile }),
+          renderJob({
+            kind: "render",
+            file: white,
+            recipe,
+            settings,
+            fontFile,
+            siteFolder: repositoryDir,
+          }),
         ),
       );
 
@@ -124,6 +214,74 @@ describe("rendering", () => {
         );
         expect(darkest.every((value) => value > 200)).toBe(true);
       }
+    },
+    RENDER_TIMEOUT_MS,
+  );
+});
+
+describe("watermark", () => {
+  // At 800 × 600 the text is 16 px (2.6% of 600) and the margin 14 px (2.4%), as on the site's
+  // other images. A mark in the wrong place or size, without the logo, or tiled, would differ.
+  it(
+    "watermark sits bottom right with the logo first",
+    async () => {
+      const mark = await findMark(await renderFlat(48), 48);
+
+      expect(Math.abs(mark.imageWidth - mark.right - 14)).toBeLessThanOrEqual(2);
+      expect(Math.abs(mark.imageHeight - mark.bottom - 14)).toBeLessThanOrEqual(2);
+      const height = mark.bottom - mark.top;
+      expect(height).toBeGreaterThanOrEqual(9);
+      expect(height).toBeLessThanOrEqual(14);
+      // The logo, about as wide as the letter is high, and a gap come before the narrow "I".
+      expect(mark.right - mark.left).toBeGreaterThan(1.5 * height);
+      // Tiled text would change pixels across the whole image.
+      expect(mark.left).toBeGreaterThan(0.9 * mark.imageWidth);
+      expect(mark.top).toBeGreaterThan(0.9 * mark.imageHeight);
+    },
+    RENDER_TIMEOUT_MS,
+  );
+
+  // The mark stays faint but readable on any background, lighter on dark and darker on light, at
+  // 20% to 55% opacity of a tone about 60 levels away. The upper bound allows for WebP ringing at
+  // the mark's edges.
+  it.each([
+    { name: "dark", level: 48, lighter: true },
+    { name: "light", level: 208, lighter: false },
+  ])(
+    "watermark tone contrasts with a $name background",
+    async ({ level, lighter }) => {
+      const mark = await findMark(await renderFlat(level), level);
+
+      expect(mark.mean > level).toBe(lighter);
+      expect(mark.peak).toBeGreaterThanOrEqual(10);
+      expect(mark.peak).toBeLessThanOrEqual(30);
+    },
+    RENDER_TIMEOUT_MS,
+  );
+
+  // A mark whose pixels are copied with the wrong row length shows streaks where the letters
+  // and the grape should be, yet keeps the right size, place and tone.
+  it(
+    "watermark letters and logo keep their shapes",
+    async () => {
+      const output = await render(await flatImage(48));
+      const mark = await findMark(output, 48);
+      const font = `${FONT_FAMILY} 16`;
+      const letters = await inkOf(
+        sharp({ text: { text: "Test Author", font, fontfile: fontFile } }),
+      );
+      const grape = await inkOf(sharp(path.join(repositoryDir, SITE_LOGO)).extractChannel(3));
+      const logo = await inkOf(
+        sharp(grape.data, {
+          raw: { width: grape.width, height: grape.height, channels: 1 },
+        }).resize({
+          height: letters.height,
+        }),
+      );
+
+      const lettersLeft = mark.right - letters.width;
+      expect(await matchInk(output, 48, letters, lettersLeft, mark.bottom)).toBeGreaterThan(0.7);
+      expect(await matchInk(output, 48, logo, mark.left, mark.bottom)).toBeGreaterThan(0.7);
     },
     RENDER_TIMEOUT_MS,
   );

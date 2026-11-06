@@ -18,6 +18,7 @@ const SECTIONS: [Section, string][] = [
   ["photo-editor", "Photo Editor"],
   ["settings", "Settings"],
 ];
+const SAVED_MESSAGE = "Saved. To publish, commit and push in GitHub Desktop.";
 
 export function App() {
   const view = useEditor((state) => state.view);
@@ -26,12 +27,14 @@ export function App() {
   const [section, setSection] = useState<Section>("settings");
   const [error, setError] = useState<Pick<ApiError, "message" | "problems"> | null>(null);
   const [saving, setSaving] = useState(false);
+  const [savedMessage, setSavedMessage] = useState(false);
   const [changedOutside, setChangedOutside] = useState<string | null>(null);
   const [editImage, setEditImage] = useState<{ photoKey: string } | null>(null);
 
   async function run(action: () => Promise<void>) {
     try {
       setError(null);
+      setSavedMessage(false);
       await action();
     } catch (cause) {
       setError({ message: (cause as Error).message });
@@ -51,10 +54,13 @@ export function App() {
     if (!view || !catalogs || !dirty || saving) return;
     setSaving(true);
     setError(null);
+    setSavedMessage(false);
     try {
       const saved = await window.portfolio["catalogs.save"](view.revision, catalogs);
-      if (saved.ok) showSaved(saved.value, catalogs);
-      else if (saved.error.code === "changed-outside") setChangedOutside(saved.error.message);
+      if (saved.ok) {
+        showSaved(saved.value, catalogs);
+        setSavedMessage(true);
+      } else if (saved.error.code === "changed-outside") setChangedOutside(saved.error.message);
       else setError(saved.error);
     } finally {
       setSaving(false);
@@ -112,6 +118,12 @@ export function App() {
         ))}
       </AppShell.Navbar>
       <AppShell.Main>
+        {/* Hidden again by the next edit, so it never says "Saved" over unsaved work. */}
+        {savedMessage && !dirty && (
+          <Text c="green" mb="md">
+            {SAVED_MESSAGE}
+          </Text>
+        )}
         {error && (
           <>
             <Text c="red">{error.message}</Text>
@@ -142,6 +154,7 @@ export function App() {
               editImage={editImage}
               onAdded={(added) => {
                 loadView(added);
+                setSavedMessage(true);
                 setEditImage(null);
                 setSection("photography");
               }}

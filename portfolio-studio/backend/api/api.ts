@@ -116,10 +116,8 @@ export interface ImageSettings {
   rights: { author: string; copyright: string; usageTerms: string };
   watermark: {
     text: string;
-    tiled: boolean;
+    /** Draws the grape logo and the text in the bottom right corner. */
     corner: boolean;
-    /** Opacity of both marks, from 0 to 1. */
-    strength: number;
   };
 }
 

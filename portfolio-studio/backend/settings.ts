@@ -9,7 +9,7 @@ const DEFAULT_IMAGE_SETTINGS: ImageSettings = {
     usageTerms:
       "AI/ML training, generative AI training, model fine-tuning, dataset creation, and automated style imitation are not authorized. Contact Brandon J. Chen for permission.",
   },
-  watermark: { text: "Brandon J. Chen", tiled: true, corner: true, strength: 0.2 },
+  watermark: { text: "Brandon J. Chen", corner: true },
 };
 
 // Each part falls back to its default on its own, so a bad watermark setting keeps the folder.
@@ -19,12 +19,7 @@ const Settings = z.object({
     .object({ author: z.string(), copyright: z.string(), usageTerms: z.string() })
     .catch(DEFAULT_IMAGE_SETTINGS.rights),
   watermark: z
-    .object({
-      text: z.string(),
-      tiled: z.boolean(),
-      corner: z.boolean(),
-      strength: z.number().min(0).max(1),
-    })
+    .object({ text: z.string(), corner: z.boolean() })
     .catch(DEFAULT_IMAGE_SETTINGS.watermark),
 }) satisfies z.ZodType<AppSettings>;
 

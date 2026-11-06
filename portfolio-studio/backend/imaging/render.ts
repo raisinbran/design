@@ -1,6 +1,7 @@
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
+import path from "node:path";
 import decodeHeic from "heic-decode";
-import sharp, { type OverlayOptions, type Sharp } from "sharp";
+import sharp, { type OutputInfo, type OverlayOptions, type Sharp } from "sharp";
 import type { ImageSettings, Orientation, Recipe } from "../api/api";
 
 export const OUTPUT_LONG_SIDE = 800;
@@ -8,11 +9,22 @@ export const PROXY_LONG_SIDE = 1600;
 export const WEBP_QUALITY = 78;
 export const PIXEL_LIMIT = 100_000_000;
 export const FONT_FAMILY = "Liberation Sans Bold";
-const TILE_ANGLE = -19;
+/** The grape logo, relative to the website folder; the mark uses only its alpha channel. */
+export const SITE_LOGO = "assets/homepage-2026/grape-hover.png";
+// The background under the mark scales this to between about 20% and 55%.
+const MARK_OPACITY = 92 / 255;
 
 export type Job =
   | { kind: "proxy"; file: string; orientation: Orientation }
-  | { kind: "render"; file: string; recipe: Recipe; settings: ImageSettings; fontFile: string };
+  | {
+      kind: "render";
+      file: string;
+      recipe: Recipe;
+      settings: ImageSettings;
+      fontFile: string;
+      /** The website folder, which holds the logo. */
+      siteFolder: string;
+    };
 
 export interface Rendered {
   bytes: Uint8Array;
@@ -97,58 +109,164 @@ const escapeXml = (text: string) =>
       ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[character]!,
   );
 
-function textLayer(text: string, size: number, opacity: number, fontFile: string) {
-  return sharp({
-    text: {
-      text: `<span foreground="white" alpha="${Math.round(opacity * 100)}%">${escapeXml(text)}</span>`,
-      font: `${FONT_FAMILY} ${size}`,
-      fontfile: fontFile,
-      rgba: true,
-    },
-  });
+interface RawImage {
+  data: Buffer;
+  info: OutputInfo;
 }
 
-/** The diagonal tiled text and the corner signature, both at the strength setting's opacity. */
+/**
+ * One byte per pixel, 0 where nothing is drawn. sharp writes a one-channel raw input back out as
+ * RGB, so each step that makes a mask ends with `extractChannel(0)`.
+ */
+interface Mask {
+  data: Buffer;
+  width: number;
+  height: number;
+}
+
+/** Crops a one-channel image to its pixels above zero. */
+async function cropToInk(image: Sharp): Promise<Mask> {
+  const { data, info } = await image.raw().toBuffer({ resolveWithObject: true });
+  let [left, top, right, bottom] = [info.width, info.height, -1, -1];
+  for (let y = 0; y < info.height; y++) {
+    for (let x = 0; x < info.width; x++) {
+      if (!data[y * info.width + x]) continue;
+      [left, right] = [Math.min(left, x), Math.max(right, x)];
+      [top, bottom] = [Math.min(top, y), Math.max(bottom, y)];
+    }
+  }
+  if (right < 0) throw new Error("The watermark has no visible pixels");
+  const width = right - left + 1;
+  const height = bottom - top + 1;
+  const cropped = await sharp(data, {
+    raw: { width: info.width, height: info.height, channels: 1 },
+  })
+    .extract({ left, top, width, height })
+    .extractChannel(0)
+    .raw()
+    .toBuffer();
+  return { data: cropped, width, height };
+}
+
+/** The text in the bundled font, cropped to its ink, so its height is the letters' height. */
+async function drawText(text: string, size: number, fontFile: string): Promise<Mask> {
+  // Pango draws a system font, with no error, when the font file is missing.
+  await access(fontFile).catch((cause: unknown) => {
+    throw new Error(`The watermark font is missing: ${fontFile}`, { cause });
+  });
+  const font = `${FONT_FAMILY} ${size}`;
+  return cropToInk(
+    sharp({ text: { text: escapeXml(text), font, fontfile: fontFile } }).extractChannel(0),
+  );
+}
+
+async function drawLogo(logoFile: string, height: number): Promise<Mask> {
+  const logo = await cropToInk(sharp(logoFile).extractChannel(3));
+  const { data, info } = await sharp(logo.data, {
+    raw: { width: logo.width, height: logo.height, channels: 1 },
+  })
+    .resize({ height })
+    .extractChannel(0)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  return { data, width: info.width, height: info.height };
+}
+
+/** Copies `source` into the `width`-wide `target`, `left` pixels from its left edge. */
+function pasteMask(target: Buffer, width: number, source: Mask, left: number): void {
+  for (let y = 0; y < source.height; y++)
+    source.data.copy(target, y * width + left, y * source.width, (y + 1) * source.width);
+}
+
+// Pillow's grayscale weights, so the tone matches the mark on the website's other images.
+const luminance = (data: Buffer, at: number) =>
+  (data[at] * 19595 + data[at + 1] * 38470 + data[at + 2] * 7471 + 0x8000) >> 16;
+
+/**
+ * Colors `mask`, placed at `left` and `top`, as RGBA in a lighter tone of a dark background or a
+ * darker tone of a light one. Smooth dark areas get the faintest mark, bright or busy ones more.
+ */
+async function toneMark(
+  { data, info }: RawImage,
+  mask: Mask,
+  left: number,
+  top: number,
+  size: number,
+): Promise<Buffer> {
+  const blurred = await sharp(data, { raw: info })
+    .blur(Math.max(1, size / 6))
+    .raw()
+    .toBuffer();
+  const under = Buffer.alloc(mask.width * mask.height);
+  let [count, sum, squares, texture] = [0, 0, 0, 0];
+  for (let y = 0; y < mask.height; y++) {
+    for (let x = 0; x < mask.width; x++) {
+      const at = ((top + y) * info.width + left + x) * info.channels;
+      const value = luminance(data, at);
+      under[y * mask.width + x] = value;
+      // Only the pixels under the logo and the letters count, not the gaps between them.
+      if (!mask.data[y * mask.width + x]) continue;
+      count++;
+      sum += value;
+      squares += value * value;
+      texture += Math.max(
+        Math.abs(data[at] - blurred[at]),
+        Math.abs(data[at + 1] - blurred[at + 1]),
+        Math.abs(data[at + 2] - blurred[at + 2]),
+      );
+    }
+  }
+  const brightness = sum / count;
+  const detail = Math.min(1, Math.sqrt(Math.max(0, squares / count - brightness ** 2)) / 64);
+  const busy = Math.sqrt(Math.min(1, texture / count / 12));
+  const darkBusy = busy * Math.max(0, (140 - brightness) / 140);
+  const opacity = Math.min(
+    0.55,
+    MARK_OPACITY *
+      (0.55 + 0.45 * Math.min(1, brightness / 128)) *
+      (1 + 1.2 * darkBusy + 0.4 * busy),
+  );
+  const offset = 60 + 20 * detail + 20 * darkBusy + 10 * busy;
+  const direction = brightness < 128 ? 1 : -1;
+  const tone = await sharp(under, { raw: { width: mask.width, height: mask.height, channels: 1 } })
+    .blur(Math.max(1, mask.height / 12))
+    .extractChannel(0)
+    .raw()
+    .toBuffer();
+  const overlay = Buffer.alloc(mask.width * mask.height * 4);
+  for (let index = 0; index < tone.length; index++) {
+    const shade = Math.max(0, Math.min(255, Math.round(tone[index] + direction * offset)));
+    overlay.fill(shade, index * 4, index * 4 + 3);
+    overlay[index * 4 + 3] = Math.round(mask.data[index] * opacity);
+  }
+  return overlay;
+}
+
+/** The website's grape logo, then the text, in the bottom right corner, with no tiled text. */
 async function watermark(
-  width: number,
-  height: number,
-  { text, tiled, corner, strength }: ImageSettings["watermark"],
+  image: RawImage,
+  { text, corner }: ImageSettings["watermark"],
   fontFile: string,
+  logoFile: string,
 ): Promise<OverlayOptions[]> {
-  if (!text.trim() || strength <= 0) return [];
-  const size = Math.max(12, Math.round(Math.min(width, height) * 0.027));
-  const margin = Math.max(12, Math.round(Math.min(width, height) * 0.024));
-  const layers: OverlayOptions[] = [];
-  if (tiled) {
-    const gap = Math.max(60, Math.round(Math.min(width, height) * 0.2));
-    const tile = await textLayer(text, size, strength, fontFile)
-      .rotate(TILE_ANGLE, { background: "#00000000" })
-      .extend({ right: gap, bottom: gap, background: "#00000000" })
-      .png()
-      .toBuffer({ resolveWithObject: true });
-    // sharp refuses an overlay larger than the image, which a small original can produce.
-    const fitted = await sharp(tile.data)
-      .extract({
-        left: 0,
-        top: 0,
-        width: Math.min(width, tile.info.width),
-        height: Math.min(height, tile.info.height),
-      })
-      .toBuffer();
-    layers.push({ input: fitted, tile: true });
-  }
-  if (corner) {
-    const { data, info } = await textLayer(text, size, strength, fontFile)
-      .png()
-      .toBuffer({ resolveWithObject: true });
-    if (info.width + margin <= width && info.height + margin <= height)
-      layers.push({
-        input: data,
-        left: width - info.width - margin,
-        top: height - info.height - margin,
-      });
-  }
-  return layers;
+  if (!corner || !text.trim()) return [];
+  const { width, height } = image.info;
+  const short = Math.min(width, height);
+  const size = Math.max(13, Math.round(short * 0.026));
+  const margin = Math.max(12, Math.round(short * 0.024));
+  const letters = await drawText(text, size, fontFile);
+  const logo = await drawLogo(logoFile, letters.height);
+  const gap = Math.max(5, Math.floor(size / 3));
+  const mark = { width: logo.width + gap + letters.width, height: letters.height };
+  // sharp refuses an overlay larger than the image, which a small original can produce.
+  if (mark.width + margin > width || mark.height + margin > height) return [];
+  const mask = Buffer.alloc(mark.width * mark.height);
+  pasteMask(mask, mark.width, logo, 0);
+  pasteMask(mask, mark.width, letters, logo.width + gap);
+  const left = width - margin - mark.width;
+  const top = height - margin - mark.height;
+  const input = await toneMark(image, { data: mask, ...mark }, left, top, size);
+  return [{ input, raw: { width: mark.width, height: mark.height, channels: 4 }, left, top }];
 }
 
 // The PLUS DataMining value that prohibits AI and machine learning training on the image.
@@ -176,10 +294,12 @@ export async function renderJob(job: Job): Promise<Rendered> {
     const bytes = await sharp(data, { raw: info }).webp().toBuffer();
     return { bytes, width: info.width, height: info.height };
   }
-  const { data, info } = await straightenAndCrop(job.file, job.recipe, OUTPUT_LONG_SIDE);
+  const image = await straightenAndCrop(job.file, job.recipe, OUTPUT_LONG_SIDE);
+  const { data, info } = image;
   const { rights } = job.settings;
+  const logoFile = path.join(job.siteFolder, SITE_LOGO);
   const bytes = await sharp(data, { raw: info })
-    .composite(await watermark(info.width, info.height, job.settings.watermark, job.fontFile))
+    .composite(await watermark(image, job.settings.watermark, job.fontFile, logoFile))
     .withExif({ IFD0: { Artist: rights.author, Copyright: rights.copyright } })
     .withXmp(rightsXmp(rights))
     .webp({ quality: WEBP_QUALITY })

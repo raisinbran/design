@@ -2,6 +2,14 @@
 
 Portfolio Studio is one Electron app. The backend in `backend/` runs in the main process and owns every file and setting. The frontend in `frontend/` is a React and Mantine page in a sandboxed renderer.
 
+## Using the app
+
+1. In Settings, press Choose folder and pick the website folder, the one that holds `data/` and `index.html`. The app opens it at every launch.
+2. Edit Photography, Engineering or Archive, then press Save or Ctrl+S (Cmd+S on macOS). Preview opens the saved page in the default browser.
+3. To add a photo, open the Photo Editor, press Import original, rotate, straighten and crop it, then fill in its name, description and tags and press Add to Photo Catalog. Edit Image in Photography reopens an added photo.
+4. To publish, commit and push in GitHub Desktop. The app never commits.
+5. After a pull or a discard in GitHub Desktop, press Reload.
+
 ## Frontend and backend
 
 The frontend imports `backend/api/` with `import type` only, so no backend code runs in the renderer. The renderer's Vite build fails when any module under `backend/` enters its bundle. `backend/api/` has its own tsconfig without Node or DOM types, so its types stay usable on both sides.

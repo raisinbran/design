@@ -19,7 +19,7 @@ function launch(userData: string) {
 }
 
 describe("app launch", () => {
-  it("app launches sandboxed and saves", async () => {
+  it("app launches sandboxed, saves and confirms", async () => {
     const userData = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-user-"));
     const portfolioFolder = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-site-"));
     try {
@@ -63,16 +63,16 @@ describe("app launch", () => {
       const opened = await page.evaluate(() => window.portfolio["portfolio.load"]());
       await page.getByLabel("Description", { exact: true }).fill("snowy mountains");
       await page.getByRole("button", { name: "Save" }).click();
-      // The script is replaced after the catalog, so once it changes the save is done.
-      await expect
-        .poll(() => read("js/photography-catalog.js"), { timeout: 10_000 })
-        .toBe(expected["js/photography-catalog.js"]);
+      await page
+        .getByText("Saved. To publish, commit and push in GitHub Desktop.")
+        .waitFor({ timeout: 10_000 });
       await studio.close();
 
       expect(rendererSandboxed).toBe(true);
       expect(globals).toEqual({ portfolio: "object", require: "undefined" });
       expect(opened).toMatchObject({ ok: true, value: { folder: portfolioFolder } });
       expect(read("data/media-catalog.json")).toBe(expected["data/media-catalog.json"]);
+      expect(read("js/photography-catalog.js")).toBe(expected["js/photography-catalog.js"]);
     } finally {
       rmSync(userData, { recursive: true, force: true });
       rmSync(portfolioFolder, { recursive: true, force: true });
