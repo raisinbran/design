@@ -15,7 +15,6 @@
       "alt": "mountains",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 0.56296296,
       "tags": [
         "Moody",
         "\"It's just rocks\""
@@ -30,7 +29,6 @@
       "alt": "temple",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.5,
       "tags": [
         "Day",
         "Concrete Jungle"
@@ -45,7 +43,6 @@
       "alt": "cat",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.5,
       "tags": [
         "Day",
         "Concrete Jungle"
@@ -60,7 +57,6 @@
       "alt": "canyon tree dusk",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.35678392,
       "tags": [
         "Dusk",
         "\"It's just rocks\""
@@ -75,7 +71,6 @@
       "alt": "rock beach",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.33333333,
       "tags": [
         "Sky",
         "Day",
@@ -91,7 +86,6 @@
       "alt": "fall",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77631579,
       "tags": [
         "Day",
         "\"It's just rocks\""
@@ -106,7 +100,6 @@
       "alt": "mountains",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77924217,
       "tags": [
         "Day",
         "\"It's just rocks\""
@@ -121,7 +114,6 @@
       "alt": "mountain lake",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77631579,
       "tags": [
         "Day",
         "\"It's just rocks\""
@@ -136,7 +128,6 @@
       "alt": "mountain river",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77631579,
       "tags": [
         "Day",
         "\"It's just rocks\""
@@ -151,7 +142,6 @@
       "alt": "mountain valley",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77924217,
       "tags": [
         "Day",
         "\"It's just rocks\""
@@ -166,7 +156,6 @@
       "alt": "duck mountain",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.06508876,
       "tags": [
         "Day",
         "\"It's just rocks\""
@@ -181,7 +170,6 @@
       "alt": "city",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 0.66666667,
       "tags": [
         "Day",
         "Concrete Jungle"
@@ -196,7 +184,6 @@
       "alt": "hermiting",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77631579,
       "tags": [
         "Moody",
         "\"It's just rocks\""
@@ -211,7 +198,6 @@
       "alt": "sunrise",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 0.66666667,
       "tags": [
         "Sky",
         "Dusk"
@@ -226,7 +212,6 @@
       "alt": "mountain town afternoon",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.33333333,
       "tags": [
         "Sky",
         "Dusk",
@@ -243,7 +228,6 @@
       "alt": "ferris wheel",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.5,
       "tags": [
         "Moody",
         "Day",
@@ -259,7 +243,6 @@
       "alt": "andalusia",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77631579,
       "tags": [
         "Day",
         "Concrete Jungle"
@@ -274,7 +257,6 @@
       "alt": "espana",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77924217,
       "tags": [
         "Moody",
         "Concrete Jungle"
@@ -289,7 +271,6 @@
       "alt": "gondola boats",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.5,
       "tags": [
         "Dusk",
         "Concrete Jungle"
@@ -304,7 +285,6 @@
       "alt": "eastern capital",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 0.66666667,
       "tags": [
         "Dusk",
         "Concrete Jungle"
@@ -331,7 +311,6 @@
       "alt": "shade",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77631579,
       "tags": [
         "Moody",
         "Concrete Jungle"
@@ -346,7 +325,6 @@
       "alt": "windmill light rays",
       "visible": true,
       "displayPriority": "featured",
-      "aspectRatio": 1.5,
       "tags": [
         "Moody",
         "Sky"
@@ -361,7 +339,6 @@
       "alt": "night food concrete jungle",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1,
       "tags": [
         "Night",
         "Concrete Jungle"
@@ -376,7 +353,6 @@
       "alt": "espana",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.33333333,
       "tags": [
         "Night",
         "Concrete Jungle"
@@ -391,7 +367,6 @@
       "alt": "snowing bell",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 0.66666667,
       "tags": [
         "Night"
       ],
@@ -405,7 +380,6 @@
       "alt": "torii dark",
       "visible": true,
       "displayPriority": "portraitBoost",
-      "aspectRatio": 0.66666667,
       "tags": [
         "Moody",
         "Night"
@@ -420,7 +394,6 @@
       "alt": "dusk sky",
       "visible": true,
       "displayPriority": "normal",
-      "aspectRatio": 1.77631579,
       "tags": [
         "Sky",
         "Dusk"

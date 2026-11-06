@@ -289,6 +289,7 @@ window.PORTFOLIO_PHOTOS = [
     "alt": "wind town",
     "visible": true,
     "displayPriority": "normal",
+    "aspectRatio": 0.75,
     "tags": [
       "Dusk",
       "Concrete Jungle"
@@ -393,34 +394,4 @@ window.PORTFOLIO_PHOTOS = [
     "thumbnailHeight": 450
   }
 ];
-window.PHOTO_ASPECT_RATIOS = {
-  "DSCF3655_crop.jpg": 0.56296296,
-  "DSCF1024_edit_crop.jpg": 1.5,
-  "DSCF1464_crop.jpg": 1.5,
-  "IMG_8889_edit_crop.jpg": 1.35678392,
-  "IMG_5598_edit_crop.jpg": 1.33333333,
-  "20221006_210129324_iOS_fix.jpg": 1.77631579,
-  "20230904_205424749_iOS_crop.jpg": 1.77924217,
-  "20220511_191505848_iOS_crop.jpg": 1.77631579,
-  "20230904_182542788_iOS_fix.jpg": 1.77631579,
-  "20221006_190227289_iOS_fix.jpg": 1.77924217,
-  "DSCF2527_crop.jpg": 1.06508876,
-  "DSCF0272_crop.jpg": 0.66666667,
-  "DSCF7534_crop.jpg": 1.77631579,
-  "DSCF1520_crop.jpg": 0.66666667,
-  "IMG_2553_edit_crop.jpg": 1.33333333,
-  "20241012_222059210_iOS_crop.jpg": 1.5,
-  "DSCF3546_crop.jpg": 1.77631579,
-  "DSCF7939_edit_crop.jpg": 1.77924217,
-  "DSCF2848_crop.jpg": 1.5,
-  "DSCF0815_crop.jpg": 0.66666667,
-  "R0000753_crop.jpg": 0.75,
-  "DSCF2447_edit_crop.jpg": 1.77631579,
-  "DSCF0179_crop.jpg": 1.5,
-  "DSCF2868_crop.jpg": 1.0,
-  "Clipboard Jan 31, 2024 at 7.49 PM_edit_crop.jpg": 1.33333333,
-  "DSCF1108_crop.jpg": 0.66666667,
-  "DSCF1359_crop.jpg": 0.66666667,
-  "DSCF1972_crop.jpg": 1.77631579
-};
 window.PHOTO_TAG_LABELS = ["Day", "Moody", "Dusk", "Night", "Concrete Jungle", "\"It's just rocks\"", "Sky"];

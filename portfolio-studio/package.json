@@ -21,6 +21,7 @@
     "sharp": "0.35.5"
   },
   "devDependencies": {
+    "@dnd-kit/react": "0.5.1",
     "@electron-forge/cli": "8.0.1",
     "@electron-forge/maker-deb": "8.0.1",
     "@electron-forge/maker-dmg": "8.0.1",
@@ -42,6 +43,8 @@
     "typescript": "5.9.3",
     "vite": "6.4.5",
     "vitest": "5.0.5",
-    "zod": "4.6.7"
+    "zod": "4.6.7",
+    "zundo": "2.3.0",
+    "zustand": "5.0.16"
   }
 }
