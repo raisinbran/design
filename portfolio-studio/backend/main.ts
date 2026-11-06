@@ -110,6 +110,17 @@ function openMainWindow(): void {
     },
   });
   mainWindow.on("closed", () => (mainWindow = null));
+  // The page cancels unloading while it has unsaved edits; preventDefault here closes anyway.
+  mainWindow.webContents.on("will-prevent-unload", (event) => {
+    const choice = dialog.showMessageBoxSync(mainWindow!, {
+      type: "question",
+      buttons: ["Keep Editing", "Discard and Close"],
+      defaultId: 0,
+      cancelId: 0,
+      message: "Discard unsaved edits and close?",
+    });
+    if (choice === 1) event.preventDefault();
+  });
   void mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
 }
 
