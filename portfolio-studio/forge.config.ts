@@ -7,10 +7,11 @@ import type { ForgeConfig } from "@electron-forge/shared-types";
 const config: ForgeConfig = {
   packagerConfig: {
     executableName: "portfolio-studio",
-    // sharp loads native libraries, which cannot load from inside the asar archive.
-    asar: { unpack: "**/node_modules/{sharp,@img}/**/*" },
-    // Ship the Vite output and `dependencies`; the packager prunes devDependencies from node_modules.
-    ignore: (file) => !!file && !/^\/(\.vite|node_modules)(\/|$)|^\/package\.json$/.test(file),
+    // Native code cannot read inside the asar archive: sharp's libraries and the watermark font stay outside.
+    asar: { unpack: "{**/node_modules/{sharp,@img}/**/*,**/assets/fonts/*}" },
+    // Ship the Vite output, the assets and `dependencies`; the packager prunes devDependencies from node_modules.
+    ignore: (file) =>
+      !!file && !/^\/(\.vite|node_modules|assets)(\/|$)|^\/package\.json$/.test(file),
   },
   makers: [
     new MakerSquirrel({}),

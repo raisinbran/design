@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
-import { editCatalogs } from "../app/editor";
+import { editCatalogs, isDirty, useEditor } from "../app/editor";
 import { siteImage } from "../app/portfolio";
 import { movePhoto, suggestArrangement } from "./arrangement";
 
@@ -60,7 +60,12 @@ function setTags(file: string, tags: string[]) {
   }));
 }
 
-export function PhotographyView({ catalog }: { catalog: Photography }) {
+interface PhotographyViewProps {
+  catalog: Photography;
+  onEditImage: (photoKey: string) => void;
+}
+
+export function PhotographyView({ catalog, onEditImage }: PhotographyViewProps) {
   const [selected, setSelected] = useState(catalog.photos[0]?.file);
   const [search, setSearch] = useState("");
   const query = search.trim().toLowerCase();
@@ -114,7 +119,13 @@ export function PhotographyView({ catalog }: { catalog: Photography }) {
           ))}
         </DragDropProvider>
       </Stack>
-      {photo && <PhotoEditor photo={photo} photoTags={catalog.photoTags} />}
+      {photo && (
+        <PhotoFields
+          photo={photo}
+          photoTags={catalog.photoTags}
+          onEditImage={() => onEditImage(photo.file)}
+        />
+      )}
     </Group>
   );
 }
@@ -155,7 +166,14 @@ function PhotoRow({ photo, index, draggable, selected, onSelect }: PhotoRowProps
   );
 }
 
-function PhotoEditor({ photo, photoTags }: { photo: Photo; photoTags: string[] }) {
+interface PhotoFieldsProps {
+  photo: Photo;
+  photoTags: string[];
+  onEditImage: () => void;
+}
+
+function PhotoFields({ photo, photoTags, onEditImage }: PhotoFieldsProps) {
+  const dirty = useEditor(isDirty);
   const edit = (values: Partial<Photo>) => editPhoto(photo.file, values);
   return (
     <Stack flex={1} pos="sticky" top={68}>
@@ -164,9 +182,14 @@ function PhotoEditor({ photo, photoTags }: { photo: Photo; photoTags: string[] }
         alt=""
         style={{ maxWidth: "100%", maxHeight: 360, objectFit: "contain" }}
       />
-      <Text size="sm" c="dimmed">
-        {photo.file}
-      </Text>
+      <Group>
+        <Text size="sm" c="dimmed" flex={1}>
+          {photo.file}
+        </Text>
+        <Button variant="default" disabled={dirty} onClick={onEditImage}>
+          Edit Image
+        </Button>
+      </Group>
       <Textarea
         label="Description"
         description="Also the alt text that screen readers read aloud"
