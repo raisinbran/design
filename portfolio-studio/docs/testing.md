@@ -26,11 +26,13 @@ Run the tests with `xvfb-run -a npm test`, so their windows stay off the screen.
 
 ## What the tests cover
 
-`backend/launch.test.ts` saves a settings file in a fresh user data folder, then launches the built app with the sandbox on. It checks that the page renders, that the renderer runs in the OS sandbox, that `window.portfolio` exists and `window.require` doesn't, and that the app opens the saved folder. It then edits one photo description, presses Save, and compares the catalog and the photography script with the expected bytes. The folder is a copy of this repository, so the test never touches the real checkout.
+`backend/launch.test.ts` saves a settings file in a fresh user data folder, then launches the built app with the sandbox on. It checks that the page renders, that the renderer runs in the OS sandbox, that `window.portfolio` exists and `window.require` doesn't, and that the app opens the saved folder. It then edits one photo description, presses Save, and compares the catalog and the photography script with the expected bytes. The folder is a temporary folder holding copies of `data/`, `js/` and the two generated pages, so the test never touches the real checkout and skips the images.
 
 `backend/storage/portfolio.test.ts` saves into a copy of this repository and compares every file before and after. A save without edits changes nothing, which also shows that the generators reproduce the committed site files. An edit to one photo changes only its catalog entry and, unless it is a lock, the photography script. A save that fails while writing leaves every file as it was. `backend/storage/images.test.ts` checks that the image protocol serves a site image and refuses files outside the image folders.
 
 `frontend/photography/arrangement.test.ts` checks that drags and Suggest Arrangement leave locked photos at their indexes. `frontend/app/editor.test.ts` checks that an edit made while a save runs stays unsaved. `backend/site/gallery.test.ts` runs the website's `js/photography.js` on the real catalog with a small fake DOM, and checks that the gallery shows visible photos in catalog order, with and without a tag filter.
+
+GitHub CI runs `.github/workflows/portfolio-studio.yml` on every pull request: on Linux, Windows and macOS it runs `npm ci`, the type check, `npm test` and `npm run make`, and keeps each installer as a workflow artifact. Download an installer from the run's Summary page to hand to a Windows or macOS tester.
 
 The owner checks the rest by hand with the release checklist.
 

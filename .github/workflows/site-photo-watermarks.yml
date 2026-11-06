@@ -1,0 +1,41 @@
+name: Apply site corner watermarks (review branch)
+
+on:
+  push:
+    branches:
+      - rosmont/site-photo-corner-watermarks-20261031
+    paths:
+      - tools/maintenance/watermark_site_images.py
+      - .github/workflows/site-photo-watermarks.yml
+
+permissions:
+  contents: write
+
+jobs:
+  watermark-site-photos:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image processor dependency
+        run: python -m pip install "Pillow>=10,<14"
+      - name: Apply Portfolio Studio watermark to active JPEGs
+        run: python -B tools/maintenance/watermark_site_images.py
+      - name: Commit processed JPEGs and manifest to review branch
+        shell: pwsh
+        run: |
+          git diff --check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $changes = git status --porcelain -- assets/homepage-2026 images docs/maintenance/site-watermark-20261031.json
+          if ($changes) {
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -- assets/homepage-2026 images docs/maintenance/site-watermark-20261031.json
+            git commit -m "Apply Portfolio Studio corner watermark to live non-Photography images"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            git push origin "HEAD:$env:GITHUB_REF_NAME"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
