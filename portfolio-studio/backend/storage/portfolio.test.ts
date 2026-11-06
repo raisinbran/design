@@ -3,13 +3,13 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { Catalogs } from "../api/api";
 import { loadPortfolio, savePortfolio, TEMPORARY_SUFFIX } from "./portfolio";
-import { copyRepository, hashFiles } from "./test-folder";
+import { COPY_TIMEOUT_MS, copyRepository, hashFiles } from "./test-folder";
 
 let folder: string;
 beforeEach(() => {
   folder = copyRepository();
-});
-afterEach(() => rmSync(folder, { recursive: true, force: true }));
+}, COPY_TIMEOUT_MS);
+afterEach(() => rmSync(folder, { recursive: true, force: true }), COPY_TIMEOUT_MS);
 
 const read = (file: string) => readFileSync(path.join(folder, file), "utf8");
 

@@ -63,11 +63,13 @@ let saving = false;
 /**
  * Writes the catalogs and the four generated site files, skipping files whose bytes would not change.
  * Writes nothing when the catalogs are `invalid` or any file differs from the loaded `revision`.
+ * `images` maps paths in the folder to new image files, which are written first.
  */
 export async function savePortfolio(
   folder: string,
   revision: Revision,
   catalogs: Catalogs,
+  images: Record<string, Uint8Array> = {},
 ): Promise<Result<PortfolioView>> {
   // One save at a time: a second save would compare against files the first is replacing.
   if (saving)
@@ -93,7 +95,8 @@ export async function savePortfolio(
       parsed.data.engineering,
       current[CATALOG_FILES.engineering],
     );
-    const next: Record<string, string> = {
+    const next: Record<string, string | Uint8Array> = {
+      ...images,
       [CATALOG_FILES.photography]: toJson(photography),
       [CATALOG_FILES.engineering]: toJson(engineering),
       [CATALOG_FILES.archive]: toJson(archive),
@@ -107,7 +110,7 @@ export async function savePortfolio(
     };
     await replaceFiles(
       folder,
-      FILES.filter((file) => next[file] !== current[file]),
+      [...Object.keys(images), ...FILES.filter((file) => next[file] !== current[file])],
       next,
     );
     return { ok: true, value: await loadPortfolio(folder) };
@@ -132,11 +135,12 @@ function sanitizeEditedBodies(engineering: Catalogs["engineering"], savedText: s
 }
 
 // Writes every temporary file before renaming any, so a failed write leaves all destinations untouched.
-// Catalogs are renamed before site files, so after a failed rename, Reload then save regenerates the site from them.
+// Images are renamed first, so a catalog entry never names a missing image. Catalogs are renamed before
+// site files, so after a failed rename, Reload then save regenerates the site from them.
 async function replaceFiles(
   folder: string,
   files: string[],
-  texts: Record<string, string>,
+  texts: Record<string, string | Uint8Array>,
 ): Promise<void> {
   const temporaries = files.map((file) => path.join(folder, file + TEMPORARY_SUFFIX));
   const removeAll = (paths: string[]) =>
