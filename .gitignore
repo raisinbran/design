@@ -1,36 +1,16 @@
 _site/
 
-# Local Python virtual environments
-.venv/
-
-# Python temporary files
-__pycache__/
-*.py[cod]
-
-# Local Portfolio Studio configuration
+# Files the retired Python app may have left on disk, including unpublished photographs
 tools/portfolio-studio/studio-config.json
-
-# Unpublished source photographs
 tools/portfolio-studio/originals/
-# Native macOS Studio environment
-.venv-macos/
 
-# Portfolio Studio generated backups
-_old/
-
-# Electron development and packaged artifacts
+# Portfolio Studio development and packaged artifacts
 node_modules/
 .vite/
 out/
-*.tsbuildinfo
 
-# Optional Electron QA artifacts
-electron-qa-artifacts/
 # macOS Finder metadata
 .DS_Store
 
 # Portfolio Studio temporary files left by an interrupted save
-*.staged
-.studio-*
-.photography-catalog-*.tmp
 *.portfolio-studio-tmp
