@@ -13,6 +13,11 @@ afterEach(() => rmSync(folder, { recursive: true, force: true }));
 
 const read = (file: string) => readFileSync(path.join(folder, file), "utf8");
 
+// The last project is collapseClipIt; the third Archive image is captioned "Deering Library".
+const CLIP_IT_BODY =
+  '<p class="card-text" style="hyphens:auto">\u200b<strong>The Clip-It prevents</strong> a trash bag from falling into a trash can, which dirties the can and complicates usage. It was developed using the human-centered design approach: user research testing, patent research, establishment of a white space, and an iterative design process. Prototypes were fabricated using 3D printing and fused deposition modeling.</p>';
+const NEW_BODY = "<p><strong>The Clip-It</strong> keeps a trash bag from falling into the can.</p>";
+
 describe("saving", () => {
   it("save without edits changes no files", async () => {
     const before = hashFiles(folder);
@@ -52,6 +57,29 @@ describe("saving", () => {
         "js/photography-catalog.js": ['"visible": true', '"visible": false'],
       },
     },
+    {
+      name: "engineering body",
+      edit: (catalogs: Catalogs) => (catalogs.engineering.projects[6].bodyHtml = NEW_BODY),
+      changes: {
+        "data/engineering-catalog.json": [JSON.stringify(CLIP_IT_BODY), JSON.stringify(NEW_BODY)],
+        "engineeringdesign.html": [CLIP_IT_BODY, NEW_BODY],
+      },
+    },
+    {
+      name: "archive caption",
+      edit: (catalogs: Catalogs) =>
+        (catalogs.archive.collections[0].media[2].caption = "Deering Library, Evanston"),
+      changes: {
+        "data/archive-catalog.json": [
+          '"caption": "Deering Library"',
+          '"caption": "Deering Library, Evanston"',
+        ],
+        "creativedesign.html": [
+          '<span class="caption-main">Deering Library</span>',
+          '<span class="caption-main">Deering Library, Evanston</span>',
+        ],
+      },
+    },
   ])("edits change only their sections: $name", async ({ edit, changes }) => {
     const before = hashFiles(folder);
     const expected = Object.fromEntries(
@@ -67,6 +95,20 @@ describe("saving", () => {
     const changed = Object.keys(after).filter((file) => after[file] !== before[file]);
     expect(changed.sort()).toEqual(Object.keys(changes).sort());
     for (const [file, text] of Object.entries(expected)) expect(read(file)).toBe(text);
+  });
+
+  it("sanitizer strips scripts and handlers", async () => {
+    const view = await loadPortfolio(folder);
+    view.catalogs.engineering.projects[6].bodyHtml =
+      '<p>Clip<script>alert(1)</script><img src="x" onerror="alert(2)"><a href="javascript:alert(3)" onclick="alert(4)">It</a></p>';
+
+    const saved = await savePortfolio(folder, view.revision, view.catalogs);
+
+    expect(saved.ok).toBe(true);
+    const page = read("engineeringdesign.html");
+    expect(page).toContain('<div class="project-prose"><p>Clip<a>It</a></p></div>');
+    expect(page).not.toContain("alert");
+    expect(read("data/engineering-catalog.json")).not.toContain("alert");
   });
 
   it("save refuses files changed outside app", async () => {

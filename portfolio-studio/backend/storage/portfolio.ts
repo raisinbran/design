@@ -9,6 +9,7 @@ import {
   engineeringPage,
   photographyScript,
 } from "../site/generate";
+import { sanitizeBody } from "../site/sanitize";
 
 const CATALOG_FILES = {
   photography: "data/media-catalog.json",
@@ -87,7 +88,11 @@ export async function savePortfolio(
       const message = `Files changed outside the app: ${changed.join(", ")}`;
       return { ok: false, error: { code: "changed-outside", message } };
     }
-    const { photography, engineering, archive } = parsed.data;
+    const { photography, archive } = parsed.data;
+    const engineering = sanitizeEditedBodies(
+      parsed.data.engineering,
+      current[CATALOG_FILES.engineering],
+    );
     const next: Record<string, string> = {
       [CATALOG_FILES.photography]: toJson(photography),
       [CATALOG_FILES.engineering]: toJson(engineering),
@@ -109,6 +114,21 @@ export async function savePortfolio(
   } finally {
     saving = false;
   }
+}
+
+// Only a body that differs from the saved one is sanitized, because sanitizing rewrites markup the
+// owner did not touch, and a save without edits must change no file.
+function sanitizeEditedBodies(engineering: Catalogs["engineering"], savedText: string) {
+  const saved = (JSON.parse(savedText) as Catalogs["engineering"]).projects;
+  const savedBodies = new Map(saved.map((project) => [project.id, project.bodyHtml]));
+  return {
+    ...engineering,
+    projects: engineering.projects.map((project) =>
+      savedBodies.get(project.id) === project.bodyHtml
+        ? project
+        : { ...project, bodyHtml: sanitizeBody(project.bodyHtml) },
+    ),
+  };
 }
 
 // Writes every temporary file before renaming any, so a failed write leaves all destinations untouched.
