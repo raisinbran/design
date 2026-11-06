@@ -136,3 +136,25 @@ describe("saving", () => {
     expect(hashFiles(folder)).toEqual(before);
   });
 });
+
+describe("loading", () => {
+  // An owner who picks the wrong folder learns that it is not the website, not a raw file error.
+  it("loadPortfolio names missing portfolio files", async () => {
+    await expect(loadPortfolio(path.join(folder, "images"))).rejects.toThrow(
+      /not the website folder.*data\/media-catalog\.json/,
+    );
+  });
+
+  // A checkout from before the catalog cleanup gets one line naming the file, not many problems.
+  it("loadPortfolio names catalogs in old format", async () => {
+    const archive = JSON.parse(read("data/archive-catalog.json")) as object;
+    writeFileSync(
+      path.join(folder, "data/archive-catalog.json"),
+      JSON.stringify({ ...archive, sourceHtml: "<html></html>" }),
+    );
+
+    await expect(loadPortfolio(folder)).rejects.toThrow(
+      /old apps' format: data\/archive-catalog\.json\./,
+    );
+  });
+});

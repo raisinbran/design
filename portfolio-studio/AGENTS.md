@@ -2,6 +2,12 @@
 
 Portfolio Studio is the desktop editor for the website in the parent folder. `docs/architecture.md` gives the reasons behind the rules below, and `docs/testing.md` covers tests and the release checklist.
 
+## Using the app
+
+- The owner chooses the website folder in Settings, edits, and presses Save. The app writes files only; the owner publishes by committing and pushing in GitHub Desktop.
+- After a pull or a discard in GitHub Desktop, the owner presses Reload.
+- "Using the app" in `docs/architecture.md` has the steps, including adding a photo.
+
 ## Commands
 
 Run these in `portfolio-studio/`:

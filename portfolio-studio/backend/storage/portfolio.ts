@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
 import { readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { PortfolioView, Result, Revision } from "../api/api";
@@ -46,11 +47,24 @@ function parseCatalog(file: string, text: string): unknown {
 
 /** Throws when a catalog or generated file is missing, or a catalog is not valid JSON or fails its schema. */
 export async function loadPortfolio(folder: string): Promise<PortfolioView> {
+  const missing = FILES.filter((file) => !existsSync(path.join(folder, file)));
+  if (missing.length)
+    throw new Error(
+      `This is not the website folder, because it has no ${missing.join(", ")}. Choose the folder that holds data/ and index.html.`,
+    );
   const texts = await readFiles(folder);
   const input = Object.fromEntries(
     Object.entries(CATALOG_FILES).map(([name, file]) => [name, parseCatalog(file, texts[file])]),
   );
   const parsed = Catalogs.safeParse(input);
+  // The old apps' catalogs carry fields this app dropped, such as sourceHtml in the archive catalog.
+  const unknownFields = parsed.error?.issues.filter((issue) => issue.code === "unrecognized_keys");
+  if (unknownFields?.length) {
+    const names = unknownFields.map((issue) => issue.path[0] as keyof typeof CATALOG_FILES);
+    throw new Error(
+      `These catalogs are in the old apps' format: ${[...new Set(names)].map((name) => CATALOG_FILES[name]).join(", ")}. Pull the latest version in GitHub Desktop, then press Reload.`,
+    );
+  }
   if (!parsed.success)
     throw new Error(
       `The catalogs have problems: ${listProblems(parsed.error, input, CATALOG_FILES).join("; ")}`,
