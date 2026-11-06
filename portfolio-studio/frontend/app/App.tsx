@@ -58,8 +58,9 @@ export function App() {
     }
   }
 
-  // Save works in every field. Undo and redo skip inputs, text areas and selects, which keep the browser's own undo.
-  useHotkeys([["mod+S", () => void save()]], []);
+  // Save works in every field, including the rich text editor. Undo and redo skip inputs, text areas,
+  // selects and the rich text editor, which keep their own undo.
+  useHotkeys([["mod+S", () => void save()]], [], true);
   useHotkeys([
     ["mod+Z", undo],
     ["mod+shift+Z", redo],
