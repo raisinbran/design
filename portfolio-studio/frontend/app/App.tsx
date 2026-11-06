@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 import type { ApiError, Page, PortfolioView } from "../../backend/api/api";
 import { ArchiveView } from "../archive/ArchiveView";
 import { EngineeringView } from "../engineering/EngineeringView";
+import { PhotoEditor } from "../photo-editor/PhotoEditor";
 import { PhotographyView } from "../photography/PhotographyView";
 import { Settings } from "../settings/Settings";
 import { confirmDiscard, isDirty, loadView, redo, showSaved, undo, useEditor } from "./editor";
 import { call } from "./portfolio";
 
-type Section = Page | "settings";
+type Section = Page | "photo-editor" | "settings";
 const SECTIONS: [Section, string][] = [
   ["photography", "Photography"],
   ["engineering", "Engineering"],
   ["archive", "Archive"],
+  ["photo-editor", "Photo Editor"],
   ["settings", "Settings"],
 ];
 
@@ -25,6 +27,7 @@ export function App() {
   const [error, setError] = useState<Pick<ApiError, "message" | "problems"> | null>(null);
   const [saving, setSaving] = useState(false);
   const [changedOutside, setChangedOutside] = useState<string | null>(null);
+  const [editImage, setEditImage] = useState<{ photoKey: string } | null>(null);
 
   async function run(action: () => Promise<void>) {
     try {
@@ -83,7 +86,7 @@ export function App() {
         <Group justify="space-between">
           <Text fw={600}>{view ? view.folder : "No portfolio folder"}</Text>
           <Group gap="xs">
-            {section !== "settings" && view && (
+            {section !== "settings" && section !== "photo-editor" && view && (
               <Button variant="default" onClick={() => preview(section)}>
                 Preview
               </Button>
@@ -120,12 +123,31 @@ export function App() {
           </>
         )}
         {catalogs && section === "photography" && (
-          <PhotographyView catalog={catalogs.photography} />
+          <PhotographyView
+            catalog={catalogs.photography}
+            onEditImage={(photoKey) => {
+              setEditImage({ photoKey });
+              setSection("photo-editor");
+            }}
+          />
         )}
         {catalogs && section === "engineering" && (
           <EngineeringView catalog={catalogs.engineering} />
         )}
         {catalogs && section === "archive" && <ArchiveView catalog={catalogs.archive} />}
+        {/* Hidden rather than unmounted, so switching sections keeps the photo being edited. */}
+        {view && (
+          <div hidden={section !== "photo-editor"}>
+            <PhotoEditor
+              editImage={editImage}
+              onAdded={(added) => {
+                loadView(added);
+                setEditImage(null);
+                setSection("photography");
+              }}
+            />
+          </div>
+        )}
         {section === "settings" && <Settings view={view} onFolderChosen={show} />}
       </AppShell.Main>
       <Modal

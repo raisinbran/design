@@ -7,6 +7,10 @@ import path from "node:path";
 const repositoryDir = path.resolve(import.meta.dirname, "../../..");
 const SKIPPED_IN_COPY = new Set([".git", "node_modules", "worktrees", ".vite", "out"]);
 
+// For the hooks that copy and delete the repository. On GitHub's Windows runner the first copy
+// took up to 16 s while the render tests ran, over Vitest's 10 s hook default.
+export const COPY_TIMEOUT_MS = 30_000;
+
 export function copyRepository(): string {
   const copy = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-repo-"));
   cpSync(repositoryDir, copy, {

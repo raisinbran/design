@@ -2,15 +2,15 @@ import { realpathSync, rmSync, symlinkSync } from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { resolveSiteImage } from "./images";
-import { copyRepository } from "./test-folder";
+import { COPY_TIMEOUT_MS, copyRepository } from "./test-folder";
 
 let folder: string;
 beforeAll(() => {
   folder = copyRepository();
   // A junction needs no extra rights on Windows; elsewhere it is a plain symlink.
   symlinkSync(path.join(folder, "assets"), path.join(folder, "images/linked-assets"), "junction");
-});
-afterAll(() => rmSync(folder, { recursive: true, force: true }));
+}, COPY_TIMEOUT_MS);
+afterAll(() => rmSync(folder, { recursive: true, force: true }), COPY_TIMEOUT_MS);
 
 describe("portfolio image protocol", () => {
   it("image protocol serves only allowed files", async () => {

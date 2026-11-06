@@ -5,6 +5,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import sharp from "sharp";
 import type { Page, PortfolioApi, PortfolioView, Result } from "./api/api";
+import { photoHandlers, previewResponse } from "./imaging/photos";
 import { METHODS } from "./ipc";
 import { readSettings, writeSettings } from "./settings";
 import { resolveSiteImage } from "./storage/images";
@@ -53,6 +54,14 @@ const handlers: PortfolioApi = {
     await shell.openExternal(pathToFileURL(path.join(openFolder(), PAGE_FILES[page])).href);
     return ok(null);
   },
+  async "settings.get"() {
+    return ok(readSettings());
+  },
+  async "settings.set"({ rights, watermark }) {
+    writeSettings({ ...readSettings(), rights, watermark });
+    return ok(readSettings());
+  },
+  ...photoHandlers(() => mainWindow, openFolder),
   async "app.info"() {
     return ok({
       app: app.getVersion(),
@@ -85,6 +94,8 @@ function serveApi(): void {
 
 function serveImages(): void {
   protocol.handle("portfolio", async (request) => {
+    const url = new URL(request.url);
+    if (url.host === "preview") return previewResponse(url);
     const { folder } = readSettings();
     const file = folder ? await resolveSiteImage(folder, request.url) : null;
     return file ? net.fetch(pathToFileURL(file).href) : new Response("Not found", { status: 404 });
