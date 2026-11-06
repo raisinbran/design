@@ -7,7 +7,8 @@ import { describe, expect, it } from "vitest";
 // Runs the app that `npm test` builds, with a fresh user data folder so the owner's settings stay untouched.
 const packageDir = path.resolve(import.meta.dirname, "..");
 const repositoryDir = path.resolve(packageDir, "..");
-const SKIPPED_IN_COPY = new Set([".git", "node_modules", "worktrees", ".vite", "out"]);
+// Loading reads only the catalogs and the files a save writes, so the test skips the website's images.
+const LOADED_ENTRIES = ["data", "js", "engineeringdesign.html", "creativedesign.html"];
 
 function launch(userData: string) {
   // Without chromiumSandbox, Playwright turns the sandbox off on Linux.
@@ -20,14 +21,18 @@ function launch(userData: string) {
 describe("app launch", () => {
   it("app launches sandboxed and saves", async () => {
     const userData = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-user-"));
-    const copy = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-repo-"));
+    const portfolioFolder = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-site-"));
     try {
-      cpSync(repositoryDir, copy, {
-        recursive: true,
-        filter: (source) => !SKIPPED_IN_COPY.has(path.basename(source)),
-      });
-      writeFileSync(path.join(userData, "settings.json"), JSON.stringify({ folder: copy }));
-      const read = (file: string) => readFileSync(path.join(copy, file), "utf8");
+      for (const entry of LOADED_ENTRIES) {
+        cpSync(path.join(repositoryDir, entry), path.join(portfolioFolder, entry), {
+          recursive: true,
+        });
+      }
+      writeFileSync(
+        path.join(userData, "settings.json"),
+        JSON.stringify({ folder: portfolioFolder }),
+      );
+      const read = (file: string) => readFileSync(path.join(portfolioFolder, file), "utf8");
       // The first photo is DSCF3655_crop.jpg, described as "mountains".
       const expected = Object.fromEntries(
         ["data/media-catalog.json", "js/photography-catalog.js"].map((file) => [
@@ -66,11 +71,11 @@ describe("app launch", () => {
 
       expect(rendererSandboxed).toBe(true);
       expect(globals).toEqual({ portfolio: "object", require: "undefined" });
-      expect(opened).toMatchObject({ ok: true, value: { folder: copy } });
+      expect(opened).toMatchObject({ ok: true, value: { folder: portfolioFolder } });
       expect(read("data/media-catalog.json")).toBe(expected["data/media-catalog.json"]);
     } finally {
       rmSync(userData, { recursive: true, force: true });
-      rmSync(copy, { recursive: true, force: true });
+      rmSync(portfolioFolder, { recursive: true, force: true });
     }
   }, 60_000);
 });

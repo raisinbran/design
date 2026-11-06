@@ -26,7 +26,7 @@ describe("portfolio image protocol", () => {
     const results = await Promise.all(refused.map((url) => resolveSiteImage(folder, url)));
 
     expect(allowed).toBe(
-      realpathSync(path.join(folder, "photography/thumbnails/DSCF3655_crop.jpg.webp")),
+      realpathSync.native(path.join(folder, "photography/thumbnails/DSCF3655_crop.jpg.webp")),
     );
     expect(results).toEqual(refused.map(() => null));
   });
