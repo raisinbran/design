@@ -13,6 +13,24 @@ export const FONT_FAMILY = "Liberation Sans Bold";
 export const SITE_LOGO = "assets/homepage-2026/grape-hover.png";
 // The background under the mark scales this to between about 20% and 55%.
 const MARK_OPACITY = 92 / 255;
+// toneMark's tuning. Each value came over unexplained from the old apps.
+const MAX_MARK_OPACITY = 0.55;
+// The opacity scale runs from DARK_OPACITY_SCALE on black to 1 at MID_GRAY and above.
+const DARK_OPACITY_SCALE = 0.55;
+const BRIGHTNESS_OPACITY_SCALE = 0.45;
+const MID_GRAY = 128;
+const DARK_BUSY_LIMIT = 140;
+const DARK_BUSY_BOOST = 1.2;
+const BUSY_BOOST = 0.4;
+const FULL_DETAIL_SPREAD = 64;
+const FULL_BUSY_TEXTURE = 12;
+const BASE_TONE_OFFSET = 60;
+const DETAIL_TONE_OFFSET = 20;
+const DARK_BUSY_TONE_OFFSET = 20;
+const BUSY_TONE_OFFSET = 10;
+// Blur radii as fractions of the mark's size and of its height.
+const TEXTURE_BLUR_DIVISOR = 6;
+const TONE_BLUR_DIVISOR = 12;
 
 export type Job =
   | { kind: "proxy"; file: string; orientation: Orientation }
@@ -151,8 +169,8 @@ async function cropToInk(image: Sharp): Promise<Mask> {
 /** The text in the bundled font, cropped to its ink, so its height is the letters' height. */
 async function drawText(text: string, size: number, fontFile: string): Promise<Mask> {
   // Pango draws a system font, with no error, when the font file is missing.
-  await access(fontFile).catch((cause: unknown) => {
-    throw new Error(`The watermark font is missing: ${fontFile}`, { cause });
+  await access(fontFile).catch((error: unknown) => {
+    throw new Error(`The watermark font is missing: ${fontFile}`, { cause: error });
   });
   const font = `${FONT_FAMILY} ${size}`;
   return cropToInk(
@@ -194,7 +212,7 @@ async function toneMark(
   size: number,
 ): Promise<Buffer> {
   const blurred = await sharp(data, { raw: info })
-    .blur(Math.max(1, size / 6))
+    .blur(Math.max(1, size / TEXTURE_BLUR_DIVISOR))
     .raw()
     .toBuffer();
   const under = Buffer.alloc(mask.width * mask.height);
@@ -217,19 +235,26 @@ async function toneMark(
     }
   }
   const brightness = sum / count;
-  const detail = Math.min(1, Math.sqrt(Math.max(0, squares / count - brightness ** 2)) / 64);
-  const busy = Math.sqrt(Math.min(1, texture / count / 12));
-  const darkBusy = busy * Math.max(0, (140 - brightness) / 140);
-  const opacity = Math.min(
-    0.55,
-    MARK_OPACITY *
-      (0.55 + 0.45 * Math.min(1, brightness / 128)) *
-      (1 + 1.2 * darkBusy + 0.4 * busy),
+  const detail = Math.min(
+    1,
+    Math.sqrt(Math.max(0, squares / count - brightness ** 2)) / FULL_DETAIL_SPREAD,
   );
-  const offset = 60 + 20 * detail + 20 * darkBusy + 10 * busy;
-  const direction = brightness < 128 ? 1 : -1;
+  const busy = Math.sqrt(Math.min(1, texture / count / FULL_BUSY_TEXTURE));
+  const darkBusy = busy * Math.max(0, (DARK_BUSY_LIMIT - brightness) / DARK_BUSY_LIMIT);
+  const opacity = Math.min(
+    MAX_MARK_OPACITY,
+    MARK_OPACITY *
+      (DARK_OPACITY_SCALE + BRIGHTNESS_OPACITY_SCALE * Math.min(1, brightness / MID_GRAY)) *
+      (1 + DARK_BUSY_BOOST * darkBusy + BUSY_BOOST * busy),
+  );
+  const offset =
+    BASE_TONE_OFFSET +
+    DETAIL_TONE_OFFSET * detail +
+    DARK_BUSY_TONE_OFFSET * darkBusy +
+    BUSY_TONE_OFFSET * busy;
+  const direction = brightness < MID_GRAY ? 1 : -1;
   const tone = await sharp(under, { raw: { width: mask.width, height: mask.height, channels: 1 } })
-    .blur(Math.max(1, mask.height / 12))
+    .blur(Math.max(1, mask.height / TONE_BLUR_DIVISOR))
     .extractChannel(0)
     .raw()
     .toBuffer();
@@ -285,7 +310,7 @@ function rightsXmp({ author, copyright, usageTerms }: ImageSettings["rights"]): 
 }
 
 /**
- * Runs a proxy or render job. A render is the gallery image: at most 800 px on the long side, with
+ * Runs a proxy or render job. A render is the gallery image, at most 800 px on the long side, with
  * the watermark and the rights metadata, and none of the original's metadata, such as GPS.
  */
 export async function renderJob(job: Job): Promise<Rendered> {

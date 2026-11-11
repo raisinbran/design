@@ -126,7 +126,10 @@ export const Catalogs = z.object({
 });
 export type Catalogs = z.infer<typeof Catalogs>;
 
-/** Returns one line per problem, such as "data/media-catalog.json photos #1 (DSCF3655_crop.jpg) alt: description is required". */
+/**
+ * Returns one line per problem, such as
+ * `data/media-catalog.json photos #1 (DSCF3655_crop.jpg) alt: description is required`.
+ */
 export function listProblems(
   error: z.ZodError,
   input: unknown,

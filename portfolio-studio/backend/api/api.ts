@@ -5,16 +5,16 @@ import type { Catalogs as CatalogsSchema } from "../catalogs/schema";
 type R<T> = Promise<Result<T>>;
 
 export interface PortfolioApi {
-  /** null: no folder is set, or the folder is gone. */
+  /** Null when no folder is set or the folder is gone. */
   "portfolio.load"(): R<PortfolioView | null>;
-  /** Asks for a folder and remembers it; null: the owner cancelled. */
+  /** Asks for a folder and remembers it, or returns null when the owner cancels. */
   "portfolio.choose"(): R<PortfolioView | null>;
   "catalogs.save"(revision: Revision, catalogs: Catalogs): R<PortfolioView>;
-  /** Asks for one original and keeps a draft of it; null: the owner cancelled. */
+  /** Asks for one original and keeps a draft of it, or returns null when the owner cancels. */
   "photos.import"(): R<SourceHandle | null>;
   /** The original and recipe saved when the photo was added; "source-missing" when there is none or the file moved. */
   "photos.openSaved"(photoKey: string): R<SavedSource>;
-  /** Asks for the photo's original and remembers it; null: the owner cancelled. */
+  /** Asks for the photo's original and remembers it, or returns null when the owner cancels. */
   "photos.relink"(photoKey: string): R<SavedSource | null>;
   /** Screen-sized preview of the straightened original, uncropped. */
   "photos.proxy"(sourceId: string, orientation: Orientation): R<ImageRef>;
@@ -41,7 +41,10 @@ export interface ApiError {
   code:
     "changed-outside" | "invalid" | "name-conflict" | "source-missing" | "cancelled" | "internal";
   message: string;
-  /** "invalid" only, such as "data/media-catalog.json photos #1 (DSCF3655_crop.jpg) alt: description is required". */
+  /**
+   * "invalid" only, such as
+   * `data/media-catalog.json photos #1 (DSCF3655_crop.jpg) alt: description is required`.
+   */
   problems?: string[];
 }
 
@@ -93,7 +96,7 @@ export interface ImageRef {
 }
 
 export type AddRequest =
-  // New photo: the name becomes the photo key and photography/thumbnails/<name>.webp.
+  // A new photo. Its name becomes the photo key and photography/thumbnails/<name>.webp.
   | {
       kind: "new";
       revision: Revision;
@@ -103,7 +106,7 @@ export type AddRequest =
       tags: string[];
       overwrite?: boolean;
     }
-  // Edit Image: replaces the gallery image of an existing photo, keeping its record.
+  // Edit Image replaces the gallery image of an existing photo, keeping its record.
   | { kind: "replace"; revision: Revision; sourceId: string; photoKey: string };
 
 export interface Added {

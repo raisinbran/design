@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import type { AppInfo, ImageSettings, PortfolioView } from "../../backend/api/api";
 import { confirmDiscard } from "../app/editor";
-import { call } from "../app/portfolio";
+import { call, runShowingErrors } from "../app/portfolio";
 
 interface SettingsProps {
   view: PortfolioView | null;
@@ -26,9 +26,13 @@ export function Settings({ view, onFolderChosen }: SettingsProps) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    call(window.portfolio["app.info"]()).then(setInfo, (cause: Error) => setError(cause.message));
-    call(window.portfolio["settings.get"]()).then(setImages, (cause: Error) =>
-      setError(cause.message),
+    void runShowingErrors(
+      async () => setInfo(await call(window.portfolio["app.info"]())),
+      setError,
+    );
+    void runShowingErrors(
+      async () => setImages(await call(window.portfolio["settings.get"]())),
+      setError,
     );
   }, []);
 
@@ -44,23 +48,19 @@ export function Settings({ view, onFolderChosen }: SettingsProps) {
   };
 
   async function saveImageSettings() {
-    try {
+    await runShowingErrors(async () => {
       const { rights, watermark } = await call(window.portfolio["settings.set"](images!));
       setImages({ rights, watermark });
       setSaved(true);
-    } catch (cause) {
-      setError((cause as Error).message);
-    }
+    }, setError);
   }
 
   async function chooseFolder() {
     if (!confirmDiscard()) return;
-    try {
+    await runShowingErrors(async () => {
       const chosen = await call(window.portfolio["portfolio.choose"]());
       if (chosen) onFolderChosen(chosen);
-    } catch (cause) {
-      setError((cause as Error).message);
-    }
+    }, setError);
   }
 
   return (
