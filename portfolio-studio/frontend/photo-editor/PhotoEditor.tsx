@@ -24,7 +24,7 @@ import type {
   Result,
 } from "../../backend/api/api";
 import { isDirty, useEditor } from "../app/editor";
-import { call } from "../app/portfolio";
+import { call, runShowingErrors } from "../app/portfolio";
 
 /** The photo being edited; `photoKey` is set for Edit Image, which has no draft. */
 interface Editing extends Draft {
@@ -85,8 +85,9 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   }
 
   useEffect(() => {
-    call(window.portfolio["photos.drafts"]()).then(setDrafts, (cause: Error) =>
-      setError(cause.message),
+    void runShowingErrors(
+      async () => setDrafts(await call(window.portfolio["photos.drafts"]())),
+      setError,
     );
   }, []);
 
@@ -149,26 +150,22 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   }
 
   async function importOriginal() {
-    try {
+    await runShowingErrors(async () => {
       const source = await call(window.portfolio["photos.import"]());
       if (!source) return;
       const draft = { source, recipe: { rotation: 0, straighten: 0 } as const };
       setDrafts([...drafts.filter((item) => item.source.id !== source.id), draft]);
       open(draft);
-    } catch (cause) {
-      setError((cause as Error).message);
-    }
+    }, setError);
   }
 
   async function relink() {
-    try {
+    await runShowingErrors(async () => {
       const saved = await call(window.portfolio["photos.relink"](editImage!.photoKey));
       if (!saved) return;
       setMissing(null);
       open({ ...saved, photoKey: editImage!.photoKey });
-    } catch (cause) {
-      setError((cause as Error).message);
-    }
+    }, setError);
   }
 
   async function discard() {

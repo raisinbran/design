@@ -8,7 +8,7 @@ import { PhotoEditor } from "../photo-editor/PhotoEditor";
 import { PhotographyView } from "../photography/PhotographyView";
 import { Settings } from "../settings/Settings";
 import { confirmDiscard, isDirty, loadView, redo, showSaved, undo, useEditor } from "./editor";
-import { call } from "./portfolio";
+import { call, runShowingErrors } from "./portfolio";
 
 type Section = Page | "photo-editor" | "settings";
 const SECTIONS: [Section, string][] = [
@@ -32,13 +32,9 @@ export function App() {
   const [editImage, setEditImage] = useState<{ photoKey: string } | null>(null);
 
   async function run(action: () => Promise<void>) {
-    try {
-      setError(null);
-      setSavedMessage(false);
-      await action();
-    } catch (cause) {
-      setError({ message: (cause as Error).message });
-    }
+    setError(null);
+    setSavedMessage(false);
+    await runShowingErrors(action, (message) => setError({ message }));
   }
 
   function show(next: PortfolioView | null) {

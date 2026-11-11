@@ -37,11 +37,13 @@ async function readFiles(folder: string): Promise<Record<string, string>> {
 const revisionOf = (texts: Record<string, string>): Revision =>
   Object.fromEntries(FILES.map((file) => [file, hash(texts[file])]));
 
+const describeError = (error: unknown) => (error instanceof Error ? error.message : String(error));
+
 function parseCatalog(file: string, text: string): unknown {
   try {
     return JSON.parse(text);
   } catch (error) {
-    throw new Error(`${file}: ${(error as Error).message}`);
+    throw new Error(`${file}: ${describeError(error)}`);
   }
 }
 
@@ -85,7 +87,8 @@ export async function savePortfolio(
   catalogs: Catalogs,
   images: Record<string, Uint8Array> = {},
 ): Promise<Result<PortfolioView>> {
-  // One save at a time: a second save would compare against files the first is replacing.
+  // One save runs at a time, because a second save would compare against files the first is
+  // replacing.
   if (saving)
     return { ok: false, error: { code: "internal", message: "A save is already running" } };
   saving = true;
@@ -178,7 +181,7 @@ async function replaceFiles(
       const replaced = files.slice(0, index).join(", ") || "none";
       const kept = files.slice(index).join(", ");
       throw new Error(
-        `Saving stopped part way (${(error as Error).message}). Replaced: ${replaced}. Not replaced: ${kept}. Reload, then save again.`,
+        `Saving stopped part way, because ${describeError(error)}. These files were replaced: ${replaced}. These were not: ${kept}. Reload, then save again.`,
       );
     }
   }

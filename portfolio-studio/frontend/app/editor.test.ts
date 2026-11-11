@@ -14,8 +14,9 @@ const setTags = (photoTags: string[]) =>
     photography: { ...catalogs.photography, photoTags },
   }));
 
-describe("editor store", () => {
-  it("edits made during save stay unsaved", () => {
+describe("showSaved", () => {
+  // An edit made while a save runs must stay unsaved, or the owner could close the app and lose it.
+  it("keeps edits made during a save unsaved", () => {
     loadView(viewOf(loaded));
     setTags(["Day"]);
     const sent = useEditor.getState().catalogs!;

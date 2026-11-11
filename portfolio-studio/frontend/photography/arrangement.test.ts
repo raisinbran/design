@@ -26,6 +26,8 @@ const dusk = photo("dusk", ["Dusk"], WIDE);
 const untagged = photo("untagged", [], WIDE);
 
 describe("arrangement", () => {
+  // Locked photos must stay at their indexes through drags and Suggest Arrangement, or the owner's
+  // chosen places would move.
   it.each([
     {
       name: "drag down past a lock",
@@ -46,7 +48,7 @@ describe("arrangement", () => {
         ),
       expected: ["day", "pinned", "dayTall", "dayWide", "dusk", "night", "untagged"],
     },
-  ])("arrangement keeps locked photos in place: $name", ({ arrange, expected }) => {
+  ])("keeps locked photos in place ($name)", ({ arrange, expected }) => {
     const arranged = arrange();
 
     expect(arranged.map((item) => item.file)).toEqual(expected);

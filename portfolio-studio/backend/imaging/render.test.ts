@@ -124,7 +124,7 @@ async function matchInk(
   return best;
 }
 
-describe("rendering", () => {
+describe("renderJob", () => {
   // rotated.heic is stored 64 × 32 with a HEIF rotation of 90 degrees; File_000.jpeg is
   // stored 4032 × 3024 with EXIF orientation 6 (rotate 90 degrees clockwise).
   it.each([
@@ -135,7 +135,7 @@ describe("rendering", () => {
       size: [600, 800],
     },
   ])(
-    "render outputs oriented WebP with rights ($name)",
+    "returns an upright WebP with rights ($name)",
     async ({ file, size }) => {
       const output = await render(file);
 
@@ -154,7 +154,7 @@ describe("rendering", () => {
 
   // 20160726_144633.jpg carries GPS, the camera's Make and Model, and XMP from Windows Photo Editor.
   it(
-    "render strips GPS and source metadata",
+    "strips GPS and source metadata",
     async () => {
       const output = await render(path.join(repositoryDir, "images/Bolt/20160726_144633.jpg"));
 
@@ -171,8 +171,9 @@ describe("rendering", () => {
     RENDER_TIMEOUT_MS,
   );
 
+  // Straightening must never leave a black corner, which would show on the gallery image.
   it(
-    "straightened crop has no blank corners",
+    "leaves no blank corners after straightening",
     async () => {
       const white = path.join(scratch, "white.png");
       await sharp({ create: { width: 1200, height: 800, channels: 3, background: "#ffffff" } })
@@ -223,7 +224,7 @@ describe("watermark", () => {
   // At 800 × 600 the text is 16 px (2.6% of 600) and the margin 14 px (2.4%), as on the site's
   // other images. A mark in the wrong place or size, without the logo, or tiled, would differ.
   it(
-    "watermark sits bottom right with the logo first",
+    "sits bottom right with the logo first",
     async () => {
       const mark = await findMark(await renderFlat(48), 48);
 
@@ -248,7 +249,7 @@ describe("watermark", () => {
     { name: "dark", level: 48, lighter: true },
     { name: "light", level: 208, lighter: false },
   ])(
-    "watermark tone contrasts with a $name background",
+    "contrasts in tone with the background ($name)",
     async ({ level, lighter }) => {
       const mark = await findMark(await renderFlat(level), level);
 
@@ -262,7 +263,7 @@ describe("watermark", () => {
   // A mark whose pixels are copied with the wrong row length shows streaks where the letters
   // and the grape should be, yet keeps the right size, place and tone.
   it(
-    "watermark letters and logo keep their shapes",
+    "keeps the shapes of letters and logo",
     async () => {
       const output = await render(await flatImage(48));
       const mark = await findMark(output, 48);

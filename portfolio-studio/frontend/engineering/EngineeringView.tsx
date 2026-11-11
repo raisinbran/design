@@ -41,7 +41,11 @@ function mediaKeys(media: Media[]): string[] {
   });
 }
 
-export function EngineeringView({ catalog }: { catalog: Catalogs["engineering"] }) {
+interface EngineeringViewProps {
+  catalog: Catalogs["engineering"];
+}
+
+export function EngineeringView({ catalog }: EngineeringViewProps) {
   const [selected, setSelected] = useState(0);
   const [title, setTitle] = useState("");
   const project = catalog.projects[selected];

@@ -37,7 +37,11 @@ function newImageId(collection: Collection): string {
   return id;
 }
 
-export function ArchiveView({ catalog }: { catalog: Catalogs["archive"] }) {
+interface ArchiveViewProps {
+  catalog: Catalogs["archive"];
+}
+
+export function ArchiveView({ catalog }: ArchiveViewProps) {
   const [selected, setSelected] = useState(0);
   const [title, setTitle] = useState("");
   const collection = catalog.collections[selected];

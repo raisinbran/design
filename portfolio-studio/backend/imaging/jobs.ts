@@ -9,8 +9,8 @@ const WORKER = path.join(__dirname, "render-worker.cjs");
 let running: { worker: Worker; stop: () => void } | null = null;
 
 /**
- * Runs `job` in a new worker thread, so decoding never blocks the main process. Only one job runs:
- * a later job or `cancelJob` terminates this one, which then resolves to null.
+ * Runs `job` in a new worker thread, so decoding never blocks the main process. Only one job runs
+ * at a time. A later job or `cancelJob` terminates this one, which then resolves to null.
  */
 export function runJob(job: Job): Promise<Rendered | null> {
   cancelJob();

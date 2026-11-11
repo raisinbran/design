@@ -14,8 +14,10 @@ afterEach(() => rmSync(folder, { recursive: true, force: true }), COPY_TIMEOUT_M
 // Adding writes the bytes it is given, so these need not be a real WebP file.
 const image = { bytes: Buffer.from("rendered image"), width: 800, height: 600 };
 
-describe("adding photos", () => {
-  it("add writes image, entry and tag", async () => {
+describe("addPhoto", () => {
+  // A new photo must reach the gallery with its image, catalog entry and tags, while no other site
+  // file changes.
+  it("writes the image, entry and new tag", async () => {
     const before = hashFiles(folder);
     const { revision, catalogs: loaded } = await loadPortfolio(folder);
 
@@ -58,7 +60,7 @@ describe("adding photos", () => {
   });
 
   // The first photo is DSCF3655_crop.jpg; the name differs only in case.
-  it("name conflict never overwrites without choice", async () => {
+  it("refuses a name conflict without Overwrite", async () => {
     const before = hashFiles(folder);
     const { revision } = await loadPortfolio(folder);
 
@@ -73,7 +75,7 @@ describe("adding photos", () => {
   });
 
   // DSCF3655_crop.jpg is the first photo; Overwrite keeps its place and its visibility, priority and lock.
-  it("overwrite replaces the photo in place", async () => {
+  it("replaces the photo in place on Overwrite", async () => {
     const view = await loadPortfolio(folder);
     Object.assign(view.catalogs.photography.photos[0], {
       visible: false,
@@ -118,7 +120,7 @@ describe("adding photos", () => {
   });
 
   // DSCF3655_crop.jpg is the first photo, described as "mountains"; its gallery image is 450 × 800.
-  it("edit image keeps the photo's details", async () => {
+  it("keeps the photo's details on Edit Image", async () => {
     const view = await loadPortfolio(folder);
     Object.assign(view.catalogs.photography.photos[0], {
       visible: false,

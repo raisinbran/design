@@ -2,7 +2,7 @@ import { builtinModules } from "node:module";
 import { defineConfig } from "vite";
 
 // The main process bundle and the render worker. Electron, Node built-ins and the `dependencies` load at
-// run time: sharp is a native module, and heic-decode's LGPL decoder must ship unmodified.
+// run time, because sharp is a native module and heic-decode's LGPL decoder must ship unmodified.
 export default defineConfig({
   build: {
     outDir: ".vite/build",

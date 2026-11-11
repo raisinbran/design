@@ -12,8 +12,10 @@ beforeAll(() => {
 }, COPY_TIMEOUT_MS);
 afterAll(() => rmSync(folder, { recursive: true, force: true }), COPY_TIMEOUT_MS);
 
-describe("portfolio image protocol", () => {
-  it("image protocol serves only allowed files", async () => {
+describe("resolveSiteImage", () => {
+  // The renderer may load only image files inside the image folders, so a page cannot read the
+  // catalogs, other files in those folders or files outside them.
+  it("resolves only image files inside image folders", async () => {
     const thumbnail = "portfolio://site/photography/thumbnails/DSCF3655_crop.jpg.webp";
     const refused = [
       "portfolio://site/data/media-catalog.json",

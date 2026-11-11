@@ -18,8 +18,10 @@ function launch(userData: string) {
   });
 }
 
-describe("app launch", () => {
-  it("app launches sandboxed, saves and confirms", async () => {
+describe("app", () => {
+  // The built app must open the saved folder with its renderer sandboxed and save an edit, or the
+  // owner cannot edit the site safely.
+  it("launches sandboxed, saves and confirms", async () => {
     const userData = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-user-"));
     const portfolioFolder = mkdtempSync(path.join(os.tmpdir(), "portfolio-studio-site-"));
     try {

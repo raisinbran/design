@@ -6,7 +6,8 @@ import { describe, expect, it } from "vitest";
 const repositoryDir = path.resolve(import.meta.dirname, "../../..");
 const read = (file: string) => readFileSync(path.join(repositoryDir, file), "utf8");
 
-// Just enough DOM for js/photography.js to build its rows: elements keep their children and data attributes.
+// Just enough DOM for js/photography.js to build its rows. Elements keep their children and data
+// attributes.
 class FakeElement {
   children: FakeElement[] = [];
   dataset: Record<string, string> = {};
@@ -61,10 +62,12 @@ async function loadGallery() {
 }
 
 describe("photography page", () => {
+  // The website must show the photos the app saves in the same order, or a saved arrangement would
+  // look different online.
   it.each([
     { name: "no filter", tags: [] },
     { name: "Night filter", tags: ["Night"] },
-  ])("gallery shows catalog order: $name", async ({ tags }) => {
+  ])("shows visible photos in catalog order ($name)", async ({ tags }) => {
     const { photos } = JSON.parse(read("data/media-catalog.json")) as {
       photos: { file: string; visible: boolean; tags: string[] }[];
     };

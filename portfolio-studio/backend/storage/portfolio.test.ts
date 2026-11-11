@@ -18,8 +18,10 @@ const CLIP_IT_BODY =
   '<p class="card-text" style="hyphens:auto">\u200b<strong>The Clip-It prevents</strong> a trash bag from falling into a trash can, which dirties the can and complicates usage. It was developed using the human-centered design approach: user research testing, patent research, establishment of a white space, and an iterative design process. Prototypes were fabricated using 3D printing and fused deposition modeling.</p>';
 const NEW_BODY = "<p><strong>The Clip-It</strong> keeps a trash bag from falling into the can.</p>";
 
-describe("saving", () => {
-  it("save without edits changes no files", async () => {
+describe("savePortfolio", () => {
+  // A save with no edits must leave every file as it is, which also shows the generators reproduce
+  // the committed site files.
+  it("changes no files without edits", async () => {
     const before = hashFiles(folder);
     const view = await loadPortfolio(folder);
 
@@ -80,7 +82,7 @@ describe("saving", () => {
         ],
       },
     },
-  ])("edits change only their sections: $name", async ({ edit, changes }) => {
+  ])("changes only the edited sections ($name)", async ({ edit, changes }) => {
     const before = hashFiles(folder);
     const expected = Object.fromEntries(
       Object.entries(changes).map(([file, [from, to]]) => [file, read(file).replace(from, to)]),
@@ -97,7 +99,9 @@ describe("saving", () => {
     for (const [file, text] of Object.entries(expected)) expect(read(file)).toBe(text);
   });
 
-  it("sanitizer strips scripts and handlers", async () => {
+  // An Engineering body must reach the page without scripts, event handlers or `javascript:` links,
+  // so pasted text cannot run code on the site.
+  it("strips scripts and handlers from bodies", async () => {
     const view = await loadPortfolio(folder);
     view.catalogs.engineering.projects[6].bodyHtml =
       '<p>Clip<script>alert(1)</script><img src="x" onerror="alert(2)"><a href="javascript:alert(3)" onclick="alert(4)">It</a></p>';
@@ -111,7 +115,8 @@ describe("saving", () => {
     expect(read("data/engineering-catalog.json")).not.toContain("alert");
   });
 
-  it("save refuses files changed outside app", async () => {
+  // A save after a pull in GitHub Desktop must not overwrite the pulled changes.
+  it("refuses files changed outside the app", async () => {
     const view = await loadPortfolio(folder);
     view.catalogs.photography.photos[0].alt = "snowy mountains";
     const pulled = read("data/media-catalog.json").replace('"alt": "mountains"', '"alt": "peaks"');
@@ -124,7 +129,9 @@ describe("saving", () => {
     expect(hashFiles(folder)).toEqual(before);
   });
 
-  it("failed save leaves files untouched", async () => {
+  // A save that fails while writing must leave the site as it was, so the owner never publishes
+  // half a save.
+  it("leaves files untouched after a failed write", async () => {
     const view = await loadPortfolio(folder);
     view.catalogs.photography.photos[0].alt = "snowy mountains";
     // A folder in place of the last temporary file makes that write fail after the catalog's has succeeded.
@@ -137,16 +144,16 @@ describe("saving", () => {
   });
 });
 
-describe("loading", () => {
+describe("loadPortfolio", () => {
   // An owner who picks the wrong folder learns that it is not the website, not a raw file error.
-  it("loadPortfolio names missing portfolio files", async () => {
+  it("names the missing website files", async () => {
     await expect(loadPortfolio(path.join(folder, "images"))).rejects.toThrow(
       /not the website folder.*data\/media-catalog\.json/,
     );
   });
 
   // A checkout from before the catalog cleanup gets one line naming the file, not many problems.
-  it("loadPortfolio names catalogs in old format", async () => {
+  it("names catalogs in the old format", async () => {
     const archive = JSON.parse(read("data/archive-catalog.json")) as object;
     writeFileSync(
       path.join(folder, "data/archive-catalog.json"),
