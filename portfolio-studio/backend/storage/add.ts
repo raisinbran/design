@@ -25,7 +25,10 @@ export async function addPhoto(
   image: { bytes: Uint8Array; width: number; height: number; format?: PhotoOutputFormat },
 ): Promise<Result<Added>> {
   if (request.kind === "new" && !isPhotoOutputFormat(request.format)) {
-    return { ok: false, error: { code: "invalid", message: "Select a supported output format" } };
+    return {
+      ok: false,
+      error: { code: "invalid", message: "Select a supported output format" },
+    };
   }
   const { catalogs } = await loadPortfolio(folder);
   const photos = catalogs.photography.photos;
