@@ -60,10 +60,10 @@ These are distinct from the hotfixes above and should be triaged before claiming
 | Photo publication | Batch selection (current/highlighted/all), staged multi-image publish with conflict numbering (`photo_studio.py`) | **Missing:** one photo at a time; no batch publish/numbered conflict resolution |
 | Photo formats | Configurable JPEG quality 80/85/90/95 and max-side size, JPEG for publication + WebP thumbnail (`photo_studio.py`, `processor.py`) | **Partial:** selectable WebP/JPEG/PNG output in PR #22, fixed 800 px long-side and fixed quality per codec; original full-size JPEG plus separately framed thumbnail still missing |
 | Framing | Distinct *Gallery framing* and *Crop exported JPEG* destinations (`photo_studio.py`) | **Missing:** editor crop changes rendered WebP pixels; no separate reversible gallery-only crop |
-| Horizontal/vertical leveling | Draw reference lines with **Level H** / **Level V**, constrained angle correction; Auto-level and Undo rotation (`photo_studio.py`, `photo_viewport.py`) | **Missing:** manual Straighten is not equivalent; [Issue #23](https://github.com/raisinbran/design/issues/23) |
+| Horizontal/vertical leveling | Draw reference lines with **Level H** / **Level V**, constrained angle correction; Auto-level and Undo rotation (`photo_studio.py`, `photo_viewport.py`) | **Missing:** manual Straighten is not equivalent. **Owner-specified replacement:** Level H/V, Auto-level and **Reset all photo edits**, not a dedicated Undo rotation button; [Issue #23](https://github.com/raisinbran/design/issues/23) |
 | Complete ratio controls | Free, Original, 1:1, 3:2, 2:3, 4:3, 3:4, 5:4, 4:5, 16:9, 9:16, Custom; numeric width : height (`photo_studio.py`) | **Missing:** only Free, 1:1, 4:5, 3:2; no Original, portrait/landscape counterparts, or editable ratio fields; [Issue #24](https://github.com/raisinbran/design/issues/24) |
 | Composition guides | Grid Off, Thirds, Center, Golden (`photo_viewport.py`) | **Missing:** no non-destructive guide-overlay UI; [Issue #25](https://github.com/raisinbran/design/issues/25) |
-| Inspection zoom and pan | 100/200/400% presets, zoom slider, pan mode, mouse-wheel zoom and scrollbars (`photo_viewport.py`) | **Missing:** no equivalent inspect-zoom / pan workflow; [Issue #25](https://github.com/raisinbran/design/issues/25) |
+| Inspection zoom and pan | 100/200/400% presets, zoom slider, pan mode, mouse-wheel zoom and scrollbars (`photo_viewport.py`) | **Missing:** inspect-zoom / pan workflow. **Owner-specified UI:** no Pan button or separate 200%/400% buttons; default left-drag pans when no tool selected; one 100% button and continuous slider centered on a 100% tick; [Issue #25](https://github.com/raisinbran/design/issues/25) |
 | Cropping controls | Full-photo reset, constrain crop edges and drag crop rectangle after rotation (`photo_studio.py`, `photo_viewport.py`) | **Partial:** ReactCrop handles rectangle, but no explicit Full-photo reset and some legacy workflows are absent |
 | Captions | Locally suggested accessible descriptions, reviewed before publish (`photo_studio.py`, `offline_descriptions.py`) | **Missing:** manual descriptions only |
 | Pre-publish QA | Detailed publication preview with scope, names, dimensions and overwrite choice (`photo_studio.py`) | **Partial:** render preview and generated filename, but no equivalent batch publication review |
@@ -75,6 +75,19 @@ These are distinct from the hotfixes above and should be triaged before claiming
 | UI preferences | Light/dark/system appearance options, dedicated About and saved preferences (`studio_preferences.py`, `studio_about.py`) | **Partial:** technical versions in Settings, but no equivalent appearance chooser or About page |
 | Photography review | Reset selected / reset all unsaved, apply gallery-only crop (`edit_tags.py`) | **Partial:** app undo/redo and Reload, but no selection-level reset or gallery-only crop |
 | Publication safety | Backup-based multi-file transaction rollback (`photo_studio.py`, `edit_tags.py`) | **Needs hardening:** current `savePortfolio` stages writes and checks revisions but a mid-rename fault can leave an incomplete save |
+
+## Owner-directed deviations from historical controls (2026-11-21)
+
+Feature parity is **behavioral**, not a mandate to duplicate every legacy button:
+
+- **Reset instead of Undo rotation:** Reset reverts all edits applied to the image, including rotation, straightening/leveling, crop and future image transformations. It does not modify the private original or independently alter catalog descriptions, tags, naming, or publication authority. Require confirmation when discarding edits and perform no file writes until Save/Publish.
+- **Default panning:** With no editing tool active, left-mouse dragging pans. Crop, Level H and Level V temporarily own left-drag while selected. There is no separate Pan tool.
+- **Zoom controls:** Use one 100% shortcut button and a slider with the 100% tick at the **exact center**. A symmetric logarithmic 25%–400% display range reaches the previous 400% maximum without separate 200%/400% buttons.
+- **Ratio design:** No implementation/mockup change to Issue #24 until the owner explicitly approves the separate UX research recommendations.
+
+The linked UI examples for [leveling and Reset](ui-proposals/issue-23-level-guides.svg)
+and [grids with centered zoom](ui-proposals/issue-25-grids-zoom-pan.svg)
+are nonfunctional mockups; do not count them as implementation evidence.
 
 ## Acceptance focus
 
