@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import type { Catalogs, PortfolioView } from "../../backend/api/api";
 import { editCatalogs, isDirty, useEditor } from "../app/editor";
+import { publishedImageDescription } from "./published-image";
 
 type Photography = Catalogs["photography"];
 type Photo = Photography["photos"][number];
@@ -143,10 +144,7 @@ export function PhotoFields({
       </Group>
       <Text size="xs" c="dimmed">
         Published image:{" "}
-        {photo.thumbnail
-          ? `photography/thumbnails/${photo.thumbnail} (WebP)`
-          : `photography/published/${photo.file}`}
-        . Your private original is kept separately.
+        {publishedImageDescription(photo)}. Your private original is kept separately.
       </Text>
       {renaming && (
         <Group gap="xs" align="flex-end">

@@ -2,6 +2,7 @@ import { lstat, readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import type { PhotoChange, PortfolioView, Result, Revision } from "../api/api";
 import { photoNameProblem } from "./names";
+import { publicationRoot } from "./publication-paths";
 import { loadPortfolio, savePortfolio } from "./portfolio";
 
 type Photo = PortfolioView["catalogs"]["photography"]["photos"][number];
@@ -12,15 +13,9 @@ const error = (code: "invalid" | "name-conflict", message: string): Result<Photo
   error: { code, message },
 });
 
-// Only site derivatives inside the two publication folders may be moved to Trash.
-// Even a malicious catalog entry or a symlink cannot point this operation at a private original.
-async function assetPath(
-  folder: string,
-  directory: "thumbnails" | "published",
-  filename: string,
-): Promise<string | null> {
+// The validated publication directory and regular file must both stay within the repository.
+async function assetPath(root: string, filename: string): Promise<string | null> {
   if (path.basename(filename) !== filename || filename === "." || filename === "..") return null;
-  const root = await realpath(path.join(folder, "photography", directory));
   const target = path.join(root, filename);
   const info = await lstat(target).catch(() => null);
   if (!info?.isFile() || info.isSymbolicLink()) return null;
@@ -79,6 +74,8 @@ export async function renamePhoto(
   }
 
   const directory = original.thumbnail ? "thumbnails" : "published";
+  const root = await publicationRoot(folder, directory);
+  if (!root) return error("invalid", `Unsafe or missing site image directory: ${directory}`);
   const oldFile = original.thumbnail ?? oldName;
   const oldExtension = path.extname(oldFile);
   if (
@@ -88,8 +85,8 @@ export async function renamePhoto(
     return error("invalid", "Renaming cannot change the encoded file type. Reimport to convert.");
   }
   const nextFile = original.thumbnail ? path.parse(newName).name + oldExtension : newName;
-  const collision = await assetPath(folder, directory, nextFile);
-  const oldPath = await assetPath(folder, directory, oldFile);
+  const collision = await assetPath(root, nextFile);
+  const oldPath = await assetPath(root, oldFile);
   if (!oldPath) return error("invalid", `The site image for "${oldName}" is missing`);
   if (collision && collision !== oldPath) {
     return error("name-conflict", `The published image "${nextFile}" already exists`);
@@ -118,10 +115,17 @@ export async function renamePhoto(
     images,
   );
   if (!saved.ok) return saved;
+  // On case-insensitive volumes both names may resolve to the replacement after saving.
+  const oldAfterSave = await assetPath(root, oldFile);
+  const newAfterSave = await assetPath(root, nextFile);
   const warning =
-    nextFile === oldFile || referencedElsewhere(photos, original, oldFile)
-      ? undefined
-      : await trashUnused([oldPath], trash);
+    nextFile !== oldFile &&
+    !referencedElsewhere(photos, original, oldFile) &&
+    oldAfterSave &&
+    newAfterSave &&
+    oldAfterSave !== newAfterSave
+      ? await trashUnused([oldAfterSave], trash)
+      : undefined;
   return { ok: true, value: { view: saved.value, warning } };
 }
 
@@ -142,8 +146,11 @@ export async function deletePhoto(
     ["thumbnails", target.thumbnail],
     ["published", target.file],
   ] as const) {
-    if (!filename || referencedElsewhere(photos, target, filename)) continue;
-    const found = await assetPath(folder, directory, filename);
+    if (!filename) continue;
+    const root = await publicationRoot(folder, directory);
+    if (!root) return error("invalid", `Unsafe or missing site image directory: ${directory}`);
+    if (referencedElsewhere(photos, target, filename)) continue;
+    const found = await assetPath(root, filename);
     if (found) paths.push(found);
   }
   const saved = await savePortfolio(folder, revision, {

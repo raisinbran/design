@@ -1,4 +1,6 @@
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { realpath } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { deletePhoto, renamePhoto } from "./manage";
@@ -41,6 +43,85 @@ describe("published photo management", () => {
     expect(readFileSync(originalPath, "utf8")).toBe("not a public file");
     expect(() => readFileSync(thumbnail("DSCF4154_crop.webp"))).toThrow();
   });
+
+  it("keeps the replacement image and exact file casing on a case-only rename", async () => {
+    const source = "DSCF4154_crop.webp";
+    const destination = "dscf4154_crop.webp";
+    const expected = readFileSync(thumbnail(source));
+    const trashed: string[] = [];
+    const guardedTrash = async (file: string) => {
+      const [oldActual, newActual] = await Promise.all([
+        realpath(file),
+        realpath(thumbnail(destination)),
+      ]);
+      expect(oldActual).not.toBe(newActual);
+      trashed.push(file);
+      rmSync(file);
+    };
+    const view = await loadPortfolio(folder);
+    const renamed = await renamePhoto(
+      folder,
+      view.revision,
+      "DSCF4154_crop.heic",
+      "dscf4154_crop.heic",
+      guardedTrash,
+    );
+
+    expect(renamed.ok).toBe(true);
+    expect(readFileSync(thumbnail(destination))).toEqual(expected);
+    expect(readdirSync(path.join(folder, "photography", "thumbnails"))).toContain(destination);
+    expect((await loadPortfolio(folder)).catalogs.photography.photos.at(-1)).toMatchObject({
+      file: "dscf4154_crop.heic",
+      thumbnail: destination,
+    });
+    expect(trashed.length).toBeLessThanOrEqual(1);
+  });
+
+  it.each(["photography", "thumbnails"] as const)(
+    "refuses to rename or delete through a symlinked %s directory",
+    async (linkedDirectory) => {
+      const external = mkdtempSync(path.join(os.tmpdir(), "portfolio-private-images-"));
+      try {
+        const externalThumbnails = path.join(external, "thumbnails");
+        mkdirSync(externalThumbnails);
+        mkdirSync(path.join(external, "published"));
+        const privateFile = path.join(externalThumbnails, "DSCF4154_crop.webp");
+        writeFileSync(privateFile, "private original");
+        const link =
+          linkedDirectory === "photography"
+            ? path.join(folder, "photography")
+            : path.join(folder, "photography", "thumbnails");
+        const destination = linkedDirectory === "photography" ? external : externalThumbnails;
+        rmSync(link, { recursive: true });
+        symlinkSync(destination, link, process.platform === "win32" ? "junction" : "dir");
+
+        const catalogFile = path.join(folder, "data/media-catalog.json");
+        const before = readFileSync(catalogFile, "utf8");
+        const view = await loadPortfolio(folder);
+        const trashed: string[] = [];
+        const trash = async (file: string) => {
+          trashed.push(file);
+          rmSync(file);
+        };
+        const renamed = await renamePhoto(
+          folder,
+          view.revision,
+          "DSCF4154_crop.heic",
+          "DSCF4154_fix.heic",
+          trash,
+        );
+        const deleted = await deletePhoto(folder, view.revision, "DSCF4154_crop.heic", trash);
+
+        expect(renamed).toMatchObject({ ok: false, error: { code: "invalid" } });
+        expect(deleted).toMatchObject({ ok: false, error: { code: "invalid" } });
+        expect(readFileSync(privateFile, "utf8")).toBe("private original");
+        expect(readFileSync(catalogFile, "utf8")).toBe(before);
+        expect(trashed).toEqual([]);
+      } finally {
+        rmSync(external, { recursive: true, force: true });
+      }
+    },
+  );
 
   it("rejects an existing catalog name and does not change files", async () => {
     const view = await loadPortfolio(folder);

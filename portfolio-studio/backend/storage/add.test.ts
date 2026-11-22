@@ -1,4 +1,5 @@
-import { readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { addPhoto } from "./add";
@@ -63,6 +64,38 @@ describe("addPhoto", () => {
       thumbnailWidth: 800,
       thumbnailHeight: 600,
     });
+  });
+
+  it("refuses to publish through a symlinked thumbnail directory", async () => {
+    const external = mkdtempSync(path.join(os.tmpdir(), "portfolio-private-images-"));
+    try {
+      const thumbnails = path.join(folder, "photography", "thumbnails");
+      rmSync(thumbnails, { recursive: true });
+      symlinkSync(external, thumbnails, process.platform === "win32" ? "junction" : "dir");
+      const view = await loadPortfolio(folder);
+
+      const added = await addPhoto(
+        folder,
+        {
+          kind: "new",
+          revision: view.revision,
+          sourceId: "",
+          name: "Studio_9901",
+          format: "webp",
+          alt: "sample",
+          tags: ["Day"],
+        },
+        image,
+      );
+
+      expect(added).toMatchObject({ ok: false, error: { code: "invalid" } });
+      expect(existsSync(path.join(external, "Studio_9901.webp"))).toBe(false);
+      expect((await loadPortfolio(folder)).catalogs.photography.photos).toEqual(
+        view.catalogs.photography.photos,
+      );
+    } finally {
+      rmSync(external, { recursive: true, force: true });
+    }
   });
 
   // The first photo is DSCF3655_crop.jpg; the name differs only in case.
