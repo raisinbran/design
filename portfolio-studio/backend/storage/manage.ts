@@ -1,4 +1,5 @@
-import { lstat, readFile, realpath } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { lstat, readFile, realpath, rename } from "node:fs/promises";
 import path from "node:path";
 import type { PhotoChange, PortfolioView, Result, Revision } from "../api/api";
 import { photoNameProblem } from "./names";
@@ -21,6 +22,19 @@ async function assetPath(root: string, filename: string): Promise<string | null>
   if (!info?.isFile() || info.isSymbolicLink()) return null;
   const resolved = await realpath(target);
   return path.dirname(resolved) === root ? resolved : null;
+}
+
+// A two-step rename updates the on-disk spelling on case-insensitive Windows/macOS volumes.
+async function correctFilenameCase(root: string, existing: string, nextName: string): Promise<void> {
+  if (path.basename(existing) === nextName) return;
+  const temporary = path.join(root, `.portfolio-studio-case-${randomUUID()}`);
+  await rename(existing, temporary);
+  try {
+    await rename(temporary, path.join(root, nextName));
+  } catch (error) {
+    await rename(temporary, existing).catch(() => null);
+    throw error;
+  }
 }
 
 function referencedElsewhere(photos: Photo[], current: Photo, file: string): boolean {
@@ -118,6 +132,16 @@ export async function renamePhoto(
   // On case-insensitive volumes both names may resolve to the replacement after saving.
   const oldAfterSave = await assetPath(root, oldFile);
   const newAfterSave = await assetPath(root, nextFile);
+  let caseWarning: string | undefined;
+  if (nextFile !== oldFile && oldAfterSave && newAfterSave && oldAfterSave === newAfterSave) {
+    try {
+      await correctFilenameCase(root, newAfterSave, nextFile);
+    } catch {
+      caseWarning =
+        "Changes saved, but the image filename's capitalization could not be updated. " +
+        `Verify ${nextFile} in GitHub Desktop before publishing.`;
+    }
+  }
   const warning =
     nextFile !== oldFile &&
     !referencedElsewhere(photos, original, oldFile) &&
@@ -125,7 +149,7 @@ export async function renamePhoto(
     newAfterSave &&
     oldAfterSave !== newAfterSave
       ? await trashUnused([oldAfterSave], trash)
-      : undefined;
+      : caseWarning;
   return { ok: true, value: { view: saved.value, warning } };
 }
 
