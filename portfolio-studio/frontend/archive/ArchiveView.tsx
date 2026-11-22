@@ -2,6 +2,7 @@ import { Button, Checkbox, Group, Select, Stack, Text, TextInput, Title } from "
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import { editCatalogs } from "../app/editor";
+import { EditorColumns } from "../app/EditorColumns";
 import { ItemList, moveItem, newId, removeItem } from "../app/ItemList";
 import { siteImage } from "../app/portfolio";
 
@@ -70,9 +71,18 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
     setTitle("");
   }
 
+  const shift = (direction: -1 | 1) => {
+    const next = selected + direction;
+    if (next < 0 || next >= catalog.collections.length) return;
+    editCollections((items) => moveItem(items, selected, next));
+    setSelected(next);
+  };
+
   return (
-    <Group align="flex-start" wrap="nowrap">
-      <Stack w={340} gap="xs">
+    <EditorColumns
+      sidebarWidth={340}
+      sidebar={
+        <Stack gap="xs" pr="xs">
         <Group gap="xs" wrap="nowrap">
           <TextInput
             flex={1}
@@ -83,6 +93,8 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
           <Button variant="default" disabled={!title.trim()} onClick={addCollection}>
             Add
           </Button>
+          <ActionIcon size="lg" variant="default" aria-label="Move selected collection up" title="Move up" disabled={selected <= 0} onClick={() => shift(-1)}>▲</ActionIcon>
+          <ActionIcon size="lg" variant="default" aria-label="Move selected collection down" title="Move down" disabled={selected >= catalog.collections.length - 1} onClick={() => shift(1)}>▼</ActionIcon>
         </Group>
         <ItemList
           items={catalog.collections.map((item) => ({
@@ -97,8 +109,9 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
             setSelected(to);
           }}
         />
-      </Stack>
-      {collection && (
+        </Stack>
+      }
+      details={collection && (
         <CollectionEditor
           key={collection.id}
           collection={collection}
@@ -109,7 +122,7 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
           }}
         />
       )}
-    </Group>
+    />
   );
 }
 

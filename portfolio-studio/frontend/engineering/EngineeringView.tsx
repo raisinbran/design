@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   Checkbox,
   Group,
@@ -11,6 +12,7 @@ import {
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import { editCatalogs } from "../app/editor";
+import { EditorColumns } from "../app/EditorColumns";
 import { ItemList, moveItem, newId, removeItem } from "../app/ItemList";
 import { siteImage } from "../app/portfolio";
 import { RichText } from "../app/RichText";
@@ -75,9 +77,18 @@ export function EngineeringView({ catalog }: EngineeringViewProps) {
     setTitle("");
   }
 
+  const shift = (direction: -1 | 1) => {
+    const next = selected + direction;
+    if (next < 0 || next >= catalog.projects.length) return;
+    editProjects((items) => moveItem(items, selected, next));
+    setSelected(next);
+  };
+
   return (
-    <Group align="flex-start" wrap="nowrap">
-      <Stack w={340} gap="xs">
+    <EditorColumns
+      sidebarWidth={340}
+      sidebar={
+        <Stack gap="xs" pr="xs">
         <Group gap="xs" wrap="nowrap">
           <TextInput
             flex={1}
@@ -88,6 +99,8 @@ export function EngineeringView({ catalog }: EngineeringViewProps) {
           <Button variant="default" disabled={!title.trim()} onClick={addProject}>
             Add
           </Button>
+          <ActionIcon size="lg" variant="default" aria-label="Move selected project up" title="Move up" disabled={selected <= 0} onClick={() => shift(-1)}>▲</ActionIcon>
+          <ActionIcon size="lg" variant="default" aria-label="Move selected project down" title="Move down" disabled={selected >= catalog.projects.length - 1} onClick={() => shift(1)}>▼</ActionIcon>
         </Group>
         <ItemList
           items={catalog.projects.map((item) => ({
@@ -103,8 +116,9 @@ export function EngineeringView({ catalog }: EngineeringViewProps) {
             setSelected(to);
           }}
         />
-      </Stack>
-      {project && (
+        </Stack>
+      }
+      details={project && (
         <ProjectEditor
           key={project.id}
           project={project}
@@ -115,7 +129,7 @@ export function EngineeringView({ catalog }: EngineeringViewProps) {
           }}
         />
       )}
-    </Group>
+    />
   );
 }
 

@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import { editCatalogs, isDirty, useEditor } from "../app/editor";
+import { EditorColumns } from "../app/EditorColumns";
 import { siteImage } from "../app/portfolio";
 import { movePhoto, suggestArrangement } from "./arrangement";
 
@@ -75,8 +76,10 @@ export function PhotographyView({ catalog, onEditImage }: PhotographyViewProps) 
   const photo = catalog.photos.find((item) => item.file === selected);
 
   return (
-    <Group align="flex-start" wrap="nowrap">
-      <Stack w={380} gap="xs">
+    <EditorColumns
+      sidebarWidth={380}
+      sidebar={
+        <Stack gap="xs" pr="xs">
         <Group gap="xs" wrap="nowrap">
           <TextInput
             flex={1}
@@ -118,15 +121,16 @@ export function PhotographyView({ catalog, onEditImage }: PhotographyViewProps) 
             />
           ))}
         </DragDropProvider>
-      </Stack>
-      {photo && (
+        </Stack>
+      }
+      details={photo && (
         <PhotoFields
           photo={photo}
           photoTags={catalog.photoTags}
           onEditImage={() => onEditImage(photo.file)}
         />
       )}
-    </Group>
+    />
   );
 }
 
@@ -176,7 +180,7 @@ function PhotoFields({ photo, photoTags, onEditImage }: PhotoFieldsProps) {
   const dirty = useEditor(isDirty);
   const edit = (values: Partial<Photo>) => editPhoto(photo.file, values);
   return (
-    <Stack flex={1} pos="sticky" top={68}>
+    <Stack gap="xs" pr="xs">
       <img
         src={photoUrl(photo)}
         alt=""
