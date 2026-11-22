@@ -143,8 +143,8 @@ export function PhotoFields({
         </Group>
       </Group>
       <Text size="xs" c="dimmed">
-        Published image:{" "}
-        {publishedImageDescription(photo)}. Your private original is kept separately.
+        Published image: {publishedImageDescription(photo)}. Your private original is kept
+        separately.
       </Text>
       {renaming && (
         <Group gap="xs" align="flex-end">
