@@ -1,10 +1,18 @@
 $ErrorActionPreference = "Stop"
 $studioRoot = Split-Path -Parent $PSScriptRoot
-$packagedExe = Join-Path $studioRoot "out/portfolio-studio-win32-x64/portfolio-studio.exe"
-$package = Get-ChildItem -Path (Join-Path $studioRoot "out/make") -Filter "*-full.nupkg" -Recurse |
+$out = Join-Path $studioRoot "out"
+# Forge's folder name follows productName, not necessarily executableName.
+$packagedExe = Get-ChildItem -Path $out -Filter "portfolio-studio.exe" -File -Recurse |
+  Where-Object { $_.FullName -notmatch "[\\/]make[\\/]" } |
   Select-Object -First 1
-if (-not (Test-Path -LiteralPath $packagedExe) -or -not $package) {
-  throw "Missing Forge executable or full Squirrel nupkg"
+$package = Get-ChildItem -Path (Join-Path $out "make") -Filter "*.nupkg" -Recurse |
+  Where-Object { $_.Name -like "*full.nupkg" } |
+  Select-Object -First 1
+if (-not $packagedExe -or -not $package) {
+  Get-ChildItem -Path $out -Directory | Select-Object FullName | Format-Table
+  Get-ChildItem -Path (Join-Path $out "make") -File -Recurse |
+    Select-Object FullName | Format-Table
+  throw "Could not locate Forge executable or full Squirrel nupkg"
 }
 
 $diagnostic = Join-Path $env:RUNNER_TEMP "portfolio-studio-squirrel-diagnostic"
@@ -24,7 +32,7 @@ Write-Host "Squirrel package SHA256: $((Get-FileHash $package.FullName -Algorith
 $failures = 0
 $started = Get-Date
 foreach ($variant in @(
-  @{ Label = "Forge"; Executable = $packagedExe },
+  @{ Label = "Forge"; Executable = $packagedExe.FullName },
   @{ Label = "Squirrel-extracted"; Executable = $extractedExe }
 )) {
   $exe = $variant.Executable
