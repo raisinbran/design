@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Catalogs } from "../../backend/api/api";
-import { movePhoto, suggestArrangement } from "./arrangement";
+import { arrangePhotos, movePhoto, reverseUnlocked, suggestArrangement } from "./arrangement";
 
 type Photo = Catalogs["photography"]["photos"][number];
 
@@ -52,5 +52,30 @@ describe("arrangement", () => {
     const arranged = arrange();
 
     expect(arranged.map((item) => item.file)).toEqual(expected);
+  });
+});
+
+const appearances = {
+  red: { rgb: [220, 50, 40], brightness: 103, saturation: 0.71 },
+  warm: { rgb: [200, 60, 50], brightness: 103, saturation: 0.59 },
+  blue: { rgb: [40, 80, 220], brightness: 113, saturation: 0.71 },
+  pinned: { rgb: [100, 100, 100], brightness: 100, saturation: 0 },
+};
+
+describe("visual arrangement", () => {
+  const red = photo("red", ["Day"], WIDE);
+  const blue = photo("blue", ["Night"], WIDE);
+  const warm = photo("warm", ["Day"], TALL);
+
+  it("sorts by measured colors and can reverse the proposed order", () => {
+    const ordered = arrangePhotos([red, blue, warm], "color", appearances);
+    expect(ordered.map((item) => item.file)).toEqual(["red", "warm", "blue"]);
+    const reversed = arrangePhotos([red, blue, warm], "color", appearances, true);
+    expect(reversed.map((item) => item.file)).toEqual(["blue", "warm", "red"]);
+  });
+
+  it("keeps locked indexes when reversing", () => {
+    const arranged = reverseUnlocked([red, pinned, blue, warm]);
+    expect(arranged.map((item) => item.file)).toEqual(["warm", "pinned", "blue", "red"]);
   });
 });
