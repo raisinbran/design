@@ -46,7 +46,6 @@ const FORMAT_CHOICES = [
   { value: "webp", label: ".webp (recommended)" },
   { value: "jpg", label: ".jpg" },
   { value: "png", label: ".png" },
-  { value: "heic", label: ".heic" },
 ];
 
 const ASPECTS: Record<string, number | undefined> = {
@@ -436,13 +435,6 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                   The photo is converted to .{outputFormat}, up to 800 px on its longest side, with
                   a watermark and rights metadata. The private original is unchanged.
                 </Text>
-                {outputFormat === "heic" && (
-                  <Text size="sm" c="orange">
-                    HEIC export requires optional native HEVC encoding libraries and may fail on
-                    this computer. Many website browsers cannot display HEIC; WebP is recommended
-                    for a publicly viewable gallery. No fallback filetype is silently substituted.
-                  </Text>
-                )}
                 <Textarea
                   label="Description"
                   description="Also the alt text that screen readers read aloud"

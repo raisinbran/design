@@ -336,26 +336,4 @@ describe("explicit published output formats", () => {
     RENDER_TIMEOUT_MS,
   );
 
-  it(
-    "never silently writes WebP bytes as HEIC",
-    async () => {
-      const file = await flatImage(120);
-      try {
-        const rendered = await renderJob({
-          kind: "render",
-          file,
-          recipe: { rotation: 0, straighten: 0 },
-          settings,
-          fontFile,
-          siteFolder: repositoryDir,
-          format: "heic",
-        });
-        const metadata = await sharp(rendered.bytes).metadata();
-        expect(metadata.format).toBe("heif");
-      } catch (error) {
-        expect(String(error)).toMatch(/HEIC export is unavailable/);
-      }
-    },
-    RENDER_TIMEOUT_MS,
-  );
 });

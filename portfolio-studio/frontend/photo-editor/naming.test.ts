@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   fileOutputFormat,
+  isPhotoOutputFormat,
   photoBaseNameProblem,
   publishedFilename,
 } from "../../shared/photo-format";
@@ -17,9 +18,9 @@ describe("photo import naming", () => {
     expect(publishedFilename("DSCF4154_crop", "webp")).toBe("DSCF4154_crop.webp");
     expect(publishedFilename("DSCF3655_crop", "jpg")).toBe("DSCF3655_crop.jpg");
     expect(publishedFilename("DSCF3655_crop", "png")).toBe("DSCF3655_crop.png");
-    expect(publishedFilename("DSCF3655_crop", "heic")).toBe("DSCF3655_crop.heic");
     expect(fileOutputFormat("DSCF3655_crop.jpg")).toBe("jpg");
-    expect(fileOutputFormat("DSCF3655_crop.heic")).toBe("heic");
+    expect(fileOutputFormat("DSCF3655_crop.heic")).toBeNull();
+    expect(isPhotoOutputFormat("heic")).toBe(false);
   });
 
   it("rejects attempts to hide or repeat the source extension in the Name field", () => {

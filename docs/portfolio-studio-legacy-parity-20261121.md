@@ -16,7 +16,7 @@ requires a comprehensive source-level parity and native acceptance matrix.
 | --- | --- | --- |
 | Photography order | Four visual strategies plus reverse and manual movement (`arrange_gallery.py`) | `Arrangement` menu with Balanced, Color harmony, Thematic groups, Visual contrast, the newer tag/shape option, and reverse options; manual up/down and locked positions |
 | Engineering and Archive order | Buttons to move selected projects and collections (`engineering_editor.py`, `archive_editor.py`) | Up/down controls in each list; existing drag reordering retained |
-| Photo import and output | `_crop`, `_edit`, `_fix`, `_small`, custom suffix (`photo_studio.py`); Python published JPEG plus a WebP thumbnail | Extension-free Name with suffix presets; adjacent **Output filetype** selector (.webp recommended, .jpg, .png, .heic); actual website filename shown before saving |
+| Photo import and output | `_crop`, `_edit`, `_fix`, `_small`, custom suffix (`photo_studio.py`); Python published JPEG plus a WebP thumbnail | Extension-free Name with suffix presets; adjacent **Output filetype** selector (.webp recommended, .jpg, .png); actual website filename shown before saving |
 | Photo management | Remove from repository to system Trash, match renamed publication files (`manage_published.py`) | Rename a catalog entry and its derivative; delete a catalog photo and move unshared public assets to Trash, never the private original |
 | Workspace | Independent list/detail navigation | Independent scroll areas for Photography, Engineering and Archive, compact toolbar and centered app header |
 | Website | Photography display is catalog-driven | Equal top and bottom filter padding; targeted locomotive focal position; **unconditional maximum two photos per row**, regardless of orientation, tags or priority |
@@ -25,16 +25,15 @@ requires a comprehensive source-level parity and native acceptance matrix.
 
 **New imports:** the Name field contains only a base name (e.g., `IMG_1001_edit`),
 while **Output filetype** controls the actual encoded file extension. Available selections are
-`.webp (recommended)`, `.jpg`, `.png` and `.heic`. The chosen type appears in the filename,
+`.webp (recommended)`, `.jpg` and `.png`. The chosen type appears in the filename,
 preview and publication pipeline. Output images remain at most 800 px on the long side.
 The Python app had published JPEG and an independently prepared WebP thumbnail, plus size/quality
 controls; these are still parity gaps.
 
 **Existing historical entries:** their catalog `file` key may contain a *source-style*
 extension even though `thumbnail` points to WebP. Do not rename or recode existing catalog
-keys merely to make them look new. HEIC encoding requires optional native libraries not
-included in standard Sharp binaries, and HEIC is not broadly supported by website browsers.
-Selecting unavailable HEIC export produces a clear error without silently substituting WebP.
+keys merely to make them look new. HEIC originals remain valid **inputs** to the editor,
+but HEIC is not an export option because public browsers lack reliable native support.
 
 | Example | Catalog label | Actual published image |
 | --- | --- | --- |
@@ -43,7 +42,6 @@ Selecting unavailable HEIC export produces a clear error without silently substi
 | New `IMG_1001.HEIC` imported using `_edit`, default WebP | `IMG_1001_edit.webp` | `photography/thumbnails/IMG_1001_edit.webp` |
 | Same original, with JPEG selected | `IMG_1001_edit.jpg` | `photography/thumbnails/IMG_1001_edit.jpg` |
 | Same original, with PNG selected | `IMG_1001_edit.png` | `photography/thumbnails/IMG_1001_edit.png` |
-| Same original, with HEIC selected (native encoder required) | `IMG_1001_edit.heic` | `photography/thumbnails/IMG_1001_edit.heic`, if supported |
 
 ![Actual WebP media sample: SkyLink photograph](../photography/thumbnails/DSCF4154_crop.webp)
 
@@ -51,7 +49,7 @@ Selecting unavailable HEIC export produces a clear error without silently substi
 
 The existing DSCF4154 catalog rename is a **label and WebP asset path change**,
 not a HEIC re-encoding. Editing new photos uses the explicitly chosen codec; private originals
-remain unchanged. Browser support and HEIC encoding availability must be validated separately.
+remain unchanged. The output formats are WebP, JPG and PNG; HEIC input decoding remains supported.
 
 ## Confirmed remaining parity differences
 
@@ -60,7 +58,7 @@ These are distinct from the hotfixes above and should be triaged before claiming
 | Area | Legacy Python capability (source) | Status in Electron |
 | --- | --- | --- |
 | Photo publication | Batch selection (current/highlighted/all), staged multi-image publish with conflict numbering (`photo_studio.py`) | **Missing:** one photo at a time; no batch publish/numbered conflict resolution |
-| Photo formats | Configurable JPEG quality 80/85/90/95 and max-side size, JPEG for publication + WebP thumbnail (`photo_studio.py`, `processor.py`) | **Partial:** selectable WebP/JPEG/PNG/HEIC output in PR #22, fixed 800 px long-side and fixed quality per codec; original full-size JPEG plus separately framed thumbnail still missing |
+| Photo formats | Configurable JPEG quality 80/85/90/95 and max-side size, JPEG for publication + WebP thumbnail (`photo_studio.py`, `processor.py`) | **Partial:** selectable WebP/JPEG/PNG output in PR #22, fixed 800 px long-side and fixed quality per codec; original full-size JPEG plus separately framed thumbnail still missing |
 | Framing | Distinct *Gallery framing* and *Crop exported JPEG* destinations (`photo_studio.py`) | **Missing:** editor crop changes rendered WebP pixels; no separate reversible gallery-only crop |
 | Horizontal/vertical leveling | Draw reference lines with **Level H** / **Level V**, constrained angle correction; Auto-level and Undo rotation (`photo_studio.py`, `photo_viewport.py`) | **Missing:** manual Straighten is not equivalent; [Issue #23](https://github.com/raisinbran/design/issues/23) |
 | Complete ratio controls | Free, Original, 1:1, 3:2, 2:3, 4:3, 3:4, 5:4, 4:5, 16:9, 9:16, Custom; numeric width : height (`photo_studio.py`) | **Missing:** only Free, 1:1, 4:5, 3:2; no Original, portrait/landscape counterparts, or editable ratio fields; [Issue #24](https://github.com/raisinbran/design/issues/24) |
@@ -86,7 +84,7 @@ These are distinct from the hotfixes above and should be triaged before claiming
    only site assets and catalog/JS are modified.
 3. Verify the filtered/selected list, two independent scrollbars and toolbar fit on Mac and Windows.
 4. Check homepage locomotive framing and the Photography sticky filter on narrow and desktop layouts.
-5. Confirm extension-free Name, adjacent output-format selector, and **actual encoded format** in preview and catalog. Test JPEG and PNG output bytes; HEIC must not silently fall back.
+5. Confirm extension-free Name, adjacent output-format selector, and **actual encoded format** in preview and catalog. Test JPEG and PNG output bytes; HEIC originals must still import while HEIC export is rejected.
 6. Verify **every rendered gallery row has one or two photos**, including wide desktop screens and filtered galleries.
 7. Resolve the parity gaps in Issues [#23](https://github.com/raisinbran/design/issues/23),
    [#24](https://github.com/raisinbran/design/issues/24),

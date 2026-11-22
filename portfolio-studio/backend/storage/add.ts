@@ -44,7 +44,7 @@ export async function addPhoto(
   if (request.kind === "replace" && !existing) {
     return { ok: false, error: { code: "invalid", message: `${key} is no longer in the catalog` } };
   }
-  // An overwrite must not put JPEG/PNG/HEIC bytes into a historic WebP thumbnail.
+  // An overwrite must not put JPEG or PNG bytes into a historic WebP thumbnail.
   const expected =
     request.kind === "new"
       ? request.format

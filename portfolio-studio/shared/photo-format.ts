@@ -1,5 +1,5 @@
 /** The extension written to disk and served to the website, not the private source type. */
-export const PHOTO_OUTPUT_FORMATS = ["webp", "jpg", "png", "heic"] as const;
+export const PHOTO_OUTPUT_FORMATS = ["webp", "jpg", "png"] as const;
 export type PhotoOutputFormat = (typeof PHOTO_OUTPUT_FORMATS)[number];
 export const DEFAULT_PHOTO_OUTPUT_FORMAT: PhotoOutputFormat = "webp";
 
@@ -40,5 +40,4 @@ export const photoMimeType = (format: PhotoOutputFormat): string =>
     webp: "image/webp",
     jpg: "image/jpeg",
     png: "image/png",
-    heic: "image/heic",
   })[format];

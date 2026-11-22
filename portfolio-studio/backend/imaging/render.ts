@@ -365,7 +365,7 @@ export async function renderJob(job: Exclude<Job, { kind: "appearance" }>): Prom
     .withExif({ IFD0: { Artist: rights.author, Copyright: rights.copyright } })
     .withXmp(rightsXmp(rights));
 
-  // Select the actual encoder, not just a file extension. Never disguise WebP as HEIC.
+  // Match encoded bytes to the format displayed in the filetype selector.
   let bytes: Buffer;
   switch (format) {
     case "webp":
@@ -376,16 +376,6 @@ export async function renderJob(job: Exclude<Job, { kind: "appearance" }>): Prom
       break;
     case "png":
       bytes = await output.png({ compressionLevel: 9 }).toBuffer();
-      break;
-    case "heic":
-      try {
-        bytes = await output.heif({ compression: "hevc", quality: 90 }).toBuffer();
-      } catch {
-        throw new Error(
-          "HEIC export is unavailable in this installation. HEIC encoding requires native HEVC libraries; " +
-            "choose WebP (recommended), JPG, or PNG. No file was saved.",
-        );
-      }
       break;
   }
   return { bytes, width: info.width, height: info.height, format };
