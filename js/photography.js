@@ -3,6 +3,7 @@
 (() => {
   "use strict";
 
+  const MAX_PHOTOS_PER_ROW = 2;
   const gallery = document.getElementById("photo-gallery");
   if (!gallery) return;
 
@@ -130,10 +131,11 @@
       // Group portrait pairs by the position of their first photograph,
       // leaving a final unmatched portrait until after every complete row.
       const groups = landscapeIndices.map(index => ({ index, members:[index] }));
-      for (let offset = 0; offset + 1 < portraitIndices.length; offset += 2) {
+      for (let offset = 0; offset + MAX_PHOTOS_PER_ROW <= portraitIndices.length;
+        offset += MAX_PHOTOS_PER_ROW) {
         groups.push({
           index:portraitIndices[offset],
-          members:portraitIndices.slice(offset, offset + 2)
+          members:portraitIndices.slice(offset, offset + MAX_PHOTOS_PER_ROW)
         });
       }
       groups.sort((left, right) => left.index - right.index);
@@ -179,16 +181,14 @@
     dp[n] = 0;
     for (let begin = n - 1; begin >= 0; begin--) {
       let sum = 0;
-      let nonPortraits = 0;
-      for (let end = begin + 1; end <= Math.min(n, begin + 3); end++) {
+      for (let end = begin + 1; end <= Math.min(n, begin + MAX_PHOTOS_PER_ROW); end++) {
         sum += r[end - 1];
-        if (r[end - 1] >= 0.95) nonPortraits++;
-        // Keep portrait triplets, but never shrink two portraits beside a landscape.
-        // Three landscapes/squares also make each photograph too small.
-        if (nonPortraits > 2 || (end - begin === 3 && nonPortraits === 1)) continue;
         const count = end - begin;
         const rowPhotos = photos.slice(begin, end);
-        const hasPortrait = nonPortraits < count;
+        const hasPortrait = rowPhotos.some(photo => {
+          const ratio = photo.thumbnailWidth / photo.thumbnailHeight || photo.aspectRatio;
+          return Number.isFinite(ratio) && ratio > 0 && ratio < 0.95;
+        });
         const desired = width < 720
           ? (hasPortrait ? Math.min(420, width * 0.9) : 230)
           : width < 1024 ? (hasPortrait ? 440 : 280)
