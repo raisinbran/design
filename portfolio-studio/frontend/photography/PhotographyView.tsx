@@ -5,18 +5,15 @@ import {
   Badge,
   Button,
   Menu,
-  Checkbox,
   Group,
-  Select,
   Stack,
-  TagsInput,
   Text,
-  Textarea,
   TextInput,
 } from "@mantine/core";
 import { useState } from "react";
-import type { Catalogs } from "../../backend/api/api";
-import { editCatalogs, isDirty, useEditor } from "../app/editor";
+import type { Catalogs, PortfolioView } from "../../backend/api/api";
+import { editCatalogs } from "../app/editor";
+import { PhotoFields } from "./PhotoFields";
 import { EditorColumns } from "../app/EditorColumns";
 import { siteImage } from "../app/portfolio";
 import {
@@ -56,33 +53,13 @@ function editPhotography(change: (photography: Photography) => Photography) {
   editCatalogs((catalogs) => ({ ...catalogs, photography: change(catalogs.photography) }));
 }
 
-function editPhoto(file: string, values: Partial<Photo>) {
-  editPhotography((photography) => ({
-    ...photography,
-    photos: photography.photos.map((photo) =>
-      photo.file === file ? { ...photo, ...values } : photo,
-    ),
-  }));
-}
-
-// A new tag goes to the end of photoTags, which is also the order of the site's filter chips.
-function setTags(file: string, tags: string[]) {
-  editPhotography((photography) => ({
-    ...photography,
-    photoTags: [
-      ...photography.photoTags,
-      ...tags.filter((tag) => !photography.photoTags.includes(tag)),
-    ],
-    photos: photography.photos.map((photo) => (photo.file === file ? { ...photo, tags } : photo)),
-  }));
-}
-
 interface PhotographyViewProps {
   catalog: Photography;
   onEditImage: (photoKey: string) => void;
+  onPhotoSaved: (view: PortfolioView, warning?: string) => void;
 }
 
-export function PhotographyView({ catalog, onEditImage }: PhotographyViewProps) {
+export function PhotographyView({ catalog, onEditImage, onPhotoSaved }: PhotographyViewProps) {
   const [selected, setSelected] = useState(catalog.photos[0]?.file);
   const [search, setSearch] = useState("");
   const [arranging, setArranging] = useState(false);
@@ -243,9 +220,20 @@ export function PhotographyView({ catalog, onEditImage }: PhotographyViewProps) 
       }
       details={photo && (
         <PhotoFields
+          key={photo.file}
           photo={photo}
           photoTags={catalog.photoTags}
+          imageUrl={photoUrl(photo)}
           onEditImage={() => onEditImage(photo.file)}
+          onRename={(name, view, warning) => {
+            setSelected(name);
+            onPhotoSaved(view, warning);
+          }}
+          onDelete={(view, warning) => {
+            const remaining = view.catalogs.photography.photos;
+            setSelected(remaining[Math.min(Math.max(selectedIndex, 0), remaining.length - 1)]?.file);
+            onPhotoSaved(view, warning);
+          }}
         />
       )}
     />
@@ -288,64 +276,3 @@ function PhotoRow({ photo, index, draggable, selected, onSelect }: PhotoRowProps
   );
 }
 
-interface PhotoFieldsProps {
-  photo: Photo;
-  photoTags: string[];
-  onEditImage: () => void;
-}
-
-function PhotoFields({ photo, photoTags, onEditImage }: PhotoFieldsProps) {
-  const dirty = useEditor(isDirty);
-  const edit = (values: Partial<Photo>) => editPhoto(photo.file, values);
-  return (
-    <Stack gap="xs" pr="xs">
-      <img
-        src={photoUrl(photo)}
-        alt=""
-        style={{ maxWidth: "100%", maxHeight: 360, objectFit: "contain" }}
-      />
-      <Group>
-        <Text size="sm" c="dimmed" flex={1}>
-          {photo.file}
-        </Text>
-        <Button variant="default" disabled={dirty} onClick={onEditImage}>
-          Edit Image
-        </Button>
-      </Group>
-      <Textarea
-        label="Description"
-        description="Also the alt text that screen readers read aloud"
-        autosize
-        minRows={2}
-        value={photo.alt}
-        onChange={(event) => edit({ alt: event.currentTarget.value })}
-      />
-      <TagsInput
-        label="Tags"
-        description="A new tag also becomes a filter on the site"
-        data={photoTags}
-        value={photo.tags}
-        onChange={(tags) => setTags(photo.file, tags)}
-      />
-      <Select
-        label="Display priority"
-        data={PRIORITIES}
-        value={photo.displayPriority}
-        allowDeselect={false}
-        onChange={(value) => value && edit({ displayPriority: value as Photo["displayPriority"] })}
-      />
-      <Checkbox
-        label="Unlist"
-        description="Hides the photo on the site"
-        checked={!photo.visible}
-        onChange={(event) => edit({ visible: !event.currentTarget.checked })}
-      />
-      <Checkbox
-        label="Lock position"
-        description="Keeps the photo's place in the order during drags and Suggest Arrangement. On the site, its row and column still depend on the window width, the tag filter and unlisted photos before it."
-        checked={!!photo.locked}
-        onChange={(event) => edit({ locked: event.currentTarget.checked || undefined })}
-      />
-    </Stack>
-  );
-}

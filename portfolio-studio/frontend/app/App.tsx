@@ -139,6 +139,11 @@ export function App() {
               setEditImage({ photoKey });
               setSection("photo-editor");
             }}
+            onPhotoSaved={(updated, warning) => {
+              loadView(updated);
+              setSavedMessage(true);
+              if (warning) setError({ message: warning });
+            }}
           />
         )}
         {catalogs && section === "engineering" && (
