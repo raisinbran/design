@@ -27,12 +27,27 @@ import type {
 } from "../../backend/api/api";
 import { isDirty, useEditor } from "../app/editor";
 import { call, runShowingErrors } from "../app/portfolio";
-import { catalogNameWithSuffix, SUFFIX_OPTIONS, validSuffix, webpOutputName } from "./naming";
+import { catalogNameWithSuffix, SUFFIX_OPTIONS, validSuffix } from "./naming";
+import {
+  DEFAULT_PHOTO_OUTPUT_FORMAT,
+  fileOutputFormat,
+  isPhotoOutputFormat,
+  photoBaseNameProblem,
+  publishedFilename,
+  type PhotoOutputFormat,
+} from "../../backend/api/photo-format";
 
 /** The photo being edited; `photoKey` is set for Edit Image, which has no draft. */
 interface Editing extends Draft {
   photoKey?: string;
 }
+
+const FORMAT_CHOICES = [
+  { value: "webp", label: ".webp (recommended)" },
+  { value: "jpg", label: ".jpg" },
+  { value: "png", label: ".png" },
+  { value: "heic", label: ".heic" },
+];
 
 const ASPECTS: Record<string, number | undefined> = {
   Free: undefined,
@@ -65,12 +80,17 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [editing, setEditing] = useState<Editing | null>(null);
   const [missing, setMissing] = useState<string | null>(null);
   const [proxy, setProxy] = useState<ImageRef | null>(null);
-  const [rendered, setRendered] = useState<{ image: ImageRef; recipe: Recipe } | null>(null);
+  const [rendered, setRendered] = useState<{
+    image: ImageRef;
+    recipe: Recipe;
+    format: PhotoOutputFormat;
+  } | null>(null);
   const [busy, setBusy] = useState(false);
   const [adding, setAdding] = useState(false);
   const [crop, setCrop] = useState<PercentCrop | undefined>();
   const [aspect, setAspect] = useState("Free");
   const [name, setName] = useState("");
+  const [outputFormat, setOutputFormat] = useState<PhotoOutputFormat>(DEFAULT_PHOTO_OUTPUT_FORMAT);
   const [suffixChoice, setSuffixChoice] = useState("_crop");
   const [customSuffix, setCustomSuffix] = useState("_portfolio");
   const [alt, setAlt] = useState("");
@@ -86,6 +106,14 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     setSuffixChoice("_crop");
     setCustomSuffix("_portfolio");
     setName(next.photoKey ? next.photoKey : catalogNameWithSuffix(next.source.name, "_crop"));
+    const savedPhoto = view?.catalogs.photography.photos.find(
+      (photo) => photo.file === next.photoKey,
+    );
+    setOutputFormat(
+      next.photoKey
+        ? fileOutputFormat(savedPhoto?.thumbnail ?? "") ?? DEFAULT_PHOTO_OUTPUT_FORMAT
+        : DEFAULT_PHOTO_OUTPUT_FORMAT,
+    );
     setAlt("");
     setTags([]);
     setError(null);
@@ -137,14 +165,16 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
         proxyFor.current = orientation;
         setProxy(shown);
       }
-      const image = settled(await window.portfolio["photos.render"](source.id, recipe));
+      const image = settled(
+        await window.portfolio["photos.render"](source.id, recipe, outputFormat),
+      );
       if (!image) return;
-      setRendered({ image, recipe });
+      setRendered({ image, recipe, format: outputFormat });
       setBusy(false);
       if (!key) void window.portfolio["photos.saveDraft"](source.id, recipe);
     }, 300);
     return () => clearTimeout(timer);
-  }, [editing]);
+  }, [editing, outputFormat]);
 
   const changeRecipe = (recipe: Recipe) => editing && setEditing({ ...editing, recipe });
 
@@ -196,6 +226,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
           revision: view.revision,
           sourceId: editing.source.id,
           name,
+          format: outputFormat,
           alt,
           tags,
           overwrite,
@@ -241,10 +272,17 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     });
   }
 
-  const current = rendered && editing && rendered.recipe === editing.recipe && !busy;
+  const current =
+    rendered &&
+    editing &&
+    rendered.recipe === editing.recipe &&
+    rendered.format === outputFormat &&
+    !busy;
   const validChoice = suffixChoice !== "custom" || validSuffix(customSuffix);
+  const nameProblem = photoBaseNameProblem(name.trim());
   const described =
-    !!editing?.photoKey || (!!name.trim() && !!alt.trim() && tags.length > 0 && validChoice);
+    !!editing?.photoKey ||
+    (!nameProblem && !!alt.trim() && tags.length > 0 && validChoice);
 
   return (
     <Group align="flex-start" wrap="nowrap">
@@ -322,7 +360,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 ? `Crop: ${crop.x.toFixed(1)}% from left, ${crop.y.toFixed(1)}% from top, ${crop.width.toFixed(1)}% × ${crop.height.toFixed(1)}%`
                 : "No crop: the whole straightened photo"}
             </Text>
-            {rendered && (
+            {rendered && rendered.format === outputFormat && (
               <>
                 <img
                   src={rendered.image.url}
@@ -330,7 +368,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                   style={{ maxWidth: 400, maxHeight: 400, alignSelf: "flex-start" }}
                 />
                 <Text size="sm">
-                  Published preview (WebP): {rendered.image.width} × {rendered.image.height} px,{" "}
+                  Published preview (.{outputFormat}): {rendered.image.width} × {rendered.image.height} px,{" "}
                   {kilobytes(rendered.image.bytes)}
                 </Text>
               </>
@@ -367,18 +405,44 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                     }}
                   />
                 )}
-                <TextInput
-                  label="Catalog name (source-style label)"
-                  description="This labels the photo. It does not change its private original or the published WebP format."
-                  required
-                  value={name}
-                  onChange={(event) => setName(event.currentTarget.value)}
-                />
-                <Text size="sm" c="dimmed">
-                  Published image: photography/thumbnails/
-                  {webpOutputName(name || editing.source.name)} — WebP, at most 800 px on its long
-                  side. The original remains private and unchanged.
+                <Group align="flex-start" gap="xs" wrap="nowrap">
+                  <TextInput
+                    label="Name"
+                    description="Filename without extension"
+                    style={{ flex: "1 1 0", minWidth: 0 }}
+                    required
+                    value={name}
+                    error={nameProblem || undefined}
+                    onChange={(event) => setName(event.currentTarget.value)}
+                  />
+                  <Select
+                    label="Output filetype"
+                    description="Actual website image format"
+                    w={190}
+                    data={FORMAT_CHOICES}
+                    value={outputFormat}
+                    allowDeselect={false}
+                    onChange={(choice) => {
+                      if (isPhotoOutputFormat(choice)) setOutputFormat(choice);
+                    }}
+                  />
+                </Group>
+                <Text size="sm" fw={600}>
+                  Website file: photography/thumbnails/
+                  {nameProblem ? "(enter a valid name)" : publishedFilename(name.trim(), outputFormat)}
                 </Text>
+                <Text size="sm" c="dimmed">
+                  The photo is converted to .{outputFormat}, up to 800 px on its longest side,
+                  with a watermark and rights metadata. The private original is unchanged.
+                </Text>
+                {outputFormat === "heic" && (
+                  <Text size="sm" c="orange">
+                    HEIC export requires optional native HEVC encoding libraries and may fail
+                    on this computer. Many website browsers cannot display HEIC; WebP is
+                    recommended for a publicly viewable gallery. No fallback filetype is
+                    silently substituted.
+                  </Text>
+                )}
                 <Textarea
                   label="Description"
                   description="Also the alt text that screen readers read aloud"
