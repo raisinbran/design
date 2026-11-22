@@ -16,7 +16,7 @@ requires a comprehensive source-level parity and native acceptance matrix.
 | --- | --- | --- |
 | Photography order | Four visual strategies plus reverse and manual movement (`arrange_gallery.py`) | `Arrangement` menu with Balanced, Color harmony, Thematic groups, Visual contrast, the newer tag/shape option, and reverse options; manual up/down and locked positions |
 | Engineering and Archive order | Buttons to move selected projects and collections (`engineering_editor.py`, `archive_editor.py`) | Up/down controls in each list; existing drag reordering retained |
-| Photo import and output | `_crop`, `_edit`, `_fix`, `_small`, custom suffix (`photo_studio.py`); Python published JPEG plus a WebP thumbnail | Extension-free Name with suffix presets; adjacent **Output filetype** selector (.webp recommended, .jpg, .png); actual website filename shown before saving |
+| Photo import and output | `_crop`, `_edit`, `_fix`, `_small`, custom suffix (`photo_studio.py`); Python published JPEG plus a WebP thumbnail | Extension-free Name with suffix presets; adjacent **Output filetype** selector (.webp rec, .jpg, .png); actual website filename shown before saving |
 | Photo management | Remove from repository to system Trash, match renamed publication files (`manage_published.py`) | Rename a catalog entry and its derivative; delete a catalog photo and move unshared public assets to Trash, never the private original |
 | Workspace | Independent list/detail navigation | Independent scroll areas for Photography, Engineering and Archive, compact toolbar and centered app header |
 | Website | Photography display is catalog-driven | Equal top and bottom filter padding; targeted locomotive focal position; **unconditional maximum two photos per row**, regardless of orientation, tags or priority |
@@ -25,7 +25,7 @@ requires a comprehensive source-level parity and native acceptance matrix.
 
 **New imports:** the Name field contains only a base name (e.g., `IMG_1001_edit`),
 while **Output filetype** controls the actual encoded file extension. Available selections are
-`.webp (recommended)`, `.jpg` and `.png`. The chosen type appears in the filename,
+`.webp (rec)`, `.jpg` and `.png`. The chosen type appears in the filename,
 preview and publication pipeline. Output images remain at most 800 px on the long side.
 The Python app had published JPEG and an independently prepared WebP thumbnail, plus size/quality
 controls; these are still parity gaps.
