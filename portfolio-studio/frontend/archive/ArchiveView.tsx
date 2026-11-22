@@ -1,4 +1,4 @@
-import { Button, Checkbox, Group, Select, Stack, Text, TextInput, Title } from "@mantine/core";
+import { ActionIcon, Button, Checkbox, Group, Select, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import { editCatalogs } from "../app/editor";

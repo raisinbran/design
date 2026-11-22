@@ -1,7 +1,9 @@
 import { parentPort, workerData } from "node:worker_threads";
-import { renderJob, type Job } from "./render";
+import { analyzeJob, renderJob, type Job } from "./render";
 
-renderJob(workerData as Job).then(
+const job = workerData as Job;
+const task = job.kind === "appearance" ? analyzeJob(job) : renderJob(job);
+task.then(
   (value) => parentPort!.postMessage({ ok: true, value }),
   (error: unknown) => parentPort!.postMessage({ ok: false, error: String(error) }),
 );

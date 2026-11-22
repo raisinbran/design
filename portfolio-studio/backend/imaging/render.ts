@@ -316,8 +316,7 @@ function rightsXmp({ author, copyright, usageTerms }: ImageSettings["rights"]): 
  * Runs a proxy or render job. A render is the gallery image, at most 800 px on the long side, with
  * the watermark and the rights metadata, and none of the original's metadata, such as GPS.
  */
-export async function renderJob(job: Job): Promise<Rendered | AppearanceMap> {
-  if (job.kind === "appearance") {
+export async function analyzeJob(job: Extract<Job, { kind: "appearance" }>): Promise<AppearanceMap> {
     const appearance: AppearanceMap = {};
     for (const { key, file } of job.photos) {
       const { data, info } = await sharp(file, { limitInputPixels: PIXEL_LIMIT })
@@ -342,7 +341,9 @@ export async function renderJob(job: Job): Promise<Rendered | AppearanceMap> {
       };
     }
     return appearance;
-  }
+}
+
+export async function renderJob(job: Exclude<Job, { kind: "appearance" }>): Promise<Rendered> {
   if (job.kind === "proxy") {
     const { data, info } = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);
     const bytes = await sharp(data, { raw: info }).webp().toBuffer();
