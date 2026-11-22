@@ -25,7 +25,11 @@ async function assetPath(root: string, filename: string): Promise<string | null>
 }
 
 // A two-step rename updates the on-disk spelling on case-insensitive Windows/macOS volumes.
-async function correctFilenameCase(root: string, existing: string, nextName: string): Promise<void> {
+async function correctFilenameCase(
+  root: string,
+  existing: string,
+  nextName: string,
+): Promise<void> {
   if (path.basename(existing) === nextName) return;
   const temporary = path.join(root, `.portfolio-studio-case-${randomUUID()}`);
   await rename(existing, temporary);
