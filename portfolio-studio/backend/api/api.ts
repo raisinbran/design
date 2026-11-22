@@ -25,6 +25,10 @@ export interface PortfolioApi {
   "photos.add"(request: AddRequest): R<Added>;
   /** Reads thumbnail color statistics in the image worker; originals remain private. */
   "photos.appearance"(): R<Record<string, PhotoAppearance>>;
+  /** Renames a catalog entry and its public derivative, never the private original. */
+  "photos.rename"(revision: Revision, oldName: string, newName: string): R<PhotoChange>;
+  /** Removes an entry and moves its unshared site derivatives to the OS Trash. */
+  "photos.delete"(revision: Revision, photoName: string): R<PhotoChange>;
   /** The saved drafts whose originals still exist, each with a fresh source id. */
   "photos.drafts"(): R<Draft[]>;
   "photos.saveDraft"(sourceId: string, recipe: Recipe): R<null>;
@@ -121,6 +125,12 @@ export type AddRequest =
 export interface Added {
   view: PortfolioView;
   photoKey: string;
+}
+
+export interface PhotoChange {
+  view: PortfolioView;
+  /** Remaining site files need manual cleanup when the system Trash rejects a file. */
+  warning?: string;
 }
 
 export interface ImageSettings {

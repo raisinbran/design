@@ -1,13 +1,14 @@
 import { randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { dialog, type BrowserWindow } from "electron";
+import { dialog, shell, type BrowserWindow } from "electron";
 import Store from "electron-store";
 import { z } from "zod";
 import type { ImageRef, PortfolioApi, Recipe, Result, SavedSource } from "../api/api";
 import { readSettings } from "../settings";
 import { resolveSiteImage } from "../storage/images";
 import { loadPortfolio } from "../storage/portfolio";
+import { deletePhoto, renamePhoto } from "../storage/manage";
 import { addPhoto } from "../storage/add";
 import { cancelJob, runJob } from "./jobs";
 import type { Job, Rendered } from "./render";
@@ -167,6 +168,33 @@ export function photoHandlers(
         photos: photos.filter((photo) => photo !== null),
       });
       return result ? ok(result) : failure("cancelled", "Photo analysis was cancelled");
+    },
+    async "photos.rename"(revision, oldName, newName) {
+      const result = await renamePhoto(folder(), revision, oldName, newName, (file) =>
+        shell.trashItem(file),
+      );
+      if (!result.ok) return result;
+      writeStore((data) => {
+        const originals = { ...data.originals };
+        if (originals[oldName]) {
+          originals[newName] = originals[oldName];
+          delete originals[oldName];
+        }
+        return { ...data, originals };
+      });
+      return result;
+    },
+    async "photos.delete"(revision, photoName) {
+      const result = await deletePhoto(folder(), revision, photoName, (file) =>
+        shell.trashItem(file),
+      );
+      if (!result.ok) return result;
+      writeStore((data) => {
+        const originals = { ...data.originals };
+        delete originals[photoName];
+        return { ...data, originals };
+      });
+      return result;
     },
     async "photos.cancel"() {
       cancelJob();
