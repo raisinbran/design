@@ -3,7 +3,7 @@ import path from "node:path";
 import decodeHeic from "heic-decode";
 import sharp, { type OutputInfo, type OverlayOptions, type Sharp } from "sharp";
 import type { ImageSettings, Orientation, PhotoAppearance, Recipe } from "../api/api";
-import { DEFAULT_PHOTO_OUTPUT_FORMAT, type PhotoOutputFormat } from "../api/photo-format";
+import { DEFAULT_PHOTO_OUTPUT_FORMAT, type PhotoOutputFormat } from "../../shared/photo-format";
 
 export const OUTPUT_LONG_SIDE = 800;
 export const PROXY_LONG_SIDE = 1600;

@@ -1,4 +1,4 @@
-import { sourceNameWithoutExtension } from "../../backend/api/photo-format";
+import { sourceNameWithoutExtension } from "../../shared/photo-format";
 
 export const SUFFIX_OPTIONS = [
   { value: "_crop", label: "_crop — cropped or straightened" },

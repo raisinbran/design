@@ -3,7 +3,7 @@ import {
   fileOutputFormat,
   photoBaseNameProblem,
   publishedFilename,
-} from "../../backend/api/photo-format";
+} from "../../shared/photo-format";
 import { catalogNameWithSuffix, validSuffix } from "./naming";
 
 describe("photo import naming", () => {

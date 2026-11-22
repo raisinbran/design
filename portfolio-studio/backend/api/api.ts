@@ -1,7 +1,7 @@
 // Types only. The frontend imports this file with `import type`, so nothing here reaches the renderer bundle.
 import type { z } from "zod";
 import type { Catalogs as CatalogsSchema } from "../catalogs/schema";
-import type { PhotoOutputFormat } from "./photo-format";
+import type { PhotoOutputFormat } from "../../shared/photo-format";
 
 type R<T> = Promise<Result<T>>;
 

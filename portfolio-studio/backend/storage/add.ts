@@ -9,7 +9,7 @@ import {
   photoBaseNameProblem,
   publishedFilename,
   type PhotoOutputFormat,
-} from "../api/photo-format";
+} from "../../shared/photo-format";
 import { loadPortfolio, savePortfolio } from "./portfolio";
 
 type Photo = PortfolioView["catalogs"]["photography"]["photos"][number];

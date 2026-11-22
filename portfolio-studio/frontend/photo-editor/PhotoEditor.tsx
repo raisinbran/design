@@ -35,7 +35,7 @@ import {
   photoBaseNameProblem,
   publishedFilename,
   type PhotoOutputFormat,
-} from "../../backend/api/photo-format";
+} from "../../shared/photo-format";
 
 /** The photo being edited; `photoKey` is set for Edit Image, which has no draft. */
 interface Editing extends Draft {

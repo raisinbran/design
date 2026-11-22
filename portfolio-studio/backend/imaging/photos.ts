@@ -5,7 +5,7 @@ import { dialog, shell, type BrowserWindow } from "electron";
 import Store from "electron-store";
 import { z } from "zod";
 import type { ImageRef, PortfolioApi, Recipe, Result, SavedSource } from "../api/api";
-import { fileOutputFormat, isPhotoOutputFormat, photoMimeType } from "../api/photo-format";
+import { fileOutputFormat, isPhotoOutputFormat, photoMimeType } from "../../shared/photo-format";
 import { readSettings } from "../settings";
 import { resolveSiteImage } from "../storage/images";
 import { loadPortfolio } from "../storage/portfolio";
