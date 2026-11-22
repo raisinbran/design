@@ -19,15 +19,19 @@ const galleryScript = readFileSync(
   "utf8",
 );
 
-function page(width: number, count: number) {
+function page(
+  width: number,
+  count: number,
+  dimensions: Array<[number, number]> = [],
+) {
   const gallery = makeElement();
   gallery.clientWidth = width;
   const photos = Array.from({ length: count }, (_, index) => ({
     file: `IMG_${index}.jpg`,
     alt: `Photo ${index}`,
     visible: true,
-    thumbnailWidth: index % 3 === 0 ? 450 : 800,
-    thumbnailHeight: index % 3 === 0 ? 800 : 533,
+    thumbnailWidth: dimensions[index]?.[0] ?? (index % 3 === 0 ? 450 : 800),
+    thumbnailHeight: dimensions[index]?.[1] ?? (index % 3 === 0 ? 800 : 533),
     tags: [index % 2 === 0 ? "Day" : "Dusk"],
   }));
   const window = {
@@ -71,7 +75,67 @@ function makeElement(): SiteElement {
   return node;
 }
 
+function rowFiles(gallery: SiteElement): string[][] {
+  return gallery.children.map((row) =>
+    row.children.map((tile) => tile.dataset.file),
+  );
+}
+
 describe("Photography gallery row capacity", () => {
+  it.each([390, 720])(
+    "keeps ordinary mobile photos solo and pairs only adjacent 3:2-tall portraits at %i px",
+    (width) => {
+      const dimensions: Array<[number, number]> = [
+        [900, 600], // Landscape: one photo per row.
+        [750, 1000], // Ordinary portrait: one photo per row.
+        [600, 900], // Exactly 3:2 tall: pair eligible.
+        [500, 900], // Taller portrait: pair eligible.
+        [800, 800], // Square: one photo per row.
+        [500, 750], // Unpaired tall portrait: one photo per row.
+        [720, 1000], // Ordinary portrait cannot join the preceding tall photo.
+      ];
+      const { gallery } = page(width, dimensions.length, dimensions);
+      expect(rowFiles(gallery)).toEqual([
+        ["IMG_0.jpg"],
+        ["IMG_1.jpg"],
+        ["IMG_2.jpg", "IMG_3.jpg"],
+        ["IMG_4.jpg"],
+        ["IMG_5.jpg"],
+        ["IMG_6.jpg"],
+      ]);
+    },
+  );
+
+  it("preserves catalog order and reflows tall pairs after mobile filtering", () => {
+    const dimensions: Array<[number, number]> = [
+      [600, 900],
+      [900, 600],
+      [500, 900],
+      [500, 800],
+      [800, 600],
+    ];
+    const { gallery, window } = page(390, dimensions.length, dimensions);
+    expect(rowFiles(gallery)).toEqual([
+      ["IMG_0.jpg"],
+      ["IMG_1.jpg"],
+      ["IMG_2.jpg", "IMG_3.jpg"],
+      ["IMG_4.jpg"],
+    ]);
+
+    window.PortfolioPhotographyGallery!.setFilters(["Day"]);
+    expect(rowFiles(gallery)).toEqual([
+      ["IMG_0.jpg", "IMG_2.jpg"],
+      ["IMG_4.jpg"],
+    ]);
+    window.PortfolioPhotographyGallery!.setFilters([]);
+    expect(rowFiles(gallery)).toEqual([
+      ["IMG_0.jpg"],
+      ["IMG_1.jpg"],
+      ["IMG_2.jpg", "IMG_3.jpg"],
+      ["IMG_4.jpg"],
+    ]);
+  });
+
   it.each([380, 720, 900, 1440, 1900])(
     "uses no more than two photographs per row at %i px",
     (width) => {

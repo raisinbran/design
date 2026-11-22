@@ -4,6 +4,7 @@
   "use strict";
 
   const MAX_PHOTOS_PER_ROW = 2;
+  const TALL_PORTRAIT_MAX_RATIO = 2 / 3; // Minimum height:width ratio of 3:2.
   const gallery = document.getElementById("photo-gallery");
   if (!gallery) return;
 
@@ -119,57 +120,39 @@
       gallery.appendChild(wrapper);
     }
 
-    // On phones, separate orientations while retaining the order within each
-    // orientation. Pair portraits; an unpaired portrait is always the last row.
-    // Landscape photographs get the full row individually.
+    // On phones, show one image per row to keep photographs legible.
+    // Only adjacent portraits at least 3:2 tall may share a row; preserve catalog order.
     if ((window.innerWidth || width) <= 720) {
-      const portraitIndices = [];
-      const landscapeIndices = [];
-      for (let index = 0; index < n; index++) {
-        (r[index] < 0.95 ? portraitIndices : landscapeIndices).push(index);
-      }
-      // Group portrait pairs by the position of their first photograph,
-      // leaving a final unmatched portrait until after every complete row.
-      const groups = landscapeIndices.map(index => ({ index, members:[index] }));
-      for (let offset = 0; offset + MAX_PHOTOS_PER_ROW <= portraitIndices.length;
-        offset += MAX_PHOTOS_PER_ROW) {
-        groups.push({
-          index:portraitIndices[offset],
-          members:portraitIndices.slice(offset, offset + MAX_PHOTOS_PER_ROW)
-        });
-      }
-      groups.sort((left, right) => left.index - right.index);
-      if (portraitIndices.length % 2) {
-        groups.push({
-          index:portraitIndices[portraitIndices.length - 1],
-          members:[portraitIndices[portraitIndices.length - 1]]
-        });
-      }
-      for (const group of groups) {
-        const rowRatios = group.members.map(index => r[index]);
-        const count = group.members.length;
+      for (let index = 0; index < n; index += 1) {
+        const pairTallPortraits = index + 1 < n &&
+          r[index] <= TALL_PORTRAIT_MAX_RATIO &&
+          r[index + 1] <= TALL_PORTRAIT_MAX_RATIO;
+        const members = pairTallPortraits ? [index, index + 1] : [index];
+        const rowRatios = members.map(photoIndex => r[photoIndex]);
+        const count = members.length;
         const exact = (width - gap * (count - 1)) /
           rowRatios.reduce((total, ratio) => total + ratio, 0);
         const portraitRow = rowRatios[0] < 0.95;
         const limit = Math.min(360, viewportHeight * 0.48);
         const desired = portraitRow ? Math.min(420, width * 0.9) : 270;
-        // Single non-portrait images fill the full row at natural aspect ratio.
-        // Portrait pairs retain the mobile height limit.
+        // Single non-portrait images fill the row at their natural aspect ratio.
+        // Tall portrait pairs retain the existing mobile height limit.
         const height = portraitRow ? Math.min(exact, limit, desired) : exact;
         const wrapper = document.createElement("div");
         wrapper.className = "photo-justified-row";
         if (portraitRow) wrapper.classList.add("photo-portrait-row");
-        if (group.members.length === 1 && portraitRow) {
+        if (count === 1 && portraitRow) {
           wrapper.classList.add("photo-final-row");
         }
         wrapper.style.gap = gap + "px";
-        for (const index of group.members) {
-          const tile = tiles[index];
-          tile.style.width = (height * r[index]) + "px";
+        for (const photoIndex of members) {
+          const tile = tiles[photoIndex];
+          tile.style.width = (height * r[photoIndex]) + "px";
           tile.style.height = height + "px";
           wrapper.appendChild(tile);
         }
         gallery.appendChild(wrapper);
+        if (pairTallPortraits) index += 1;
       }
       return;
     }
