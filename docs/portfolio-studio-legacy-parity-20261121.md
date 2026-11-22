@@ -76,16 +76,16 @@ These are distinct from the hotfixes above and should be triaged before claiming
 | Photography review | Reset selected / reset all unsaved, apply gallery-only crop (`edit_tags.py`) | **Partial:** app undo/redo and Reload, but no selection-level reset or gallery-only crop |
 | Publication safety | Backup-based multi-file transaction rollback (`photo_studio.py`, `edit_tags.py`) | **Needs hardening:** current `savePortfolio` stages writes and checks revisions but a mid-rename fault can leave an incomplete save |
 
-## Crop-ratio design approved by the owner
+## Aspect controls approved by the owner
 
 Use the current macOS Apple Photos crop-preset set, verified from its Crop UI:
 **Original, Freeform, Square, 16:9, 4:5, 5:7, 4:3, 3:5, 3:2, Custom**.
-Keep one compact ratio dropdown with an adjacent two-icon **Landscape / Portrait** toggle
-matching Apple Photos' orientation concept. The orientation toggle swaps the active
-width:height proportion rather than duplicating portrait ratios in the menu.
+Name the selector **Aspect**, not "Crop ratio". The constant left-to-right order is
+**Aspect dropdown → Width → Height → Landscape/Portrait**. The toggle swaps the
+active width:height proportion rather than duplicating portrait ratios in the menu.
 
 **Global UI principle: toolbars must never change their dimensions or move controls in
-response to a selection.** Width, Height, orientation, dropdown, Apply and other toolbar
+response to a selection.** Aspect, Width, Height, orientation and other toolbar
 controls occupy reserved positions at all times. When a preset such as `3:2` is selected
 in landscape mode, populate **Width = 3**, **Height = 2**; choosing portrait swaps the
 values to **2** and **3**. Original derives the ratio from the oriented source; Square
@@ -108,7 +108,14 @@ Feature parity is **behavioral**, not a mandate to duplicate every legacy button
 - **Reset instead of Undo rotation:** Reset reverts all edits applied to the image, including rotation, straightening/leveling, crop and future image transformations. It does not modify the private original or independently alter catalog descriptions, tags, naming, or publication authority. Require confirmation when discarding edits and perform no file writes until Save/Publish.
 - **Default panning:** With no editing tool active, left-mouse dragging pans. Crop, Level H and Level V temporarily own left-drag while selected. There is no separate Pan tool.
 - **Zoom controls:** Use one 100% shortcut button and a slider with the 100% tick at the **exact center**. A symmetric logarithmic 25%–400% display range reaches the previous 400% maximum without separate 200%/400% buttons.
-- **Ratio design:** No implementation/mockup change to Issue #24 until the owner explicitly approves the separate UX research recommendations.
+- **Aspect controls:** The owner approved the Apple Photos preset set, always-visible numeric fields and orientation toggle after Height. Selecting a preset updates the crop preview immediately; do not add a redundant **Apply** button to the primary toolbar.
+- **Button hierarchy:** The formerly proposed **Full photo** action clears only the crop, whereas **Reset** discards all photo transformations. To avoid two competing primary commands, remove Full photo from the toolbar and offer the narrower action as **Clear crop** in a fixed-position **More** menu. Reset remains visible with confirmation.
+- **Clear active-tool state:** A selected Crop tool has an obvious contrasting state and **CROP ON** instruction band. Crop, Level H and Level V are mutually exclusive; clicking the current tool again or pressing Esc returns to default left-drag panning.
+- **Space allocation:** The editor has three permanently reserved rows: **TOOLS** for Crop/Level H/Level V/Auto-level/rotation/Straighten/Reset/More, **ASPECT** for selector/Width/Height/Orientation, and **VIEW** for Grid/100%/the centered zoom slider. These rows do not resize or reflow when editing state changes.
+
+The [integrated future-editor screenshot](ui-proposals/integrated-photo-editor.svg) combines the
+only open PR (#22) with the planned but unimplemented features in Issues #23–25. It is a
+nonfunctional design illustration, not a photograph of the current app.
 
 The linked UI examples for [leveling and Reset](ui-proposals/issue-23-level-guides.svg)
 and [grids with centered zoom](ui-proposals/issue-25-grids-zoom-pan.svg)
