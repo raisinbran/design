@@ -9,6 +9,10 @@ node_modules/
 .vite/
 out/
 
+# Python bytecode caches are generated locally and must not be committed
+__pycache__/
+*.pyc
+
 # macOS Finder metadata
 .DS_Store
 
