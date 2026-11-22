@@ -335,5 +335,4 @@ describe("explicit published output formats", () => {
     },
     RENDER_TIMEOUT_MS,
   );
-
 });
