@@ -7,6 +7,8 @@ import type { ForgeConfig } from "@electron-forge/shared-types";
 const config: ForgeConfig = {
   packagerConfig: {
     executableName: "portfolio-studio",
+    // Sign and seal test bundles without Apple credentials; this is not Developer ID distribution.
+    osxSign: { identity: "-" },
     // Native code cannot read inside the asar archive, so sharp's libraries and the watermark font
     // stay outside.
     asar: { unpack: "{**/node_modules/{sharp,@img}/**/*,**/assets/fonts/*}" },
