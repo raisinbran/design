@@ -392,6 +392,20 @@ window.PORTFOLIO_PHOTOS = [
     "thumbnailVersion": "27d890c793f5",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
+  },
+  {
+    "file": "DSCF4154.heic",
+    "alt": "LAX SkyLink people mover viaduct",
+    "visible": true,
+    "displayPriority": "normal",
+    "tags": [
+      "Dusk",
+      "Concrete Jungle"
+    ],
+    "thumbnail": "DSCF4154.heic.webp",
+    "thumbnailVersion": "1981012db02f",
+    "thumbnailWidth": 800,
+    "thumbnailHeight": 800
   }
 ];
 window.PHOTO_TAG_LABELS = ["Day", "Moody", "Dusk", "Night", "Concrete Jungle", "\"It's just rocks\"", "Sky"];
