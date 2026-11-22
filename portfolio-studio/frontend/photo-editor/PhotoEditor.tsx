@@ -1,3 +1,4 @@
+// Coordinates persistent drafts, proxy previews and the final published render in one view.
 import {
   Button,
   Group,
