@@ -76,6 +76,31 @@ These are distinct from the hotfixes above and should be triaged before claiming
 | Photography review | Reset selected / reset all unsaved, apply gallery-only crop (`edit_tags.py`) | **Partial:** app undo/redo and Reload, but no selection-level reset or gallery-only crop |
 | Publication safety | Backup-based multi-file transaction rollback (`photo_studio.py`, `edit_tags.py`) | **Needs hardening:** current `savePortfolio` stages writes and checks revisions but a mid-rename fault can leave an incomplete save |
 
+## Crop-ratio design approved by the owner
+
+Use the current macOS Apple Photos crop-preset set, verified from its Crop UI:
+**Original, Freeform, Square, 16:9, 4:5, 5:7, 4:3, 3:5, 3:2, Custom**.
+Keep one compact ratio dropdown with an adjacent two-icon **Landscape / Portrait** toggle
+matching Apple Photos' orientation concept. The orientation toggle swaps the active
+width:height proportion rather than duplicating portrait ratios in the menu.
+
+**Global UI principle: toolbars must never change their dimensions or move controls in
+response to a selection.** Width, Height, orientation, dropdown, Apply and other toolbar
+controls occupy reserved positions at all times. When a preset such as `3:2` is selected
+in landscape mode, populate **Width = 3**, **Height = 2**; choosing portrait swaps the
+values to **2** and **3**. Original derives the ratio from the oriented source; Square
+shows 1:1; Freeform retains the fixed fields but disables their contents. Orientation
+is disabled where meaningless without collapsing its space.
+
+Label manual ratio editing **Custom** (not `Custom: 7:5`). If the user edits either
+number after selecting a preset, select Custom automatically and validate both
+positive finite values before changing the crop. The two inputs always remain
+visible and aligned. These are *aspect proportions*, never exported pixel dimensions.
+
+These instructions update the proposal in [Issue #24](https://github.com/raisinbran/design/issues/24);
+[view the updated ratio concept](ui-proposals/issue-24-crop-ratios.svg).
+The mockup is not evidence of implemented editor functionality.
+
 ## Owner-directed deviations from historical controls (2026-11-21)
 
 Feature parity is **behavioral**, not a mandate to duplicate every legacy button:
