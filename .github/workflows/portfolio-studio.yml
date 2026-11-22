@@ -29,6 +29,10 @@ jobs:
           cache: npm
           cache-dependency-path: portfolio-studio/package-lock.json
       - run: npm ci
+      - name: Report diagnostic script formatting difference
+        run: |
+          npx prettier --write scripts/packaged-smoke.mjs
+          git diff -- scripts/packaged-smoke.mjs
       # The one-time setup from docs/testing.md, because the launch test keeps the sandbox on.
       - name: Linux sandbox setup
         if: runner.os == 'Linux'
