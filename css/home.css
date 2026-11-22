@@ -633,6 +633,11 @@ body > main {
   opacity: 1;
 }
 
+/* Keep the locomotive in the upper center of the Engineering card crop. */
+.r76-home [data-home-preview="engineering"] img[src*="IMG_1242_edit.jpg"] {
+  object-position: 50% 28%;
+}
+
 .r76-home .hero-feature .fullbleed-hero {
   margin: 0;
   background: transparent;

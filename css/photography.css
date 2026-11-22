@@ -379,7 +379,7 @@ body.photography-page .photo-intro .photo-deck {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 0 12px;
+  padding: 12px 0 12px;
   background: rgba(255,255,255,.96);
   border-bottom: 1px solid rgba(27,47,51,.12);
   font-family: Inter, "Segoe UI", Arial, sans-serif;
@@ -440,7 +440,7 @@ body.photography-page .photo-intro .photo-deck {
   .photography-page .photo-filter-bar {
     gap: 7px;
     flex-wrap: wrap;
-    padding: 0 0 8px;
+    padding: 8px 0 8px;
   }
 
   .photography-page .photo-filter-chips {
