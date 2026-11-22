@@ -5,6 +5,7 @@ import { dialog, shell, type BrowserWindow } from "electron";
 import Store from "electron-store";
 import { z } from "zod";
 import type { ImageRef, PortfolioApi, Recipe, Result, SavedSource } from "../api/api";
+import { fileOutputFormat, isPhotoOutputFormat, photoMimeType } from "../api/photo-format";
 import { readSettings } from "../settings";
 import { resolveSiteImage } from "../storage/images";
 import { loadPortfolio } from "../storage/portfolio";
@@ -57,7 +58,7 @@ const previews = new Map<string, Rendered & { recipe?: Recipe }>();
 let version = 0;
 
 const ok = <T>(value: T): Result<T> => ({ ok: true, value });
-const failure = (code: "source-missing" | "cancelled" | "internal", message: string) =>
+const failure = (code: "source-missing" | "cancelled" | "internal" | "invalid", message: string) =>
   ({ ok: false, error: { code, message } }) as const;
 
 function register(file: string): SavedSource["source"] {
@@ -100,7 +101,9 @@ async function preview(
 export function previewResponse(url: URL): Response {
   const image = previews.get(url.pathname.slice(1));
   return image
-    ? new Response(Buffer.from(image.bytes), { headers: { "content-type": "image/webp" } })
+    ? new Response(Buffer.from(image.bytes), {
+        headers: { "content-type": photoMimeType(image.format ?? "webp") },
+      })
     : new Response("Not found", { status: 404 });
 }
 
@@ -140,13 +143,22 @@ export function photoHandlers(
     async "photos.proxy"(sourceId, orientation) {
       return preview(sourceId, "proxy", (file) => ({ kind: "proxy", file, orientation }));
     },
-    async "photos.render"(sourceId, recipe) {
+    async "photos.render"(sourceId, recipe, format) {
+      if (!isPhotoOutputFormat(format)) return failure("invalid", "Choose a supported output format");
       const settings = readSettings();
       const siteFolder = folder();
       return preview(
         sourceId,
         "render",
-        (file) => ({ kind: "render", file, recipe, settings, fontFile: FONT_FILE, siteFolder }),
+        (file) => ({
+          kind: "render",
+          file,
+          recipe,
+          format,
+          settings,
+          fontFile: FONT_FILE,
+          siteFolder,
+        }),
         recipe,
       );
     },
@@ -205,6 +217,17 @@ export function photoHandlers(
       const rendered = previews.get(`${request.sourceId}/render`);
       if (!file || !rendered?.recipe)
         return failure("internal", "Render the photo before adding it");
+      const expectedFormat =
+        request.kind === "new"
+          ? request.format
+          : fileOutputFormat(
+              (await loadPortfolio(folder())).catalogs.photography.photos.find(
+                (photo) => photo.file === request.photoKey,
+              )?.thumbnail ?? "",
+            ) ?? "webp";
+      if (rendered.format !== expectedFormat) {
+        return failure("invalid", "The preview format changed. Render the selected format before saving.");
+      }
       const added = await addPhoto(folder(), request, rendered);
       if (!added.ok) return added;
       const { photoKey } = added.value;

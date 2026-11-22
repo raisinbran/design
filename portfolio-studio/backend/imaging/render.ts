@@ -3,6 +3,7 @@ import path from "node:path";
 import decodeHeic from "heic-decode";
 import sharp, { type OutputInfo, type OverlayOptions, type Sharp } from "sharp";
 import type { ImageSettings, Orientation, PhotoAppearance, Recipe } from "../api/api";
+import { DEFAULT_PHOTO_OUTPUT_FORMAT, type PhotoOutputFormat } from "../api/photo-format";
 
 export const OUTPUT_LONG_SIDE = 800;
 export const PROXY_LONG_SIDE = 1600;
@@ -39,6 +40,8 @@ export type Job =
       kind: "render";
       file: string;
       recipe: Recipe;
+      /** The actual encoded file format; old render callers default to WebP. */
+      format?: PhotoOutputFormat;
       settings: ImageSettings;
       fontFile: string;
       /** The website folder, which holds the logo. */
@@ -49,6 +52,7 @@ export interface Rendered {
   bytes: Uint8Array;
   width: number;
   height: number;
+  format?: PhotoOutputFormat;
 }
 
 export type AppearanceMap = Record<string, PhotoAppearance>;
@@ -355,11 +359,34 @@ export async function renderJob(job: Exclude<Job, { kind: "appearance" }>): Prom
   const { data, info } = image;
   const { rights } = job.settings;
   const logoFile = path.join(job.siteFolder, SITE_LOGO);
-  const bytes = await sharp(data, { raw: info })
+  const format = job.format ?? DEFAULT_PHOTO_OUTPUT_FORMAT;
+  const output = sharp(data, { raw: info })
     .composite(await watermark(image, job.settings.watermark, job.fontFile, logoFile))
     .withExif({ IFD0: { Artist: rights.author, Copyright: rights.copyright } })
-    .withXmp(rightsXmp(rights))
-    .webp({ quality: WEBP_QUALITY })
-    .toBuffer();
-  return { bytes, width: info.width, height: info.height };
+    .withXmp(rightsXmp(rights));
+
+  // Select the actual encoder, not just a file extension. Never disguise WebP as HEIC.
+  let bytes: Buffer;
+  switch (format) {
+    case "webp":
+      bytes = await output.webp({ quality: WEBP_QUALITY }).toBuffer();
+      break;
+    case "jpg":
+      bytes = await output.jpeg({ quality: 90, mozjpeg: true }).toBuffer();
+      break;
+    case "png":
+      bytes = await output.png({ compressionLevel: 9 }).toBuffer();
+      break;
+    case "heic":
+      try {
+        bytes = await output.heif({ compression: "hevc", quality: 90 }).toBuffer();
+      } catch {
+        throw new Error(
+          "HEIC export is unavailable in this installation. HEIC encoding requires native HEVC libraries; " +
+            "choose WebP (recommended), JPG, or PNG. No file was saved.",
+        );
+      }
+      break;
+  }
+  return { bytes, width: info.width, height: info.height, format };
 }

@@ -1,7 +1,7 @@
 import { lstat, readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import type { PhotoChange, PortfolioView, Result, Revision } from "../api/api";
-import { photoNameProblem, webpName } from "./names";
+import { photoNameProblem } from "./names";
 import { loadPortfolio, savePortfolio } from "./portfolio";
 
 type Photo = PortfolioView["catalogs"]["photography"]["photos"][number];
@@ -80,7 +80,14 @@ export async function renamePhoto(
 
   const directory = original.thumbnail ? "thumbnails" : "published";
   const oldFile = original.thumbnail ?? oldName;
-  const nextFile = original.thumbnail ? webpName(newName) : newName;
+  const oldExtension = path.extname(oldFile);
+  if (
+    path.extname(original.file).toLowerCase() === oldExtension.toLowerCase() &&
+    path.extname(newName).toLowerCase() !== oldExtension.toLowerCase()
+  ) {
+    return error("invalid", "Renaming cannot change the encoded file type. Reimport to convert.");
+  }
+  const nextFile = original.thumbnail ? path.parse(newName).name + oldExtension : newName;
   const collision = await assetPath(folder, directory, nextFile);
   const oldPath = await assetPath(folder, directory, oldFile);
   if (!oldPath) return error("invalid", `The site image for "${oldName}" is missing`);
