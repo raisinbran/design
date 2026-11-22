@@ -19,7 +19,12 @@ const galleryScript = readFileSync(
   "utf8",
 );
 
-function page(width: number, count: number, dimensions: Array<[number, number]> = []) {
+function page(
+  width: number,
+  count: number,
+  dimensions: Array<[number, number]> = [],
+  viewportHeight = 750,
+) {
   const gallery = makeElement();
   gallery.clientWidth = width;
   const photos = Array.from({ length: count }, (_, index) => ({
@@ -33,7 +38,7 @@ function page(width: number, count: number, dimensions: Array<[number, number]> 
   const window = {
     PORTFOLIO_PHOTOS: photos,
     innerWidth: width,
-    innerHeight: 750,
+    innerHeight: viewportHeight,
     addEventListener: () => undefined,
   };
   const document = {
@@ -75,7 +80,93 @@ function rowFiles(gallery: SiteElement): string[][] {
   return gallery.children.map((row) => row.children.map((tile) => tile.dataset.file));
 }
 
+function rowUsedWidth(row: SiteElement): number {
+  const gap = Number.parseFloat(row.style.gap);
+  const tilesWidth = row.children.reduce(
+    (total, tile) => total + Number.parseFloat(tile.style.width),
+    0,
+  );
+  return tilesWidth + gap * (row.children.length - 1);
+}
+
+function expectInteriorRowsFullWidth(gallery: SiteElement, width: number): void {
+  const interiorRows = gallery.children.slice(0, -2);
+  expect(interiorRows.length).toBeGreaterThan(0);
+  for (const row of interiorRows) {
+    expect(row.children.length).toBeGreaterThanOrEqual(1);
+    expect(row.children.length).toBeLessThanOrEqual(2);
+    expect(rowUsedWidth(row)).toBeCloseTo(width, 5);
+  }
+}
+
 describe("Photography gallery row capacity", () => {
+  it.each([390, 720])(
+    "fills mobile rows before the last two, whether they hold one or two photos at %i px",
+    (width) => {
+      const dimensions: Array<[number, number]> = [
+        [900, 600],
+        [750, 1000],
+        [600, 900],
+        [500, 900],
+        [900, 600],
+        [400, 900],
+      ];
+      const { gallery } = page(width, dimensions.length, dimensions);
+      expect(rowFiles(gallery)).toEqual([
+        ["IMG_0.jpg"],
+        ["IMG_1.jpg"],
+        ["IMG_2.jpg", "IMG_3.jpg"],
+        ["IMG_4.jpg"],
+        ["IMG_5.jpg"],
+      ]);
+      expectInteriorRowsFullWidth(gallery, width);
+      // A very tall photo in the last two rows may remain narrower.
+      expect(rowUsedWidth(gallery.children.at(-1)!)).toBeLessThan(width);
+    },
+  );
+
+  it("recomputes full-width mobile rows after filtering and clearing tags", () => {
+    const dimensions: Array<[number, number]> = [
+      [500, 900],
+      [1200, 800],
+      [400, 900],
+      [800, 600],
+      [900, 600],
+      [900, 600],
+      [500, 900],
+      [700, 900],
+      [400, 800],
+      [900, 600],
+    ];
+    const { gallery, window } = page(390, dimensions.length, dimensions);
+    expectInteriorRowsFullWidth(gallery, 390);
+
+    window.PortfolioPhotographyGallery!.setFilters(["Day"]);
+    expect(rowFiles(gallery)).toEqual([
+      ["IMG_0.jpg", "IMG_2.jpg"],
+      ["IMG_4.jpg"],
+      ["IMG_6.jpg", "IMG_8.jpg"],
+    ]);
+    expectInteriorRowsFullWidth(gallery, 390);
+
+    window.PortfolioPhotographyGallery!.setFilters([]);
+    expect(rowFiles(gallery).flat()).toEqual(
+      Array.from({ length: dimensions.length }, (_, index) => `IMG_${index}.jpg`),
+    );
+    expectInteriorRowsFullWidth(gallery, 390);
+  });
+
+  it.each([
+    { width: 900, height: 420 },
+    { width: 1440, height: 750 },
+  ])("justifies desktop/tablet interior rows at $width x $height", ({ width, height }) => {
+    const { gallery, window } = page(width, 15, [], height);
+    expectInteriorRowsFullWidth(gallery, width);
+    window.PortfolioPhotographyGallery!.setFilters(["Day"]);
+    expectInteriorRowsFullWidth(gallery, width);
+  });
+
+
   it.each([390, 720])(
     "keeps ordinary mobile photos solo and pairs only adjacent 3:2-tall portraits at %i px",
     (width) => {

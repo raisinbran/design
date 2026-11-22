@@ -85,10 +85,8 @@
     const width = gallery.clientWidth;
     if (!width) return;
     const viewportHeight = window.innerHeight || 750;
-    // Wide phones in landscape still need room to reveal the following row.
-    // Keep normal desktop rows unchanged, including short desktop windows.
-    const cappedRows = width < 720 ||
-      ((window.innerWidth || width) <= 1024 && viewportHeight <= 500);
+    // Short tablet viewports may cap the final row, never interior rows.
+    const shortViewport = (window.innerWidth || width) <= 1024 && viewportHeight <= 500;
 
     const gap = width < 720 ? 8 : 12;
     const n = tiles.length;
@@ -120,40 +118,31 @@
       gallery.appendChild(wrapper);
     }
 
-    // On phones, show one image per row to keep photographs legible.
-    // Only adjacent portraits at least 3:2 tall may share a row; preserve catalog order.
+    // Phone rows retain catalog order, using one photo unless adjacent tall portraits pair.
+    // All except the final two rows must fill the available width.
     if ((window.innerWidth || width) <= 720) {
-      for (let index = 0; index < n; index += 1) {
-        const pairTallPortraits = index + 1 < n &&
-          r[index] <= TALL_PORTRAIT_MAX_RATIO &&
-          r[index + 1] <= TALL_PORTRAIT_MAX_RATIO;
-        const members = pairTallPortraits ? [index, index + 1] : [index];
-        const rowRatios = members.map(photoIndex => r[photoIndex]);
-        const count = members.length;
-        const exact = (width - gap * (count - 1)) /
-          rowRatios.reduce((total, ratio) => total + ratio, 0);
-        const portraitRow = rowRatios[0] < 0.95;
-        const limit = Math.min(360, viewportHeight * 0.48);
-        const desired = portraitRow ? Math.min(420, width * 0.9) : 270;
-        // Single non-portrait images fill the row at their natural aspect ratio.
-        // Tall portrait pairs retain the existing mobile height limit.
-        const height = portraitRow ? Math.min(exact, limit, desired) : exact;
-        const wrapper = document.createElement("div");
-        wrapper.className = "photo-justified-row";
-        if (portraitRow) wrapper.classList.add("photo-portrait-row");
-        if (count === 1 && portraitRow) {
-          wrapper.classList.add("photo-final-row");
-        }
-        wrapper.style.gap = gap + "px";
-        for (const photoIndex of members) {
-          const tile = tiles[photoIndex];
-          tile.style.width = (height * r[photoIndex]) + "px";
-          tile.style.height = height + "px";
-          wrapper.appendChild(tile);
-        }
-        gallery.appendChild(wrapper);
-        if (pairTallPortraits) index += 1;
+      const rows = [];
+      for (let begin = 0; begin < n;) {
+        const pairTallPortraits = begin + 1 < n &&
+          r[begin] <= TALL_PORTRAIT_MAX_RATIO &&
+          r[begin + 1] <= TALL_PORTRAIT_MAX_RATIO;
+        const end = begin + (pairTallPortraits ? 2 : 1);
+        rows.push({ begin, end });
+        begin = end;
       }
+
+      rows.forEach(({ begin, end }, rowIndex) => {
+        const count = end - begin;
+        const sum = r.slice(begin, end).reduce((total, ratio) => total + ratio, 0);
+        const exact = (width - gap * (count - 1)) / sum;
+        const isPortraitRow = r[begin] < 0.95;
+        const isTrailingRow = rowIndex >= rows.length - 2;
+        // Only the final two portrait rows may use the old height limit.
+        const height = isTrailingRow && isPortraitRow
+          ? Math.min(exact, 360, viewportHeight * 0.48, 420, width * 0.9)
+          : exact;
+        addRow(begin, end, height, Math.abs(height - exact) < 0.01);
+      });
       return;
     }
 
@@ -177,20 +166,16 @@
           : width < 1024 ? (hasPortrait ? 440 : 280)
           : desiredRowHeight(rowPhotos, hasPortrait);
         const standardMax = rowPhotos.some(p => priorityValue(p) >= 2) ? 640 : 590;
-        // Small screens need a visible continuation below each photograph.
-        // Leave room for the surrounding navigation and the next row.
-        const maximum = cappedRows
+        // Keep height caps available for the final row on short viewports.
+        const maximum = shortViewport
           ? Math.min(360, viewportHeight * 0.48)
           : standardMax;
         const exact = (width - gap * (count - 1)) / sum;
-        // Desktop interior rows fill the gallery. Mobile rows may leave side space
-        // to keep tall photographs within a comfortable viewing height.
         const cap = count === 1 ? Math.min(maximum, desired + (hasPortrait ? 15 : 40)) : maximum;
-        // A standalone landscape or square tile must span the entire row.
-        // Keep portrait and multi-image row sizing as before.
-        const standaloneNonPortrait = count === 1 && !hasPortrait;
-        const height = standaloneNonPortrait ? exact :
-          (cappedRows || end === n ? Math.min(exact, cap) : exact);
+        // Interior rows always span the gallery. Only the final row may be shorter.
+        const height = end === n && (count > 1 || hasPortrait)
+          ? Math.min(exact, cap)
+          : exact;
         const used = sum * height + gap * (count - 1);
         let penalty = 10 + 110 * Math.pow(Math.log(height / desired), 2);
         penalty += 180 * Math.pow(Math.max(0, width - used) / width, 2);
