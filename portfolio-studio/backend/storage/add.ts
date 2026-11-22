@@ -90,7 +90,10 @@ export async function addPhoto(
   if (competingThumbnail) {
     return {
       ok: false,
-      error: { code: "name-conflict", message: `The published filename ${thumbnail} is already in use` },
+      error: {
+        code: "name-conflict",
+        message: `The published filename ${thumbnail} is already in use`,
+      },
     };
   }
 
