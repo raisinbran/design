@@ -166,7 +166,6 @@ describe("Photography gallery row capacity", () => {
     expectInteriorRowsFullWidth(gallery, width);
   });
 
-
   it.each([390, 720])(
     "keeps ordinary mobile photos solo and pairs only adjacent 3:2-tall portraits at %i px",
     (width) => {
