@@ -22,6 +22,13 @@ trap cleanup EXIT
 
 echo "macOS: $(sw_vers -productVersion), architecture: $(uname -m)"
 echo "DMG SHA256: $(shasum -a 256 "$dmg")"
+forge_app="$(find "$studio_root/out" -maxdepth 2 -type d -name '*.app' -print -quit)"
+if [[ -z "$forge_app" ]]; then echo "Forge packaged app is missing" >&2; exit 1; fi
+echo "Forge packaged bundle signature before DMG creation: $forge_app"
+codesign --display --verbose=2 "$forge_app" 2>&1 || true
+if ! codesign --verify --deep --strict --verbose=2 "$forge_app"; then
+  echo "Forge packaged app has an invalid signature before the DMG maker" >&2
+fi
 hdiutil attach -readonly -nobrowse -mountpoint "$mount" "$dmg"
 mounted=1
 app="$(find "$mount" -maxdepth 1 -type d -name '*.app' -print -quit)"
