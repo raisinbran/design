@@ -40,9 +40,9 @@ describe("addPhoto", () => {
     expect(changed.sort()).toEqual([
       "data/media-catalog.json",
       "js/photography-catalog.js",
-      "photography/thumbnails/IMG_0001.HEIC.webp",
+      "photography/thumbnails/IMG_0001.webp",
     ]);
-    expect(readFileSync(path.join(folder, "photography/thumbnails/IMG_0001.HEIC.webp"))).toEqual(
+    expect(readFileSync(path.join(folder, "photography/thumbnails/IMG_0001.webp"))).toEqual(
       image.bytes,
     );
     const { catalogs } = await loadPortfolio(folder);
@@ -53,7 +53,7 @@ describe("addPhoto", () => {
       alt: "harbor",
       visible: true,
       tags: ["Dusk", "Harbor"],
-      thumbnail: "IMG_0001.HEIC.webp",
+      thumbnail: "IMG_0001.webp",
       thumbnailWidth: 800,
       thumbnailHeight: 600,
     });
