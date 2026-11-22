@@ -52,6 +52,8 @@ jobs:
         if: runner.os != 'Linux'
         run: npm test
       - run: npm run make
+        env:
+          DEBUG: ${{ runner.os == 'macOS' && 'electron-osx-sign*,electron-packager*' || '' }}
       # Exercise the exact Forge package and installer payload, not just the Vite source app.
       - name: Windows packaged repeated-launch diagnostics
         if: runner.os == 'Windows'
