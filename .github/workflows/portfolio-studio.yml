@@ -59,6 +59,10 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./scripts/windows-packaged-smoke.ps1
+      - name: macOS LaunchServices false-positive negative control
+        if: runner.os == 'macOS'
+        shell: bash
+        run: bash scripts/macos-launch-check.test.sh
       - name: macOS DMG signature and LaunchServices diagnostics
         if: runner.os == 'macOS'
         shell: bash

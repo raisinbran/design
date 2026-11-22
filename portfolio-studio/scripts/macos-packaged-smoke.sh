@@ -2,6 +2,7 @@
 set -euo pipefail
 
 studio_root="$(cd "$(dirname "$0")/.." && pwd)"
+source "$studio_root/scripts/macos-launch-check.sh"
 dmg="$(find "$studio_root/out/make" -type f -name '*.dmg' -print -quit)"
 if [[ -z "$dmg" ]]; then
   echo "No Forge DMG found" >&2
@@ -26,7 +27,10 @@ forge_app="$(find "$studio_root/out" -maxdepth 2 -type d -name '*.app' -print -q
 if [[ -z "$forge_app" ]]; then echo "Forge packaged app is missing" >&2; exit 1; fi
 echo "Forge packaged bundle signature before DMG creation: $forge_app"
 codesign --display --verbose=2 "$forge_app" 2>&1 || true
-if ! codesign --verify --deep --strict --verbose=2 "$forge_app"; then
+forge_signature_ok=0
+if codesign --verify --deep --strict --verbose=2 "$forge_app"; then
+  forge_signature_ok=1
+else
   echo "Forge packaged app has an invalid signature before the DMG maker" >&2
 fi
 hdiutil attach -readonly -nobrowse -mountpoint "$mount" "$dmg"
@@ -49,26 +53,21 @@ else
   echo "Strict signature verification FAILED" >&2
 fi
 
-# LaunchServices exercises a different entry path than launching the Mach-O directly.
+# LaunchServices exercises a distinct entry path. A successful 'open' must create a
+# new live process for this exact executable and isolated profile.
 mkdir -p "$temporary/launch-profile"
 launch_ok=0
-if open -n -a "$app" --args "--user-data-dir=$temporary/launch-profile"; then
-  for _ in {1..12}; do
-    launched_pid="$(ps -axo pid=,command= | awk -v executable="$exe" 'index($0, executable) { print $1; exit }')"
-    if [[ -n "$launched_pid" ]]; then
-      launch_ok=1
-      break
-    fi
-    sleep 1
-  done
+if launched_pid="$(start_and_confirm_launch "$exe" "$temporary/launch-profile" 12 \
+  open -n -a "$app" --args "--user-data-dir=$temporary/launch-profile")"; then
+  launch_ok=1
 else
-  echo "LaunchServices open returned a failure" >&2
+  echo "LaunchServices failed to create a verified application process" >&2
 fi
-echo "LaunchServices started process: $launch_ok; PID: ${launched_pid:-none}"
+echo "LaunchServices verified application process: $launch_ok; PID: $launched_pid"
 if [[ "$launch_ok" == 0 ]]; then
   log show --last 2m --style compact --predicate 'process == "lsd"' 2>/dev/null | tail -n 30 || true
 else
-  kill -TERM "$launched_pid" || true
+  kill -TERM "$launched_pid" 2>/dev/null || true
   launched_pid=""
   sleep 2
 fi
@@ -78,7 +77,8 @@ export PACKAGED_APP_VARIANT="macOS DMG executable"
 direct_ok=0
 if node "$studio_root/scripts/packaged-smoke.mjs"; then direct_ok=1; fi
 
-if [[ "$signature_ok" == 0 || "$launch_ok" == 0 || "$direct_ok" == 0 ]]; then
-  echo "Mac package diagnostics failed: signature=$signature_ok LaunchServices=$launch_ok direct=$direct_ok" >&2
+if [[ "$forge_signature_ok" == 0 || "$signature_ok" == 0 ||
+  "$launch_ok" == 0 || "$direct_ok" == 0 ]]; then
+  echo "Mac package diagnostics failed: Forge signature=$forge_signature_ok DMG signature=$signature_ok LaunchServices=$launch_ok direct=$direct_ok" >&2
   exit 1
 fi
