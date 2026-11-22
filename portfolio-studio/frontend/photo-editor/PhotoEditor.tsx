@@ -111,7 +111,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     );
     setOutputFormat(
       next.photoKey
-        ? fileOutputFormat(savedPhoto?.thumbnail ?? "") ?? DEFAULT_PHOTO_OUTPUT_FORMAT
+        ? (fileOutputFormat(savedPhoto?.thumbnail ?? "") ?? DEFAULT_PHOTO_OUTPUT_FORMAT)
         : DEFAULT_PHOTO_OUTPUT_FORMAT,
     );
     setAlt("");
@@ -281,8 +281,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const validChoice = suffixChoice !== "custom" || validSuffix(customSuffix);
   const nameProblem = photoBaseNameProblem(name.trim());
   const described =
-    !!editing?.photoKey ||
-    (!nameProblem && !!alt.trim() && tags.length > 0 && validChoice);
+    !!editing?.photoKey || (!nameProblem && !!alt.trim() && tags.length > 0 && validChoice);
 
   return (
     <Group align="flex-start" wrap="nowrap">
@@ -368,8 +367,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                   style={{ maxWidth: 400, maxHeight: 400, alignSelf: "flex-start" }}
                 />
                 <Text size="sm">
-                  Published preview (.{outputFormat}): {rendered.image.width} × {rendered.image.height} px,{" "}
-                  {kilobytes(rendered.image.bytes)}
+                  Published preview (.{outputFormat}): {rendered.image.width} ×{" "}
+                  {rendered.image.height} px, {kilobytes(rendered.image.bytes)}
                 </Text>
               </>
             )}
@@ -429,18 +428,19 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 </Group>
                 <Text size="sm" fw={600}>
                   Website file: photography/thumbnails/
-                  {nameProblem ? "(enter a valid name)" : publishedFilename(name.trim(), outputFormat)}
+                  {nameProblem
+                    ? "(enter a valid name)"
+                    : publishedFilename(name.trim(), outputFormat)}
                 </Text>
                 <Text size="sm" c="dimmed">
-                  The photo is converted to .{outputFormat}, up to 800 px on its longest side,
-                  with a watermark and rights metadata. The private original is unchanged.
+                  The photo is converted to .{outputFormat}, up to 800 px on its longest side, with
+                  a watermark and rights metadata. The private original is unchanged.
                 </Text>
                 {outputFormat === "heic" && (
                   <Text size="sm" c="orange">
-                    HEIC export requires optional native HEVC encoding libraries and may fail
-                    on this computer. Many website browsers cannot display HEIC; WebP is
-                    recommended for a publicly viewable gallery. No fallback filetype is
-                    silently substituted.
+                    HEIC export requires optional native HEVC encoding libraries and may fail on
+                    this computer. Many website browsers cannot display HEIC; WebP is recommended
+                    for a publicly viewable gallery. No fallback filetype is silently substituted.
                   </Text>
                 )}
                 <Textarea

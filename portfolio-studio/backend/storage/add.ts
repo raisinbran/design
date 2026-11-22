@@ -32,17 +32,16 @@ export async function addPhoto(
       : photoNameProblem(request.photoKey.trim());
   if (problem) return { ok: false, error: { code: "invalid", message: problem } };
   const key =
-    request.kind === "new"
-      ? publishedFilename(bareName!, request.format)
-      : request.photoKey.trim();
+    request.kind === "new" ? publishedFilename(bareName!, request.format) : request.photoKey.trim();
   const existing = photos.find((photo) => photo.file.toLowerCase() === key.toLowerCase());
   if (request.kind === "replace" && !existing) {
     return { ok: false, error: { code: "invalid", message: `${key} is no longer in the catalog` } };
   }
   // An overwrite must not put JPEG/PNG/HEIC bytes into a historic WebP thumbnail.
-  const expected = request.kind === "new"
-    ? request.format
-    : fileOutputFormat(existing?.thumbnail ?? "") ?? "webp";
+  const expected =
+    request.kind === "new"
+      ? request.format
+      : (fileOutputFormat(existing?.thumbnail ?? "") ?? "webp");
   if (image.format && image.format !== expected) {
     return {
       ok: false,
@@ -58,12 +57,15 @@ export async function addPhoto(
       ok: false,
       error: {
         code: "name-conflict",
-        message: "This existing photo uses a different published format. Use Edit Image or a new name.",
+        message:
+          "This existing photo uses a different published format. Use Edit Image or a new name.",
       },
     };
   }
   const thumbnail =
-    request.kind === "new" ? publishedFilename(bareName!, request.format) : existing?.thumbnail ?? webpName(key);
+    request.kind === "new"
+      ? publishedFilename(bareName!, request.format)
+      : (existing?.thumbnail ?? webpName(key));
   const competingThumbnail = photos.find(
     (photo) => photo !== existing && photo.thumbnail?.toLowerCase() === thumbnail.toLowerCase(),
   );

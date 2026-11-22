@@ -41,7 +41,12 @@ function page(width: number, count: number) {
     createElement: () => makeElement(),
   };
   vm.runInNewContext(galleryScript, { window, document });
-  return { gallery, window: window as typeof window & { PortfolioPhotographyGallery?: { setFilters: (tags: string[]) => void } } };
+  return {
+    gallery,
+    window: window as typeof window & {
+      PortfolioPhotographyGallery?: { setFilters: (tags: string[]) => void };
+    },
+  };
 }
 
 function makeElement(): SiteElement {
@@ -51,9 +56,17 @@ function makeElement(): SiteElement {
     style: {},
     dataset: {},
     className: "",
-    classList: { add(name) { names.push(name); } },
-    appendChild(child) { this.children.push(child); },
-    replaceChildren() { this.children = []; },
+    classList: {
+      add(name) {
+        names.push(name);
+      },
+    },
+    appendChild(child) {
+      this.children.push(child);
+    },
+    replaceChildren() {
+      this.children = [];
+    },
   };
   return node;
 }
@@ -65,7 +78,9 @@ describe("Photography gallery row capacity", () => {
       const { gallery } = page(width, 13);
       expect(gallery.children.length).toBeGreaterThan(0);
       expect(gallery.children.flatMap((row) => row.children)).toHaveLength(13);
-      expect(gallery.children.every((row) => row.children.length >= 1 && row.children.length <= 2)).toBe(true);
+      expect(
+        gallery.children.every((row) => row.children.length >= 1 && row.children.length <= 2),
+      ).toBe(true);
     },
   );
 

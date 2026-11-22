@@ -144,7 +144,8 @@ export function photoHandlers(
       return preview(sourceId, "proxy", (file) => ({ kind: "proxy", file, orientation }));
     },
     async "photos.render"(sourceId, recipe, format) {
-      if (!isPhotoOutputFormat(format)) return failure("invalid", "Choose a supported output format");
+      if (!isPhotoOutputFormat(format))
+        return failure("invalid", "Choose a supported output format");
       const settings = readSettings();
       const siteFolder = folder();
       return preview(
@@ -220,13 +221,16 @@ export function photoHandlers(
       const expectedFormat =
         request.kind === "new"
           ? request.format
-          : fileOutputFormat(
+          : (fileOutputFormat(
               (await loadPortfolio(folder())).catalogs.photography.photos.find(
                 (photo) => photo.file === request.photoKey,
               )?.thumbnail ?? "",
-            ) ?? "webp";
+            ) ?? "webp");
       if (rendered.format !== expectedFormat) {
-        return failure("invalid", "The preview format changed. Render the selected format before saving.");
+        return failure(
+          "invalid",
+          "The preview format changed. Render the selected format before saving.",
+        );
       }
       const added = await addPhoto(folder(), request, rendered);
       if (!added.ok) return added;
