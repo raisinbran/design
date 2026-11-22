@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Catalogs } from "../../backend/api/api";
 import { arrangePhotos, movePhoto, reverseUnlocked, suggestArrangement } from "./arrangement";
+import type { AppearanceMap } from "./arrangement";
 
 type Photo = Catalogs["photography"]["photos"][number];
 
@@ -55,7 +56,7 @@ describe("arrangement", () => {
   });
 });
 
-const appearances = {
+const appearances: AppearanceMap = {
   red: { rgb: [220, 50, 40], brightness: 103, saturation: 0.71 },
   warm: { rgb: [200, 60, 50], brightness: 103, saturation: 0.59 },
   blue: { rgb: [40, 80, 220], brightness: 113, saturation: 0.71 },

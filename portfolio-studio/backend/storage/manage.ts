@@ -111,7 +111,10 @@ export async function renamePhoto(
     images,
   );
   if (!saved.ok) return saved;
-  const warning = nextFile === oldFile ? undefined : await trashUnused([oldPath], trash);
+  const warning =
+    nextFile === oldFile || referencedElsewhere(photos, original, oldFile)
+      ? undefined
+      : await trashUnused([oldPath], trash);
   return { ok: true, value: { view: saved.value, warning } };
 }
 

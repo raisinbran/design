@@ -70,10 +70,20 @@ describe("published photo management", () => {
 
   it("refuses a stale rename without writing a replacement derivative", async () => {
     const view = await loadPortfolio(folder);
-    writeFileSync(path.join(folder, "data/media-catalog.json"), "changed externally");
-    await expect(
-      renamePhoto(folder, view.revision, "DSCF4154_crop.heic", "DSCF4154_fix.heic", toTrash),
-    ).rejects.toThrow();
+    const catalogFile = path.join(folder, "data/media-catalog.json");
+    const externallyEdited = readFileSync(catalogFile, "utf8").replace(
+      "LAX SkyLink people mover viaduct",
+      "Externally edited viaduct",
+    );
+    writeFileSync(catalogFile, externallyEdited);
+    const renamed = await renamePhoto(
+      folder,
+      view.revision,
+      "DSCF4154_crop.heic",
+      "DSCF4154_fix.heic",
+      toTrash,
+    );
+    expect(renamed).toMatchObject({ ok: false, error: { code: "changed-outside" } });
     expect(() => readFileSync(thumbnail("DSCF4154_fix.webp"))).toThrow();
   });
 });
