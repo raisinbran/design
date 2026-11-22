@@ -2,6 +2,7 @@ import { readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { deletePhoto, renamePhoto } from "./manage";
+import { addPhoto } from "./add";
 import { loadPortfolio } from "./portfolio";
 import { copyRepository, COPY_TIMEOUT_MS } from "./test-folder";
 
@@ -85,5 +86,43 @@ describe("published photo management", () => {
     );
     expect(renamed).toMatchObject({ ok: false, error: { code: "changed-outside" } });
     expect(() => readFileSync(thumbnail("DSCF4154_fix.webp"))).toThrow();
+  });
+  it("preserves the selected JPEG format while renaming its published asset", async () => {
+    const view = await loadPortfolio(folder);
+    const jpeg = {
+      bytes: Buffer.from("test jpeg bytes"),
+      width: 800,
+      height: 600,
+      format: "jpg" as const,
+    };
+    const added = await addPhoto(
+      folder,
+      {
+        kind: "new",
+        revision: view.revision,
+        sourceId: "",
+        name: "Studio_7001",
+        format: "jpg",
+        alt: "test",
+        tags: ["Day"],
+      },
+      jpeg,
+    );
+    if (!added.ok) throw new Error(added.error.message);
+    const renamed = await renamePhoto(
+      folder,
+      added.value.view.revision,
+      "Studio_7001.jpg",
+      "Studio_7002.jpg",
+      toTrash,
+    );
+    expect(renamed.ok).toBe(true);
+    expect(readFileSync(thumbnail("Studio_7002.jpg"))).toEqual(jpeg.bytes);
+    expect(() => readFileSync(thumbnail("Studio_7001.jpg"))).toThrow();
+    const current = await loadPortfolio(folder);
+    expect(current.catalogs.photography.photos.at(-1)).toMatchObject({
+      file: "Studio_7002.jpg",
+      thumbnail: "Studio_7002.jpg",
+    });
   });
 });

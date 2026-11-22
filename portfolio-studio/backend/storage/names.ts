@@ -14,7 +14,7 @@ export function photoNameProblem(name: string): string | null {
   return null;
 }
 
-/** Published photos are encoded to WebP regardless of the private original's extension. */
+/** Historical photo records may use an old source-style key for a WebP gallery copy. */
 export function webpName(catalogName: string): string {
   return path.parse(catalogName).name + ".webp";
 }

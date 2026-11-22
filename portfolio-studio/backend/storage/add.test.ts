@@ -68,7 +68,7 @@ describe("addPhoto", () => {
     const added = await addPhoto(
       folder,
       { kind: "new", revision, sourceId: "", name: "dscf3655_crop", format: "jpg", alt: "peaks", tags: [] },
-      image,
+      { ...image, format: "jpg" },
     );
 
     expect(added).toMatchObject({ ok: false, error: { code: "name-conflict" } });
@@ -207,4 +207,28 @@ describe("addPhoto", () => {
     expect(result).toMatchObject({ ok: false, error: { code: "invalid" } });
   });
 
+  it.each(["jpg", "png"] as const)("saves a new %s publication with the true file extension", async (format) => {
+    const view = await loadPortfolio(folder);
+    const result = await addPhoto(
+      folder,
+      {
+        kind: "new",
+        revision: view.revision,
+        sourceId: "",
+        name: "DSCF_5001",
+        format,
+        alt: "sample",
+        tags: ["Day"],
+      },
+      { ...image, format },
+    );
+    expect(result.ok).toBe(true);
+    const filename = `DSCF_5001.${format}`;
+    const current = await loadPortfolio(folder);
+    expect(current.catalogs.photography.photos.at(-1)).toMatchObject({
+      file: filename,
+      thumbnail: filename,
+    });
+    expect(readFileSync(path.join(folder, "photography/thumbnails", filename))).toEqual(image.bytes);
+  });
 });
