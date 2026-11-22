@@ -1,6 +1,7 @@
 // Types only. The frontend imports this file with `import type`, so nothing here reaches the renderer bundle.
 import type { z } from "zod";
 import type { Catalogs as CatalogsSchema } from "../catalogs/schema";
+import type { PhotoOutputFormat } from "./photo-format";
 
 type R<T> = Promise<Result<T>>;
 
@@ -18,7 +19,7 @@ export interface PortfolioApi {
   "photos.relink"(photoKey: string): R<SavedSource | null>;
   /** Screen-sized preview of the straightened original, uncropped. */
   "photos.proxy"(sourceId: string, orientation: Orientation): R<ImageRef>;
-  "photos.render"(sourceId: string, recipe: Recipe): R<ImageRef>;
+  "photos.render"(sourceId: string, recipe: Recipe, format: PhotoOutputFormat): R<ImageRef>;
   /** Stops the running proxy or render, which then returns "cancelled". */
   "photos.cancel"(): R<null>;
   /** Writes the source's latest render to the site. */
@@ -76,7 +77,7 @@ export interface PhotoAppearance {
 /** An original the backend has registered. The UI never sees its path. */
 export interface SourceHandle {
   id: string;
-  /** The original's file name, the default photo name. */
+  /** The original's full filename, from which the editor proposes an extension-free Name. */
   name: string;
 }
 
@@ -108,12 +109,13 @@ export interface ImageRef {
 }
 
 export type AddRequest =
-  // A new photo. Its name becomes the photo key and photography/thumbnails/<name>.webp.
+  // A new photo: Name contains no extension; Format controls the actual file type.
   | {
       kind: "new";
       revision: Revision;
       sourceId: string;
       name: string;
+      format: PhotoOutputFormat;
       alt: string;
       tags: string[];
       overwrite?: boolean;
