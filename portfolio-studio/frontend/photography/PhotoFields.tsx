@@ -128,7 +128,12 @@ export function PhotoFields({
           Catalog name: {photo.file}
         </Text>
         <Group gap="xs">
-          <Button size="xs" variant="default" disabled={dirty} onClick={() => setRenaming(!renaming)}>
+          <Button
+            size="xs"
+            variant="default"
+            disabled={dirty}
+            onClick={() => setRenaming(!renaming)}
+          >
             Rename
           </Button>
           <Button variant="default" disabled={dirty} onClick={onEditImage}>
@@ -137,8 +142,11 @@ export function PhotoFields({
         </Group>
       </Group>
       <Text size="xs" c="dimmed">
-        Published image: {photo.thumbnail ? `photography/thumbnails/${photo.thumbnail} (WebP)` : `photography/published/${photo.file}`}.
-        Your private original is kept separately.
+        Published image:{" "}
+        {photo.thumbnail
+          ? `photography/thumbnails/${photo.thumbnail} (WebP)`
+          : `photography/published/${photo.file}`}
+        . Your private original is kept separately.
       </Text>
       {renaming && (
         <Group gap="xs" align="flex-end">
@@ -149,13 +157,23 @@ export function PhotoFields({
             value={newName}
             onChange={(event) => setNewName(event.currentTarget.value)}
           />
-          <Button loading={busy} disabled={dirty || !newName.trim() || newName === photo.file} onClick={() => void rename()}>
+          <Button
+            loading={busy}
+            disabled={dirty || !newName.trim() || newName === photo.file}
+            onClick={() => void rename()}
+          >
             Rename
           </Button>
-          <Button variant="default" onClick={() => setRenaming(false)}>Cancel</Button>
+          <Button variant="default" onClick={() => setRenaming(false)}>
+            Cancel
+          </Button>
         </Group>
       )}
-      {error && <Text c="red" size="sm">{error}</Text>}
+      {error && (
+        <Text c="red" size="sm">
+          {error}
+        </Text>
+      )}
       <Textarea
         label="Description"
         description="Also the alt text that screen readers read aloud"
@@ -176,9 +194,7 @@ export function PhotoFields({
         data={PRIORITIES}
         value={photo.displayPriority}
         allowDeselect={false}
-        onChange={(value) =>
-          value && edit({ displayPriority: value as Photo["displayPriority"] })
-        }
+        onChange={(value) => value && edit({ displayPriority: value as Photo["displayPriority"] })}
       />
       <Checkbox
         label="Unlist"
@@ -193,10 +209,19 @@ export function PhotoFields({
         onChange={(event) => edit({ locked: event.currentTarget.checked || undefined })}
       />
       <Group mt="md">
-        <Button color="red" variant="light" disabled={dirty || busy} onClick={() => setConfirmDelete(true)}>
+        <Button
+          color="red"
+          variant="light"
+          disabled={dirty || busy}
+          onClick={() => setConfirmDelete(true)}
+        >
           Delete photo from portfolio…
         </Button>
-        {dirty && <Text size="xs" c="dimmed">Save or discard edits first.</Text>}
+        {dirty && (
+          <Text size="xs" c="dimmed">
+            Save or discard edits first.
+          </Text>
+        )}
       </Group>
       <Modal
         opened={confirmDelete}
@@ -204,12 +229,14 @@ export function PhotoFields({
         title="Remove the photo and its site files?"
       >
         <Text>
-          The catalog entry for {photo.file} will be removed, and its unshared
-          published images will move to the system Trash. Private original photos
-          are not deleted. You choose whether to publish this deletion in GitHub Desktop.
+          The catalog entry for {photo.file} will be removed, and its unshared published images will
+          move to the system Trash. Private original photos are not deleted. You choose whether to
+          publish this deletion in GitHub Desktop.
         </Text>
         <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={() => setConfirmDelete(false)}>Cancel</Button>
+          <Button variant="default" onClick={() => setConfirmDelete(false)}>
+            Cancel
+          </Button>
           <Button color="red" loading={busy} onClick={() => void remove()}>
             Move site photo to Trash
           </Button>

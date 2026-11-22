@@ -82,7 +82,10 @@ function visualDistance(
     photo.thumbnailWidth && photo.thumbnailHeight
       ? photo.thumbnailWidth / photo.thumbnailHeight
       : (photo.aspectRatio ?? 1.5);
-  const shape = Math.min(1, Math.abs(Math.log(Math.max(0.1, ratio(first)) / Math.max(0.1, ratio(second)))) / 2);
+  const shape = Math.min(
+    1,
+    Math.abs(Math.log(Math.max(0.1, ratio(first)) / Math.max(0.1, ratio(second)))) / 2,
+  );
   const weights = WEIGHTS[strategy];
   const total = [color, brightness, saturation, theme, shape].reduce(
     (sum, component, index) => sum + component * weights[index],
@@ -99,7 +102,10 @@ export function arrangePhotos(
   reverse = false,
 ): Photo[] {
   const missing = photos.filter((photo) => !appearances[photo.file]);
-  if (missing.length) throw new Error(`Cannot analyze the image for: ${missing.map((photo) => photo.file).join(", ")}`);
+  if (missing.length)
+    throw new Error(
+      `Cannot analyze the image for: ${missing.map((photo) => photo.file).join(", ")}`,
+    );
   const pool = photos.filter((photo) => !photo.locked);
   const arranged: Photo[] = [];
   for (const photo of photos) {

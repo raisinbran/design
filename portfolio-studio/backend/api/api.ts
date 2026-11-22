@@ -73,7 +73,6 @@ export interface PhotoAppearance {
   saturation: number;
 }
 
-
 /** An original the backend has registered. The UI never sees its path. */
 export interface SourceHandle {
   id: string;

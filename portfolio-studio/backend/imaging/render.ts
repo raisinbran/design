@@ -316,31 +316,33 @@ function rightsXmp({ author, copyright, usageTerms }: ImageSettings["rights"]): 
  * Runs a proxy or render job. A render is the gallery image, at most 800 px on the long side, with
  * the watermark and the rights metadata, and none of the original's metadata, such as GPS.
  */
-export async function analyzeJob(job: Extract<Job, { kind: "appearance" }>): Promise<AppearanceMap> {
-    const appearance: AppearanceMap = {};
-    for (const { key, file } of job.photos) {
-      const { data, info } = await sharp(file, { limitInputPixels: PIXEL_LIMIT })
-        .autoOrient()
-        .resize(32, 32, { fit: "inside" })
-        .removeAlpha()
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-      const totals = [0, 0, 0];
-      for (let index = 0; index < data.length; index += info.channels) {
-        for (let channel = 0; channel < 3; channel++) totals[channel] += data[index + channel];
-      }
-      const rgb = totals.map((value) => value / (info.width * info.height)) as [
-        number,
-        number,
-        number,
-      ];
-      appearance[key] = {
-        rgb,
-        brightness: (rgb[0] + rgb[1] + rgb[2]) / 3,
-        saturation: (Math.max(...rgb) - Math.min(...rgb)) / 255,
-      };
+export async function analyzeJob(
+  job: Extract<Job, { kind: "appearance" }>,
+): Promise<AppearanceMap> {
+  const appearance: AppearanceMap = {};
+  for (const { key, file } of job.photos) {
+    const { data, info } = await sharp(file, { limitInputPixels: PIXEL_LIMIT })
+      .autoOrient()
+      .resize(32, 32, { fit: "inside" })
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const totals = [0, 0, 0];
+    for (let index = 0; index < data.length; index += info.channels) {
+      for (let channel = 0; channel < 3; channel++) totals[channel] += data[index + channel];
     }
-    return appearance;
+    const rgb = totals.map((value) => value / (info.width * info.height)) as [
+      number,
+      number,
+      number,
+    ];
+    appearance[key] = {
+      rgb,
+      brightness: (rgb[0] + rgb[1] + rgb[2]) / 3,
+      saturation: (Math.max(...rgb) - Math.min(...rgb)) / 255,
+    };
+  }
+  return appearance;
 }
 
 export async function renderJob(job: Exclude<Job, { kind: "appearance" }>): Promise<Rendered> {

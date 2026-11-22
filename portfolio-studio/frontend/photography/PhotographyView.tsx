@@ -1,15 +1,6 @@
 import { DragDropProvider } from "@dnd-kit/react";
 import { isSortable, useSortable } from "@dnd-kit/react/sortable";
-import {
-  ActionIcon,
-  Badge,
-  Button,
-  Menu,
-  Group,
-  Stack,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { ActionIcon, Badge, Button, Menu, Group, Stack, Text, TextInput } from "@mantine/core";
 import { useState } from "react";
 import type { Catalogs, PortfolioView } from "../../backend/api/api";
 import { editCatalogs } from "../app/editor";
@@ -115,127 +106,131 @@ export function PhotographyView({ catalog, onEditImage, onPhotoSaved }: Photogra
       sidebarWidth={380}
       sidebar={
         <Stack gap="xs" pr="xs">
-        <Group gap={4} wrap="nowrap">
-          <TextInput
-            size="xs"
-            style={{ flex: "1 1 0", minWidth: 0 }}
-            placeholder="Search photos"
-            aria-label="Search descriptions, tags and file names"
-            value={search}
-            onChange={(event) => setSearch(event.currentTarget.value)}
-          />
-          <Menu withinPortal>
-            <Menu.Target>
-              <Button
-                size="compact-sm"
-                variant="default"
-                disabled={!!query || arranging || catalog.photos.length < 2}
-                loading={arranging}
-              >
-                Arrangement
-              </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Label>Arrange by</Menu.Label>
-              {ARRANGEMENTS.map((strategy) => (
-                <Menu.Item
-                  key={strategy.value}
-                  onClick={() => void applyArrangement(strategy.value, false)}
-                >
-                  {strategy.label}
-                </Menu.Item>
-              ))}
-              <Menu.Divider />
-              <Menu.Label>Reverse arrangement</Menu.Label>
-              {ARRANGEMENTS.map((strategy) => (
-                <Menu.Item
-                  key={`reverse-${strategy.value}`}
-                  onClick={() => void applyArrangement(strategy.value, true)}
-                >
-                  {strategy.label} (reverse)
-                </Menu.Item>
-              ))}
-              <Menu.Divider />
-              <Menu.Item
-                onClick={() =>
-                  editPhotography((photography) => ({
-                    ...photography,
-                    photos: reverseUnlocked(photography.photos),
-                  }))
-                }
-              >
-                Reverse current order
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-          <ActionIcon
-            size="lg"
-            variant="default"
-            aria-label="Move selected photo up"
-            title="Move photo up"
-            disabled={!canMove(-1)}
-            onClick={() => moveSelected(-1)}
-          >
-            ▲
-          </ActionIcon>
-          <ActionIcon
-            size="lg"
-            variant="default"
-            aria-label="Move selected photo down"
-            title="Move photo down"
-            disabled={!canMove(1)}
-            onClick={() => moveSelected(1)}
-          >
-            ▼
-          </ActionIcon>
-        </Group>
-        {arrangementError && (
-          <Text size="xs" c="red">
-            {arrangementError}
-          </Text>
-        )}
-        <DragDropProvider
-          onDragEnd={(event) => {
-            const { source } = event.operation;
-            if (event.canceled || !isSortable(source)) return;
-            editPhotography((photography) => ({
-              ...photography,
-              photos: movePhoto(photography.photos, source.initialIndex, source.index),
-            }));
-          }}
-        >
-          {shown.map((item, index) => (
-            <PhotoRow
-              key={item.file}
-              photo={item}
-              index={index}
-              // Drag positions are catalog indexes, so dragging waits until the search is empty.
-              draggable={!query && !item.locked}
-              selected={item.file === selected}
-              onSelect={() => setSelected(item.file)}
+          <Group gap={4} wrap="nowrap">
+            <TextInput
+              size="xs"
+              style={{ flex: "1 1 0", minWidth: 0 }}
+              placeholder="Search photos"
+              aria-label="Search descriptions, tags and file names"
+              value={search}
+              onChange={(event) => setSearch(event.currentTarget.value)}
             />
-          ))}
-        </DragDropProvider>
+            <Menu withinPortal>
+              <Menu.Target>
+                <Button
+                  size="compact-sm"
+                  variant="default"
+                  disabled={!!query || arranging || catalog.photos.length < 2}
+                  loading={arranging}
+                >
+                  Arrangement
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>Arrange by</Menu.Label>
+                {ARRANGEMENTS.map((strategy) => (
+                  <Menu.Item
+                    key={strategy.value}
+                    onClick={() => void applyArrangement(strategy.value, false)}
+                  >
+                    {strategy.label}
+                  </Menu.Item>
+                ))}
+                <Menu.Divider />
+                <Menu.Label>Reverse arrangement</Menu.Label>
+                {ARRANGEMENTS.map((strategy) => (
+                  <Menu.Item
+                    key={`reverse-${strategy.value}`}
+                    onClick={() => void applyArrangement(strategy.value, true)}
+                  >
+                    {strategy.label} (reverse)
+                  </Menu.Item>
+                ))}
+                <Menu.Divider />
+                <Menu.Item
+                  onClick={() =>
+                    editPhotography((photography) => ({
+                      ...photography,
+                      photos: reverseUnlocked(photography.photos),
+                    }))
+                  }
+                >
+                  Reverse current order
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected photo up"
+              title="Move photo up"
+              disabled={!canMove(-1)}
+              onClick={() => moveSelected(-1)}
+            >
+              ▲
+            </ActionIcon>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected photo down"
+              title="Move photo down"
+              disabled={!canMove(1)}
+              onClick={() => moveSelected(1)}
+            >
+              ▼
+            </ActionIcon>
+          </Group>
+          {arrangementError && (
+            <Text size="xs" c="red">
+              {arrangementError}
+            </Text>
+          )}
+          <DragDropProvider
+            onDragEnd={(event) => {
+              const { source } = event.operation;
+              if (event.canceled || !isSortable(source)) return;
+              editPhotography((photography) => ({
+                ...photography,
+                photos: movePhoto(photography.photos, source.initialIndex, source.index),
+              }));
+            }}
+          >
+            {shown.map((item, index) => (
+              <PhotoRow
+                key={item.file}
+                photo={item}
+                index={index}
+                // Drag positions are catalog indexes, so dragging waits until the search is empty.
+                draggable={!query && !item.locked}
+                selected={item.file === selected}
+                onSelect={() => setSelected(item.file)}
+              />
+            ))}
+          </DragDropProvider>
         </Stack>
       }
-      details={photo && (
-        <PhotoFields
-          key={photo.file}
-          photo={photo}
-          photoTags={catalog.photoTags}
-          imageUrl={photoUrl(photo)}
-          onEditImage={() => onEditImage(photo.file)}
-          onRename={(name, view, warning) => {
-            setSelected(name);
-            onPhotoSaved(view, warning);
-          }}
-          onDelete={(view, warning) => {
-            const remaining = view.catalogs.photography.photos;
-            setSelected(remaining[Math.min(Math.max(selectedIndex, 0), remaining.length - 1)]?.file);
-            onPhotoSaved(view, warning);
-          }}
-        />
-      )}
+      details={
+        photo && (
+          <PhotoFields
+            key={photo.file}
+            photo={photo}
+            photoTags={catalog.photoTags}
+            imageUrl={photoUrl(photo)}
+            onEditImage={() => onEditImage(photo.file)}
+            onRename={(name, view, warning) => {
+              setSelected(name);
+              onPhotoSaved(view, warning);
+            }}
+            onDelete={(view, warning) => {
+              const remaining = view.catalogs.photography.photos;
+              setSelected(
+                remaining[Math.min(Math.max(selectedIndex, 0), remaining.length - 1)]?.file,
+              );
+              onPhotoSaved(view, warning);
+            }}
+          />
+        )
+      }
     />
   );
 }
@@ -275,4 +270,3 @@ function PhotoRow({ photo, index, draggable, selected, onSelect }: PhotoRowProps
     </Group>
   );
 }
-

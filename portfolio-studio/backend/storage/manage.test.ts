@@ -61,7 +61,9 @@ describe("published photo management", () => {
     const deleted = await deletePhoto(folder, view.revision, "DSCF4154_crop.heic", toTrash);
     expect(deleted.ok).toBe(true);
     const after = await loadPortfolio(folder);
-    expect(after.catalogs.photography.photos.some((photo) => photo.file === "DSCF4154_crop.heic")).toBe(false);
+    expect(
+      after.catalogs.photography.photos.some((photo) => photo.file === "DSCF4154_crop.heic"),
+    ).toBe(false);
     expect(readFileSync(originalPath, "utf8")).toBe("untouched");
     expect(() => readFileSync(thumbnail("DSCF4154_crop.webp"))).toThrow();
   });

@@ -89,46 +89,66 @@ export function EngineeringView({ catalog }: EngineeringViewProps) {
       sidebarWidth={340}
       sidebar={
         <Stack gap="xs" pr="xs">
-        <Group gap="xs" wrap="nowrap">
-          <TextInput
-            flex={1}
-            placeholder="New project title"
-            value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}
+          <Group gap="xs" wrap="nowrap">
+            <TextInput
+              flex={1}
+              placeholder="New project title"
+              value={title}
+              onChange={(event) => setTitle(event.currentTarget.value)}
+            />
+            <Button variant="default" disabled={!title.trim()} onClick={addProject}>
+              Add
+            </Button>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected project up"
+              title="Move up"
+              disabled={selected <= 0}
+              onClick={() => shift(-1)}
+            >
+              ▲
+            </ActionIcon>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected project down"
+              title="Move down"
+              disabled={selected >= catalog.projects.length - 1}
+              onClick={() => shift(1)}
+            >
+              ▼
+            </ActionIcon>
+          </Group>
+          <ItemList
+            items={catalog.projects.map((item) => ({
+              key: item.id,
+              label: item.title,
+              image: item.cover && siteImage(item.cover),
+              hidden: !item.visible,
+            }))}
+            selected={selected}
+            onSelect={setSelected}
+            onMove={(from, to) => {
+              editProjects((projects) => moveItem(projects, from, to));
+              setSelected(to);
+            }}
           />
-          <Button variant="default" disabled={!title.trim()} onClick={addProject}>
-            Add
-          </Button>
-          <ActionIcon size="lg" variant="default" aria-label="Move selected project up" title="Move up" disabled={selected <= 0} onClick={() => shift(-1)}>▲</ActionIcon>
-          <ActionIcon size="lg" variant="default" aria-label="Move selected project down" title="Move down" disabled={selected >= catalog.projects.length - 1} onClick={() => shift(1)}>▼</ActionIcon>
-        </Group>
-        <ItemList
-          items={catalog.projects.map((item) => ({
-            key: item.id,
-            label: item.title,
-            image: item.cover && siteImage(item.cover),
-            hidden: !item.visible,
-          }))}
-          selected={selected}
-          onSelect={setSelected}
-          onMove={(from, to) => {
-            editProjects((projects) => moveItem(projects, from, to));
-            setSelected(to);
-          }}
-        />
         </Stack>
       }
-      details={project && (
-        <ProjectEditor
-          key={project.id}
-          project={project}
-          index={selected}
-          onRemove={() => {
-            editProjects((projects) => removeItem(projects, selected));
-            setSelected(Math.max(0, selected - 1));
-          }}
-        />
-      )}
+      details={
+        project && (
+          <ProjectEditor
+            key={project.id}
+            project={project}
+            index={selected}
+            onRemove={() => {
+              editProjects((projects) => removeItem(projects, selected));
+              setSelected(Math.max(0, selected - 1));
+            }}
+          />
+        )
+      }
     />
   );
 }

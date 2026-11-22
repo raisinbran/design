@@ -243,7 +243,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   const current = rendered && editing && rendered.recipe === editing.recipe && !busy;
   const validChoice = suffixChoice !== "custom" || validSuffix(customSuffix);
-  const described = !!editing?.photoKey || (!!name.trim() && !!alt.trim() && tags.length > 0 && validChoice);
+  const described =
+    !!editing?.photoKey || (!!name.trim() && !!alt.trim() && tags.length > 0 && validChoice);
 
   return (
     <Group align="flex-start" wrap="nowrap">
@@ -346,18 +347,23 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                     if (!choice) return;
                     setSuffixChoice(choice);
                     const ending = choice === "custom" ? customSuffix : choice;
-                    if (validSuffix(ending)) setName(catalogNameWithSuffix(editing.source.name, ending));
+                    if (validSuffix(ending))
+                      setName(catalogNameWithSuffix(editing.source.name, ending));
                   }}
                 />
                 {suffixChoice === "custom" && (
                   <TextInput
                     label="Custom suffix"
-                    error={!validSuffix(customSuffix) && "Use _ followed by 1–20 letters, numbers, _ or -."}
+                    error={
+                      !validSuffix(customSuffix) &&
+                      "Use _ followed by 1–20 letters, numbers, _ or -."
+                    }
                     value={customSuffix}
                     onChange={(event) => {
                       const ending = event.currentTarget.value;
                       setCustomSuffix(ending);
-                      if (validSuffix(ending)) setName(catalogNameWithSuffix(editing.source.name, ending));
+                      if (validSuffix(ending))
+                        setName(catalogNameWithSuffix(editing.source.name, ending));
                     }}
                   />
                 )}
@@ -369,8 +375,9 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                   onChange={(event) => setName(event.currentTarget.value)}
                 />
                 <Text size="sm" c="dimmed">
-                  Published image: photography/thumbnails/{webpOutputName(name || editing.source.name)}
-                  {" "}— WebP, at most 800 px on its long side. The original remains private and unchanged.
+                  Published image: photography/thumbnails/
+                  {webpOutputName(name || editing.source.name)} — WebP, at most 800 px on its long
+                  side. The original remains private and unchanged.
                 </Text>
                 <Textarea
                   label="Description"

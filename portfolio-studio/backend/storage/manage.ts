@@ -29,13 +29,12 @@ async function assetPath(
 }
 
 function referencedElsewhere(photos: Photo[], current: Photo, file: string): boolean {
-  return photos.some((photo) => photo !== current && (photo.thumbnail === file || photo.file === file));
+  return photos.some(
+    (photo) => photo !== current && (photo.thumbnail === file || photo.file === file),
+  );
 }
 
-async function trashUnused(
-  paths: string[],
-  trash: TrashFile,
-): Promise<string | undefined> {
+async function trashUnused(paths: string[], trash: TrashFile): Promise<string | undefined> {
   const failures: string[] = [];
   for (const file of paths) {
     try {
@@ -64,11 +63,19 @@ export async function renamePhoto(
   if (!original) return error("invalid", `Photo "${oldName}" is no longer in the catalog`);
   if (oldName === newName) return { ok: true, value: { view } };
   const photos = view.catalogs.photography.photos;
-  if (photos.some((photo) => photo !== original && photo.file.toLowerCase() === newName.toLowerCase())) {
+  if (
+    photos.some((photo) => photo !== original && photo.file.toLowerCase() === newName.toLowerCase())
+  ) {
     return error("name-conflict", `A photo already uses "${newName}"`);
   }
-  if (!original.thumbnail && path.extname(oldName).toLowerCase() !== path.extname(newName).toLowerCase()) {
-    return error("invalid", "A legacy published image can only be renamed without changing its file format");
+  if (
+    !original.thumbnail &&
+    path.extname(oldName).toLowerCase() !== path.extname(newName).toLowerCase()
+  ) {
+    return error(
+      "invalid",
+      "A legacy published image can only be renamed without changing its file format",
+    );
   }
 
   const directory = original.thumbnail ? "thumbnails" : "published";
@@ -82,7 +89,9 @@ export async function renamePhoto(
   }
   if (
     photos.some(
-      (photo) => photo !== original && (photo.thumbnail ?? photo.file).toLowerCase() === nextFile.toLowerCase(),
+      (photo) =>
+        photo !== original &&
+        (photo.thumbnail ?? photo.file).toLowerCase() === nextFile.toLowerCase(),
     )
   ) {
     return error("name-conflict", `Another photo already uses the image "${nextFile}"`);
@@ -129,7 +138,10 @@ export async function deletePhoto(
   }
   const saved = await savePortfolio(folder, revision, {
     ...view.catalogs,
-    photography: { ...view.catalogs.photography, photos: photos.filter((photo) => photo !== target) },
+    photography: {
+      ...view.catalogs.photography,
+      photos: photos.filter((photo) => photo !== target),
+    },
   });
   if (!saved.ok) return saved;
   return { ok: true, value: { view: saved.value, warning: await trashUnused(paths, trash) } };

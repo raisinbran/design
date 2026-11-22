@@ -33,14 +33,19 @@ export async function addPhoto(
   if (
     request.kind === "new" &&
     !request.overwrite &&
-    (existing || competingThumbnail || existsSync(path.join(folder, "photography/thumbnails", thumbnail)))
+    (existing ||
+      competingThumbnail ||
+      existsSync(path.join(folder, "photography/thumbnails", thumbnail)))
   ) {
     const message = `A photo named ${key} already exists. Overwrite or Cancel?`;
     return { ok: false, error: { code: "name-conflict", message } };
   }
 
   if (competingThumbnail) {
-    return { ok: false, error: { code: "name-conflict", message: `The WebP name ${thumbnail} is already in use` } };
+    return {
+      ok: false,
+      error: { code: "name-conflict", message: `The WebP name ${thumbnail} is already in use` },
+    };
   }
 
   // A gallery image gives the photo its shape, so the fields kept for photos without one go.

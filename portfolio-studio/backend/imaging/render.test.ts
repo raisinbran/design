@@ -290,16 +290,22 @@ describe("watermark", () => {
 
 // The appearance worker measures actual published thumbnail pixels, not an inferred file extension.
 describe("published thumbnail appearance", () => {
-  it("returns finite RGB, brightness and saturation values", async () => {
-    const file = path.join(repositoryDir, "photography/thumbnails/DSCF4154_crop.webp");
-    const result = await analyzeJob({
-      kind: "appearance",
-      photos: [{ key: "DSCF4154_crop.heic", file }],
-    });
-    const sample = result["DSCF4154_crop.heic"];
-    expect(sample.rgb.every((value) => Number.isFinite(value) && value >= 0 && value <= 255)).toBe(true);
-    expect(sample.brightness).toBeGreaterThanOrEqual(0);
-    expect(sample.saturation).toBeGreaterThanOrEqual(0);
-    expect(sample.saturation).toBeLessThanOrEqual(1);
-  }, RENDER_TIMEOUT_MS);
+  it(
+    "returns finite RGB, brightness and saturation values",
+    async () => {
+      const file = path.join(repositoryDir, "photography/thumbnails/DSCF4154_crop.webp");
+      const result = await analyzeJob({
+        kind: "appearance",
+        photos: [{ key: "DSCF4154_crop.heic", file }],
+      });
+      const sample = result["DSCF4154_crop.heic"];
+      expect(
+        sample.rgb.every((value) => Number.isFinite(value) && value >= 0 && value <= 255),
+      ).toBe(true);
+      expect(sample.brightness).toBeGreaterThanOrEqual(0);
+      expect(sample.saturation).toBeGreaterThanOrEqual(0);
+      expect(sample.saturation).toBeLessThanOrEqual(1);
+    },
+    RENDER_TIMEOUT_MS,
+  );
 });
