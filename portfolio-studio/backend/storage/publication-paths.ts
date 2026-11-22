@@ -3,22 +3,28 @@ import path from "node:path";
 
 export type PublicationDirectory = "thumbnails" | "published";
 
-/** Do not follow publication-directory symlinks into private files or another checkout. */
-export async function publicationRoot(
+/** Reject site image directories that are links or resolve outside the chosen repository. */
+export async function siteImageRoot(
   folder: string,
-  directory: PublicationDirectory,
+  components: readonly string[],
 ): Promise<string | null> {
   try {
-    const repositoryRoot = await realpath(folder);
-    const photographyRoot = path.join(repositoryRoot, "photography");
-    const outputRoot = path.join(photographyRoot, directory);
-    for (const candidate of [photographyRoot, outputRoot]) {
-      const entry = await lstat(candidate);
+    let current = await realpath(folder);
+    for (const component of components) {
+      current = path.join(current, component);
+      const entry = await lstat(current);
       if (!entry.isDirectory() || entry.isSymbolicLink()) return null;
-      if ((await realpath(candidate)) !== candidate) return null;
+      if ((await realpath(current)) !== current) return null;
     }
-    return outputRoot;
+    return current;
   } catch {
     return null;
   }
+}
+
+export function publicationRoot(
+  folder: string,
+  directory: PublicationDirectory,
+): Promise<string | null> {
+  return siteImageRoot(folder, ["photography", directory]);
 }

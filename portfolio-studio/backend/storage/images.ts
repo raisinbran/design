@@ -1,5 +1,6 @@
 import { realpath, stat } from "node:fs/promises";
 import path from "node:path";
+import { siteImageRoot } from "./publication-paths";
 
 const IMAGE_FOLDERS = ["photography/thumbnails", "photography/published", "images"];
 const IMAGE_FILE = /\.(jpe?g|png|webp|heic|gif)$/i;
@@ -16,7 +17,7 @@ export async function resolveSiteImage(folder: string, url: string): Promise<str
     if (!IMAGE_FILE.test(relative)) return null;
     const file = await realpath(path.resolve(folder, relative));
     for (const name of IMAGE_FOLDERS) {
-      const allowed = await realpath(path.join(folder, name)).catch(() => null);
+      const allowed = await siteImageRoot(folder, name.split("/"));
       if (allowed && file.startsWith(allowed + path.sep) && (await stat(file)).isFile())
         return file;
     }
