@@ -377,7 +377,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
               <>
                 <Select
                   label="Filename suffix"
-                  description="Choose the ending added before the source extension."
+                  description="Appended to Name, before the selected output filetype."
                   data={SUFFIX_OPTIONS}
                   value={suffixChoice}
                   allowDeselect={false}

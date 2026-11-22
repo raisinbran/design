@@ -309,3 +309,45 @@ describe("published thumbnail appearance", () => {
     RENDER_TIMEOUT_MS,
   );
 });
+
+describe("explicit published output formats", () => {
+  it.each([
+    { format: "webp", encoded: "webp" },
+    { format: "jpg", encoded: "jpeg" },
+    { format: "png", encoded: "png" },
+  ] as const)("writes genuine $format bytes, not only an extension", async ({ format, encoded }) => {
+    const file = await flatImage(130);
+    const rendered = await renderJob({
+      kind: "render",
+      file,
+      recipe: { rotation: 0, straighten: 0 },
+      settings,
+      fontFile,
+      siteFolder: repositoryDir,
+      format,
+    });
+    const metadata = await sharp(rendered.bytes).metadata();
+    expect(metadata.format).toBe(encoded);
+    expect(rendered.format).toBe(format);
+    expect(metadata.width).toBe(800);
+  }, RENDER_TIMEOUT_MS);
+
+  it("never silently writes WebP bytes as HEIC", async () => {
+    const file = await flatImage(120);
+    try {
+      const rendered = await renderJob({
+        kind: "render",
+        file,
+        recipe: { rotation: 0, straighten: 0 },
+        settings,
+        fontFile,
+        siteFolder: repositoryDir,
+        format: "heic",
+      });
+      const metadata = await sharp(rendered.bytes).metadata();
+      expect(metadata.format).toBe("heif");
+    } catch (error) {
+      expect(String(error)).toMatch(/HEIC export is unavailable/);
+    }
+  }, RENDER_TIMEOUT_MS);
+});
