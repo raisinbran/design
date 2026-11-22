@@ -3,6 +3,7 @@ set -euo pipefail
 
 studio_root="$(cd "$(dirname "$0")/.." && pwd)"
 source "$studio_root/scripts/macos-launch-check.sh"
+source "$studio_root/scripts/macos-signing-policy.sh"
 dmg="$(find "$studio_root/out/make" -type f -name '*.dmg' -print -quit)"
 if [[ -z "$dmg" ]]; then
   echo "No Forge DMG found" >&2
@@ -33,6 +34,10 @@ if codesign --verify --deep --strict --verbose=2 "$forge_app"; then
 else
   echo "Forge packaged app has an invalid signature before the DMG maker" >&2
 fi
+forge_policy_ok=0
+if check_macos_adhoc_signing "$forge_app"; then
+  forge_policy_ok=1
+fi
 hdiutil attach -readonly -nobrowse -mountpoint "$mount" "$dmg"
 mounted=1
 app="$(find "$mount" -maxdepth 1 -type d -name '*.app' -print -quit)"
@@ -51,6 +56,11 @@ if codesign --verify --deep --strict --verbose=2 "$app"; then
   signature_ok=1
 else
   echo "Strict signature verification FAILED" >&2
+fi
+
+dmg_policy_ok=0
+if check_macos_adhoc_signing "$app"; then
+  dmg_policy_ok=1
 fi
 
 # LaunchServices exercises a distinct entry path. A successful 'open' must create a
@@ -78,7 +88,8 @@ direct_ok=0
 if node "$studio_root/scripts/packaged-smoke.mjs"; then direct_ok=1; fi
 
 if [[ "$forge_signature_ok" == 0 || "$signature_ok" == 0 ||
+  "$forge_policy_ok" == 0 || "$dmg_policy_ok" == 0 ||
   "$launch_ok" == 0 || "$direct_ok" == 0 ]]; then
-  echo "Mac package diagnostics failed: Forge signature=$forge_signature_ok DMG signature=$signature_ok LaunchServices=$launch_ok direct=$direct_ok" >&2
+  echo "Mac package diagnostics failed: Forge signature=$forge_signature_ok DMG signature=$signature_ok Forge policy=$forge_policy_ok DMG policy=$dmg_policy_ok LaunchServices=$launch_ok direct=$direct_ok" >&2
   exit 1
 fi

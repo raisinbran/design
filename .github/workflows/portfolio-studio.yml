@@ -59,6 +59,10 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./scripts/windows-packaged-smoke.ps1
+      - name: macOS signing-policy negative controls
+        if: runner.os == 'macOS'
+        shell: bash
+        run: bash scripts/macos-signing-policy.test.sh
       - name: macOS LaunchServices false-positive negative control
         if: runner.os == 'macOS'
         shell: bash
