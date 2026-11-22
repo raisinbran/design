@@ -19,11 +19,7 @@ const galleryScript = readFileSync(
   "utf8",
 );
 
-function page(
-  width: number,
-  count: number,
-  dimensions: Array<[number, number]> = [],
-) {
+function page(width: number, count: number, dimensions: Array<[number, number]> = []) {
   const gallery = makeElement();
   gallery.clientWidth = width;
   const photos = Array.from({ length: count }, (_, index) => ({
@@ -76,9 +72,7 @@ function makeElement(): SiteElement {
 }
 
 function rowFiles(gallery: SiteElement): string[][] {
-  return gallery.children.map((row) =>
-    row.children.map((tile) => tile.dataset.file),
-  );
+  return gallery.children.map((row) => row.children.map((tile) => tile.dataset.file));
 }
 
 describe("Photography gallery row capacity", () => {
@@ -123,10 +117,7 @@ describe("Photography gallery row capacity", () => {
     ]);
 
     window.PortfolioPhotographyGallery!.setFilters(["Day"]);
-    expect(rowFiles(gallery)).toEqual([
-      ["IMG_0.jpg", "IMG_2.jpg"],
-      ["IMG_4.jpg"],
-    ]);
+    expect(rowFiles(gallery)).toEqual([["IMG_0.jpg", "IMG_2.jpg"], ["IMG_4.jpg"]]);
     window.PortfolioPhotographyGallery!.setFilters([]);
     expect(rowFiles(gallery)).toEqual([
       ["IMG_0.jpg"],
