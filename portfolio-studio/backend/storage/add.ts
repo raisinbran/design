@@ -5,6 +5,7 @@ import type { Added, AddRequest, PortfolioView, Result } from "../api/api";
 import { photoNameProblem, webpName } from "./names";
 import {
   fileOutputFormat,
+  isPhotoOutputFormat,
   photoBaseNameProblem,
   publishedFilename,
   type PhotoOutputFormat,
@@ -23,6 +24,9 @@ export async function addPhoto(
   request: AddRequest,
   image: { bytes: Uint8Array; width: number; height: number; format?: PhotoOutputFormat },
 ): Promise<Result<Added>> {
+  if (request.kind === "new" && !isPhotoOutputFormat(request.format)) {
+    return { ok: false, error: { code: "invalid", message: "Select a supported output format" } };
+  }
   const { catalogs } = await loadPortfolio(folder);
   const photos = catalogs.photography.photos;
   const bareName = request.kind === "new" ? request.name.trim() : null;
@@ -83,7 +87,7 @@ export async function addPhoto(
   if (competingThumbnail) {
     return {
       ok: false,
-      error: { code: "name-conflict", message: `The WebP name ${thumbnail} is already in use` },
+      error: { code: "name-conflict", message: `The published filename ${thumbnail} is already in use` },
     };
   }
 
