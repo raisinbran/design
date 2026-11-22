@@ -2,7 +2,7 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import decodeHeic from "heic-decode";
 import sharp, { type OutputInfo, type OverlayOptions, type Sharp } from "sharp";
-import type { ImageSettings, Orientation, Recipe } from "../api/api";
+import type { ImageSettings, Orientation, PhotoAppearance, Recipe } from "../api/api";
 
 export const OUTPUT_LONG_SIDE = 800;
 export const PROXY_LONG_SIDE = 1600;
@@ -33,6 +33,7 @@ const TEXTURE_BLUR_DIVISOR = 6;
 const TONE_BLUR_DIVISOR = 12;
 
 export type Job =
+  | { kind: "appearance"; photos: { key: string; file: string }[] }
   | { kind: "proxy"; file: string; orientation: Orientation }
   | {
       kind: "render";
@@ -49,6 +50,8 @@ export interface Rendered {
   width: number;
   height: number;
 }
+
+export type AppearanceMap = Record<string, PhotoAppearance>;
 
 // HEIF files start with an "ftyp" box; AVIF shares the container, and sharp decodes it itself.
 function isHeic(bytes: Buffer): boolean {
@@ -313,7 +316,33 @@ function rightsXmp({ author, copyright, usageTerms }: ImageSettings["rights"]): 
  * Runs a proxy or render job. A render is the gallery image, at most 800 px on the long side, with
  * the watermark and the rights metadata, and none of the original's metadata, such as GPS.
  */
-export async function renderJob(job: Job): Promise<Rendered> {
+export async function renderJob(job: Job): Promise<Rendered | AppearanceMap> {
+  if (job.kind === "appearance") {
+    const appearance: AppearanceMap = {};
+    for (const { key, file } of job.photos) {
+      const { data, info } = await sharp(file, { limitInputPixels: PIXEL_LIMIT })
+        .autoOrient()
+        .resize(32, 32, { fit: "inside" })
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const totals = [0, 0, 0];
+      for (let index = 0; index < data.length; index += info.channels) {
+        for (let channel = 0; channel < 3; channel++) totals[channel] += data[index + channel];
+      }
+      const rgb = totals.map((value) => value / (info.width * info.height)) as [
+        number,
+        number,
+        number,
+      ];
+      appearance[key] = {
+        rgb,
+        brightness: (rgb[0] + rgb[1] + rgb[2]) / 3,
+        saturation: (Math.max(...rgb) - Math.min(...rgb)) / 255,
+      };
+    }
+    return appearance;
+  }
   if (job.kind === "proxy") {
     const { data, info } = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);
     const bytes = await sharp(data, { raw: info }).webp().toBuffer();

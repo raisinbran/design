@@ -23,6 +23,8 @@ export interface PortfolioApi {
   "photos.cancel"(): R<null>;
   /** Writes the source's latest render to the site. */
   "photos.add"(request: AddRequest): R<Added>;
+  /** Reads thumbnail color statistics in the image worker; originals remain private. */
+  "photos.appearance"(): R<Record<string, PhotoAppearance>>;
   /** The saved drafts whose originals still exist, each with a fresh source id. */
   "photos.drafts"(): R<Draft[]>;
   "photos.saveDraft"(sourceId: string, recipe: Recipe): R<null>;
@@ -60,6 +62,13 @@ export interface PortfolioView {
 }
 
 export type Page = "photography" | "engineering" | "archive";
+
+export interface PhotoAppearance {
+  rgb: [number, number, number];
+  brightness: number;
+  saturation: number;
+}
+
 
 /** An original the backend has registered. The UI never sees its path. */
 export interface SourceHandle {

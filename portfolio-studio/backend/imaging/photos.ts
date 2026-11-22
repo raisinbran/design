@@ -6,9 +6,11 @@ import Store from "electron-store";
 import { z } from "zod";
 import type { ImageRef, PortfolioApi, Recipe, Result, SavedSource } from "../api/api";
 import { readSettings } from "../settings";
+import { resolveSiteImage } from "../storage/images";
+import { loadPortfolio } from "../storage/portfolio";
 import { addPhoto } from "../storage/add";
 import { cancelJob, runJob } from "./jobs";
-import type { Rendered } from "./render";
+import type { Job, Rendered } from "./render";
 
 type PhotoMethods = {
   [M in keyof PortfolioApi as M extends `photos.${string}` ? M : never]: PortfolioApi[M];
@@ -74,7 +76,7 @@ async function chooseOriginal(window: BrowserWindow | null): Promise<string | nu
 async function preview(
   sourceId: string,
   kind: "proxy" | "render",
-  job: (file: string) => Parameters<typeof runJob>[0],
+  job: (file: string) => Exclude<Job, { kind: "appearance" }>,
   recipe?: Recipe,
 ): Promise<Result<ImageRef>> {
   const file = sources.get(sourceId);
@@ -146,6 +148,25 @@ export function photoHandlers(
         (file) => ({ kind: "render", file, recipe, settings, fontFile: FONT_FILE, siteFolder }),
         recipe,
       );
+    },
+    async "photos.appearance"() {
+      const siteFolder = folder();
+      const view = await loadPortfolio(siteFolder);
+      const photos = await Promise.all(
+        view.catalogs.photography.photos.map(async (photo) => {
+          const file = photo.thumbnail
+            ? `photography/thumbnails/${photo.thumbnail}`
+            : `photography/published/${photo.file}`;
+          const url = `portfolio://site/${file.split("/").map(encodeURIComponent).join("/")}`;
+          const resolved = await resolveSiteImage(siteFolder, url);
+          return resolved ? { key: photo.file, file: resolved } : null;
+        }),
+      );
+      const result = await runJob({
+        kind: "appearance",
+        photos: photos.filter((photo) => photo !== null),
+      });
+      return result ? ok(result) : failure("cancelled", "Photo analysis was cancelled");
     },
     async "photos.cancel"() {
       cancelJob();
