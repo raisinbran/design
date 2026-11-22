@@ -27,6 +27,7 @@ Run these in `portfolio-studio/`:
 - Put a package in `dependencies` only when it ships unbundled, as sharp does. Packages that Vite bundles go in `devDependencies`, because packaging copies `dependencies` into the app.
 - Never edit generated files by hand: `js/photography-catalog.js`, `js/archive-photo-settings.js` and the marked regions of the website pages. Change the catalogs in `data/` and save instead.
 - Keep all toolbars at fixed dimensions with stable control positions across modes, options, and validation states. Never dynamically add, remove, or resize toolbar fields when a selection changes; reserve space and use disabled states instead.
+- Avoid permanent tutorial text or status banners inside editing canvases. Explain tools through the Help/manual and concise tooltips; indicate active tools through clear pressed states and accessible labels. Keep main editor controls to two rows when possible.
 - Do not commit or push unless asked.
 - Comments are one or two sentences and say what the name and type don't, such as that `visible` shows as "Unlist", so checked means false. Obvious fields and private helpers get no comment.
 - A file over about 400 lines carries a one-line reason at its top.
