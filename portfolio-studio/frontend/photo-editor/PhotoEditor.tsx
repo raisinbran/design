@@ -43,7 +43,7 @@ interface Editing extends Draft {
 }
 
 const FORMAT_CHOICES = [
-  { value: "webp", label: ".webp (recommended)" },
+  { value: "webp", label: ".webp (rec)" },
   { value: "jpg", label: ".jpg" },
   { value: "png", label: ".png" },
 ];
