@@ -232,6 +232,30 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     changeRecipe({ ...recipe, straighten, crop: undefined });
   }
 
+  // The measurement belongs to the recipe it started from; a newer edit makes it obsolete.
+  async function autoLevel() {
+    if (!editing) return;
+    const { revision } = history;
+    const { rotation, straighten } = recipe;
+    await runShowingErrors(async () => {
+      const found = await call(
+        window.portfolio["photos.autoLevel"](editing.source.id, { rotation, straighten }),
+      );
+      if (found.straighten === null) {
+        setError(
+          "No clear horizontal or vertical lines found. Level it with a guide or the angle.",
+        );
+        return;
+      }
+      setError(null);
+      setHistory((h) =>
+        h.revision === revision
+          ? change(h, { ...h.present, straighten: found.straighten!, crop: undefined })
+          : h,
+      );
+    }, setError);
+  }
+
   async function importOriginal() {
     await runShowingErrors(async () => {
       const source = await call(window.portfolio["photos.import"]());
@@ -365,6 +389,12 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 symbol="↕"
                 pressed={tool === "levelV"}
                 onClick={() => setTool(toggleTool(tool, "levelV"))}
+              />
+              <IconTool
+                label="Auto-level"
+                symbol="⟂"
+                disabled={stale || busy}
+                onClick={() => void autoLevel()}
               />
               <NumberInput
                 aria-label="Angle"
