@@ -11,8 +11,8 @@ export interface PortfolioApi {
   /** Asks for a folder and remembers it, or returns null when the owner cancels. */
   "portfolio.choose"(): R<PortfolioView | null>;
   "catalogs.save"(revision: Revision, catalogs: Catalogs): R<PortfolioView>;
-  /** Asks for one original and keeps a draft of it, or returns null when the owner cancels. */
-  "photos.import"(): R<SourceHandle | null>;
+  /** Asks for one or more originals and keeps a draft of each, or returns null when the owner cancels. */
+  "photos.import"(): R<SourceHandle[] | null>;
   /** The original and recipe saved when the photo was added; "source-missing" when there is none or the file moved. */
   "photos.openSaved"(photoKey: string): R<SavedSource>;
   /** Asks for the photo's original and remembers it, or returns null when the owner cancels. */

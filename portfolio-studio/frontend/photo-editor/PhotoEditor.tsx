@@ -295,11 +295,20 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   async function importOriginal() {
     await runShowingErrors(async () => {
-      const source = await call(window.portfolio["photos.import"]());
-      if (!source) return;
-      const draft = { source, recipe: { rotation: 0, straighten: 0 } as const };
-      setDrafts([...drafts.filter((item) => item.source.id !== source.id), draft]);
-      open(draft);
+      const sources = await call(window.portfolio["photos.import"]());
+      if (!sources?.length) return;
+      const added: Draft[] = sources.map(
+        (source) =>
+          drafts.find((item) => item.source.id === source.id) ?? {
+            source,
+            recipe: { rotation: 0, straighten: 0 },
+          },
+      );
+      setDrafts([
+        ...drafts.filter((item) => !sources.some(({ id }) => id === item.source.id)),
+        ...added,
+      ]);
+      open(added[0]);
     }, setError);
   }
 
@@ -378,7 +387,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   return (
     <Group align="flex-start" wrap="nowrap">
       <Stack w={240} gap="xs">
-        <Button onClick={importOriginal}>Import original</Button>
+        <Button onClick={importOriginal}>Import originals</Button>
         {drafts.map((draft) => (
           <NavLink
             key={draft.source.id}
