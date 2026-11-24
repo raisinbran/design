@@ -51,7 +51,7 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 | # | Python feature | Electron status | Proposed |
 | --- | --- | --- | --- |
 | 23 | Engineering: add, duplicate, remove, reorder, undo; rich-text body preserving legacy markup (`engineering_editor`, `rich_text`) | **Partial**: add, remove, reorder, rich text done; **no duplicate and no project-level undo** (verified in `EngineeringView.tsx`) | Verified; owner to decide on duplicate/undo |
-| 24 | Engineering/Archive media: import local image or video, optimize, add/remove/reorder, choose cover (`*_editor`) | **Missing**: paths typed by hand | Build (likely the biggest daily-use gap) |
+| 24 | Engineering/Archive media: import local image or video, optimize, add/remove/reorder, choose cover (`*_editor`) | **Implemented**: Add media picks files; images follow the photo rules (upright, 800 px, WebP, rights, mark), Engineering videos are copied, the first image becomes an empty cover. Archive takes no video, and no PDF on either page (`backend/storage/media.ts`) | Done |
 | 25 | Video still-frame preview (`video_preview`) | **Missing** | Later |
 | 26 | Unsaved-draft preview with asset overrides (`engineering_editor.preview`, `archive_editor.preview`) | **Partial**: Preview opens saved page only | Decide |
 | 27 | Archive collections: metadata, crop/prominence/focus settings, migrate legacy HTML (`archive_catalog`, `archive_writer`) | **Done**: crop mode, prominence and a Position (focus) field exist in `ArchiveView.tsx` | Verified |

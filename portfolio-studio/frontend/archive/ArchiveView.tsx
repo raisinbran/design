@@ -164,6 +164,7 @@ interface CollectionEditorProps {
 
 function CollectionEditor({ collection, index, onRemove }: CollectionEditorProps) {
   const [selected, setSelected] = useState(0);
+  const [importError, setImportError] = useState<string | null>(null);
   const edit = (values: Partial<Collection>) =>
     editCollection(index, (current) => ({ ...current, ...values }));
   const editImages = (change: (media: Image[]) => Image[]) =>
@@ -213,28 +214,36 @@ function CollectionEditor({ collection, index, onRemove }: CollectionEditorProps
         <Title order={5}>Images</Title>
         <Button
           variant="default"
-          onClick={() => {
-            const id = newImageId(collection);
-            editImages((media) => [
-              ...media,
-              {
-                id,
-                src: "",
-                alt: "",
-                caption: "",
-                credit: "",
-                cropMode: "natural",
-                displayRatio: null,
-                position: "50% 50%",
-                prominence: "normal",
-              },
-            ]);
+          onClick={async () => {
+            const result = await window.portfolio["media.import"]("archive", collection.id);
+            if (!result.ok) return setImportError(result.error.message);
+            setImportError(null);
+            if (!result.value?.length) return;
+            const added = result.value;
+            editImages((media) => {
+              const images = [...media];
+              for (const { src } of added) {
+                images.push({
+                  id: newImageId({ ...collection, media: images }),
+                  src,
+                  alt: "",
+                  caption: "",
+                  credit: "",
+                  cropMode: "natural",
+                  displayRatio: null,
+                  position: "50% 50%",
+                  prominence: "normal",
+                });
+              }
+              return images;
+            });
             setSelected(collection.media.length);
           }}
         >
           Add image
         </Button>
       </Group>
+      {importError && <Text c="red">{importError}</Text>}
       <ItemList
         items={collection.media.map((item) => ({
           key: item.id,

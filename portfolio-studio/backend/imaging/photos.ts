@@ -11,12 +11,15 @@ import { resolveSiteImage } from "../storage/images";
 import { loadPortfolio } from "../storage/portfolio";
 import { deletePhoto, renamePhoto } from "../storage/manage";
 import { addPhoto } from "../storage/add";
+import { importMedia, MEDIA_EXTENSIONS } from "../storage/media";
 import { MIN_CONFIDENCE } from "./autolevel";
 import { cancelJob, runJob } from "./jobs";
 import type { Job, Rendered } from "./render";
 
 type PhotoMethods = {
-  [M in keyof PortfolioApi as M extends `photos.${string}` ? M : never]: PortfolioApi[M];
+  [
+    M in keyof PortfolioApi as M extends `photos.${string}` | "media.import" ? M : never
+  ]: PortfolioApi[M];
 };
 
 const FILTERS = [
@@ -124,6 +127,35 @@ export function photoHandlers(
         ],
       }));
       return ok(register(file));
+    },
+    async "media.import"(section, ownerId) {
+      const choice = await dialog.showOpenDialog(window()!, {
+        properties: ["openFile", "multiSelections"],
+        filters: [{ name: "Images and videos", extensions: MEDIA_EXTENSIONS[section] }],
+      });
+      if (choice.canceled) return ok(null);
+      const settings = readSettings();
+      const siteFolder = folder();
+      try {
+        // Images get the photo rules: upright, at most 800 px, WebP, the rights and the mark.
+        return ok(
+          await importMedia(siteFolder, section, ownerId, choice.filePaths, async (file) => {
+            const image = await runJob({
+              kind: "render",
+              file,
+              recipe: DEFAULT_RECIPE,
+              format: "webp",
+              settings,
+              fontFile: FONT_FILE,
+              siteFolder,
+            });
+            if (!image) throw new Error("Cancelled");
+            return image.bytes;
+          }),
+        );
+      } catch (error) {
+        return failure("invalid", error instanceof Error ? error.message : String(error));
+      }
     },
     async "photos.openSaved"(photoKey) {
       const saved = readStore().originals[photoKey];

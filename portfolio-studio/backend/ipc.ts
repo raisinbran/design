@@ -5,6 +5,7 @@ export const METHODS = [
   "portfolio.load",
   "portfolio.choose",
   "catalogs.save",
+  "media.import",
   "photos.import",
   "photos.openSaved",
   "photos.relink",
