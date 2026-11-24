@@ -113,6 +113,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [missing, setMissing] = useState<string | null>(null);
   const [proxy, setProxy] = useState<ImageRef | null>(null);
   const [proxyOf, setProxyOf] = useState("");
+  const [leveling, setLeveling] = useState(false);
+  const openId = useRef("");
   const [rendered, setRendered] = useState<{
     image: ImageRef;
     recipe: Recipe;
@@ -138,6 +140,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   function open(next: Editing) {
     setEditing(next);
+    openId.current = next.source.id;
     setHistory(startHistory(next.recipe));
     setTool("none");
     setSuffixChoice("_crop");
@@ -232,28 +235,35 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     changeRecipe({ ...recipe, straighten, crop: undefined });
   }
 
-  // The measurement belongs to the recipe it started from; a newer edit makes it obsolete.
+  // The measurement belongs to the photo and recipe it started from; a newer edit makes it obsolete.
   async function autoLevel() {
     if (!editing) return;
     const { revision } = history;
+    const { id } = editing.source;
     const { rotation, straighten } = recipe;
-    await runShowingErrors(async () => {
-      const found = await call(
-        window.portfolio["photos.autoLevel"](editing.source.id, { rotation, straighten }),
-      );
-      if (found.straighten === null) {
+    setLeveling(true);
+    try {
+      const found = await window.portfolio["photos.autoLevel"](id, { rotation, straighten });
+      if (!found.ok) {
+        if (found.error.code !== "cancelled") setError(found.error.message);
+        return;
+      }
+      if (found.value.straighten === null) {
         setError(
           "No clear horizontal or vertical lines found. Level it with a guide or the angle.",
         );
         return;
       }
       setError(null);
+      const level = found.value.straighten;
       setHistory((h) =>
-        h.revision === revision
-          ? change(h, { ...h.present, straighten: found.straighten!, crop: undefined })
+        h.revision === revision && openId.current === id
+          ? change(h, { ...h.present, straighten: level, crop: undefined })
           : h,
       );
-    }, setError);
+    } finally {
+      setLeveling(false);
+    }
   }
 
   async function importOriginal() {
@@ -393,7 +403,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
               <IconTool
                 label="Auto-level"
                 symbol="⟂"
-                disabled={stale || busy}
+                disabled={stale || busy || leveling}
                 onClick={() => void autoLevel()}
               />
               <NumberInput
