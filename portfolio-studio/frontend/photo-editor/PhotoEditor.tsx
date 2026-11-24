@@ -222,12 +222,6 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   const changeRecipe = (next: Recipe) => setHistory((h) => change(h, next));
 
-  // A quarter turn changes the shape of the safe rectangle, so the crop starts over.
-  function rotate(degrees: number) {
-    const rotation = ((recipe.rotation + degrees) % 360) as Recipe["rotation"];
-    changeRecipe({ ...recipe, rotation, crop: undefined });
-  }
-
   function applyGuide(mode: "H" | "V", start: Point, end: Point) {
     const straighten = levelGuide(mode, start, end, recipe.straighten);
     changeRecipe({ ...recipe, straighten, crop: undefined });
@@ -364,8 +358,6 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 pressed={tool === "levelV"}
                 onClick={() => setTool(toggleTool(tool, "levelV"))}
               />
-              <IconTool label="Rotate left" symbol="⟲" onClick={() => rotate(270)} />
-              <IconTool label="Rotate right" symbol="⟳" onClick={() => rotate(90)} />
               <NumberInput
                 aria-label="Straighten"
                 suffix="°"
@@ -574,8 +566,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
         <Text size="sm">
           With no tool selected, drag the photo to move it and scroll to zoom. Crop draws, moves and
           resizes the crop. Level horizontal or vertical: drag along a line that should be level;
-          the photo turns to match. Rotate turns a quarter turn. Esc or clicking the tool again
-          returns to moving the photo.
+          the photo turns to match. Type an angle in the box to rotate. Esc or clicking the tool
+          again returns to moving the photo.
         </Text>
       </Modal>
       <Modal opened={conflict !== null} onClose={() => setConflict(null)} title="Name taken">
