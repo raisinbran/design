@@ -232,9 +232,15 @@ export async function replaceFiles(
     }
     await removeAll([...temporaries, ...backups.filter((_, index) => !failed.includes(index))]);
     const reason = describeError(error);
+    // A created file has no backup, so only the others can be recovered from a kept copy.
+    const kept = failed.filter((index) => existed.has(index));
+    const names = failed.map((index) => files[index]).join(", ");
     throw new Error(
       failed.length
-        ? `Saving failed, because ${reason}, and these files could not be put back: ${failed.map((index) => files[index]).join(", ")}. Their originals are kept beside them with the ending ${BACKUP_SUFFIX}.`
+        ? `Saving failed, because ${reason}, and these files could not be put back: ${names}.` +
+            (kept.length
+              ? ` Originals are kept beside them with the ending ${BACKUP_SUFFIX}.`
+              : " They were new files, so delete them.")
         : `Saving failed, because ${reason}. No file was changed.`,
     );
   }
