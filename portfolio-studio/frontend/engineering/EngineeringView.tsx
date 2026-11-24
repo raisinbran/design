@@ -161,6 +161,7 @@ interface ProjectEditorProps {
 
 function ProjectEditor({ project, index, onRemove }: ProjectEditorProps) {
   const [selected, setSelected] = useState(0);
+  const [importError, setImportError] = useState<string | null>(null);
   const edit = (values: Partial<Project>) =>
     editProject(index, (current) => ({ ...current, ...values }));
   const editMedia = (change: (media: Media[]) => Media[]) =>
@@ -225,17 +226,28 @@ function ProjectEditor({ project, index, onRemove }: ProjectEditorProps) {
         <Title order={5}>Media</Title>
         <Button
           variant="default"
-          onClick={() => {
-            editMedia((items) => [
-              ...items,
-              { kind: "image", src: "", alt: "", caption: "", credit: "" },
-            ]);
+          onClick={async () => {
+            const result = await window.portfolio["media.import"]("engineering", project.id);
+            if (!result.ok) return setImportError(result.error.message);
+            setImportError(null);
+            if (!result.value?.length) return;
+            const added = result.value;
+            editProject(index, (current) => ({
+              ...current,
+              // The first image becomes the cover of a project that has none.
+              cover: current.cover || added.find((item) => item.kind === "image")?.src || "",
+              media: [
+                ...current.media,
+                ...added.map((item) => ({ ...item, alt: "", caption: "", credit: "" })),
+              ],
+            }));
             setSelected(project.media.length);
           }}
         >
           Add media
         </Button>
       </Group>
+      {importError && <Text c="red">{importError}</Text>}
       <ItemList
         items={project.media.map((item, at) => ({
           key: keys[at],

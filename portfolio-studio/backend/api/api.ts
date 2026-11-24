@@ -38,12 +38,25 @@ export interface PortfolioApi {
   "photos.drafts"(): R<Draft[]>;
   "photos.saveDraft"(sourceId: string, recipe: Recipe): R<null>;
   "photos.discardDraft"(sourceId: string): R<null>;
+  /**
+   * Asks for images (and, for Engineering, videos), puts them under the site and returns their
+   * catalog paths, or null when the owner cancels. Images follow the photo rules; the catalog
+   * itself changes only on Save.
+   */
+  "media.import"(section: MediaSection, ownerId: string): R<ImportedMedia[] | null>;
   /** Opens the saved page in the default browser. */
   "site.open"(page: Page): R<null>;
   "settings.get"(): R<AppSettings>;
   /** Changes the image settings; only "Choose folder" changes the folder. */
   "settings.set"(settings: ImageSettings): R<AppSettings>;
   "app.info"(): R<AppInfo>;
+}
+
+export type MediaSection = "engineering" | "archive";
+export interface ImportedMedia {
+  kind: "image" | "video";
+  /** Relative to the website folder. */
+  src: string;
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: ApiError };
