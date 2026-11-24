@@ -71,12 +71,12 @@ function register(file: string): SavedSource["source"] {
   return { id, name: path.basename(file) };
 }
 
-async function chooseOriginal(window: BrowserWindow | null): Promise<string | null> {
+async function chooseOriginals(window: BrowserWindow | null, many: boolean): Promise<string[]> {
   const choice = await dialog.showOpenDialog(window!, {
-    properties: ["openFile"],
+    properties: many ? ["openFile", "multiSelections"] : ["openFile"],
     filters: FILTERS,
   });
-  return choice.canceled ? null : choice.filePaths[0];
+  return choice.canceled ? [] : choice.filePaths;
 }
 
 async function preview(
@@ -117,16 +117,16 @@ export function photoHandlers(
 ): PhotoMethods {
   return {
     async "photos.import"() {
-      const file = await chooseOriginal(window());
-      if (!file) return ok(null);
+      const files = await chooseOriginals(window(), true);
+      if (!files.length) return ok(null);
       writeStore((data) => ({
         ...data,
         drafts: [
-          ...data.drafts.filter((draft) => draft.file !== file),
-          { file, recipe: DEFAULT_RECIPE },
+          ...data.drafts.filter((draft) => !files.includes(draft.file)),
+          ...files.map((file) => ({ file, recipe: DEFAULT_RECIPE })),
         ],
       }));
-      return ok(register(file));
+      return ok(files.map(register));
     },
     async "media.import"(section, ownerId) {
       const choice = await dialog.showOpenDialog(window()!, {
@@ -164,7 +164,7 @@ export function photoHandlers(
       return ok({ source: register(saved.file), recipe: saved.recipe });
     },
     async "photos.relink"(photoKey) {
-      const file = await chooseOriginal(window());
+      const [file] = await chooseOriginals(window(), false);
       if (!file) return ok(null);
       const recipe = readStore().originals[photoKey]?.recipe ?? DEFAULT_RECIPE;
       writeStore((data) => ({
