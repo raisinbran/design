@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import {
   cropFromDrag,
+  centerFromThumb,
   gridLines,
+  scaleOf,
+  scrollThumb,
   type GridMode,
   imageToScreen,
   moveCrop,
@@ -59,6 +62,65 @@ function handlePoint(crop: CropRect, handle: CropHandle): Point {
       ? crop.y + crop.height
       : crop.y + crop.height / 2;
   return { x, y };
+}
+
+/** A thin scrollbar over the photo's edge; dragging it or clicking its track moves the photo. */
+function Scrollbar(props: {
+  axis: "x" | "y";
+  visible: number;
+  center: number;
+  onCenter: (center: number) => void;
+}) {
+  const track = useRef<HTMLDivElement>(null);
+  const horizontal = props.axis === "x";
+  const { size, offset } = scrollThumb(props.visible, props.center);
+  function move(event: React.PointerEvent) {
+    const rect = track.current!.getBoundingClientRect();
+    const along = horizontal ? event.clientX - rect.left : event.clientY - rect.top;
+    const center = centerFromThumb(
+      along / (horizontal ? rect.width : rect.height) - size / 2,
+      size,
+    );
+    if (center !== null) props.onCenter(center);
+  }
+  return (
+    <div
+      ref={track}
+      role="scrollbar"
+      aria-label={horizontal ? "Horizontal scroll" : "Vertical scroll"}
+      aria-orientation={horizontal ? "horizontal" : "vertical"}
+      aria-controls="photo-viewport"
+      aria-valuenow={Math.round(props.center * 100)}
+      style={{
+        position: "absolute",
+        background: "var(--mantine-color-default-hover)",
+        opacity: 0.9,
+        ...(horizontal
+          ? { left: 0, right: 8, bottom: 0, height: 8 }
+          : { top: 0, bottom: 8, right: 0, width: 8 }),
+      }}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        move(event);
+      }}
+      onPointerMove={(event) => {
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) move(event);
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          borderRadius: 4,
+          background: "var(--mantine-color-dimmed)",
+          opacity: size >= 1 ? 0.3 : 1,
+          ...(horizontal
+            ? { top: 0, bottom: 0, left: `${offset * 100}%`, width: `${size * 100}%` }
+            : { left: 0, right: 0, top: `${offset * 100}%`, height: `${size * 100}%` }),
+        }}
+      />
+    </div>
+  );
 }
 
 export function PhotoViewport({
@@ -219,6 +281,7 @@ export function PhotoViewport({
     <div
       ref={box}
       role="application"
+      id="photo-viewport"
       aria-label="Photo viewport"
       style={{
         position: "relative",
@@ -301,6 +364,21 @@ export function PhotoViewport({
           </>
         )}
       </svg>
+      {(["x", "y"] as const).map((axis) => {
+        const shownSize = axis === "x" ? image.width : image.height;
+        const room = axis === "x" ? container.width : container.height;
+        return (
+          <Scrollbar
+            key={axis}
+            axis={axis}
+            visible={room / (shownSize * scaleOf(viewport, container, image))}
+            center={viewport.center[axis]}
+            onCenter={(value) =>
+              onViewport({ ...viewport, center: { ...viewport.center, [axis]: value } })
+            }
+          />
+        );
+      })}
     </div>
   );
 }

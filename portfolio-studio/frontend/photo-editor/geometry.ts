@@ -383,3 +383,17 @@ const GRID_LINES: Record<GridMode, number[]> = {
 
 /** Fractions across a region, for both the vertical and the horizontal lines. */
 export const gridLines = (mode: GridMode): number[] => GRID_LINES[mode];
+
+// ---------------------------------------------------------------- scrollbars
+
+/** `visible` is the share of the photo in the window along one axis; sizes are fractions of the track. */
+export function scrollThumb(visible: number, center: number): { size: number; offset: number } {
+  const size = clamp(visible, 0.02, 1);
+  return { size, offset: clamp(center, 0, 1) * (1 - size) };
+}
+
+/** The photo centre for a thumb whose middle is at `position` (a track fraction); null when nothing scrolls. */
+export function centerFromThumb(position: number, size: number): number | null {
+  if (size >= 1) return null;
+  return clamp(position / (1 - size), 0, 1);
+}

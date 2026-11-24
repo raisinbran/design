@@ -123,6 +123,9 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [missing, setMissing] = useState<string | null>(null);
   const [proxy, setProxy] = useState<ImageRef | null>(null);
   const [proxyOf, setProxyOf] = useState("");
+  const [original, setOriginal] = useState<ImageRef | null>(null);
+  const [comparing, setComparing] = useState(false);
+  const originalFor = useRef("");
   const [leveling, setLeveling] = useState(false);
   const openId = useRef("");
   const [rendered, setRendered] = useState<{
@@ -153,6 +156,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   function open(next: Editing) {
     setEditing(next);
     openId.current = next.source.id;
+    originalFor.current = "";
+    setOriginal(null);
     setRatio(FREEFORM);
     setViewport(DEFAULT_VIEWPORT);
     setHistory(startHistory(next.recipe));
@@ -237,6 +242,14 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
       setRendered({ image, recipe, format: outputFormat });
       setBusy(false);
       if (!key) void window.portfolio["photos.saveDraft"](source.id, recipe);
+      // The unedited preview for the eye button loads once, after the first render; a newer job cancels it.
+      if (originalFor.current !== source.id) {
+        const plain = await window.portfolio["photos.original"](source.id);
+        if (run === generation.current && plain.ok) {
+          originalFor.current = source.id;
+          setOriginal(plain.value);
+        }
+      }
     }, 300);
     return () => clearTimeout(timer);
   }, [editing, recipe, outputFormat]);
@@ -525,6 +538,31 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 value={sliderFromZoom(viewport.zoom)}
                 onChange={(t) => setViewport({ ...viewport, zoom: zoomFromSlider(t) })}
               />
+              <Tooltip
+                label="Show original (hold)"
+                openDelay={0}
+                closeDelay={0}
+                transitionProps={{ duration: 0 }}
+              >
+                <ActionIcon
+                  variant={comparing ? "filled" : "default"}
+                  size={32}
+                  aria-label="Show original (hold)"
+                  aria-pressed={comparing}
+                  disabled={!original}
+                  onPointerDown={() => setComparing(true)}
+                  onPointerUp={() => setComparing(false)}
+                  onPointerLeave={() => setComparing(false)}
+                  onPointerCancel={() => setComparing(false)}
+                  onBlur={() => setComparing(false)}
+                  onKeyDown={(event) =>
+                    (event.key === " " || event.key === "Enter") && setComparing(true)
+                  }
+                  onKeyUp={() => setComparing(false)}
+                >
+                  ◉
+                </ActionIcon>
+              </Tooltip>
               <Text size="xs" c="dimmed" ml="auto">
                 {busy ? "Rendering…" : ""}
               </Text>
@@ -539,10 +577,10 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
             </Group>
             {proxy && (
               <PhotoViewport
-                image={proxy}
+                image={comparing && original ? original : proxy}
                 key={editing.source.id}
-                tool={stale ? "none" : tool}
-                crop={crop}
+                tool={stale || comparing ? "none" : tool}
+                crop={comparing ? undefined : crop}
                 aspect={aspectOf(ratio)}
                 viewport={viewport}
                 onViewport={setViewport}
