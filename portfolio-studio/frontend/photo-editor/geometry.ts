@@ -1,6 +1,6 @@
 // Pure geometry and history for the Photo Editor viewport: one coordinate transform shared by
 // crop, level guides, grid, zoom and pan. No DOM or React here, so everything is unit-tested.
-import type { Recipe } from "../../backend/api/api";
+import type { Orientation, Recipe } from "../../backend/api/api";
 
 export interface Point {
   x: number;
@@ -230,11 +230,6 @@ export function resizeCrop(
 
 // ---------------------------------------------------------------- level guides
 
-export const MIN_GUIDE_LENGTH = 20;
-export const MAX_STRAIGHTEN = 35;
-
-export type GuideResult = { ok: true; straighten: number } | { ok: false; error: string };
-
 /** Folds an angle in degrees into (-90, 90], since a line has no direction. */
 const foldLineAngle = (degrees: number) => {
   let folded = ((degrees % 180) + 180) % 180;
@@ -244,27 +239,35 @@ const foldLineAngle = (degrees: number) => {
 
 /**
  * The new straighten value after the user draws a guide between two points of the straightened
- * photo, given in source pixels. A Level H guide should end up horizontal, Level V vertical.
- * Straighten is degrees clockwise, so a guide that leans clockwise needs a counter-clockwise turn.
+ * photo. A Level H guide should end up horizontal, Level V vertical. Straighten is degrees
+ * clockwise, so a guide that leans clockwise needs a counter-clockwise turn. There is no minimum
+ * guide length and no angle limit; a guide that is not drawn (same point twice) changes nothing.
  */
 export function levelGuide(
   mode: "H" | "V",
   start: Point,
   end: Point,
   currentStraighten: number,
-): GuideResult {
+): number {
   const dx = end.x - start.x;
   const dy = end.y - start.y;
-  if (Math.hypot(dx, dy) < MIN_GUIDE_LENGTH) {
-    return { ok: false, error: `Draw a longer guide (at least ${MIN_GUIDE_LENGTH} pixels)` };
-  }
+  if (dx === 0 && dy === 0) return currentStraighten;
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const lean = foldLineAngle(mode === "H" ? angle : angle - 90);
-  const straighten = Math.round((currentStraighten - lean) * 100) / 100;
-  if (Math.abs(straighten) > MAX_STRAIGHTEN) {
-    return { ok: false, error: `That would turn the photo more than ${MAX_STRAIGHTEN} degrees` };
-  }
-  return { ok: true, straighten };
+  return Math.round((currentStraighten - lean) * 100) / 100;
+}
+
+/**
+ * The renderer takes quarter turns plus a straighten of -45 to 45 degrees. Any larger angle is
+ * the same picture as a quarter turn plus a smaller straighten, so no angle is ever refused.
+ */
+export function normalizeOrientation(rotation: number, straighten: number): Orientation {
+  const total = rotation + straighten;
+  const quarters = Math.round(total / 90);
+  return {
+    rotation: ((((quarters * 90) % 360) + 360) % 360) as Orientation["rotation"],
+    straighten: Math.round((total - quarters * 90) * 100) / 100,
+  };
 }
 
 // ---------------------------------------------------------------- history

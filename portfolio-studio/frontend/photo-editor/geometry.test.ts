@@ -12,6 +12,7 @@ import {
   isEdited,
   levelGuide,
   moveCrop,
+  normalizeOrientation,
   panBy,
   redo,
   reset,
@@ -150,43 +151,65 @@ describe("level guides", () => {
     levelGuide(mode, { x: 100, y: 100 }, { x: 100 + dx, y: 100 + dy }, current);
 
   it("levels a horizontal guide that leans clockwise by turning counter-clockwise", () => {
-    const result = level("H", 1000, 100); // leans about 5.71 degrees clockwise (y grows downward)
-    expect(result).toEqual({ ok: true, straighten: -5.71 });
+    expect(level("H", 1000, 100)).toBe(-5.71); // y grows downward
   });
 
   it("levels a guide that leans counter-clockwise by turning clockwise", () => {
-    expect(level("H", 1000, -100)).toEqual({ ok: true, straighten: 5.71 });
+    expect(level("H", 1000, -100)).toBe(5.71);
   });
 
   it("treats a guide drawn right-to-left the same", () => {
-    expect(level("H", -1000, -100)).toEqual({ ok: true, straighten: -5.71 });
+    expect(level("H", -1000, -100)).toBe(-5.71);
   });
 
   it("levels a vertical guide", () => {
     // Bottom to the right of the top: the photo leans counter-clockwise, so turn clockwise.
-    expect(level("V", 100, 1000)).toEqual({ ok: true, straighten: 5.71 });
-    expect(level("V", -100, 1000)).toEqual({ ok: true, straighten: -5.71 });
-    expect(level("V", 100, -1000)).toEqual({ ok: true, straighten: -5.71 });
+    expect(level("V", 100, 1000)).toBe(5.71);
+    expect(level("V", -100, 1000)).toBe(-5.71);
+    expect(level("V", 100, -1000)).toBe(-5.71);
   });
 
   it("adds to the straightening already applied", () => {
-    expect(level("H", 1000, 100, 10)).toEqual({ ok: true, straighten: 4.29 });
+    expect(level("H", 1000, 100, 10)).toBe(4.29);
   });
 
-  it("changes nothing for an already level guide", () => {
-    expect(level("H", 500, 0, 3)).toEqual({ ok: true, straighten: 3 });
-    expect(level("V", 0, 500, -2)).toEqual({ ok: true, straighten: -2 });
+  it("changes nothing for an already level guide or an undrawn one", () => {
+    expect(level("H", 500, 0, 3)).toBe(3);
+    expect(level("V", 0, 500, -2)).toBe(-2);
+    expect(level("H", 0, 0, 7)).toBe(7);
   });
 
-  it("rejects a guide shorter than 20 source pixels", () => {
-    const result = level("H", 10, 5);
-    expect(result.ok).toBe(false);
+  it("accepts a very short guide and a very steep one: there are no limits", () => {
+    expect(level("H", 3, 1)).toBe(-18.43);
+    expect(level("H", 100, 100)).toBe(-45);
+    expect(level("H", 1000, 100, -30)).toBe(-35.71);
+  });
+});
+
+describe("normalizeOrientation", () => {
+  it("leaves a small straighten alone", () => {
+    expect(normalizeOrientation(0, 12.5)).toEqual({ rotation: 0, straighten: 12.5 });
+    expect(normalizeOrientation(90, -45)).toEqual({ rotation: 90, straighten: -45 });
   });
 
-  it("rejects a result beyond the correction limit", () => {
-    expect(level("H", 100, 100).ok).toBe(false); // 45 degrees
-    expect(level("H", 1000, 100, -30).ok).toBe(false); // -35.71 cumulative
-    expect(level("H", 1000, 100, -29).ok).toBe(true); // -34.71 cumulative
+  it("turns a large straighten into a quarter turn plus a small one", () => {
+    expect(normalizeOrientation(0, 60)).toEqual({ rotation: 90, straighten: -30 });
+    expect(normalizeOrientation(0, -100)).toEqual({ rotation: 270, straighten: -10 });
+    expect(normalizeOrientation(270, 80)).toEqual({ rotation: 0, straighten: -10 });
+    expect(normalizeOrientation(0, 400)).toEqual({ rotation: 0, straighten: 40 });
+  });
+
+  it("keeps the total turn the same", () => {
+    for (const [rotation, straighten] of [
+      [0, 77],
+      [180, -130],
+      [90, 200],
+    ] as const) {
+      const result = normalizeOrientation(rotation, straighten);
+      const turn = (value: number) => ((value % 360) + 360) % 360;
+      near(turn(result.rotation + result.straighten), turn(rotation + straighten));
+      expect(Math.abs(result.straighten)).toBeLessThanOrEqual(45);
+    }
   });
 });
 
