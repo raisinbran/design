@@ -19,6 +19,8 @@ export interface PortfolioApi {
   "photos.relink"(photoKey: string): R<SavedSource | null>;
   /** Screen-sized preview of the straightened original, uncropped. */
   "photos.proxy"(sourceId: string, orientation: Orientation): R<ImageRef>;
+  /** The straighten value that levels the photo's dominant lines, or null when no clear lines are found. */
+  "photos.autoLevel"(sourceId: string, orientation: Orientation): R<{ straighten: number | null }>;
   "photos.render"(sourceId: string, recipe: Recipe, format: PhotoOutputFormat): R<ImageRef>;
   /** Stops the running proxy or render, which then returns "cancelled". */
   "photos.cancel"(): R<null>;

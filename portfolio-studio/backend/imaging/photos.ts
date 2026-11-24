@@ -11,6 +11,7 @@ import { resolveSiteImage } from "../storage/images";
 import { loadPortfolio } from "../storage/portfolio";
 import { deletePhoto, renamePhoto } from "../storage/manage";
 import { addPhoto } from "../storage/add";
+import { MIN_CONFIDENCE } from "./autolevel";
 import { cancelJob, runJob } from "./jobs";
 import type { Job, Rendered } from "./render";
 
@@ -78,7 +79,7 @@ async function chooseOriginal(window: BrowserWindow | null): Promise<string | nu
 async function preview(
   sourceId: string,
   kind: "proxy" | "render",
-  job: (file: string) => Exclude<Job, { kind: "appearance" }>,
+  job: (file: string) => Exclude<Job, { kind: "appearance" | "level" }>,
   recipe?: Recipe,
 ): Promise<Result<ImageRef>> {
   const file = sources.get(sourceId);
@@ -142,6 +143,16 @@ export function photoHandlers(
     },
     async "photos.proxy"(sourceId, orientation) {
       return preview(sourceId, "proxy", (file) => ({ kind: "proxy", file, orientation }));
+    },
+    async "photos.autoLevel"(sourceId, orientation) {
+      const file = sources.get(sourceId);
+      if (!file) return failure("source-missing", "Import the original again");
+      const found = await runJob({ kind: "level", file, orientation });
+      if (!found) return failure("cancelled", "Cancelled");
+      const { tilt } = found;
+      if (!tilt || tilt.confidence < MIN_CONFIDENCE) return ok({ straighten: null });
+      const straighten = Math.round((orientation.straighten - tilt.degrees) * 100) / 100;
+      return ok({ straighten: Math.max(-90, Math.min(90, straighten)) });
     },
     async "photos.render"(sourceId, recipe, format) {
       if (!isPhotoOutputFormat(format))
