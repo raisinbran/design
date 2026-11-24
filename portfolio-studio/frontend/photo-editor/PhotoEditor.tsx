@@ -28,6 +28,7 @@ import type {
 import { isDirty, useEditor } from "../app/editor";
 import { call, runShowingErrors } from "../app/portfolio";
 import {
+  angleOf,
   canRedo,
   canUndo,
   change,
@@ -37,6 +38,7 @@ import {
   reset,
   startHistory,
   undo,
+  withAngle,
   type CropRect,
   type History,
   type Point,
@@ -111,6 +113,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [missing, setMissing] = useState<string | null>(null);
   const [proxy, setProxy] = useState<ImageRef | null>(null);
   const [proxyOf, setProxyOf] = useState("");
+  const [leveling, setLeveling] = useState(false);
+  const openId = useRef("");
   const [rendered, setRendered] = useState<{
     image: ImageRef;
     recipe: Recipe;
@@ -136,6 +140,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   function open(next: Editing) {
     setEditing(next);
+    openId.current = next.source.id;
     setHistory(startHistory(next.recipe));
     setTool("none");
     setSuffixChoice("_crop");
@@ -228,6 +233,37 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     const straighten = levelGuide(mode, start, end, recipe.straighten);
     if (straighten === recipe.straighten) return;
     changeRecipe({ ...recipe, straighten, crop: undefined });
+  }
+
+  // The measurement belongs to the photo and recipe it started from; a newer edit makes it obsolete.
+  async function autoLevel() {
+    if (!editing) return;
+    const { revision } = history;
+    const { id } = editing.source;
+    const { rotation, straighten } = recipe;
+    setLeveling(true);
+    try {
+      const found = await window.portfolio["photos.autoLevel"](id, { rotation, straighten });
+      if (!found.ok) {
+        if (found.error.code !== "cancelled") setError(found.error.message);
+        return;
+      }
+      if (found.value.straighten === null) {
+        setError(
+          "No clear horizontal or vertical lines found. Level it with a guide or the angle.",
+        );
+        return;
+      }
+      setError(null);
+      const level = found.value.straighten;
+      setHistory((h) =>
+        h.revision === revision && openId.current === id
+          ? change(h, { ...h.present, straighten: level, crop: undefined })
+          : h,
+      );
+    } finally {
+      setLeveling(false);
+    }
   }
 
   async function importOriginal() {
@@ -364,18 +400,24 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 pressed={tool === "levelV"}
                 onClick={() => setTool(toggleTool(tool, "levelV"))}
               />
+              <IconTool
+                label="Auto-level"
+                symbol="⟂"
+                disabled={stale || busy || leveling}
+                onClick={() => void autoLevel()}
+              />
               <NumberInput
-                aria-label="Straighten"
+                aria-label="Angle"
                 suffix="°"
-                min={-90}
-                max={90}
+                min={-360}
+                max={360}
                 step={0.1}
                 decimalScale={1}
                 clampBehavior="strict"
                 w={90}
                 size="xs"
-                value={recipe.straighten}
-                onChange={(value) => changeRecipe({ ...recipe, straighten: Number(value) || 0 })}
+                value={angleOf(recipe)}
+                onChange={(value) => changeRecipe(withAngle(recipe, Number(value) || 0))}
               />
               <IconTool
                 label="Undo"

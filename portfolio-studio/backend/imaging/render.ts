@@ -3,6 +3,7 @@ import path from "node:path";
 import decodeHeic from "heic-decode";
 import sharp, { type OutputInfo, type OverlayOptions, type Sharp } from "sharp";
 import type { ImageSettings, Orientation, PhotoAppearance, Recipe } from "../api/api";
+import { estimateTilt, type Tilt } from "./autolevel";
 import { DEFAULT_PHOTO_OUTPUT_FORMAT, type PhotoOutputFormat } from "../../shared/photo-format";
 
 export const OUTPUT_LONG_SIDE = 800;
@@ -36,6 +37,7 @@ const TONE_BLUR_DIVISOR = 12;
 export type Job =
   | { kind: "appearance"; photos: { key: string; file: string }[] }
   | { kind: "proxy"; file: string; orientation: Orientation }
+  | { kind: "level"; file: string; orientation: Orientation }
   | {
       kind: "render";
       file: string;
@@ -53,6 +55,11 @@ export interface Rendered {
   width: number;
   height: number;
   format?: PhotoOutputFormat;
+}
+
+/** The lean of the straightened photo's dominant lines, or null when there are none to measure. */
+export interface Leveled {
+  tilt: Tilt | null;
 }
 
 export type AppearanceMap = Record<string, PhotoAppearance>;
@@ -349,7 +356,19 @@ export async function analyzeJob(
   return appearance;
 }
 
-export async function renderJob(job: Exclude<Job, { kind: "appearance" }>): Promise<Rendered> {
+export async function levelJob(job: Extract<Job, { kind: "level" }>): Promise<Leveled> {
+  const shown = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);
+  const { data, info } = await sharp(shown.data, { raw: shown.info })
+    .greyscale()
+    .resize(256, 256, { fit: "inside" })
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  return { tilt: estimateTilt(data, info.width, info.height) };
+}
+
+export async function renderJob(
+  job: Exclude<Job, { kind: "appearance" | "level" }>,
+): Promise<Rendered> {
   if (job.kind === "proxy") {
     const { data, info } = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);
     const bytes = await sharp(data, { raw: info }).webp().toBuffer();

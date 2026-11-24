@@ -2,7 +2,7 @@ import path from "node:path";
 import { Worker } from "node:worker_threads";
 // On glibc Linux, sharp must load in the main thread before any worker loads it.
 import "sharp";
-import type { AppearanceMap, Job, Rendered } from "./render";
+import type { AppearanceMap, Job, Leveled, Rendered } from "./render";
 
 const WORKER = path.join(__dirname, "render-worker.cjs");
 
@@ -12,7 +12,11 @@ let running: { worker: Worker; stop: () => void } | null = null;
  * Runs `job` in a new worker thread, so decoding never blocks the main process. Only one job runs
  * at a time. A later job or `cancelJob` terminates this one, which then resolves to null.
  */
-type JobResult<J extends Job> = J extends { kind: "appearance" } ? AppearanceMap : Rendered;
+type JobResult<J extends Job> = J extends { kind: "appearance" }
+  ? AppearanceMap
+  : J extends { kind: "level" }
+    ? Leveled
+    : Rendered;
 
 export function runJob<J extends Job>(job: J): Promise<JobResult<J> | null> {
   cancelJob();
