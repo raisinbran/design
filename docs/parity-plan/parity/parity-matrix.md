@@ -4,6 +4,19 @@ Status: **proposal only. Nothing here is a decision.** Owner marks each "Propose
 
 **Basis and limits.** Python side: the 46 non-test modules on `origin/backup/pre-portfolio-studio-20261106` (`tools/portfolio-studio/`), read as module purpose, function inventory and UI labels in `photo_studio.py`; not every line. Electron side: `master` plus PR #22's head (`17183f4c`), checked by source search, not by running the app. Rows marked **verify** need a line-level read or a GUI check before they count. This feeds issue #26; it does not replace its source-anchored audit.
 
+## Owner decisions (2026-11-23)
+
+The Proposed column below is superseded by these choices.
+
+| Decision | Rows |
+| --- | --- |
+| **Build** | 1 batch import/publish; 6 aspect presets and custom W:H; 7 level guides and Auto-level; 8 composition grids; 9 zoom and pan; 10 Reset all photo edits; 21 rights backfill; 24 Engineering/Archive media import; 29 save rollback |
+| **Waive** | 3 quality/size options; 4 and 5 two-image pipeline and gallery-only framing (single derivative stays); 15 open after publishing; 17 checksum registry (originals stay outside the repo; existing link and Relink are enough); 20 archive-before-remove; 26 unsaved-draft preview; 32 About page; 33 sound notifications |
+| **Later** | 13 ML captions; 18 rebuild all thumbnails; 19 reconcile files changed outside the app; 25 video still frame |
+| **Claude to verify** | 11, 14, 17 (existing link), 23, 27, 30, 31; then update this table |
+
+Rows 6-10 are not in the app (checked in master and PR #22 source); only the mockups and the old Python app show them. Rows marked Done or N/A need no decision.
+
 Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, no equivalent needed), **Verify**.
 
 ## A. Photography workflow

@@ -9,7 +9,7 @@ Companions: [audit](../audit/handoff-and-codex-era-audit-2026-11-23.md), [parity
 ## Phase 0: Re-baseline (first, small)
 
 1. Install Node 22 locally (needs owner OK) so tests run here, not only in CI. Run `npm ci`, `npm run typecheck`, `npm test` on PR #22's head and record results.
-2. Owner decisions still needed: (a) prune stale branches; (b) protect `backup/pre-portfolio-studio-20261106`; (c) mark the parity matrix's Proposed column; (d) usage log: not needed, dropped.
+2. Owner decisions still needed: (a) prune stale branches; (b) protect `backup/pre-portfolio-studio-20261106`; (c) parity matrix choices: done 2026-11-23; (d) usage log: not needed, dropped.
 3. Get a working GUI QA path. Try Claude's computer-use on this Mac against a benign window first. If it works, I run the GUI checks myself; the owner only approves launches. If not, report GUI QA blocked and stop; no harness debugging.
 
 ## Phase 1: Land PR #22 (bundled)
@@ -29,15 +29,15 @@ Read the Python source on the backup branch module by module and produce one tab
 
 Build one geometry/state module first (crop, rotation, level angle, zoom, pan, grid, history) with unit tests, then the UI on it. Implement the approved two-bar layout: fixed-size controls, crop controls disabled by one shared predicate, undo/redo, Reset with confirm, default-drag pan, 25–400% slider with centered 100% tick, Apple-Photos aspect presets with persistent W/H and orientation. Order: #23 leveling and Reset, #24 aspect, #25 grid/zoom/pan. Add component tests for the toolbar's stable layout. GUI pass after each.
 
-## Phase 4: Pipeline parity (per matrix)
+## Phase 4: Pipeline parity (decided rows only)
 
-Likely rows, in priority order, each only if the owner chooses Build:
-1. JPEG quality and max-size options, plus full-size JPEG with separate WebP thumbnail.
-2. Transactional save with rollback (audit finding 8).
-3. Engineering and Archive media import/optimize, and unsaved-draft preview.
-4. Existing-photo reconciliation: add unlisted files, rebuild thumbnails, relink renamed files.
-5. Batch publish with conflict numbering; gallery-only framing; archive-instead-of-delete.
-6. Local caption suggestions (likely Waive or Later; heavy dependency).
+Per the owner's 2026-11-23 choices in the parity matrix. Build order, each with tests and a GUI pass:
+1. Save rollback (29), since later work writes more files.
+2. Engineering and Archive media import/optimize (24).
+3. Batch import and publish with numbered name conflicts (1).
+4. Rights backfill into existing published images (21): dry run by default, backups outside Git, never touches originals.
+
+Later (not scheduled): ML captions (13), rebuild thumbnails (18), reconcile outside changes (19), video still frame (25). Everything else is waived. Phase 3 covers rows 6-10.
 
 ## Phase 5: Platforms and release
 
