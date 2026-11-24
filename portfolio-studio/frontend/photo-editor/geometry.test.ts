@@ -12,6 +12,7 @@ import {
   isEdited,
   levelGuide,
   moveCrop,
+  toPixels,
   normalizeOrientation,
   panBy,
   redo,
@@ -112,6 +113,48 @@ describe("crop", () => {
     expect(crop.x + crop.width).toBeLessThanOrEqual(1 + 1e-9);
   });
 
+  it("returns no crop for a drag that never moves, free or locked, at every edge and corner", () => {
+    const points = [0, 0.5, 1].flatMap((x) => [0, 0.5, 1].map((y) => ({ x, y })));
+    for (const point of points) {
+      expect(cropFromDrag(point, point, image)).toBeNull();
+      expect(cropFromDrag(point, point, image, 1)).toBeNull();
+      expect(cropFromDrag(point, point, image, 1.5)).toBeNull();
+    }
+  });
+
+  it("always returns a finite, positive crop inside the photo", () => {
+    const edges = [0, 0.001, 0.5, 0.999, 1];
+    for (const sx of edges)
+      for (const sy of edges)
+        for (const ex of edges)
+          for (const ey of edges)
+            for (const aspect of [undefined, 1, 0.8, 1.5]) {
+              const crop = cropFromDrag({ x: sx, y: sy }, { x: ex, y: ey }, image, aspect);
+              if (!crop) continue;
+              for (const value of Object.values(crop)) expect(Number.isFinite(value)).toBe(true);
+              expect(crop.width).toBeGreaterThan(0);
+              expect(crop.height).toBeGreaterThan(0);
+              expect(crop.x).toBeGreaterThanOrEqual(-1e-9);
+              expect(crop.y).toBeGreaterThanOrEqual(-1e-9);
+              expect(crop.x + crop.width).toBeLessThanOrEqual(1 + 1e-9);
+              expect(crop.y + crop.height).toBeLessThanOrEqual(1 + 1e-9);
+            }
+  });
+
+  it("moves a tiny aspect-locked crop without changing its size or aspect", () => {
+    const resized = resizeCrop(
+      { x: 0.2, y: 0.2, width: 0.2, height: 0.4 },
+      "s",
+      { x: 0.3, y: 0.2 },
+      image,
+      1,
+    );
+    const moved = moveCrop(resized, 0.3, 0.1);
+    near(moved.width, resized.width);
+    near(moved.height, resized.height);
+    near((moved.width * image.width) / (moved.height * image.height), 1);
+  });
+
   it("moves a crop without changing its size or leaving the photo", () => {
     const crop = { x: 0.2, y: 0.2, width: 0.3, height: 0.3 };
     nearRect(moveCrop(crop, 0.1, -0.1), { x: 0.3, y: 0.1, width: 0.3, height: 0.3 });
@@ -177,6 +220,15 @@ describe("level guides", () => {
     expect(level("H", 500, 0, 3)).toBe(3);
     expect(level("V", 0, 500, -2)).toBe(-2);
     expect(level("H", 0, 0, 7)).toBe(7);
+  });
+
+  it("takes pixels of the photo, so a non-square photo is not skewed", () => {
+    // A guide 0.5 across and 0.1 down on a 2000x1000 photo is 1000 px by 100 px: 5.71 degrees.
+    const start = toPixels({ x: 0.2, y: 0.5 }, image);
+    const end = toPixels({ x: 0.7, y: 0.6 }, image);
+    expect(levelGuide("H", start, end, 0)).toBe(-5.71);
+    // The same fractions read as raw fractions would give 11.31 degrees: wrong.
+    expect(levelGuide("H", { x: 0.2, y: 0.5 }, { x: 0.7, y: 0.6 }, 0)).toBe(-11.31);
   });
 
   it("accepts a very short guide and a very steep one: there are no limits", () => {

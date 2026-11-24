@@ -118,17 +118,6 @@ export function panBy(
 
 const MIN_CROP_FRACTION = 0.02;
 
-export const clampCrop = (crop: CropRect): CropRect => {
-  const width = clamp(crop.width, MIN_CROP_FRACTION, 1);
-  const height = clamp(crop.height, MIN_CROP_FRACTION, 1);
-  return {
-    width,
-    height,
-    x: clamp(crop.x, 0, 1 - width),
-    y: clamp(crop.y, 0, 1 - height),
-  };
-};
-
 /** A rectangle dragged between two image points; `aspect` is width/height in pixels. */
 export function cropFromDrag(
   start: Point,
@@ -140,6 +129,8 @@ export function cropFromDrag(
   const to = { x: clamp(end.x, 0, 1), y: clamp(end.y, 0, 1) };
   let width = Math.abs(to.x - from.x);
   let height = Math.abs(to.y - from.y);
+  // A click without a drag has no size; never let it reach the aspect arithmetic (0 / 0).
+  if (width === 0 && height === 0) return null;
   if (aspect) {
     // Keep the larger dragged side and derive the other, then shrink to stay inside the photo.
     const heightForWidth = (w: number) => (w * image.width) / (image.height * aspect);
@@ -153,7 +144,7 @@ export function cropFromDrag(
     width *= shrink;
     height *= shrink;
   }
-  if (width < MIN_CROP_FRACTION || height < MIN_CROP_FRACTION) return null;
+  if (!(width >= MIN_CROP_FRACTION && height >= MIN_CROP_FRACTION)) return null;
   return {
     x: to.x >= from.x ? from.x : from.x - width,
     y: to.y >= from.y ? from.y : from.y - height,
@@ -162,9 +153,13 @@ export function cropFromDrag(
   };
 }
 
-/** Moves the crop by image-fraction deltas, keeping its size and staying inside the photo. */
+/** Moves the crop by image-fraction deltas, keeping its exact size and staying inside the photo. */
 export function moveCrop(crop: CropRect, dx: number, dy: number): CropRect {
-  return clampCrop({ ...crop, x: crop.x + dx, y: crop.y + dy });
+  return {
+    ...crop,
+    x: clamp(crop.x + dx, 0, 1 - crop.width),
+    y: clamp(crop.y + dy, 0, 1 - crop.height),
+  };
 }
 
 export type CropHandle = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
@@ -230,6 +225,12 @@ export function resizeCrop(
 
 // ---------------------------------------------------------------- level guides
 
+/** An image-fraction point in pixels of the straightened photo, the unit `levelGuide` needs. */
+export const toPixels = (point: Point, image: Size): Point => ({
+  x: point.x * image.width,
+  y: point.y * image.height,
+});
+
 /** Folds an angle in degrees into (-90, 90], since a line has no direction. */
 const foldLineAngle = (degrees: number) => {
   let folded = ((degrees % 180) + 180) % 180;
@@ -239,7 +240,8 @@ const foldLineAngle = (degrees: number) => {
 
 /**
  * The new straighten value after the user draws a guide between two points of the straightened
- * photo. A Level H guide should end up horizontal, Level V vertical. Straighten is degrees
+ * photo, in pixels of that photo (convert viewport fractions with `toPixels`; fractions of a
+ * non-square photo would skew the angle). A Level H guide should end up horizontal, Level V vertical. Straighten is degrees
  * clockwise, so a guide that leans clockwise needs a counter-clockwise turn. There is no minimum
  * guide length and no angle limit; a guide that is not drawn (same point twice) changes nothing.
  */
