@@ -3,7 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
   cropFromDrag,
-  DEFAULT_VIEWPORT,
+  centerFromThumb,
+  gridLines,
+  scaleOf,
+  scrollThumb,
+  type GridMode,
   imageToScreen,
   moveCrop,
   panBy,
@@ -26,6 +30,10 @@ interface PhotoViewportProps {
   /** Width over height of the locked crop shape, in pixels; none leaves the crop free. */
   aspect: number | undefined;
   height: number | string;
+  /** Zoom and pan belong to the editor, so its zoom slider and this view stay in step. */
+  viewport: Viewport;
+  onViewport: (viewport: Viewport) => void;
+  grid: GridMode;
   onCrop: (crop: CropRect) => void;
   /** Both points are pixels of the straightened photo. */
   onGuide: (mode: "H" | "V", start: Point, end: Point) => void;
@@ -56,18 +64,79 @@ function handlePoint(crop: CropRect, handle: CropHandle): Point {
   return { x, y };
 }
 
+/** A thin scrollbar over the photo's edge; dragging it or clicking its track moves the photo. */
+function Scrollbar(props: {
+  axis: "x" | "y";
+  visible: number;
+  center: number;
+  onCenter: (center: number) => void;
+}) {
+  const track = useRef<HTMLDivElement>(null);
+  const horizontal = props.axis === "x";
+  const { size, offset } = scrollThumb(props.visible, props.center);
+  function move(event: React.PointerEvent) {
+    const rect = track.current!.getBoundingClientRect();
+    const along = horizontal ? event.clientX - rect.left : event.clientY - rect.top;
+    const center = centerFromThumb(
+      along / (horizontal ? rect.width : rect.height) - size / 2,
+      size,
+    );
+    if (center !== null) props.onCenter(center);
+  }
+  return (
+    <div
+      ref={track}
+      role="scrollbar"
+      aria-label={horizontal ? "Horizontal scroll" : "Vertical scroll"}
+      aria-orientation={horizontal ? "horizontal" : "vertical"}
+      aria-controls="photo-viewport"
+      aria-valuenow={Math.round(props.center * 100)}
+      style={{
+        position: "absolute",
+        background: "var(--mantine-color-default-hover)",
+        opacity: 0.9,
+        ...(horizontal
+          ? { left: 0, right: 8, bottom: 0, height: 8 }
+          : { top: 0, bottom: 8, right: 0, width: 8 }),
+      }}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        move(event);
+      }}
+      onPointerMove={(event) => {
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) move(event);
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          borderRadius: 4,
+          background: "var(--mantine-color-dimmed)",
+          opacity: size >= 1 ? 0.3 : 1,
+          ...(horizontal
+            ? { top: 0, bottom: 0, left: `${offset * 100}%`, width: `${size * 100}%` }
+            : { left: 0, right: 0, top: `${offset * 100}%`, height: `${size * 100}%` }),
+        }}
+      />
+    </div>
+  );
+}
+
 export function PhotoViewport({
   image,
   tool,
   crop,
   aspect,
   height,
+  viewport,
+  onViewport,
+  grid,
   onCrop,
   onGuide,
 }: PhotoViewportProps) {
   const box = useRef<HTMLDivElement>(null);
   const [container, setContainer] = useState<Size>({ width: 600, height: 400 });
-  const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
   const [dragCrop, setDragCrop] = useState<CropRect | undefined>();
   const [guide, setGuide] = useState<{ start: Point; end: Point } | null>(null);
   const drag = useRef<Drag | null>(null);
@@ -96,7 +165,7 @@ export function PhotoViewport({
       const anchor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
       const factor = event.deltaY < 0 ? WHEEL_STEP : 1 / WHEEL_STEP;
       const current = viewportRef.current;
-      setViewport(zoomAt(current, current.zoom * factor, anchor, container, image));
+      onViewport(zoomAt(current, current.zoom * factor, anchor, container, image));
     };
     element.addEventListener("wheel", onWheel, { passive: false });
     return () => element.removeEventListener("wheel", onWheel);
@@ -148,7 +217,7 @@ export function PhotoViewport({
     const screen = local(event);
     const at = toImage(screen);
     if (active.kind === "pan") {
-      setViewport(
+      onViewport(
         panBy(viewport, screen.x - active.last.x, screen.y - active.last.y, container, image),
       );
       active.last = screen;
@@ -186,6 +255,17 @@ export function PhotoViewport({
     }
   }
 
+  // Grid lines divide the crop, or the whole photo while there is no crop.
+  const gridArea = shown ?? { x: 0, y: 0, width: 1, height: 1 };
+  const gridStart = toScreen({ x: gridArea.x, y: gridArea.y });
+  const gridEnd = toScreen({ x: gridArea.x + gridArea.width, y: gridArea.y + gridArea.height });
+  const gridPath = gridLines(grid)
+    .map((line) => {
+      const x = gridStart.x + (gridEnd.x - gridStart.x) * line;
+      const y = gridStart.y + (gridEnd.y - gridStart.y) * line;
+      return `M${x} ${gridStart.y}V${gridEnd.y}M${gridStart.x} ${y}H${gridEnd.x}`;
+    })
+    .join("");
   const topLeft = toScreen({ x: 0, y: 0 });
   const bottomRight = toScreen({ x: 1, y: 1 });
   const cropBox =
@@ -201,6 +281,7 @@ export function PhotoViewport({
     <div
       ref={box}
       role="application"
+      id="photo-viewport"
       aria-label="Photo viewport"
       style={{
         position: "relative",
@@ -260,6 +341,9 @@ export function PhotoViewport({
               })}
           </>
         )}
+        {gridPath && (
+          <path d={gridPath} stroke="rgba(255,255,255,0.7)" strokeWidth={1} fill="none" />
+        )}
         {guide && (
           <>
             <line
@@ -280,6 +364,21 @@ export function PhotoViewport({
           </>
         )}
       </svg>
+      {(["x", "y"] as const).map((axis) => {
+        const shownSize = axis === "x" ? image.width : image.height;
+        const room = axis === "x" ? container.width : container.height;
+        return (
+          <Scrollbar
+            key={axis}
+            axis={axis}
+            visible={room / (shownSize * scaleOf(viewport, container, image))}
+            center={viewport.center[axis]}
+            onCenter={(value) =>
+              onViewport({ ...viewport, center: { ...viewport.center, [axis]: value } })
+            }
+          />
+        );
+      })}
     </div>
   );
 }

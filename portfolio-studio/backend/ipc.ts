@@ -9,6 +9,7 @@ export const METHODS = [
   "photos.openSaved",
   "photos.relink",
   "photos.proxy",
+  "photos.original",
   "photos.autoLevel",
   "photos.render",
   "photos.cancel",

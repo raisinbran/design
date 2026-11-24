@@ -362,3 +362,38 @@ export function withAngle(recipe: Recipe, angle: number): Recipe {
     crop: rotation === recipe.rotation ? recipe.crop : undefined,
   };
 }
+
+// ---------------------------------------------------------------- zoom slider and grid
+
+/** Slider fraction 0..1 to zoom 25%..400%, with 100% exactly in the middle. */
+export const zoomFromSlider = (t: number): number => clampZoom(4 ** (2 * clamp(t, 0, 1) - 1));
+
+export const sliderFromZoom = (zoom: number): number =>
+  (Math.log(clampZoom(zoom)) / Math.log(4) + 1) / 2;
+
+export const GRID_MODES = ["Off", "Thirds", "Center", "Golden"] as const;
+export type GridMode = (typeof GRID_MODES)[number];
+
+const GRID_LINES: Record<GridMode, number[]> = {
+  Off: [],
+  Thirds: [1 / 3, 2 / 3],
+  Center: [0.5],
+  Golden: [0.382, 0.618],
+};
+
+/** Fractions across a region, for both the vertical and the horizontal lines. */
+export const gridLines = (mode: GridMode): number[] => GRID_LINES[mode];
+
+// ---------------------------------------------------------------- scrollbars
+
+/** `visible` is the share of the photo in the window along one axis; sizes are fractions of the track. */
+export function scrollThumb(visible: number, center: number): { size: number; offset: number } {
+  const size = clamp(visible, 0.02, 1);
+  return { size, offset: clamp(center, 0, 1) * (1 - size) };
+}
+
+/** The photo centre for a thumb whose middle is at `position` (a track fraction); null when nothing scrolls. */
+export function centerFromThumb(position: number, size: number): number | null {
+  if (size >= 1) return null;
+  return clamp(position / (1 - size), 0, 1);
+}

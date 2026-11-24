@@ -78,7 +78,7 @@ async function chooseOriginal(window: BrowserWindow | null): Promise<string | nu
 
 async function preview(
   sourceId: string,
-  kind: "proxy" | "render",
+  kind: "proxy" | "render" | "original",
   job: (file: string) => Exclude<Job, { kind: "appearance" | "level" }>,
   recipe?: Recipe,
 ): Promise<Result<ImageRef>> {
@@ -153,6 +153,13 @@ export function photoHandlers(
       if (!tilt || tilt.confidence < MIN_CONFIDENCE) return ok({ straighten: null });
       const straighten = Math.round((orientation.straighten - tilt.degrees) * 100) / 100;
       return ok({ straighten: Math.max(-90, Math.min(90, straighten)) });
+    },
+    async "photos.original"(sourceId) {
+      return preview(sourceId, "original", (file) => ({
+        kind: "proxy",
+        file,
+        orientation: { rotation: 0, straighten: 0 },
+      }));
     },
     async "photos.render"(sourceId, recipe, format) {
       if (!isPhotoOutputFormat(format))

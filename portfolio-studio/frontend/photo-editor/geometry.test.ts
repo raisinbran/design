@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  centerFromThumb,
+  scrollThumb,
+  gridLines,
+  sliderFromZoom,
+  zoomFromSlider,
   angleOf,
   withAngle,
   canRedo,
@@ -347,5 +352,44 @@ describe("angle", () => {
     const crop = { x: 0.1, y: 0.1, width: 0.5, height: 0.5 };
     expect(withAngle({ ...base, crop }, 20).crop).toEqual(crop);
     expect(withAngle({ ...base, crop }, 120).crop).toBeUndefined();
+  });
+});
+
+describe("zoom slider and grid", () => {
+  it("puts 25% at the left, 100% exactly in the middle and 400% at the right", () => {
+    expect(zoomFromSlider(0)).toBeCloseTo(0.25);
+    expect(zoomFromSlider(0.5)).toBe(1);
+    expect(zoomFromSlider(1)).toBeCloseTo(4);
+    expect(zoomFromSlider(2)).toBeCloseTo(4);
+  });
+
+  it("maps zoom back to the slider", () => {
+    for (const zoom of [0.25, 0.5, 1, 2, 4])
+      expect(zoomFromSlider(sliderFromZoom(zoom))).toBeCloseTo(zoom);
+    expect(sliderFromZoom(1)).toBeCloseTo(0.5);
+  });
+
+  it("lists the grid lines of each mode", () => {
+    expect(gridLines("Off")).toEqual([]);
+    expect(gridLines("Thirds")).toEqual([1 / 3, 2 / 3]);
+    expect(gridLines("Center")).toEqual([0.5]);
+    expect(gridLines("Golden")).toEqual([0.382, 0.618]);
+  });
+});
+
+describe("scrollbars", () => {
+  it("sizes and places the thumb from the visible share and the centre", () => {
+    expect(scrollThumb(1.5, 0.5)).toEqual({ size: 1, offset: 0 });
+    expect(scrollThumb(0.25, 0)).toEqual({ size: 0.25, offset: 0 });
+    expect(scrollThumb(0.25, 1)).toEqual({ size: 0.25, offset: 0.75 });
+    expect(scrollThumb(0, 0.5).size).toBe(0.02);
+  });
+
+  it("turns a thumb position back into a centre", () => {
+    const { size, offset } = scrollThumb(0.25, 0.4);
+    expect(centerFromThumb(offset, size)).toBeCloseTo(0.4);
+    expect(centerFromThumb(-1, 0.25)).toBe(0);
+    expect(centerFromThumb(2, 0.25)).toBe(1);
+    expect(centerFromThumb(0.5, 1)).toBeNull();
   });
 });
