@@ -2,12 +2,14 @@ import {
   Button,
   Checkbox,
   Group,
+  SegmentedControl,
   Stack,
   Table,
   Text,
   Textarea,
   TextInput,
   Title,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { AppInfo, ImageSettings, PortfolioView } from "../../backend/api/api";
@@ -20,6 +22,7 @@ interface SettingsProps {
 }
 
 export function Settings({ view, onFolderChosen }: SettingsProps) {
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
   const [info, setInfo] = useState<AppInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<ImageSettings | null>(null);
@@ -66,6 +69,28 @@ export function Settings({ view, onFolderChosen }: SettingsProps) {
   return (
     <Stack maw={640}>
       <Title order={2}>Settings</Title>
+      <Stack gap={4}>
+        <Text size="sm" fw={600}>
+          Appearance
+        </Text>
+        <SegmentedControl
+          aria-label="Appearance"
+          data={[
+            { label: "Light", value: "light" },
+            { label: "Dark", value: "dark" },
+            { label: "System", value: "auto" },
+          ]}
+          value={colorScheme}
+          onChange={(choice) => {
+            if (choice === "light" || choice === "dark" || choice === "auto") {
+              setColorScheme(choice);
+            }
+          }}
+        />
+        <Text size="xs" c="dimmed">
+          Applies to the entire app and is remembered on this computer.
+        </Text>
+      </Stack>
       <Group justify="space-between">
         <Text>{view ? view.folder : "Choose the website folder to start."}</Text>
         <Button onClick={chooseFolder}>Choose folder</Button>

@@ -1,3 +1,4 @@
+// Coordinates persistent drafts, proxy previews and the final published render in one view.
 import {
   Button,
   Group,
@@ -5,6 +6,7 @@ import {
   NavLink,
   NumberInput,
   SegmentedControl,
+  Select,
   Stack,
   TagsInput,
   Text,
@@ -25,11 +27,26 @@ import type {
 } from "../../backend/api/api";
 import { isDirty, useEditor } from "../app/editor";
 import { call, runShowingErrors } from "../app/portfolio";
+import { catalogNameWithSuffix, SUFFIX_OPTIONS, validSuffix } from "./naming";
+import {
+  DEFAULT_PHOTO_OUTPUT_FORMAT,
+  fileOutputFormat,
+  isPhotoOutputFormat,
+  photoBaseNameProblem,
+  publishedFilename,
+  type PhotoOutputFormat,
+} from "../../shared/photo-format";
 
 /** The photo being edited; `photoKey` is set for Edit Image, which has no draft. */
 interface Editing extends Draft {
   photoKey?: string;
 }
+
+const FORMAT_CHOICES = [
+  { value: "webp", label: ".webp (rec)" },
+  { value: "jpg", label: ".jpg" },
+  { value: "png", label: ".png" },
+];
 
 const ASPECTS: Record<string, number | undefined> = {
   Free: undefined,
@@ -62,12 +79,19 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [editing, setEditing] = useState<Editing | null>(null);
   const [missing, setMissing] = useState<string | null>(null);
   const [proxy, setProxy] = useState<ImageRef | null>(null);
-  const [rendered, setRendered] = useState<{ image: ImageRef; recipe: Recipe } | null>(null);
+  const [rendered, setRendered] = useState<{
+    image: ImageRef;
+    recipe: Recipe;
+    format: PhotoOutputFormat;
+  } | null>(null);
   const [busy, setBusy] = useState(false);
   const [adding, setAdding] = useState(false);
   const [crop, setCrop] = useState<PercentCrop | undefined>();
   const [aspect, setAspect] = useState("Free");
   const [name, setName] = useState("");
+  const [outputFormat, setOutputFormat] = useState<PhotoOutputFormat>(DEFAULT_PHOTO_OUTPUT_FORMAT);
+  const [suffixChoice, setSuffixChoice] = useState("_crop");
+  const [customSuffix, setCustomSuffix] = useState("_portfolio");
   const [alt, setAlt] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [conflict, setConflict] = useState<string | null>(null);
@@ -78,7 +102,17 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   function open(next: Editing) {
     setEditing(next);
     setCrop(toPercent(next.recipe.crop));
-    setName(next.source.name);
+    setSuffixChoice("_crop");
+    setCustomSuffix("_portfolio");
+    setName(next.photoKey ? next.photoKey : catalogNameWithSuffix(next.source.name, "_crop"));
+    const savedPhoto = view?.catalogs.photography.photos.find(
+      (photo) => photo.file === next.photoKey,
+    );
+    setOutputFormat(
+      next.photoKey
+        ? (fileOutputFormat(savedPhoto?.thumbnail ?? "") ?? DEFAULT_PHOTO_OUTPUT_FORMAT)
+        : DEFAULT_PHOTO_OUTPUT_FORMAT,
+    );
     setAlt("");
     setTags([]);
     setError(null);
@@ -130,14 +164,16 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
         proxyFor.current = orientation;
         setProxy(shown);
       }
-      const image = settled(await window.portfolio["photos.render"](source.id, recipe));
+      const image = settled(
+        await window.portfolio["photos.render"](source.id, recipe, outputFormat),
+      );
       if (!image) return;
-      setRendered({ image, recipe });
+      setRendered({ image, recipe, format: outputFormat });
       setBusy(false);
       if (!key) void window.portfolio["photos.saveDraft"](source.id, recipe);
     }, 300);
     return () => clearTimeout(timer);
-  }, [editing]);
+  }, [editing, outputFormat]);
 
   const changeRecipe = (recipe: Recipe) => editing && setEditing({ ...editing, recipe });
 
@@ -189,6 +225,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
           revision: view.revision,
           sourceId: editing.source.id,
           name,
+          format: outputFormat,
           alt,
           tags,
           overwrite,
@@ -234,8 +271,16 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     });
   }
 
-  const current = rendered && editing && rendered.recipe === editing.recipe && !busy;
-  const described = !!editing?.photoKey || (!!name.trim() && !!alt.trim() && tags.length > 0);
+  const current =
+    rendered &&
+    editing &&
+    rendered.recipe === editing.recipe &&
+    rendered.format === outputFormat &&
+    !busy;
+  const validChoice = suffixChoice !== "custom" || validSuffix(customSuffix);
+  const nameProblem = photoBaseNameProblem(name.trim());
+  const described =
+    !!editing?.photoKey || (!nameProblem && !!alt.trim() && tags.length > 0 && validChoice);
 
   return (
     <Group align="flex-start" wrap="nowrap">
@@ -313,7 +358,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 ? `Crop: ${crop.x.toFixed(1)}% from left, ${crop.y.toFixed(1)}% from top, ${crop.width.toFixed(1)}% × ${crop.height.toFixed(1)}%`
                 : "No crop: the whole straightened photo"}
             </Text>
-            {rendered && (
+            {rendered && rendered.format === outputFormat && (
               <>
                 <img
                   src={rendered.image.url}
@@ -321,20 +366,75 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                   style={{ maxWidth: 400, maxHeight: 400, alignSelf: "flex-start" }}
                 />
                 <Text size="sm">
-                  {rendered.image.width} × {rendered.image.height} px,{" "}
-                  {kilobytes(rendered.image.bytes)}
+                  Published preview (.{outputFormat}): {rendered.image.width} ×{" "}
+                  {rendered.image.height} px, {kilobytes(rendered.image.bytes)}
                 </Text>
               </>
             )}
             {!editing.photoKey && (
               <>
-                <TextInput
-                  label="Name"
-                  description="Becomes the file name of the gallery image"
-                  required
-                  value={name}
-                  onChange={(event) => setName(event.currentTarget.value)}
+                <Select
+                  label="Filename suffix"
+                  description="Appended to Name, before the selected output filetype."
+                  data={SUFFIX_OPTIONS}
+                  value={suffixChoice}
+                  allowDeselect={false}
+                  onChange={(choice) => {
+                    if (!choice) return;
+                    setSuffixChoice(choice);
+                    const ending = choice === "custom" ? customSuffix : choice;
+                    if (validSuffix(ending))
+                      setName(catalogNameWithSuffix(editing.source.name, ending));
+                  }}
                 />
+                {suffixChoice === "custom" && (
+                  <TextInput
+                    label="Custom suffix"
+                    error={
+                      !validSuffix(customSuffix) &&
+                      "Use _ followed by 1–20 letters, numbers, _ or -."
+                    }
+                    value={customSuffix}
+                    onChange={(event) => {
+                      const ending = event.currentTarget.value;
+                      setCustomSuffix(ending);
+                      if (validSuffix(ending))
+                        setName(catalogNameWithSuffix(editing.source.name, ending));
+                    }}
+                  />
+                )}
+                <Group align="flex-start" gap="xs" wrap="nowrap">
+                  <TextInput
+                    label="Name"
+                    description="Filename without extension"
+                    style={{ flex: "1 1 0", minWidth: 0 }}
+                    required
+                    value={name}
+                    error={nameProblem || undefined}
+                    onChange={(event) => setName(event.currentTarget.value)}
+                  />
+                  <Select
+                    label="Output filetype"
+                    description="Actual website image format"
+                    w={190}
+                    data={FORMAT_CHOICES}
+                    value={outputFormat}
+                    allowDeselect={false}
+                    onChange={(choice) => {
+                      if (isPhotoOutputFormat(choice)) setOutputFormat(choice);
+                    }}
+                  />
+                </Group>
+                <Text size="sm" fw={600}>
+                  Website file: photography/thumbnails/
+                  {nameProblem
+                    ? "(enter a valid name)"
+                    : publishedFilename(name.trim(), outputFormat)}
+                </Text>
+                <Text size="sm" c="dimmed">
+                  The photo is converted to .{outputFormat}, up to 800 px on its longest side, with
+                  a watermark and rights metadata. The private original is unchanged.
+                </Text>
                 <Textarea
                   label="Description"
                   description="Also the alt text that screen readers read aloud"

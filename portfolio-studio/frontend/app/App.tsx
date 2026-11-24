@@ -84,10 +84,12 @@ export function App() {
 
   return (
     <AppShell header={{ height: 52 }} navbar={{ width: 220, breakpoint: 0 }} padding="md">
-      <AppShell.Header p="sm">
-        <Group justify="space-between">
-          <Text fw={600}>{view ? view.folder : "No portfolio folder"}</Text>
-          <Group gap="xs">
+      <AppShell.Header px="md">
+        <Group h="100%" align="center" justify="space-between" wrap="nowrap">
+          <Text fw={600} truncate style={{ minWidth: 0 }}>
+            {view ? view.folder : "No portfolio folder"}
+          </Text>
+          <Group gap="xs" wrap="nowrap">
             {section !== "settings" && section !== "photo-editor" && view && (
               <Button variant="default" onClick={() => preview(section)}>
                 Preview
@@ -136,6 +138,11 @@ export function App() {
             onEditImage={(photoKey) => {
               setEditImage({ photoKey });
               setSection("photo-editor");
+            }}
+            onPhotoSaved={(updated, warning) => {
+              loadView(updated);
+              setSavedMessage(true);
+              if (warning) setError({ message: warning });
             }}
           />
         )}

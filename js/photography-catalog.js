@@ -394,7 +394,7 @@ window.PORTFOLIO_PHOTOS = [
     "thumbnailHeight": 450
   },
   {
-    "file": "DSCF4154.heic",
+    "file": "DSCF4154_crop.heic",
     "alt": "LAX SkyLink people mover viaduct",
     "visible": true,
     "displayPriority": "normal",
@@ -402,7 +402,7 @@ window.PORTFOLIO_PHOTOS = [
       "Dusk",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF4154.heic.webp",
+    "thumbnail": "DSCF4154_crop.webp",
     "thumbnailVersion": "1981012db02f",
     "thumbnailWidth": 800,
     "thumbnailHeight": 800

@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   Checkbox,
   Group,
@@ -11,6 +12,7 @@ import {
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import { editCatalogs } from "../app/editor";
+import { EditorColumns } from "../app/EditorColumns";
 import { ItemList, moveItem, newId, removeItem } from "../app/ItemList";
 import { siteImage } from "../app/portfolio";
 import { RichText } from "../app/RichText";
@@ -75,47 +77,79 @@ export function EngineeringView({ catalog }: EngineeringViewProps) {
     setTitle("");
   }
 
+  const shift = (direction: -1 | 1) => {
+    const next = selected + direction;
+    if (next < 0 || next >= catalog.projects.length) return;
+    editProjects((items) => moveItem(items, selected, next));
+    setSelected(next);
+  };
+
   return (
-    <Group align="flex-start" wrap="nowrap">
-      <Stack w={340} gap="xs">
-        <Group gap="xs" wrap="nowrap">
-          <TextInput
-            flex={1}
-            placeholder="New project title"
-            value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}
+    <EditorColumns
+      sidebarWidth={340}
+      sidebar={
+        <Stack gap="xs" pr="xs">
+          <Group gap="xs" wrap="nowrap">
+            <TextInput
+              flex={1}
+              placeholder="New project title"
+              value={title}
+              onChange={(event) => setTitle(event.currentTarget.value)}
+            />
+            <Button variant="default" disabled={!title.trim()} onClick={addProject}>
+              Add
+            </Button>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected project up"
+              title="Move up"
+              disabled={selected <= 0}
+              onClick={() => shift(-1)}
+            >
+              ▲
+            </ActionIcon>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected project down"
+              title="Move down"
+              disabled={selected >= catalog.projects.length - 1}
+              onClick={() => shift(1)}
+            >
+              ▼
+            </ActionIcon>
+          </Group>
+          <ItemList
+            items={catalog.projects.map((item) => ({
+              key: item.id,
+              label: item.title,
+              image: item.cover && siteImage(item.cover),
+              hidden: !item.visible,
+            }))}
+            selected={selected}
+            onSelect={setSelected}
+            onMove={(from, to) => {
+              editProjects((projects) => moveItem(projects, from, to));
+              setSelected(to);
+            }}
           />
-          <Button variant="default" disabled={!title.trim()} onClick={addProject}>
-            Add
-          </Button>
-        </Group>
-        <ItemList
-          items={catalog.projects.map((item) => ({
-            key: item.id,
-            label: item.title,
-            image: item.cover && siteImage(item.cover),
-            hidden: !item.visible,
-          }))}
-          selected={selected}
-          onSelect={setSelected}
-          onMove={(from, to) => {
-            editProjects((projects) => moveItem(projects, from, to));
-            setSelected(to);
-          }}
-        />
-      </Stack>
-      {project && (
-        <ProjectEditor
-          key={project.id}
-          project={project}
-          index={selected}
-          onRemove={() => {
-            editProjects((projects) => removeItem(projects, selected));
-            setSelected(Math.max(0, selected - 1));
-          }}
-        />
-      )}
-    </Group>
+        </Stack>
+      }
+      details={
+        project && (
+          <ProjectEditor
+            key={project.id}
+            project={project}
+            index={selected}
+            onRemove={() => {
+              editProjects((projects) => removeItem(projects, selected));
+              setSelected(Math.max(0, selected - 1));
+            }}
+          />
+        )
+      }
+    />
   );
 }
 

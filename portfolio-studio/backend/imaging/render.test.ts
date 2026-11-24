@@ -4,7 +4,7 @@ import path from "node:path";
 import sharp, { type Sharp } from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { ImageSettings } from "../api/api";
-import { FONT_FAMILY, renderJob, SITE_LOGO, type Rendered } from "./render";
+import { analyzeJob, FONT_FAMILY, renderJob, SITE_LOGO, type Rendered } from "./render";
 
 const repositoryDir = path.resolve(import.meta.dirname, "../../..");
 const fontFile = path.resolve(import.meta.dirname, "../../assets/fonts/LiberationSans-Bold.ttf");
@@ -283,6 +283,55 @@ describe("watermark", () => {
       const lettersLeft = mark.right - letters.width;
       expect(await matchInk(output, 48, letters, lettersLeft, mark.bottom)).toBeGreaterThan(0.7);
       expect(await matchInk(output, 48, logo, mark.left, mark.bottom)).toBeGreaterThan(0.7);
+    },
+    RENDER_TIMEOUT_MS,
+  );
+});
+
+// The appearance worker measures actual published thumbnail pixels, not an inferred file extension.
+describe("published thumbnail appearance", () => {
+  it(
+    "returns finite RGB, brightness and saturation values",
+    async () => {
+      const file = path.join(repositoryDir, "photography/thumbnails/DSCF4154_crop.webp");
+      const result = await analyzeJob({
+        kind: "appearance",
+        photos: [{ key: "DSCF4154_crop.heic", file }],
+      });
+      const sample = result["DSCF4154_crop.heic"];
+      expect(
+        sample.rgb.every((value) => Number.isFinite(value) && value >= 0 && value <= 255),
+      ).toBe(true);
+      expect(sample.brightness).toBeGreaterThanOrEqual(0);
+      expect(sample.saturation).toBeGreaterThanOrEqual(0);
+      expect(sample.saturation).toBeLessThanOrEqual(1);
+    },
+    RENDER_TIMEOUT_MS,
+  );
+});
+
+describe("explicit published output formats", () => {
+  it.each([
+    { format: "webp", encoded: "webp" },
+    { format: "jpg", encoded: "jpeg" },
+    { format: "png", encoded: "png" },
+  ] as const)(
+    "writes genuine $format bytes, not only an extension",
+    async ({ format, encoded }) => {
+      const file = await flatImage(130);
+      const rendered = await renderJob({
+        kind: "render",
+        file,
+        recipe: { rotation: 0, straighten: 0 },
+        settings,
+        fontFile,
+        siteFolder: repositoryDir,
+        format,
+      });
+      const metadata = await sharp(rendered.bytes).metadata();
+      expect(metadata.format).toBe(encoded);
+      expect(rendered.format).toBe(format);
+      expect(metadata.width).toBe(800);
     },
     RENDER_TIMEOUT_MS,
   );

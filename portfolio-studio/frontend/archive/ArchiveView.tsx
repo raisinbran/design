@@ -1,7 +1,18 @@
-import { Button, Checkbox, Group, Select, Stack, Text, TextInput, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Checkbox,
+  Group,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import { editCatalogs } from "../app/editor";
+import { EditorColumns } from "../app/EditorColumns";
 import { ItemList, moveItem, newId, removeItem } from "../app/ItemList";
 import { siteImage } from "../app/portfolio";
 
@@ -70,46 +81,78 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
     setTitle("");
   }
 
+  const shift = (direction: -1 | 1) => {
+    const next = selected + direction;
+    if (next < 0 || next >= catalog.collections.length) return;
+    editCollections((items) => moveItem(items, selected, next));
+    setSelected(next);
+  };
+
   return (
-    <Group align="flex-start" wrap="nowrap">
-      <Stack w={340} gap="xs">
-        <Group gap="xs" wrap="nowrap">
-          <TextInput
-            flex={1}
-            placeholder="New collection title"
-            value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}
+    <EditorColumns
+      sidebarWidth={340}
+      sidebar={
+        <Stack gap="xs" pr="xs">
+          <Group gap="xs" wrap="nowrap">
+            <TextInput
+              flex={1}
+              placeholder="New collection title"
+              value={title}
+              onChange={(event) => setTitle(event.currentTarget.value)}
+            />
+            <Button variant="default" disabled={!title.trim()} onClick={addCollection}>
+              Add
+            </Button>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected collection up"
+              title="Move up"
+              disabled={selected <= 0}
+              onClick={() => shift(-1)}
+            >
+              ▲
+            </ActionIcon>
+            <ActionIcon
+              size="lg"
+              variant="default"
+              aria-label="Move selected collection down"
+              title="Move down"
+              disabled={selected >= catalog.collections.length - 1}
+              onClick={() => shift(1)}
+            >
+              ▼
+            </ActionIcon>
+          </Group>
+          <ItemList
+            items={catalog.collections.map((item) => ({
+              key: item.id,
+              label: item.title,
+              image: item.cover && siteImage(item.cover),
+            }))}
+            selected={selected}
+            onSelect={setSelected}
+            onMove={(from, to) => {
+              editCollections((collections) => moveItem(collections, from, to));
+              setSelected(to);
+            }}
           />
-          <Button variant="default" disabled={!title.trim()} onClick={addCollection}>
-            Add
-          </Button>
-        </Group>
-        <ItemList
-          items={catalog.collections.map((item) => ({
-            key: item.id,
-            label: item.title,
-            image: item.cover && siteImage(item.cover),
-          }))}
-          selected={selected}
-          onSelect={setSelected}
-          onMove={(from, to) => {
-            editCollections((collections) => moveItem(collections, from, to));
-            setSelected(to);
-          }}
-        />
-      </Stack>
-      {collection && (
-        <CollectionEditor
-          key={collection.id}
-          collection={collection}
-          index={selected}
-          onRemove={() => {
-            editCollections((collections) => removeItem(collections, selected));
-            setSelected(Math.max(0, selected - 1));
-          }}
-        />
-      )}
-    </Group>
+        </Stack>
+      }
+      details={
+        collection && (
+          <CollectionEditor
+            key={collection.id}
+            collection={collection}
+            index={selected}
+            onRemove={() => {
+              editCollections((collections) => removeItem(collections, selected));
+              setSelected(Math.max(0, selected - 1));
+            }}
+          />
+        )
+      }
+    />
   );
 }
 

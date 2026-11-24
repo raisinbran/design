@@ -1,14 +1,18 @@
 import { randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { dialog, type BrowserWindow } from "electron";
+import { dialog, shell, type BrowserWindow } from "electron";
 import Store from "electron-store";
 import { z } from "zod";
 import type { ImageRef, PortfolioApi, Recipe, Result, SavedSource } from "../api/api";
+import { fileOutputFormat, isPhotoOutputFormat, photoMimeType } from "../../shared/photo-format";
 import { readSettings } from "../settings";
+import { resolveSiteImage } from "../storage/images";
+import { loadPortfolio } from "../storage/portfolio";
+import { deletePhoto, renamePhoto } from "../storage/manage";
 import { addPhoto } from "../storage/add";
 import { cancelJob, runJob } from "./jobs";
-import type { Rendered } from "./render";
+import type { Job, Rendered } from "./render";
 
 type PhotoMethods = {
   [M in keyof PortfolioApi as M extends `photos.${string}` ? M : never]: PortfolioApi[M];
@@ -54,7 +58,7 @@ const previews = new Map<string, Rendered & { recipe?: Recipe }>();
 let version = 0;
 
 const ok = <T>(value: T): Result<T> => ({ ok: true, value });
-const failure = (code: "source-missing" | "cancelled" | "internal", message: string) =>
+const failure = (code: "source-missing" | "cancelled" | "internal" | "invalid", message: string) =>
   ({ ok: false, error: { code, message } }) as const;
 
 function register(file: string): SavedSource["source"] {
@@ -74,7 +78,7 @@ async function chooseOriginal(window: BrowserWindow | null): Promise<string | nu
 async function preview(
   sourceId: string,
   kind: "proxy" | "render",
-  job: (file: string) => Parameters<typeof runJob>[0],
+  job: (file: string) => Exclude<Job, { kind: "appearance" }>,
   recipe?: Recipe,
 ): Promise<Result<ImageRef>> {
   const file = sources.get(sourceId);
@@ -97,7 +101,9 @@ async function preview(
 export function previewResponse(url: URL): Response {
   const image = previews.get(url.pathname.slice(1));
   return image
-    ? new Response(Buffer.from(image.bytes), { headers: { "content-type": "image/webp" } })
+    ? new Response(Buffer.from(image.bytes), {
+        headers: { "content-type": photoMimeType(image.format ?? "webp") },
+      })
     : new Response("Not found", { status: 404 });
 }
 
@@ -137,15 +143,71 @@ export function photoHandlers(
     async "photos.proxy"(sourceId, orientation) {
       return preview(sourceId, "proxy", (file) => ({ kind: "proxy", file, orientation }));
     },
-    async "photos.render"(sourceId, recipe) {
+    async "photos.render"(sourceId, recipe, format) {
+      if (!isPhotoOutputFormat(format))
+        return failure("invalid", "Choose a supported output format");
       const settings = readSettings();
       const siteFolder = folder();
       return preview(
         sourceId,
         "render",
-        (file) => ({ kind: "render", file, recipe, settings, fontFile: FONT_FILE, siteFolder }),
+        (file) => ({
+          kind: "render",
+          file,
+          recipe,
+          format,
+          settings,
+          fontFile: FONT_FILE,
+          siteFolder,
+        }),
         recipe,
       );
+    },
+    async "photos.appearance"() {
+      const siteFolder = folder();
+      const view = await loadPortfolio(siteFolder);
+      const photos = await Promise.all(
+        view.catalogs.photography.photos.map(async (photo) => {
+          const file = photo.thumbnail
+            ? `photography/thumbnails/${photo.thumbnail}`
+            : `photography/published/${photo.file}`;
+          const url = `portfolio://site/${file.split("/").map(encodeURIComponent).join("/")}`;
+          const resolved = await resolveSiteImage(siteFolder, url);
+          return resolved ? { key: photo.file, file: resolved } : null;
+        }),
+      );
+      const result = await runJob({
+        kind: "appearance",
+        photos: photos.filter((photo) => photo !== null),
+      });
+      return result ? ok(result) : failure("cancelled", "Photo analysis was cancelled");
+    },
+    async "photos.rename"(revision, oldName, newName) {
+      const result = await renamePhoto(folder(), revision, oldName, newName, (file) =>
+        shell.trashItem(file),
+      );
+      if (!result.ok) return result;
+      writeStore((data) => {
+        const originals = { ...data.originals };
+        if (originals[oldName]) {
+          originals[newName] = originals[oldName];
+          delete originals[oldName];
+        }
+        return { ...data, originals };
+      });
+      return result;
+    },
+    async "photos.delete"(revision, photoName) {
+      const result = await deletePhoto(folder(), revision, photoName, (file) =>
+        shell.trashItem(file),
+      );
+      if (!result.ok) return result;
+      writeStore((data) => {
+        const originals = { ...data.originals };
+        delete originals[photoName];
+        return { ...data, originals };
+      });
+      return result;
     },
     async "photos.cancel"() {
       cancelJob();
@@ -156,6 +218,20 @@ export function photoHandlers(
       const rendered = previews.get(`${request.sourceId}/render`);
       if (!file || !rendered?.recipe)
         return failure("internal", "Render the photo before adding it");
+      const expectedFormat =
+        request.kind === "new"
+          ? request.format
+          : (fileOutputFormat(
+              (await loadPortfolio(folder())).catalogs.photography.photos.find(
+                (photo) => photo.file === request.photoKey,
+              )?.thumbnail ?? "",
+            ) ?? "webp");
+      if (rendered.format !== expectedFormat) {
+        return failure(
+          "invalid",
+          "The preview format changed. Render the selected format before saving.",
+        );
+      }
       const added = await addPhoto(folder(), request, rendered);
       if (!added.ok) return added;
       const { photoKey } = added.value;

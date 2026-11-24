@@ -2,7 +2,8 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import decodeHeic from "heic-decode";
 import sharp, { type OutputInfo, type OverlayOptions, type Sharp } from "sharp";
-import type { ImageSettings, Orientation, Recipe } from "../api/api";
+import type { ImageSettings, Orientation, PhotoAppearance, Recipe } from "../api/api";
+import { DEFAULT_PHOTO_OUTPUT_FORMAT, type PhotoOutputFormat } from "../../shared/photo-format";
 
 export const OUTPUT_LONG_SIDE = 800;
 export const PROXY_LONG_SIDE = 1600;
@@ -33,11 +34,14 @@ const TEXTURE_BLUR_DIVISOR = 6;
 const TONE_BLUR_DIVISOR = 12;
 
 export type Job =
+  | { kind: "appearance"; photos: { key: string; file: string }[] }
   | { kind: "proxy"; file: string; orientation: Orientation }
   | {
       kind: "render";
       file: string;
       recipe: Recipe;
+      /** The actual encoded file format; old render callers default to WebP. */
+      format?: PhotoOutputFormat;
       settings: ImageSettings;
       fontFile: string;
       /** The website folder, which holds the logo. */
@@ -48,7 +52,10 @@ export interface Rendered {
   bytes: Uint8Array;
   width: number;
   height: number;
+  format?: PhotoOutputFormat;
 }
+
+export type AppearanceMap = Record<string, PhotoAppearance>;
 
 // HEIF files start with an "ftyp" box; AVIF shares the container, and sharp decodes it itself.
 function isHeic(bytes: Buffer): boolean {
@@ -313,7 +320,36 @@ function rightsXmp({ author, copyright, usageTerms }: ImageSettings["rights"]): 
  * Runs a proxy or render job. A render is the gallery image, at most 800 px on the long side, with
  * the watermark and the rights metadata, and none of the original's metadata, such as GPS.
  */
-export async function renderJob(job: Job): Promise<Rendered> {
+export async function analyzeJob(
+  job: Extract<Job, { kind: "appearance" }>,
+): Promise<AppearanceMap> {
+  const appearance: AppearanceMap = {};
+  for (const { key, file } of job.photos) {
+    const { data, info } = await sharp(file, { limitInputPixels: PIXEL_LIMIT })
+      .autoOrient()
+      .resize(32, 32, { fit: "inside" })
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const totals = [0, 0, 0];
+    for (let index = 0; index < data.length; index += info.channels) {
+      for (let channel = 0; channel < 3; channel++) totals[channel] += data[index + channel];
+    }
+    const rgb = totals.map((value) => value / (info.width * info.height)) as [
+      number,
+      number,
+      number,
+    ];
+    appearance[key] = {
+      rgb,
+      brightness: (rgb[0] + rgb[1] + rgb[2]) / 3,
+      saturation: (Math.max(...rgb) - Math.min(...rgb)) / 255,
+    };
+  }
+  return appearance;
+}
+
+export async function renderJob(job: Exclude<Job, { kind: "appearance" }>): Promise<Rendered> {
   if (job.kind === "proxy") {
     const { data, info } = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);
     const bytes = await sharp(data, { raw: info }).webp().toBuffer();
@@ -323,11 +359,24 @@ export async function renderJob(job: Job): Promise<Rendered> {
   const { data, info } = image;
   const { rights } = job.settings;
   const logoFile = path.join(job.siteFolder, SITE_LOGO);
-  const bytes = await sharp(data, { raw: info })
+  const format = job.format ?? DEFAULT_PHOTO_OUTPUT_FORMAT;
+  const output = sharp(data, { raw: info })
     .composite(await watermark(image, job.settings.watermark, job.fontFile, logoFile))
     .withExif({ IFD0: { Artist: rights.author, Copyright: rights.copyright } })
-    .withXmp(rightsXmp(rights))
-    .webp({ quality: WEBP_QUALITY })
-    .toBuffer();
-  return { bytes, width: info.width, height: info.height };
+    .withXmp(rightsXmp(rights));
+
+  // Match encoded bytes to the format displayed in the filetype selector.
+  let bytes: Buffer;
+  switch (format) {
+    case "webp":
+      bytes = await output.webp({ quality: WEBP_QUALITY }).toBuffer();
+      break;
+    case "jpg":
+      bytes = await output.jpeg({ quality: 90, mozjpeg: true }).toBuffer();
+      break;
+    case "png":
+      bytes = await output.png({ compressionLevel: 9 }).toBuffer();
+      break;
+  }
+  return { bytes, width: info.width, height: info.height, format };
 }

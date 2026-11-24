@@ -52,10 +52,31 @@ jobs:
         if: runner.os != 'Linux'
         run: npm test
       - run: npm run make
+        env:
+          DEBUG: ${{ runner.os == 'macOS' && 'electron-osx-sign*,electron-packager*' || '' }}
+      # Exercise the exact Forge package and installer payload, not just the Vite source app.
+      - name: Windows packaged repeated-launch diagnostics
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/windows-packaged-smoke.ps1
+      - name: macOS signing-policy negative controls
+        if: runner.os == 'macOS'
+        shell: bash
+        run: bash scripts/macos-signing-policy.test.sh
+      - name: macOS LaunchServices false-positive negative control
+        if: runner.os == 'macOS'
+        shell: bash
+        run: bash scripts/macos-launch-check.test.sh
+      - name: macOS DMG signature and LaunchServices diagnostics
+        if: runner.os == 'macOS'
+        shell: bash
+        run: bash scripts/macos-packaged-smoke.sh
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: portfolio-studio-${{ runner.os }}
           path: portfolio-studio/out/make/
           if-no-files-found: error
       - run: git diff --exit-code
+        if: always()
         working-directory: .

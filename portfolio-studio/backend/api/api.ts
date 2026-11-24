@@ -1,6 +1,7 @@
 // Types only. The frontend imports this file with `import type`, so nothing here reaches the renderer bundle.
 import type { z } from "zod";
 import type { Catalogs as CatalogsSchema } from "../catalogs/schema";
+import type { PhotoOutputFormat } from "../../shared/photo-format";
 
 type R<T> = Promise<Result<T>>;
 
@@ -18,11 +19,17 @@ export interface PortfolioApi {
   "photos.relink"(photoKey: string): R<SavedSource | null>;
   /** Screen-sized preview of the straightened original, uncropped. */
   "photos.proxy"(sourceId: string, orientation: Orientation): R<ImageRef>;
-  "photos.render"(sourceId: string, recipe: Recipe): R<ImageRef>;
+  "photos.render"(sourceId: string, recipe: Recipe, format: PhotoOutputFormat): R<ImageRef>;
   /** Stops the running proxy or render, which then returns "cancelled". */
   "photos.cancel"(): R<null>;
   /** Writes the source's latest render to the site. */
   "photos.add"(request: AddRequest): R<Added>;
+  /** Reads thumbnail color statistics in the image worker; originals remain private. */
+  "photos.appearance"(): R<Record<string, PhotoAppearance>>;
+  /** Renames a catalog entry and its public derivative, never the private original. */
+  "photos.rename"(revision: Revision, oldName: string, newName: string): R<PhotoChange>;
+  /** Removes an entry and moves its unshared site derivatives to the OS Trash. */
+  "photos.delete"(revision: Revision, photoName: string): R<PhotoChange>;
   /** The saved drafts whose originals still exist, each with a fresh source id. */
   "photos.drafts"(): R<Draft[]>;
   "photos.saveDraft"(sourceId: string, recipe: Recipe): R<null>;
@@ -61,10 +68,16 @@ export interface PortfolioView {
 
 export type Page = "photography" | "engineering" | "archive";
 
+export interface PhotoAppearance {
+  rgb: [number, number, number];
+  brightness: number;
+  saturation: number;
+}
+
 /** An original the backend has registered. The UI never sees its path. */
 export interface SourceHandle {
   id: string;
-  /** The original's file name, the default photo name. */
+  /** The original's full filename, from which the editor proposes an extension-free Name. */
   name: string;
 }
 
@@ -96,12 +109,13 @@ export interface ImageRef {
 }
 
 export type AddRequest =
-  // A new photo. Its name becomes the photo key and photography/thumbnails/<name>.webp.
+  // A new photo: Name contains no extension; Format controls the actual file type.
   | {
       kind: "new";
       revision: Revision;
       sourceId: string;
       name: string;
+      format: PhotoOutputFormat;
       alt: string;
       tags: string[];
       overwrite?: boolean;
@@ -112,6 +126,12 @@ export type AddRequest =
 export interface Added {
   view: PortfolioView;
   photoKey: string;
+}
+
+export interface PhotoChange {
+  view: PortfolioView;
+  /** Remaining site files need manual cleanup when the system Trash rejects a file. */
+  warning?: string;
 }
 
 export interface ImageSettings {

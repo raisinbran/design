@@ -11,6 +11,7 @@ import {
   photographyScript,
 } from "../site/generate";
 import { sanitizeBody } from "../site/sanitize";
+import { publicationRoot } from "./publication-paths";
 
 const CATALOG_FILES = {
   photography: "data/media-catalog.json",
@@ -100,6 +101,31 @@ export async function savePortfolio(
         ok: false,
         error: { code: "invalid", message: "The catalogs have problems", problems },
       };
+    }
+    // Reject untrusted image directories before any site derivative is written.
+    for (const relative of Object.keys(images)) {
+      const [section, directory, filename, ...extra] = relative.split("/");
+      if (
+        section !== "photography" ||
+        (directory !== "thumbnails" && directory !== "published") ||
+        !filename ||
+        extra.length > 0 ||
+        filename === "." ||
+        filename === ".." ||
+        filename.includes("\\") ||
+        path.basename(filename) !== filename
+      ) {
+        return {
+          ok: false,
+          error: { code: "invalid", message: `Invalid publication path: ${relative}` },
+        };
+      }
+      if (!(await publicationRoot(folder, directory))) {
+        return {
+          ok: false,
+          error: { code: "invalid", message: `Unsafe publication directory: ${directory}` },
+        };
+      }
     }
     const current = await readFiles(folder);
     const changed = FILES.filter((file) => hash(current[file]) !== revision[file]);

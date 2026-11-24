@@ -32,11 +32,15 @@ Run the tests with `xvfb-run -a npm test`, so their windows stay off the screen.
 
 `backend/imaging/render.test.ts` renders a HEIC and a rotated JPEG and checks that each comes out as an upright WebP, at most 800 px on the long side, with the rights in EXIF and XMP and the AI-training notice. It checks that a JPEG with GPS and a camera's metadata keeps none of it, and that a straightened white image has no dark corners. On flat gray images it checks the watermark: the grape logo, then the text, 2.6% of the short side high and 2.4% from the bottom right corner, lighter on a dark background and darker on a light one, faint, and nowhere else in the image, and that its letters and logo keep the shapes sharp draws for them directly. The logo is `assets/homepage-2026/grape-hover.png` in this repository. The HEIC is `backend/imaging/fixtures/rotated.heic`, a 64 × 32 red and blue image stored with a HEIF rotation; the JPEGs are images from this repository. `backend/storage/add.test.ts` adds a photo to a copy of this repository and checks that only the image, the catalog and the photography script change, with the new tag at the end of the tags. It also checks that a new photo named like an existing one, ignoring case, changes nothing, that Overwrite replaces that photo's image, description and tags in place, keeping its visibility, priority and lock, and that Edit Image replaces only the image and its size.
 
-`frontend/photography/arrangement.test.ts` checks that drags and Suggest Arrangement leave locked photos at their indexes. `frontend/app/editor.test.ts` checks that an edit made while a save runs stays unsaved. `frontend/app/ItemList.test.ts` checks that two items with the same title get distinct ids, which become page anchors. `backend/site/gallery.test.ts` runs the website's `js/photography.js` on the real catalog with a small fake DOM, and checks that the gallery shows visible photos in catalog order, with and without a tag filter.
+`frontend/photography/arrangement.test.ts` checks that drags and the Arrangement menu leave locked photos at their indexes. `frontend/app/editor.test.ts` checks that an edit made while a save runs stays unsaved. `frontend/app/ItemList.test.ts` checks that two items with the same title get distinct ids, which become page anchors. `backend/site/gallery.test.ts` runs the website's `js/photography.js` on the real catalog with a small fake DOM, and checks that the gallery shows visible photos in catalog order, with and without a tag filter.
 
 GitHub CI runs `.github/workflows/portfolio-studio.yml` on every pull request: on Linux, Windows and macOS it runs `npm ci`, the type check, `npm test` and `npm run make`, and keeps each installer as a workflow artifact. Download an installer from the run's Summary page to hand to a Windows or macOS tester.
 
 The owner checks the rest by hand with the release checklist.
+
+### macOS signing exception
+
+The private macOS build is signed ad hoc with Hardened Runtime, so every process that loads Electron Framework needs `com.apple.security.cs.disable-library-validation` (and `allow-jit`). The main app and its four helper apps (`Portfolio Studio Helper`, `(GPU)`, `(Renderer)`, `(Plugin)`) therefore hold exactly those two entitlements, set in `forge.config.ts` from `scripts/macos-adhoc-main-entitlements.plist`. Electron Framework holds none, and Electron sandboxing is unchanged. The owner approved extending the exception to the helpers because without it the GPU and network processes cannot start. `scripts/macos-signing-policy.sh` fails the build if any helper is missing, is not ad-hoc signed with Hardened Runtime and no Team ID, lacks either entitlement, or has any other entitlement; `scripts/macos-signing-policy.test.sh` covers each case.
 
 ## Release checklist
 
@@ -48,7 +52,7 @@ Copy this list into the PR description and fill it in for each platform.
 - [ ] A resized or maximized window comes back that way after a relaunch.
 - [ ] After closing the window on a second monitor and unplugging that monitor, the app opens on the remaining display.
 - [ ] Photography, Engineering and Archive list their items with images, and Preview opens each page in the default browser.
-- [ ] In Photography, an edit, a lock, a drag and Suggest Arrangement each save, undo and redo work, and the saved page shows the new order.
+- [ ] In Photography, an edit, a lock, a drag and an Arrangement menu mode (for example Color harmony) each save, undo and redo work, and the saved page shows the new order.
 - [ ] In Engineering and Archive, an edit, an added item and a drag each save, and only their sections of the page change.
 - [ ] In the Photo Editor, a phone HEIC imports, and rotate, straighten and the crop handles work with a mouse and a trackpad. Add to Photo Catalog changes only the new image, `data/media-catalog.json` and `js/photography-catalog.js`.
 - [ ] The added image shows the grape logo and the watermark text in the bottom right corner, like the site's other images, and `exiftool` lists the author, copyright, usage terms and AI-training notice, and no GPS.
