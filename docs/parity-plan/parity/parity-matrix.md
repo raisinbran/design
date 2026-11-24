@@ -61,7 +61,7 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 
 | # | Python feature | Electron status | Proposed |
 | --- | --- | --- | --- |
-| 29 | Atomic multi-file save with backup rollback, stale-write rejection (`edit_tags.atomic_catalog_pair`, `gallery_thumbnails.asset_transaction`) | **Partial**: temp files then renames; stale-write rejection done; no rollback after a mid-rename failure | Build (audit finding 8) |
+| 29 | Atomic multi-file save with backup rollback, stale-write rejection (`edit_tags.atomic_catalog_pair`, `gallery_thumbnails.asset_transaction`) | **Implemented**: temp files, stale-write rejection, and rollback from backup copies after a mid-rename failure (`replaceFiles`, tested) | Done (audit finding 8) |
 | 30 | Light/Dark/System appearance, native title bar tint (`studio_theme`, `studio_preferences`) | **Partial**: scheme restored; **no native title-bar tint** (no `nativeTheme` or title-bar code) | Verified in code; look on Windows still open |
 | 31 | Window size/maximized memory, off-screen recovery (`window_state`) | **Done** (`backend/window.ts`); off-screen check only needs 1 px of overlap with the nearest display | Verified in code; multi-monitor not run |
 | 32 | About window: versions, export documentation (`studio_about`, `studio_info`) | **Partial**: versions in Settings; no about/docs page | Build small or Waive |

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { readFile, rename, rm, writeFile } from "node:fs/promises";
+import { copyFile, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { PortfolioView, Result, Revision } from "../api/api";
 import { Catalogs, listProblems } from "../catalogs/schema";
@@ -26,6 +26,7 @@ const SITE_FILES = {
 } as const;
 const FILES = [...Object.values(CATALOG_FILES), ...Object.values(SITE_FILES)];
 export const TEMPORARY_SUFFIX = ".portfolio-studio-tmp";
+const BACKUP_SUFFIX = ".portfolio-studio-bak";
 
 const hash = (text: string) => createHash("sha256").update(text).digest("hex");
 const toJson = (value: unknown) => JSON.stringify(value, null, 2) + "\n";
@@ -178,14 +179,16 @@ function sanitizeEditedBodies(engineering: Catalogs["engineering"], savedText: s
 }
 
 // Writes every temporary file before renaming any, so a failed write leaves all destinations untouched.
-// Images are renamed first, so a catalog entry never names a missing image. Catalogs are renamed before
-// site files, so after a failed rename, Reload then save regenerates the site from them.
-async function replaceFiles(
+// Images are renamed first, so a catalog entry never names a missing image. If a rename fails, the files
+// already replaced are put back from copies made just before, so a failed save changes nothing.
+export async function replaceFiles(
   folder: string,
   files: string[],
   texts: Record<string, string | Uint8Array>,
+  move: typeof rename = rename,
 ): Promise<void> {
   const temporaries = files.map((file) => path.join(folder, file + TEMPORARY_SUFFIX));
+  const backups = files.map((file) => path.join(folder, file + BACKUP_SUFFIX));
   const removeAll = (paths: string[]) =>
     Promise.allSettled(paths.map((temporary) => rm(temporary, { force: true })));
   const written: string[] = [];
@@ -199,16 +202,41 @@ async function replaceFiles(
     await removeAll(written);
     throw error;
   }
-  for (const [index, temporary] of temporaries.entries()) {
-    try {
-      await rename(temporary, path.join(folder, files[index]));
-    } catch (error) {
-      await removeAll(temporaries.slice(index));
-      const replaced = files.slice(0, index).join(", ") || "none";
-      const kept = files.slice(index).join(", ");
-      throw new Error(
-        `Saving stopped part way, because ${describeError(error)}. These files were replaced: ${replaced}. These were not: ${kept}. Reload, then save again.`,
-      );
+  // A backup exists only for a file that already existed; a new file is deleted on rollback.
+  const existed = new Set<number>();
+  const replaced: number[] = [];
+  try {
+    for (const [index, file] of files.entries()) {
+      await rm(backups[index], { force: true });
+      try {
+        await copyFile(path.join(folder, file), backups[index]);
+        existed.add(index);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
     }
+    for (const [index, temporary] of temporaries.entries()) {
+      await move(temporary, path.join(folder, files[index]));
+      replaced.push(index);
+    }
+  } catch (error) {
+    const failed: string[] = [];
+    for (const index of replaced.reverse()) {
+      const destination = path.join(folder, files[index]);
+      try {
+        if (existed.has(index)) await move(backups[index], destination);
+        else await rm(destination, { force: true });
+      } catch {
+        failed.push(files[index]);
+      }
+    }
+    await removeAll([...temporaries, ...backups]);
+    const reason = describeError(error);
+    throw new Error(
+      failed.length
+        ? `Saving failed, because ${reason}, and these files could not be put back: ${failed.join(", ")}. Reload, then save again.`
+        : `Saving failed, because ${reason}. No file was changed.`,
+    );
   }
+  await removeAll(backups);
 }
