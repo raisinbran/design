@@ -29,13 +29,18 @@ This is a real app window, but it is driven through the page, not through OS-lev
 - Real import, crop and publish from a private original (needs files outside the disposable site).
 - The gallery "final two rows" rule on the website (needs the owner's confirmation, see below).
 
+## Fixes pushed to PR #22 (`412dbef`)
+
+- Entitlements cut to `allow-jit` and `disable-library-validation`; the signing check now rejects any other main-app key and fails when the framework's entitlements cannot be read. Signing-policy test covers both (6 scenarios pass).
+- `portfolio-studio/docs/testing.md` now says "Arrangement menu" instead of "Suggest Arrangement".
+- The full unit-test suite was not re-run after this change (it only touches shell scripts and docs; the run was stopped when it overloaded the machine).
+
+## New finding: packaged macOS app does not launch (pre-existing)
+
+On macOS 27.0.1 (arm64), `macos-packaged-smoke.sh` fails for the DMG build both before and after the entitlement change. The main app starts, but every helper process (GPU, network) dies with "mapping process and mapped file have different Team IDs": the helpers are ad-hoc signed without `disable-library-validation`, so they cannot load the ad-hoc-signed Electron Framework. The "main app only" exception is therefore not enough. This is likely related to the Windows-independent "packaged app fails" reports and must be fixed before the packaged macOS build can be called working. The dev-run app (what the GUI check above used) is unaffected.
+
 ## Still open before merge
 
-1. **Entitlements:** `macos-adhoc-main-entitlements.plist` grants camera, microphone, Bluetooth, USB, location, photos-library, print and JIT beyond the documented need, and the signing check does not fail on extra keys or when `codesign` fails. Proposed fix: reduce to the minimum and make the check fail closed. This changes PR #22's branch, so it waits for the owner's OK.
-2. **`docs/testing.md`** still describes "Suggest Arrangement"; update to the Arrangement menu.
-3. **Owner confirmation:** the gallery lets the final two rows be shorter than the rest. Confirm this is wanted.
-4. Owner merges.
-
-## Matrix rows verified in code
-
-Rows 11, 14, 17, 23, 27, 30 and 31 were checked against the source and updated in `parity/parity-matrix.md`. New gaps for the owner to decide on: row 23 (no duplicate, no project-level undo) and row 30 (no native title-bar tint).
+1. **Packaged macOS launch** (above): needs a decision on how to sign helpers (give helpers the same exception, or sign with a real identity).
+2. **Gallery rule:** owner clarified that no row height was ever meant to be reduced and that narrower final rows are fine; the intent is that no photo is excessively undersized or oversized to fit a row. Current code already pairs tall portraits and fills interior rows, so no change is proposed unless a bound on interior row height is wanted.
+3. Owner merges.
