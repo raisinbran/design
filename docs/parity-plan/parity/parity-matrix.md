@@ -13,7 +13,7 @@ The Proposed column below is superseded by these choices.
 | **Build** | 1 batch import/publish; 6 aspect presets and custom W:H; 7 level guides and Auto-level; 8 composition grids; 9 zoom and pan; 10 Reset all photo edits; 21 rights backfill; 24 Engineering/Archive media import; 29 save rollback |
 | **Waive** | 3 quality/size options; 4 and 5 two-image pipeline and gallery-only framing (single derivative stays); 15 open after publishing; 17 checksum registry (originals stay outside the repo; existing link and Relink are enough); 20 archive-before-remove; 26 unsaved-draft preview; 32 About page; 33 sound notifications |
 | **Later** | 13 ML captions; 18 rebuild all thumbnails; 19 reconcile files changed outside the app; 25 video still frame |
-| **Claude to verify** | 11, 14, 17 (existing link), 23, 27, 30, 31; then update this table |
+| **Claude to verify** | Done 2026-11-23 (see rows 11, 14, 17, 23, 27, 30, 31). New gaps for owner decision: 23 (duplicate, undo), 30 (title-bar tint) |
 
 Rows 6-10 are not in the app (checked in master and PR #22 source); only the mockups and the old Python app show them. Rows marked Done or N/A need no decision.
 
@@ -33,13 +33,13 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 | 8 | Composition grid Off/Thirds/Center/Golden (`photo_viewport`) | **Missing** (issue #25) | Build |
 | 9 | Zoom presets and slider, pan, wheel zoom, scrollbars (`photo_viewport`) | **Missing** (issue #25) | Build (approved compact design) |
 | 10 | "Full photo" crop reset; Reset selected / reset all unsaved (`photo_studio`, `edit_tags`) | **Missing** (#23 Reset); app-level undo/redo exists | Build |
-| 11 | Pre-publish preview of the encoded export, scope/names/size/overwrite (`export_preview`) | **Partial**: render preview and output path shown | Verify |
+| 11 | Pre-publish preview of the encoded export, scope/names/size/overwrite (`export_preview`) | **Partial**: render preview and output path shown (verified 2026-11-23: no size or overwrite readout) | Verified; owner to decide if the gap matters |
 | 12 | Watermark (grape logo plus text), supersampled; opt-out rights metadata in EXIF/XMP, no GPS (`processor`, `export_rights`, `publication_metadata`) | **Done**, with tests | Done |
 | 13 | Accessible description, local ML caption suggestion with "Reviewed" check (`offline_descriptions`, `setup_offline_descriptions`, `photo_studio`) | **Missing**: manual alt text only; no "reviewed" flag | Likely Waive or Later: model download and a native ML dependency |
-| 14 | Tags with checkboxes, per-photo prominence/priority, visibility (`photo_studio`, `edit_tags`) | **Done** (priority, tags, lock, unlist) | Verify the prominence labels |
+| 14 | Tags with checkboxes, per-photo prominence/priority, visibility (`photo_studio`, `edit_tags`) | **Done** (priority, tags, lock, unlist; Photography uses "priority", prominence is Archive-only) | Verified |
 | 15 | "Open after publishing", save "open after" preference (`photo_studio`) | **Missing** (no publish step; app saves only) | Waive: the owner publishes in GitHub Desktop |
 | 16 | HEIC input, EXIF orientation, rotated-HEIF handling | **Done**, tested | Done |
-| 17 | Private registry of each photo's original file path and checksum; relink moved originals (`gallery_thumbnails`) | **Partial**: drafts store, Relink; no checksum registry | Verify, then Decide |
+| 17 | Private registry of each photo's original file path and checksum; relink moved originals (`gallery_thumbnails`) | **Partial**: drafts store and Relink confirmed in the GUI; no checksum registry (the only hash is the thumbnail version) | Verified; already **Waive** per owner |
 | 18 | Rebuild all thumbnails from originals, with progress (`gallery_thumbnails.build_thumbnails`) | **Missing** | Decide: needed only if thumbnail rules change |
 | 19 | Add pre-existing unlisted published files; reconcile missing assets; match renamed files (`manage_published`) | **Missing** | Build if the owner renames or adds files outside the app |
 | 20 | Remove: unlist only, archive JPEGs to backup, or send to Trash; Windows Recycle Bin via IFileOperation (`manage_published`, `recycle_bin`) | **Partial**: unlist, delete to Trash; no backup-archive option | Decide: Trash may be enough |
@@ -50,11 +50,11 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 
 | # | Python feature | Electron status | Proposed |
 | --- | --- | --- | --- |
-| 23 | Engineering: add, duplicate, remove, reorder, undo; rich-text body preserving legacy markup (`engineering_editor`, `rich_text`) | **Done** (Tiptap, sanitizer); duplicate: **Verify** | Verify |
+| 23 | Engineering: add, duplicate, remove, reorder, undo; rich-text body preserving legacy markup (`engineering_editor`, `rich_text`) | **Partial**: add, remove, reorder, rich text done; **no duplicate and no project-level undo** (verified in `EngineeringView.tsx`) | Verified; owner to decide on duplicate/undo |
 | 24 | Engineering/Archive media: import local image or video, optimize, add/remove/reorder, choose cover (`*_editor`) | **Missing**: paths typed by hand | Build (likely the biggest daily-use gap) |
 | 25 | Video still-frame preview (`video_preview`) | **Missing** | Later |
 | 26 | Unsaved-draft preview with asset overrides (`engineering_editor.preview`, `archive_editor.preview`) | **Partial**: Preview opens saved page only | Decide |
-| 27 | Archive collections: metadata, crop/prominence/focus settings, migrate legacy HTML (`archive_catalog`, `archive_writer`) | **Done**/**Partial**: crop mode exists; **Verify** prominence and focus | Verify |
+| 27 | Archive collections: metadata, crop/prominence/focus settings, migrate legacy HTML (`archive_catalog`, `archive_writer`) | **Done**: crop mode, prominence and a Position (focus) field exist in `ArchiveView.tsx` | Verified |
 | 28 | Safe write: never delete source media; validate local assets (`*_writer`, `*_catalog`) | **Done** in schema and save path | Done |
 
 ## C. Platform, safety, shell
@@ -62,8 +62,8 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 | # | Python feature | Electron status | Proposed |
 | --- | --- | --- | --- |
 | 29 | Atomic multi-file save with backup rollback, stale-write rejection (`edit_tags.atomic_catalog_pair`, `gallery_thumbnails.asset_transaction`) | **Partial**: temp files then renames; stale-write rejection done; no rollback after a mid-rename failure | Build (audit finding 8) |
-| 30 | Light/Dark/System appearance, native title bar tint (`studio_theme`, `studio_preferences`) | **Partial**: scheme restored in PR #22; title bar **Verify** | Verify on both OSes |
-| 31 | Window size/maximized memory, off-screen recovery (`window_state`) | **Done** (`backend/window.ts`); multi-monitor **Verify** | Verify |
+| 30 | Light/Dark/System appearance, native title bar tint (`studio_theme`, `studio_preferences`) | **Partial**: scheme restored; **no native title-bar tint** (no `nativeTheme` or title-bar code) | Verified in code; look on Windows still open |
+| 31 | Window size/maximized memory, off-screen recovery (`window_state`) | **Done** (`backend/window.ts`); off-screen check only needs 1 px of overlap with the nearest display | Verified in code; multi-monitor not run |
 | 32 | About window: versions, export documentation (`studio_about`, `studio_info`) | **Partial**: versions in Settings; no about/docs page | Build small or Waive |
 | 33 | Soft sound notifications with volume preview (`studio_notifications`) | **Missing** | Likely Waive |
 | 34 | Preferences stored outside the repo (`studio_preferences`) | **Done** (electron-store) | Done |
