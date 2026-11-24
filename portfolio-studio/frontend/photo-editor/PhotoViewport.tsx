@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import {
   cropFromDrag,
-  DEFAULT_VIEWPORT,
+  gridLines,
+  type GridMode,
   imageToScreen,
   moveCrop,
   panBy,
@@ -26,6 +27,10 @@ interface PhotoViewportProps {
   /** Width over height of the locked crop shape, in pixels; none leaves the crop free. */
   aspect: number | undefined;
   height: number | string;
+  /** Zoom and pan belong to the editor, so its zoom slider and this view stay in step. */
+  viewport: Viewport;
+  onViewport: (viewport: Viewport) => void;
+  grid: GridMode;
   onCrop: (crop: CropRect) => void;
   /** Both points are pixels of the straightened photo. */
   onGuide: (mode: "H" | "V", start: Point, end: Point) => void;
@@ -62,12 +67,14 @@ export function PhotoViewport({
   crop,
   aspect,
   height,
+  viewport,
+  onViewport,
+  grid,
   onCrop,
   onGuide,
 }: PhotoViewportProps) {
   const box = useRef<HTMLDivElement>(null);
   const [container, setContainer] = useState<Size>({ width: 600, height: 400 });
-  const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
   const [dragCrop, setDragCrop] = useState<CropRect | undefined>();
   const [guide, setGuide] = useState<{ start: Point; end: Point } | null>(null);
   const drag = useRef<Drag | null>(null);
@@ -96,7 +103,7 @@ export function PhotoViewport({
       const anchor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
       const factor = event.deltaY < 0 ? WHEEL_STEP : 1 / WHEEL_STEP;
       const current = viewportRef.current;
-      setViewport(zoomAt(current, current.zoom * factor, anchor, container, image));
+      onViewport(zoomAt(current, current.zoom * factor, anchor, container, image));
     };
     element.addEventListener("wheel", onWheel, { passive: false });
     return () => element.removeEventListener("wheel", onWheel);
@@ -148,7 +155,7 @@ export function PhotoViewport({
     const screen = local(event);
     const at = toImage(screen);
     if (active.kind === "pan") {
-      setViewport(
+      onViewport(
         panBy(viewport, screen.x - active.last.x, screen.y - active.last.y, container, image),
       );
       active.last = screen;
@@ -186,6 +193,17 @@ export function PhotoViewport({
     }
   }
 
+  // Grid lines divide the crop, or the whole photo while there is no crop.
+  const gridArea = shown ?? { x: 0, y: 0, width: 1, height: 1 };
+  const gridStart = toScreen({ x: gridArea.x, y: gridArea.y });
+  const gridEnd = toScreen({ x: gridArea.x + gridArea.width, y: gridArea.y + gridArea.height });
+  const gridPath = gridLines(grid)
+    .map((line) => {
+      const x = gridStart.x + (gridEnd.x - gridStart.x) * line;
+      const y = gridStart.y + (gridEnd.y - gridStart.y) * line;
+      return `M${x} ${gridStart.y}V${gridEnd.y}M${gridStart.x} ${y}H${gridEnd.x}`;
+    })
+    .join("");
   const topLeft = toScreen({ x: 0, y: 0 });
   const bottomRight = toScreen({ x: 1, y: 1 });
   const cropBox =
@@ -259,6 +277,9 @@ export function PhotoViewport({
                 );
               })}
           </>
+        )}
+        {gridPath && (
+          <path d={gridPath} stroke="rgba(255,255,255,0.7)" strokeWidth={1} fill="none" />
         )}
         {guide && (
           <>

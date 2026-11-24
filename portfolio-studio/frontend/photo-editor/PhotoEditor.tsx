@@ -7,6 +7,7 @@ import {
   NavLink,
   NumberInput,
   Select,
+  Slider,
   Stack,
   TagsInput,
   Text,
@@ -27,6 +28,12 @@ import type {
 import { isDirty, useEditor } from "../app/editor";
 import { call, runShowingErrors } from "../app/portfolio";
 import {
+  DEFAULT_VIEWPORT,
+  GRID_MODES,
+  sliderFromZoom,
+  zoomFromSlider,
+  type GridMode,
+  type Viewport,
   angleOf,
   canRedo,
   canUndo,
@@ -129,6 +136,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [tool, setTool] = useState<Tool>("none");
   const [confirmReset, setConfirmReset] = useState(false);
   const [help, setHelp] = useState(false);
+  const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
+  const [grid, setGrid] = useState<GridMode>("Off");
   const [ratio, setRatio] = useState<RatioState>(FREEFORM);
   const [name, setName] = useState("");
   const [outputFormat, setOutputFormat] = useState<PhotoOutputFormat>(DEFAULT_PHOTO_OUTPUT_FORMAT);
@@ -145,6 +154,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     setEditing(next);
     openId.current = next.source.id;
     setRatio(FREEFORM);
+    setViewport(DEFAULT_VIEWPORT);
     setHistory(startHistory(next.recipe));
     setTool("none");
     setSuffixChoice("_crop");
@@ -491,6 +501,30 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 disabled={!crop}
                 onClick={() => changeRecipe({ ...recipe, crop: undefined })}
               />
+              <Select
+                aria-label="Grid"
+                size="xs"
+                w={96}
+                data={GRID_MODES.map((mode) => ({
+                  value: mode,
+                  label: mode === "Off" ? "Grid: Off" : mode,
+                }))}
+                value={grid}
+                allowDeselect={false}
+                comboboxProps={{ transitionProps: { duration: 0 } }}
+                onChange={(choice) => choice && setGrid(choice as GridMode)}
+              />
+              <Slider
+                aria-label="Zoom (100% is the photo fitted to the window)"
+                w={120}
+                min={0}
+                max={1}
+                step={0.005}
+                marks={[{ value: 0.5 }]}
+                label={(t) => `${Math.round(zoomFromSlider(t) * 100)}%`}
+                value={sliderFromZoom(viewport.zoom)}
+                onChange={(t) => setViewport({ ...viewport, zoom: zoomFromSlider(t) })}
+              />
               <Text size="xs" c="dimmed" ml="auto">
                 {busy ? "Rendering…" : ""}
               </Text>
@@ -510,6 +544,9 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 tool={stale ? "none" : tool}
                 crop={crop}
                 aspect={aspectOf(ratio)}
+                viewport={viewport}
+                onViewport={setViewport}
+                grid={grid}
                 height="55vh"
                 onCrop={commitCrop}
                 onGuide={applyGuide}

@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  gridLines,
+  sliderFromZoom,
+  zoomFromSlider,
   angleOf,
   withAngle,
   canRedo,
@@ -347,5 +350,27 @@ describe("angle", () => {
     const crop = { x: 0.1, y: 0.1, width: 0.5, height: 0.5 };
     expect(withAngle({ ...base, crop }, 20).crop).toEqual(crop);
     expect(withAngle({ ...base, crop }, 120).crop).toBeUndefined();
+  });
+});
+
+describe("zoom slider and grid", () => {
+  it("puts 25% at the left, 100% exactly in the middle and 400% at the right", () => {
+    expect(zoomFromSlider(0)).toBeCloseTo(0.25);
+    expect(zoomFromSlider(0.5)).toBe(1);
+    expect(zoomFromSlider(1)).toBeCloseTo(4);
+    expect(zoomFromSlider(2)).toBeCloseTo(4);
+  });
+
+  it("maps zoom back to the slider", () => {
+    for (const zoom of [0.25, 0.5, 1, 2, 4])
+      expect(zoomFromSlider(sliderFromZoom(zoom))).toBeCloseTo(zoom);
+    expect(sliderFromZoom(1)).toBeCloseTo(0.5);
+  });
+
+  it("lists the grid lines of each mode", () => {
+    expect(gridLines("Off")).toEqual([]);
+    expect(gridLines("Thirds")).toEqual([1 / 3, 2 / 3]);
+    expect(gridLines("Center")).toEqual([0.5]);
+    expect(gridLines("Golden")).toEqual([0.382, 0.618]);
   });
 });
