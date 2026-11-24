@@ -6,7 +6,6 @@ import {
   Modal,
   NavLink,
   NumberInput,
-  SegmentedControl,
   Select,
   Stack,
   TagsInput,
@@ -45,6 +44,17 @@ import {
 } from "./geometry";
 import { catalogNameWithSuffix, SUFFIX_OPTIONS, validSuffix } from "./naming";
 import { PhotoViewport } from "./PhotoViewport";
+import {
+  aspectOf,
+  choosePreset,
+  cropWithAspect,
+  editProportion,
+  FREEFORM,
+  PRESETS,
+  setOrientation,
+  type Preset,
+  type RatioState,
+} from "./ratio";
 import { cropControlsEnabled, toggleTool, type Tool } from "./tools";
 import {
   DEFAULT_PHOTO_OUTPUT_FORMAT,
@@ -65,13 +75,6 @@ const FORMAT_CHOICES = [
   { value: "jpg", label: ".jpg" },
   { value: "png", label: ".png" },
 ];
-
-const ASPECTS: Record<string, number | undefined> = {
-  Free: undefined,
-  "1:1": 1,
-  "4:5": 0.8,
-  "3:2": 1.5,
-};
 
 /** A button with only a symbol: it needs an accessible label and an instant tooltip. */
 function IconTool(props: {
@@ -126,7 +129,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [tool, setTool] = useState<Tool>("none");
   const [confirmReset, setConfirmReset] = useState(false);
   const [help, setHelp] = useState(false);
-  const [aspect, setAspect] = useState("Free");
+  const [ratio, setRatio] = useState<RatioState>(FREEFORM);
   const [name, setName] = useState("");
   const [outputFormat, setOutputFormat] = useState<PhotoOutputFormat>(DEFAULT_PHOTO_OUTPUT_FORMAT);
   const [suffixChoice, setSuffixChoice] = useState("_crop");
@@ -141,6 +144,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   function open(next: Editing) {
     setEditing(next);
     openId.current = next.source.id;
+    setRatio(FREEFORM);
     setHistory(startHistory(next.recipe));
     setTool("none");
     setSuffixChoice("_crop");
@@ -326,22 +330,17 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     }
   }
 
-  // The largest centred crop of the chosen shape; Free keeps the current crop.
-  function chooseAspect(choice: string) {
-    setAspect(choice);
-    const ratio = ASPECTS[choice];
-    if (!ratio || !proxy || stale) return;
-    const wide = ratio > proxy.width / proxy.height;
-    const width = wide ? 1 : (proxy.height * ratio) / proxy.width;
-    const height = wide ? proxy.width / (proxy.height * ratio) : 1;
-    changeRecipe({
-      ...recipe,
-      crop: { x: (1 - width) / 2, y: (1 - height) / 2, width, height },
-    });
+  // A new ratio reshapes the crop around its centre at once; nothing is written until Add.
+  function applyRatio(next: RatioState) {
+    setRatio(next);
+    const shape = aspectOf(next);
+    if (shape && proxy && !stale)
+      changeRecipe({ ...recipe, crop: cropWithAspect(recipe.crop, shape, proxy) });
   }
 
   const commitCrop = (crop: CropRect) => changeRecipe({ ...recipe, crop });
   const crop = recipe.crop;
+  const cropOn = cropControlsEnabled(tool, !!crop);
   // Until the new preview arrives the image shows an older angle, so only pan and zoom are safe.
   const stale =
     !editing || proxyOf !== `${editing.source.id} ${recipe.rotation} ${recipe.straighten}`;
@@ -442,12 +441,49 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
               <IconTool label="Help" symbol="?" onClick={() => setHelp(true)} />
             </Group>
             <Group gap="xs" wrap="nowrap" h={36} aria-label="Aspect and view" role="toolbar">
-              <SegmentedControl
+              <Select
+                aria-label="Aspect"
                 size="xs"
-                data={Object.keys(ASPECTS)}
-                value={aspect}
-                disabled={!cropControlsEnabled(tool, !!crop)}
-                onChange={chooseAspect}
+                w={110}
+                data={[...PRESETS]}
+                value={ratio.preset}
+                allowDeselect={false}
+                disabled={!cropOn}
+                comboboxProps={{ transitionProps: { duration: 0 } }}
+                onChange={(choice) => {
+                  if (choice && proxy) applyRatio(choosePreset(ratio, choice as Preset, proxy));
+                }}
+              />
+              {(["width", "height"] as const).map((side) => (
+                <NumberInput
+                  key={side}
+                  aria-label={side === "width" ? "Width" : "Height"}
+                  size="xs"
+                  w={78}
+                  min={0}
+                  hideControls
+                  leftSection={<Text size="xs">{side === "width" ? "W" : "H"}</Text>}
+                  disabled={!cropOn || ratio.preset === "Freeform"}
+                  value={ratio[side] ?? ""}
+                  onChange={(value) => applyRatio(editProportion(ratio, side, value))}
+                />
+              ))}
+              <Text size="xs" c="dimmed">
+                Orientation
+              </Text>
+              <IconTool
+                label="Landscape"
+                symbol="▭"
+                pressed={ratio.orientation === "landscape"}
+                disabled={!cropOn || ratio.preset === "Freeform"}
+                onClick={() => applyRatio(setOrientation(ratio, "landscape"))}
+              />
+              <IconTool
+                label="Portrait"
+                symbol="▯"
+                pressed={ratio.orientation === "portrait"}
+                disabled={!cropOn || ratio.preset === "Freeform"}
+                onClick={() => applyRatio(setOrientation(ratio, "portrait"))}
               />
               <IconTool
                 label="Clear crop"
@@ -473,7 +509,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 key={editing.source.id}
                 tool={stale ? "none" : tool}
                 crop={crop}
-                aspect={ASPECTS[aspect]}
+                aspect={aspectOf(ratio)}
                 height="55vh"
                 onCrop={commitCrop}
                 onGuide={applyGuide}
@@ -603,7 +639,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
             onClick={() => {
               setConfirmReset(false);
               setHistory(reset);
-              setAspect("Free");
+              setRatio(FREEFORM);
               setTool("none");
             }}
           >
