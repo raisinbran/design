@@ -220,21 +220,21 @@ export async function replaceFiles(
       replaced.push(index);
     }
   } catch (error) {
-    const failed: string[] = [];
+    const failed: number[] = [];
     for (const index of replaced.reverse()) {
       const destination = path.join(folder, files[index]);
       try {
         if (existed.has(index)) await move(backups[index], destination);
         else await rm(destination, { force: true });
       } catch {
-        failed.push(files[index]);
+        failed.push(index);
       }
     }
-    await removeAll([...temporaries, ...backups]);
+    await removeAll([...temporaries, ...backups.filter((_, index) => !failed.includes(index))]);
     const reason = describeError(error);
     throw new Error(
       failed.length
-        ? `Saving failed, because ${reason}, and these files could not be put back: ${failed.join(", ")}. Reload, then save again.`
+        ? `Saving failed, because ${reason}, and these files could not be put back: ${failed.map((index) => files[index]).join(", ")}. Their originals are kept beside them with the ending ${BACKUP_SUFFIX}.`
         : `Saving failed, because ${reason}. No file was changed.`,
     );
   }
