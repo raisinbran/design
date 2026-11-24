@@ -38,6 +38,10 @@ GitHub CI runs `.github/workflows/portfolio-studio.yml` on every pull request: o
 
 The owner checks the rest by hand with the release checklist.
 
+### macOS signing exception
+
+The private macOS build is signed ad hoc with Hardened Runtime, so every process that loads Electron Framework needs `com.apple.security.cs.disable-library-validation` (and `allow-jit`). The main app and its four helper apps (`Portfolio Studio Helper`, `(GPU)`, `(Renderer)`, `(Plugin)`) therefore hold exactly those two entitlements, set in `forge.config.ts` from `scripts/macos-adhoc-main-entitlements.plist`. Electron Framework holds none, and Electron sandboxing is unchanged. The owner approved extending the exception to the helpers because without it the GPU and network processes cannot start. `scripts/macos-signing-policy.sh` fails the build if any helper is missing, is not ad-hoc signed with Hardened Runtime and no Team ID, lacks either entitlement, or has any other entitlement; `scripts/macos-signing-policy.test.sh` covers each case.
+
 ## Release checklist
 
 Copy this list into the PR description and fill it in for each platform.
