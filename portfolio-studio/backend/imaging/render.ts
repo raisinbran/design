@@ -360,7 +360,7 @@ export async function levelJob(job: Extract<Job, { kind: "level" }>): Promise<Le
   const shown = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);
   const { data, info } = await sharp(shown.data, { raw: shown.info })
     .greyscale()
-    .resize(256, 256, { fit: "inside" })
+    .resize(384, 384, { fit: "inside" })
     .raw()
     .toBuffer({ resolveWithObject: true });
   return { tilt: estimateTilt(data, info.width, info.height) };
