@@ -28,6 +28,7 @@ import type {
 import { isDirty, useEditor } from "../app/editor";
 import { call, runShowingErrors } from "../app/portfolio";
 import {
+  angleOf,
   canRedo,
   canUndo,
   change,
@@ -37,6 +38,7 @@ import {
   reset,
   startHistory,
   undo,
+  withAngle,
   type CropRect,
   type History,
   type Point,
@@ -365,17 +367,17 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 onClick={() => setTool(toggleTool(tool, "levelV"))}
               />
               <NumberInput
-                aria-label="Straighten"
+                aria-label="Angle"
                 suffix="°"
-                min={-90}
-                max={90}
+                min={-360}
+                max={360}
                 step={0.1}
                 decimalScale={1}
                 clampBehavior="strict"
                 w={90}
                 size="xs"
-                value={recipe.straighten}
-                onChange={(value) => changeRecipe({ ...recipe, straighten: Number(value) || 0 })}
+                value={angleOf(recipe)}
+                onChange={(value) => changeRecipe(withAngle(recipe, Number(value) || 0))}
               />
               <IconTool
                 label="Undo"

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  angleOf,
+  withAngle,
   canRedo,
   canUndo,
   change,
@@ -322,5 +324,28 @@ describe("history", () => {
     for (let step = 1; step <= 150; step++)
       history = change(history, { ...DEFAULT_RECIPE, straighten: step / 10 });
     expect(history.past).toHaveLength(100);
+  });
+});
+
+describe("angle", () => {
+  const base = { rotation: 0, straighten: 0 } as const;
+
+  it("shows quarter turns and straightening as one angle", () => {
+    expect(angleOf({ rotation: 270, straighten: 12.5 })).toBe(282.5);
+    expect(angleOf({ rotation: 90, straighten: -30 })).toBe(60);
+  });
+
+  it("splits a typed angle into a quarter turn and a small remainder", () => {
+    expect(withAngle(base, 180)).toEqual({ rotation: 180, straighten: 0 });
+    expect(withAngle(base, 100)).toEqual({ rotation: 90, straighten: 10 });
+    expect(withAngle(base, -100)).toEqual({ rotation: 270, straighten: -10 });
+    expect(withAngle(base, 360)).toEqual({ rotation: 0, straighten: 0 });
+    expect(withAngle(base, 999)).toEqual({ rotation: 0, straighten: 0 });
+  });
+
+  it("keeps the crop unless the quarter turn changes", () => {
+    const crop = { x: 0.1, y: 0.1, width: 0.5, height: 0.5 };
+    expect(withAngle({ ...base, crop }, 20).crop).toEqual(crop);
+    expect(withAngle({ ...base, crop }, 120).crop).toBeUndefined();
   });
 });

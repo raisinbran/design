@@ -339,3 +339,26 @@ export function redo(history: History): History {
 
 /** Removes every edit: rotation, straightening and crop. It is one undo step, so it can be undone. */
 export const reset = (history: History): History => change(history, DEFAULT_RECIPE);
+
+// ---------------------------------------------------------------- angle
+
+/** The one angle the user types: quarter turns plus fine straightening, in degrees clockwise. */
+export const angleOf = (recipe: Recipe): number =>
+  Math.round((recipe.rotation + recipe.straighten) * 100) / 100;
+
+/**
+ * Splits a typed angle (-360 to 360) into the nearest quarter turn and a remainder of at most
+ * 45 degrees. A changed quarter turn drops the crop, because the safe rectangle changes shape.
+ */
+export function withAngle(recipe: Recipe, angle: number): Recipe {
+  const clamped = clamp(angle, -360, 360);
+  const quarter = Math.round(clamped / 90) * 90;
+  const rotation = (((quarter % 360) + 360) % 360) as Recipe["rotation"];
+  const straighten = Math.round((clamped - quarter) * 100) / 100;
+  return {
+    ...recipe,
+    rotation,
+    straighten,
+    crop: rotation === recipe.rotation ? recipe.crop : undefined,
+  };
+}
