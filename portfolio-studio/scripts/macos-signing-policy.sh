@@ -42,9 +42,24 @@ check_macos_adhoc_signing() {
     fi
   done
 
+  # The main app may hold these two entitlements and nothing else (no camera, microphone, USB, location, ...).
+  local extra
+  extra="$(/usr/libexec/PlistBuddy -c Print "$entitlement_file" | sed -n 's/^    \([^ ]*\) = .*/\1/p' |
+    grep -vxF -e com.apple.security.cs.allow-jit -e com.apple.security.cs.disable-library-validation || true)"
+  if [[ -n "$extra" ]]; then
+    echo "Unexpected main-app entitlements: $extra" >&2
+    rm -f "$entitlement_file"
+    return 1
+  fi
+
   # Electron Framework itself must not acquire the main-process exception.
-  if codesign --display --entitlements :- "$framework_executable" >"$entitlement_file" 2>/dev/null; then
-    if [[ -s "$entitlement_file" ]] && ! plutil -lint "$entitlement_file" >/dev/null; then
+  if ! codesign --display --entitlements :- "$framework_executable" >"$entitlement_file" 2>/dev/null; then
+    echo "Cannot inspect Electron Framework entitlements: $framework_executable" >&2
+    rm -f "$entitlement_file"
+    return 1
+  fi
+  if [[ -s "$entitlement_file" ]]; then
+    if ! plutil -lint "$entitlement_file" >/dev/null; then
       echo "Electron Framework entitlements are invalid" >&2
       rm -f "$entitlement_file"
       return 1

@@ -14,6 +14,9 @@ touch "$main_executable" "$framework_executable"
 new_entitlements="$studio_root/scripts/macos-adhoc-main-entitlements.plist"
 legacy_entitlements="$temporary/legacy.plist"
 cp "$new_entitlements" "$legacy_entitlements"
+extra_entitlements="$temporary/extra.plist"
+cp "$new_entitlements" "$extra_entitlements"
+/usr/libexec/PlistBuddy -c 'Add :com.apple.security.device.camera bool true' "$extra_entitlements"
 /usr/libexec/PlistBuddy -c 'Delete :com.apple.security.cs.disable-library-validation' "$legacy_entitlements"
 
 # Stub codesign outputs, keeping the system plist parser real.
@@ -33,12 +36,17 @@ codesign() {
       "$app")
         if [[ "$signing_scenario" == "legacy-main" ]]; then
           cat "$legacy_entitlements"
+        elif [[ "$signing_scenario" == "extra-entitlement" ]]; then
+          cat "$extra_entitlements"
         else
           cat "$new_entitlements"
         fi
         return 0
         ;;
       "$framework_executable")
+        if [[ "$signing_scenario" == "framework-inspect-fails" ]]; then
+          return 1
+        fi
         if [[ "$signing_scenario" == "framework-leak" ]]; then
           cat "$new_entitlements"
         else
@@ -65,6 +73,8 @@ expect_rejected() {
 expect_rejected "legacy-main"
 expect_rejected "missing-runtime"
 expect_rejected "framework-leak"
+expect_rejected "extra-entitlement"
+expect_rejected "framework-inspect-fails"
 signing_scenario="corrected"
 check_macos_adhoc_signing "$app"
 echo "PASS: corrected, narrowly scoped main-app exception accepted"
