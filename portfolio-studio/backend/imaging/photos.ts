@@ -122,8 +122,11 @@ export function photoHandlers(
       writeStore((data) => ({
         ...data,
         drafts: [
-          ...data.drafts.filter((draft) => !files.includes(draft.file)),
-          ...files.map((file) => ({ file, recipe: DEFAULT_RECIPE })),
+          ...data.drafts,
+          // A file that already has a draft keeps its edits.
+          ...files
+            .filter((file) => !data.drafts.some((draft) => draft.file === file))
+            .map((file) => ({ file, recipe: DEFAULT_RECIPE })),
         ],
       }));
       return ok(files.map(register));

@@ -297,10 +297,13 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     await runShowingErrors(async () => {
       const sources = await call(window.portfolio["photos.import"]());
       if (!sources?.length) return;
-      const added: Draft[] = sources.map((source) => ({
-        source,
-        recipe: { rotation: 0, straighten: 0 },
-      }));
+      const added: Draft[] = sources.map(
+        (source) =>
+          drafts.find((item) => item.source.id === source.id) ?? {
+            source,
+            recipe: { rotation: 0, straighten: 0 },
+          },
+      );
       setDrafts([
         ...drafts.filter((item) => !sources.some(({ id }) => id === item.source.id)),
         ...added,
