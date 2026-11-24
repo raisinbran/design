@@ -5,6 +5,7 @@ import type { ImportedMedia, MediaSection } from "../api/api";
 
 const IMAGE = /\.(jpe?g|png|webp|tiff?|heic|heif|avif)$/i;
 const VIDEO = /\.(mp4|webm)$/i;
+const RESERVED_NAME = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i;
 const OWNER_ID = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 /** The file types the open dialog offers for a section; only Engineering takes video. */
@@ -27,27 +28,31 @@ export async function importMedia(
   encode: (file: string) => Promise<Uint8Array>,
 ): Promise<ImportedMedia[]> {
   if (!OWNER_ID.test(ownerId)) throw new Error(`"${ownerId}" is not a valid ${section} id`);
+  // Check every file first, so a bad one late in the list does not leave earlier files behind.
+  for (const file of files) {
+    if (!IMAGE.test(file) && !(VIDEO.test(file) && section === "engineering"))
+      throw new Error(`${path.basename(file)} is not a file type this ${section} page can use`);
+  }
   const imported: ImportedMedia[] = [];
   for (const file of files) {
-    const name = path
+    // "#" and "%" would break the page's image URL; Windows reserves names such as CON.
+    let name = path
       .parse(file)
-      .name.replace(/[\\/<>:"|?*\x00-\x1f]/g, "_")
+      .name.replace(/[\\/<>:"|?*#%\x00-\x1f]/g, "_")
       .replace(/[. ]+$/, "");
+    if (RESERVED_NAME.test(name)) name += "_";
     if (IMAGE.test(file)) {
-      const src = await place(
-        folder,
-        `images/${ownerId}`,
-        name || "image",
-        "webp",
-        await encode(file),
-      );
-      imported.push({ kind: "image", src });
-    } else if (VIDEO.test(file) && section === "engineering") {
-      const extension = path.extname(file).slice(1).toLowerCase();
-      const src = await place(folder, `video/${ownerId}`, name || "video", extension, file);
-      imported.push({ kind: "video", src });
+      const bytes = await encode(file);
+      imported.push({
+        kind: "image",
+        src: await place(folder, `images/${ownerId}`, name || "image", "webp", bytes),
+      });
     } else {
-      throw new Error(`${path.basename(file)} is not a file type this ${section} page can use`);
+      const extension = path.extname(file).slice(1).toLowerCase();
+      imported.push({
+        kind: "video",
+        src: await place(folder, `video/${ownerId}`, name || "video", extension, file),
+      });
     }
   }
   return imported;

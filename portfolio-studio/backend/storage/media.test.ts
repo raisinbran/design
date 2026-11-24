@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -48,6 +48,19 @@ describe("importMedia", () => {
     expect(read(first.src)).toBe("one");
   });
 
+  // "#" and "%" break the image URL on the page, and CON is not a legal Windows file name.
+  it("replaces characters that break the page URL and reserved names", async () => {
+    const hash = original("photo #3 100%.jpg", "x");
+    const reserved = original("nul.png", "y");
+
+    const added = await importMedia(site, "archive", "collapseArt", [hash, reserved], encode("w"));
+
+    expect(added.map((item) => item.src)).toEqual([
+      "images/collapseArt/photo _3 100_.webp",
+      "images/collapseArt/nul_.webp",
+    ]);
+  });
+
   it("copies a video unchanged", async () => {
     const file = original("clip.MP4", "video bytes");
 
@@ -65,6 +78,11 @@ describe("importMedia", () => {
     await expect(importMedia(site, "archive", "collapseArt", [video], encode(""))).rejects.toThrow(
       /not a file type/,
     );
+    // A bad file late in the list stops the import before any file is written.
+    await expect(
+      importMedia(site, "archive", "collapseArt", [image, pdf], encode("w")),
+    ).rejects.toThrow();
+    expect(existsSync(path.join(site, "images"))).toBe(false);
     await expect(importMedia(site, "engineering", "x", [pdf], encode(""))).rejects.toThrow(
       /not a file type/,
     );
