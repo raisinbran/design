@@ -25,6 +25,8 @@ PR #22 is merged as one unit, by owner decision. Before the owner merges:
 
 Read the Python source on the backup branch module by module and produce one table: feature, Python source, Electron status (done/partial/missing/waived), test, owner waiver. Check at least these, several absent from the existing parity doc: `update_published_rights.py` (bulk rights update), `export_rights.py`, `studio_notifications.py`, `video_preview.py`, `gallery_thumbnails.py`, `thumbnail_list.py`, `setup_offline_descriptions.py`, `modern_scale.py` (HiDPI), `window_state.py`, `verify_macos.py`. Port the Python tests' intent (102 tests) as a checklist of behaviors to cover, not as code. Draft exists: [parity-matrix.md](../parity/parity-matrix.md). Next: line-level verification of rows marked Verify, then the owner marks each row Build, Waive or Later. Nothing is built before that.
 
+**Status (2026-11-24): complete.** All 39 rows decided or verified (rows 38-39 added: Tk-only widgets, not applicable). The "102 Python tests" are not on the backup branch (only the earlier TypeScript tests are), so behavior coverage is tracked by the matrix rows and each phase's own tests instead.
+
 ## Phase 3: Photo Editor (issues #23–25), one shared model
 
 Build one geometry/state module first (crop, rotation, level angle, zoom, pan, grid, history) with unit tests, then the UI on it. Implement the approved two-bar layout: fixed-size controls, crop controls disabled by one shared predicate, undo/redo, Reset with confirm, default-drag pan, 25–400% slider with centered 100% tick, Apple-Photos aspect presets with persistent W/H and orientation. Order: #23 leveling and Reset, #24 aspect, #25 grid/zoom/pan. Add component tests for the toolbar's stable layout. GUI pass after each.

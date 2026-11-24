@@ -70,6 +70,8 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 | 35 | HiDPI scaling, Windows scrollbar and slider widgets, responsive toolbar overflow, thumbnail list, workspace tabs, editor tabs (`modern_*`, `responsive_toolbar`, `thumbnail_*`, `workspace_tabs_ui`, `editor_tabs`) | **N/A**: Tk-specific; Mantine/CSS replace them | N/A |
 | 36 | Launchers and packaging: Python venv, `package_macos_launcher`, `verify_macos`, `requirements.txt` | **N/A**: Electron Forge, installers | N/A |
 | 37 | Python test suite (102 tests on Windows, 6 modules) | **Not ported** | Cover the behaviors above by test as each row is built, not by translation |
+| 38 | Tk thumbnail list with Listbox interface and scrollbar refresh (`thumbnail_list`, `modern_scrollbar`) | **N/A**: Tk toolkit widget; Electron uses the Mantine list | Not applicable |
+| 39 | Compact modern slider for Windows, native `ttk.Scale` on macOS (`modern_scale`) | **N/A**: Tk toolkit widget; Electron uses Mantine controls (rows 9 and 10 cover the zoom slider behavior) | Not applicable |
 
 ## Reading the matrix
 
