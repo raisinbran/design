@@ -388,7 +388,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
           />
         ))}
       </Stack>
-      <Stack flex={1}>
+      <Stack flex={1} miw={0}>
         {missing && (
           <Group>
             <Text c="red">{missing}</Text>
