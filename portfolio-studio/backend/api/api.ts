@@ -91,7 +91,7 @@ export type Draft = SavedSource;
 export interface Orientation {
   /** Quarter turns clockwise, in degrees. */
   rotation: 0 | 90 | 180 | 270;
-  /** Degrees clockwise, from -45 to 45. */
+  /** Degrees clockwise, from -90 to 90. */
   straighten: number;
 }
 

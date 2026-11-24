@@ -32,7 +32,7 @@ const FONT_FILE = path
 
 const RecipeSchema = z.object({
   rotation: z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]),
-  straighten: z.number().min(-45).max(45),
+  straighten: z.number().min(-90).max(90),
   crop: z
     .object({ x: z.number(), y: z.number(), width: z.number(), height: z.number() })
     .optional(),
