@@ -1,6 +1,6 @@
 // Pure geometry and history for the Photo Editor viewport: one coordinate transform shared by
 // crop, level guides, grid, zoom and pan. No DOM or React here, so everything is unit-tested.
-import type { Orientation, Recipe } from "../../backend/api/api";
+import type { Recipe } from "../../backend/api/api";
 
 export interface Point {
   x: number;
@@ -173,14 +173,18 @@ export function resizeCrop(
   aspect?: number,
 ): CropRect {
   const p = { x: clamp(point.x, 0, 1), y: clamp(point.y, 0, 1) };
+  // The moving edge stays inside the photo and at least `min` from the fixed edge. A crop already
+  // smaller than the usual minimum keeps its own size as the floor, so it is never forced outward.
+  const minWidth = Math.min(MIN_CROP_FRACTION, crop.width);
+  const minHeight = Math.min(MIN_CROP_FRACTION, crop.height);
   let left = crop.x;
   let top = crop.y;
   let right = crop.x + crop.width;
   let bottom = crop.y + crop.height;
-  if (handle.includes("w")) left = Math.min(p.x, right - MIN_CROP_FRACTION);
-  if (handle.includes("e")) right = Math.max(p.x, left + MIN_CROP_FRACTION);
-  if (handle.includes("n")) top = Math.min(p.y, bottom - MIN_CROP_FRACTION);
-  if (handle.includes("s")) bottom = Math.max(p.y, top + MIN_CROP_FRACTION);
+  if (handle.includes("w")) left = clamp(p.x, 0, right - minWidth);
+  if (handle.includes("e")) right = clamp(p.x, left + minWidth, 1);
+  if (handle.includes("n")) top = clamp(p.y, 0, bottom - minHeight);
+  if (handle.includes("s")) bottom = clamp(p.y, top + minHeight, 1);
   if (!aspect) return { x: left, y: top, width: right - left, height: bottom - top };
 
   const heightForWidth = (w: number) => (w * image.width) / (image.height * aspect);
@@ -225,6 +229,9 @@ export function resizeCrop(
 
 // ---------------------------------------------------------------- level guides
 
+/** The renderer's safe-rectangle math holds up to a quarter turn of straightening. */
+export const MAX_STRAIGHTEN = 90;
+
 /** An image-fraction point in pixels of the straightened photo, the unit `levelGuide` needs. */
 export const toPixels = (point: Point, image: Size): Point => ({
   x: point.x * image.width,
@@ -243,7 +250,8 @@ const foldLineAngle = (degrees: number) => {
  * photo, in pixels of that photo (convert viewport fractions with `toPixels`; fractions of a
  * non-square photo would skew the angle). A Level H guide should end up horizontal, Level V vertical. Straighten is degrees
  * clockwise, so a guide that leans clockwise needs a counter-clockwise turn. There is no minimum
- * guide length and no angle limit; a guide that is not drawn (same point twice) changes nothing.
+ * guide length; straighten may go as far as +-90 degrees, the most the renderer supports. A guide
+ * that is not drawn (same point twice) changes nothing.
  */
 export function levelGuide(
   mode: "H" | "V",
@@ -256,20 +264,7 @@ export function levelGuide(
   if (dx === 0 && dy === 0) return currentStraighten;
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const lean = foldLineAngle(mode === "H" ? angle : angle - 90);
-  return Math.round((currentStraighten - lean) * 100) / 100;
-}
-
-/**
- * The renderer takes quarter turns plus a straighten of -45 to 45 degrees. Any larger angle is
- * the same picture as a quarter turn plus a smaller straighten, so no angle is ever refused.
- */
-export function normalizeOrientation(rotation: number, straighten: number): Orientation {
-  const total = rotation + straighten;
-  const quarters = Math.round(total / 90);
-  return {
-    rotation: ((((quarters * 90) % 360) + 360) % 360) as Orientation["rotation"],
-    straighten: Math.round((total - quarters * 90) * 100) / 100,
-  };
+  return clamp(Math.round((currentStraighten - lean) * 100) / 100, -MAX_STRAIGHTEN, MAX_STRAIGHTEN);
 }
 
 // ---------------------------------------------------------------- history

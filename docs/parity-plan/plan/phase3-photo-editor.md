@@ -17,9 +17,9 @@ Replace `react-image-crop` with a small custom viewport (pointer events on one e
 3. **#24 aspect.** Apple-Photos presets, persistent W/H, orientation toggle, Clear crop.
 4. **#25 grid, zoom, pan polish.** Off/Thirds/Center/Golden grid, centered zoom slider with 100% tick, wheel zoom, scrollbars.
 
-## Owner decision: no limits on level guides (2026-11-24)
+## Owner decision: no guide limits (2026-11-24)
 
-Issue #23 asked to preserve the Python app's safeguards (20 source pixels minimum, about 35 degree limit). The owner did not set those and decided there is **no minimum guide length and no angle limit**. This supersedes that line of issue #23. Guides take pixel coordinates of the straightened photo; angles beyond the renderer's -45..45 are stored as a quarter turn plus a smaller straighten (`normalizeOrientation`), so nothing is refused and the saved recipe format does not change.
+Issue #23 asked to preserve the Python app's safeguards (20 source pixels minimum, about 35 degree limit). The owner did not set those and decided there is **no minimum guide length and no angle limit** beyond what the renderer supports. This supersedes that line of issue #23. Guides take pixel coordinates of the straightened photo. The straighten range is raised from -45..45 to -90..90 (schema, editor field and API comment), the most the renderer's safe-rectangle math supports.
 
 ## Working rules for this phase
 

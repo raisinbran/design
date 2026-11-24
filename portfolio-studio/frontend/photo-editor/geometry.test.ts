@@ -13,7 +13,6 @@ import {
   levelGuide,
   moveCrop,
   toPixels,
-  normalizeOrientation,
   panBy,
   redo,
   reset,
@@ -173,6 +172,33 @@ describe("crop", () => {
     near(northWest.y + northWest.height, 0.6);
   });
 
+  it("never leaves the photo after lock, move to the edge, unlock and freeform resize", () => {
+    const base = { x: 0.2, y: 0.2, width: 0.2, height: 0.4 };
+    const tiny = resizeCrop(base, "s", { x: 0.3, y: 0.2 }, image, 1);
+    const handles = ["n", "s", "e", "w", "ne", "nw", "se", "sw"] as const;
+    const spots = [0, 0.5, 1].flatMap((x) => [0, 0.5, 1].map((y) => ({ x, y })));
+    for (const [dx, dy] of [
+      [1, 1],
+      [-1, -1],
+      [1, -1],
+      [-1, 1],
+    ] as const) {
+      const edge = moveCrop(tiny, dx, dy);
+      for (const handle of handles)
+        for (const spot of spots)
+          for (const aspect of [undefined, 1]) {
+            const crop = resizeCrop(edge, handle, spot, image, aspect);
+            for (const value of Object.values(crop)) expect(Number.isFinite(value)).toBe(true);
+            expect(crop.width).toBeGreaterThan(0);
+            expect(crop.height).toBeGreaterThan(0);
+            expect(crop.x).toBeGreaterThanOrEqual(-1e-9);
+            expect(crop.y).toBeGreaterThanOrEqual(-1e-9);
+            expect(crop.x + crop.width).toBeLessThanOrEqual(1 + 1e-9);
+            expect(crop.y + crop.height).toBeLessThanOrEqual(1 + 1e-9);
+          }
+    }
+  });
+
   it("does not let a handle cross the opposite side", () => {
     const crop = { x: 0.2, y: 0.2, width: 0.4, height: 0.4 };
     const squeezed = resizeCrop(crop, "e", { x: 0.1, y: 0.4 }, image);
@@ -231,37 +257,11 @@ describe("level guides", () => {
     expect(levelGuide("H", { x: 0.2, y: 0.5 }, { x: 0.7, y: 0.6 }, 0)).toBe(-11.31);
   });
 
-  it("accepts a very short guide and a very steep one: there are no limits", () => {
+  it("accepts a very short guide and a steep one, up to 90 degrees", () => {
     expect(level("H", 3, 1)).toBe(-18.43);
     expect(level("H", 100, 100)).toBe(-45);
     expect(level("H", 1000, 100, -30)).toBe(-35.71);
-  });
-});
-
-describe("normalizeOrientation", () => {
-  it("leaves a small straighten alone", () => {
-    expect(normalizeOrientation(0, 12.5)).toEqual({ rotation: 0, straighten: 12.5 });
-    expect(normalizeOrientation(90, -45)).toEqual({ rotation: 90, straighten: -45 });
-  });
-
-  it("turns a large straighten into a quarter turn plus a small one", () => {
-    expect(normalizeOrientation(0, 60)).toEqual({ rotation: 90, straighten: -30 });
-    expect(normalizeOrientation(0, -100)).toEqual({ rotation: 270, straighten: -10 });
-    expect(normalizeOrientation(270, 80)).toEqual({ rotation: 0, straighten: -10 });
-    expect(normalizeOrientation(0, 400)).toEqual({ rotation: 0, straighten: 40 });
-  });
-
-  it("keeps the total turn the same", () => {
-    for (const [rotation, straighten] of [
-      [0, 77],
-      [180, -130],
-      [90, 200],
-    ] as const) {
-      const result = normalizeOrientation(rotation, straighten);
-      const turn = (value: number) => ((value % 360) + 360) % 360;
-      near(turn(result.rotation + result.straighten), turn(rotation + straighten));
-      expect(Math.abs(result.straighten)).toBeLessThanOrEqual(45);
-    }
+    expect(level("H", 1000, 100, -88)).toBe(-90);
   });
 });
 

@@ -320,8 +320,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
               <NumberInput
                 label="Straighten"
                 suffix="°"
-                min={-45}
-                max={45}
+                min={-90}
+                max={90}
                 step={0.1}
                 decimalScale={1}
                 clampBehavior="strict"
