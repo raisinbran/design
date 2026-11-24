@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import sharp from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { MIN_CONFIDENCE } from "./autolevel";
 import { levelJob } from "./render";
 
 let folder = "";
@@ -35,6 +36,6 @@ describe("levelJob", () => {
       orientation: { rotation: 0, straighten: 0 },
     });
     expect(tilt?.degrees).toBeCloseTo(4, 0);
-    expect(tilt!.confidence).toBeGreaterThan(0.5);
+    expect(tilt!.confidence).toBeGreaterThan(MIN_CONFIDENCE);
   });
 });

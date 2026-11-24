@@ -1,23 +1,21 @@
-// Finds how far a photo's dominant straight lines lean from horizontal or vertical.
+// Finds how far a photo's dominant straight lines lean from horizontal or vertical, with a Hough
+// transform over its strongest edges: long straight edges pile up in one bin, texture does not.
 
-/** Share of edge strength that must agree on one lean before Auto-level acts; chosen by testing. */
-export const MIN_CONFIDENCE = 0.2;
-const MIN_EDGE_PIXELS = 200;
-const BINS_PER_DEGREE = 2;
-const BIN_COUNT = 90 * BINS_PER_DEGREE;
+/** The tilt peak must be this many times the typical line evidence; set from tests on real photos. */
+export const MIN_CONFIDENCE = 1.5;
+const EDGE_SHARE = 0.08;
+const STEP = 0.5;
 
 export interface Tilt {
   /** Degrees clockwise that the dominant lines lean, from -45 to 45. */
   degrees: number;
-  /** 0 to 1: the share of edge strength within 2 degrees of that lean. */
+  /** The peak's line evidence over the median across all angles; about 1 means no clear lines. */
   confidence: number;
 }
 
-/** Edge directions of a grayscale image vote, weighted by strength, for a lean modulo 90 degrees. */
 export function estimateTilt(gray: Uint8Array, width: number, height: number): Tilt | null {
-  const votes = new Float64Array(BIN_COUNT);
-  const edges: { fold: number; weight: number }[] = [];
-  let total = 0;
+  const strength = new Float32Array(width * height);
+  const sorted: number[] = [];
   const at = (x: number, y: number) => gray[y * width + x];
   for (let y = 1; y < height - 1; y++) {
     for (let x = 1; x < width - 1; x++) {
@@ -31,48 +29,50 @@ export function estimateTilt(gray: Uint8Array, width: number, height: number): T
         2 * at(x, y + 1) +
         at(x + 1, y + 1) -
         (at(x - 1, y - 1) + 2 * at(x, y - 1) + at(x + 1, y - 1));
-      const weight = Math.hypot(gx, gy);
-      if (weight === 0) continue;
-      // A line leans the same way as its gradient, modulo a quarter turn.
-      const degrees = (Math.atan2(gy, gx) * 180) / Math.PI;
-      let fold = ((degrees % 90) + 90) % 90;
-      if (fold > 45) fold -= 90;
-      edges.push({ fold, weight });
-      total += weight;
+      const magnitude = Math.hypot(gx, gy);
+      strength[y * width + x] = magnitude;
+      if (magnitude > 0) sorted.push(magnitude);
     }
   }
-  if (!edges.length) return null;
-  const cutoff = total / (width * height);
-  let strong = 0;
-  let strength = 0;
-  for (const { fold, weight } of edges) {
-    if (weight < cutoff) continue;
-    strong++;
-    strength += weight;
-    votes[Math.floor((fold + 45) * BINS_PER_DEGREE) % BIN_COUNT] += weight;
-  }
-  if (strong < MIN_EDGE_PIXELS) return null;
+  if (sorted.length < 100) return null;
+  sorted.sort((a, b) => a - b);
+  const cutoff = sorted[Math.floor(sorted.length * (1 - EDGE_SHARE))];
+  const points: [number, number][] = [];
+  for (let y = 1; y < height - 1; y++)
+    for (let x = 1; x < width - 1; x++)
+      if (strength[y * width + x] >= cutoff) points.push([x - width / 2, y - height / 2]);
 
-  // The window of ±2 degrees with the most strength; bins wrap, since 45 and -45 are the same lean.
-  const radius = 2 * BINS_PER_DEGREE;
-  let best = 0;
-  let bestMass = -1;
-  for (let center = 0; center < BIN_COUNT; center++) {
-    let mass = 0;
-    for (let offset = -radius; offset <= radius; offset++)
-      mass += votes[(center + offset + BIN_COUNT) % BIN_COUNT];
-    if (mass > bestMass) {
-      bestMass = mass;
-      best = center;
+  // Each angle scores the sum of squared bin counts of its parallel lines, once for near-horizontal
+  // lines and once for near-vertical ones, so a single long line counts far more than scattered edges.
+  const angles = Math.round(90 / STEP);
+  const diagonal = Math.ceil(Math.hypot(width, height));
+  const bins = new Int32Array(2 * diagonal + 3);
+  const evidence = new Float64Array(angles);
+  for (let i = 0; i < angles; i++) {
+    const phi = ((-45 + i * STEP) * Math.PI) / 180;
+    const cos = Math.cos(phi);
+    const sin = Math.sin(phi);
+    let total = 0;
+    for (const vertical of [false, true]) {
+      bins.fill(0);
+      for (const [x, y] of points) {
+        const offset = vertical ? x * cos + y * sin : -x * sin + y * cos;
+        bins[Math.round(offset) + diagonal + 1]++;
+      }
+      for (const count of bins) total += count * count;
     }
+    evidence[i] = total;
   }
-  let weighted = 0;
-  for (let offset = -radius; offset <= radius; offset++)
-    weighted += offset * votes[(best + offset + BIN_COUNT) % BIN_COUNT];
-  const center = best + weighted / bestMass;
-  const degrees = (center + 0.5) / BINS_PER_DEGREE - 45;
-  return {
-    degrees: Math.round((((degrees + 45 + 90) % 90) - 45) * 100) / 100,
-    confidence: bestMass / strength,
-  };
+  let best = 0;
+  for (let i = 1; i < angles; i++) if (evidence[i] > evidence[best]) best = i;
+  // A parabola through the peak and its neighbours refines the angle below the step size.
+  const before = evidence[(best - 1 + angles) % angles];
+  const after = evidence[(best + 1) % angles];
+  const bend = before - 2 * evidence[best] + after;
+  const shift = bend === 0 ? 0 : (0.5 * (before - after)) / bend;
+  const median = [...evidence].sort((a, b) => a - b)[angles >> 1];
+  if (!(median > 0)) return null;
+  let degrees = -45 + (best + shift) * STEP;
+  if (degrees >= 45) degrees -= 90;
+  return { degrees: Math.round(degrees * 100) / 100, confidence: evidence[best] / median };
 }
