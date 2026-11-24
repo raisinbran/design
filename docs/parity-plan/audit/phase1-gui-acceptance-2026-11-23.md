@@ -39,8 +39,6 @@ This is a real app window, but it is driven through the page, not through OS-lev
 
 On macOS 27.0.1 (arm64) the packaged app did not launch, with or without the entitlement trim: helper processes (GPU, network) were ad-hoc signed without `disable-library-validation` and could not load the ad-hoc-signed Electron Framework ("different Team IDs"). Per the owner's decision, the main app and its helper apps now share the same two-key exception (`forge.config.ts`); Electron Framework gets none. After the fix a packaged build opens: main plus GPU, network and renderer processes stay up with no loader errors over 12 seconds, and the signing check passes on the real bundle (it now also requires the exception on every helper, with a test scenario). Not yet run: the DMG smoke script and the signed-in-CI flow.
 
-## Still open before merge
+## Outcome
 
-1. **Gallery rule:** owner clarified that no row height was ever meant to be reduced and that narrower final rows are fine; the intent is that no photo is excessively undersized or oversized to fit a row. Current code already pairs tall portraits and fills interior rows, so no change is proposed unless a bound on interior row height is wanted.
-2. Run the DMG smoke script (CI or a quiet machine); the local run was stopped because of the earlier CPU load.
-3. Owner merges.
+PR #22 was independently re-reviewed and APPROVED at `aa2a2ae`, all five CI checks passed, and it was squash-merged to master as `37de560` on 2026-11-24 (branch deleted). Still open: the DMG smoke result on a quiet local machine (CI passed it), the Windows `0x80000003` crash (Phase 5), and the Engineering duplicate/undo and title-bar-tint gaps for owner decision.
