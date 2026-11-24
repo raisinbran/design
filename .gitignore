@@ -18,3 +18,4 @@ __pycache__/
 
 # Portfolio Studio temporary files left by an interrupted save
 *.portfolio-studio-tmp
+*.portfolio-studio-bak

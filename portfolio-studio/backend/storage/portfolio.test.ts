@@ -1,8 +1,9 @@
+import { rename } from "node:fs/promises";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { Catalogs } from "../api/api";
-import { loadPortfolio, savePortfolio, TEMPORARY_SUFFIX } from "./portfolio";
+import { loadPortfolio, replaceFiles, savePortfolio, TEMPORARY_SUFFIX } from "./portfolio";
 import { COPY_TIMEOUT_MS, copyRepository, hashFiles } from "./test-folder";
 
 let folder: string;
@@ -139,6 +140,29 @@ describe("savePortfolio", () => {
     const before = hashFiles(folder);
 
     await expect(savePortfolio(folder, view.revision, view.catalogs)).rejects.toThrow();
+
+    expect(hashFiles(folder)).toEqual(before);
+  });
+
+  // A rename that fails part way must put back every file already replaced, delete a file the save
+  // created, and leave no temporary or backup file behind.
+  it("rolls back the files already replaced when a rename fails", async () => {
+    const before = hashFiles(folder);
+    const files = [
+      "data/media-catalog.json",
+      "photography/published/new.webp",
+      "js/photography-catalog.js",
+    ];
+    const texts = Object.fromEntries(files.map((file) => [file, "changed"]));
+    let moves = 0;
+    const failThird: typeof rename = async (from, to) => {
+      if (++moves === 3) throw new Error("disk is busy");
+      return rename(from, to);
+    };
+
+    await expect(replaceFiles(folder, files, texts, failThird)).rejects.toThrow(
+      /disk is busy.*No file was changed/,
+    );
 
     expect(hashFiles(folder)).toEqual(before);
   });
