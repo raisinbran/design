@@ -165,6 +165,12 @@ export function PhotoViewport({
     }
   }
 
+  function onPointerCancel() {
+    drag.current = null;
+    setDragCrop(undefined);
+    setGuide(null);
+  }
+
   function onPointerUp(event: React.PointerEvent) {
     const active = drag.current;
     drag.current = null;
@@ -208,7 +214,7 @@ export function PhotoViewport({
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
+      onPointerCancel={onPointerCancel}
     >
       <img
         src={image.url}

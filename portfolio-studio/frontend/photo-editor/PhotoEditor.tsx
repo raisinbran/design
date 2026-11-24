@@ -110,6 +110,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [editing, setEditing] = useState<Editing | null>(null);
   const [missing, setMissing] = useState<string | null>(null);
   const [proxy, setProxy] = useState<ImageRef | null>(null);
+  const [proxyOf, setProxyOf] = useState("");
   const [rendered, setRendered] = useState<{
     image: ImageRef;
     recipe: Recipe;
@@ -208,6 +209,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
         if (!shown) return;
         proxyFor.current = orientation;
         setProxy(shown);
+        setProxyOf(orientation);
       }
       const image = settled(
         await window.portfolio["photos.render"](source.id, recipe, outputFormat),
@@ -224,6 +226,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   function applyGuide(mode: "H" | "V", start: Point, end: Point) {
     const straighten = levelGuide(mode, start, end, recipe.straighten);
+    if (straighten === recipe.straighten) return;
     changeRecipe({ ...recipe, straighten, crop: undefined });
   }
 
@@ -291,7 +294,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   function chooseAspect(choice: string) {
     setAspect(choice);
     const ratio = ASPECTS[choice];
-    if (!ratio || !proxy) return;
+    if (!ratio || !proxy || stale) return;
     const wide = ratio > proxy.width / proxy.height;
     const width = wide ? 1 : (proxy.height * ratio) / proxy.width;
     const height = wide ? proxy.width / (proxy.height * ratio) : 1;
@@ -303,6 +306,9 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   const commitCrop = (crop: CropRect) => changeRecipe({ ...recipe, crop });
   const crop = recipe.crop;
+  // Until the new preview arrives the image shows an older angle, so only pan and zoom are safe.
+  const stale =
+    !editing || proxyOf !== `${editing.source.id} ${recipe.rotation} ${recipe.straighten}`;
 
   const current =
     rendered && editing && rendered.recipe === recipe && rendered.format === outputFormat && !busy;
@@ -422,7 +428,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
             {proxy && (
               <PhotoViewport
                 image={proxy}
-                tool={tool}
+                key={editing.source.id}
+                tool={stale ? "none" : tool}
                 crop={crop}
                 aspect={ASPECTS[aspect]}
                 height="55vh"
