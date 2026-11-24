@@ -10,6 +10,8 @@ app="$temporary/Portfolio Studio.app"
 main_executable="$app/Contents/MacOS/portfolio-studio"
 framework_executable="$app/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework"
 mkdir -p "$(dirname "$main_executable")" "$(dirname "$framework_executable")"
+helper_app="$app/Contents/Frameworks/Portfolio Studio Helper.app"
+mkdir -p "$helper_app"
 touch "$main_executable" "$framework_executable"
 new_entitlements="$studio_root/scripts/macos-adhoc-main-entitlements.plist"
 legacy_entitlements="$temporary/legacy.plist"
@@ -38,6 +40,14 @@ codesign() {
           cat "$legacy_entitlements"
         elif [[ "$signing_scenario" == "extra-entitlement" ]]; then
           cat "$extra_entitlements"
+        else
+          cat "$new_entitlements"
+        fi
+        return 0
+        ;;
+      "$helper_app")
+        if [[ "$signing_scenario" == "helper-missing" ]]; then
+          cat "$legacy_entitlements"
         else
           cat "$new_entitlements"
         fi
@@ -74,6 +84,7 @@ expect_rejected "legacy-main"
 expect_rejected "missing-runtime"
 expect_rejected "framework-leak"
 expect_rejected "extra-entitlement"
+expect_rejected "helper-missing"
 expect_rejected "framework-inspect-fails"
 signing_scenario="corrected"
 check_macos_adhoc_signing "$app"

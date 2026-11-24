@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Assert that the macOS private-build exception is present on the main app only.
+# Assert that the macOS private-build exception is present on the main app and its helper apps only.
 check_macos_adhoc_signing() {
   local bundle="$1"
   local main_executable="$bundle/Contents/MacOS/portfolio-studio"
@@ -51,6 +51,23 @@ check_macos_adhoc_signing() {
     rm -f "$entitlement_file"
     return 1
   fi
+
+  # Helper apps (GPU, network, renderer) load the same framework and need the same exception.
+  local helper
+  for helper in "$bundle"/Contents/Frameworks/*Helper*.app; do
+    [[ -d "$helper" ]] || continue
+    if ! codesign --display --entitlements :- "$helper" >"$entitlement_file" 2>/dev/null; then
+      echo "Cannot inspect helper entitlements: $helper" >&2
+      rm -f "$entitlement_file"
+      return 1
+    fi
+    actual="$(/usr/libexec/PlistBuddy -c "Print :com.apple.security.cs.disable-library-validation" "$entitlement_file" 2>/dev/null)" || actual=""
+    if [[ "$actual" != "true" ]]; then
+      echo "Helper app lacks the library-validation exception: $helper" >&2
+      rm -f "$entitlement_file"
+      return 1
+    fi
+  done
 
   # Electron Framework itself must not acquire the main-process exception.
   if ! codesign --display --entitlements :- "$framework_executable" >"$entitlement_file" 2>/dev/null; then

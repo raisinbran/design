@@ -15,9 +15,10 @@ const config: ForgeConfig = {
       identity: "-",
       identityValidation: false,
       continueOnError: false,
-      // Only the top-level app loading Electron Framework gets this approved exception.
+      // The main app and its helper apps load the ad-hoc-signed Electron Framework, so they alone get
+      // this approved exception. Electron Framework itself gets none.
       optionsForFile: (filePath) =>
-        filePath.endsWith("/Portfolio Studio.app") && !filePath.includes(".app/Contents/")
+        /\/Portfolio Studio( Helper( \((GPU|Renderer|Plugin)\))?)?\.app$/.test(filePath)
           ? { entitlements: mainAppEntitlements }
           : {},
     },
