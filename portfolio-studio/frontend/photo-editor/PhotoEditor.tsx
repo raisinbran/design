@@ -1,5 +1,6 @@
-// Coordinates persistent drafts, proxy previews and the final published render in one view.
+// Coordinates persistent drafts, proxy previews and the final published render in one view; kept whole because the toolbar, viewport and publish form share one editing state.
 import {
+  ActionIcon,
   Button,
   Group,
   Modal,
@@ -13,10 +14,9 @@ import {
   Textarea,
   TextInput,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
-import ReactCrop, { centerCrop, makeAspectCrop, type PercentCrop } from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
 import type {
   AddRequest,
   Draft,
@@ -27,7 +27,23 @@ import type {
 } from "../../backend/api/api";
 import { isDirty, useEditor } from "../app/editor";
 import { call, runShowingErrors } from "../app/portfolio";
+import {
+  canRedo,
+  canUndo,
+  change,
+  isEdited,
+  levelGuide,
+  redo,
+  reset,
+  startHistory,
+  undo,
+  type CropRect,
+  type History,
+  type Point,
+} from "./geometry";
 import { catalogNameWithSuffix, SUFFIX_OPTIONS, validSuffix } from "./naming";
+import { PhotoViewport } from "./PhotoViewport";
+import { cropControlsEnabled, toggleTool, type Tool } from "./tools";
 import {
   DEFAULT_PHOTO_OUTPUT_FORMAT,
   fileOutputFormat,
@@ -55,14 +71,29 @@ const ASPECTS: Record<string, number | undefined> = {
   "3:2": 1.5,
 };
 
-const toPercent = (crop: Recipe["crop"]): PercentCrop | undefined =>
-  crop && {
-    unit: "%",
-    x: crop.x * 100,
-    y: crop.y * 100,
-    width: crop.width * 100,
-    height: crop.height * 100,
-  };
+/** A button with only a symbol: it needs an accessible label and an instant tooltip. */
+function IconTool(props: {
+  label: string;
+  symbol: string;
+  onClick: () => void;
+  pressed?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <Tooltip label={props.label} openDelay={0} closeDelay={0} transitionProps={{ duration: 0 }}>
+      <ActionIcon
+        variant={props.pressed ? "filled" : "default"}
+        size={32}
+        aria-label={props.label}
+        aria-pressed={props.pressed}
+        disabled={props.disabled}
+        onClick={props.onClick}
+      >
+        {props.symbol}
+      </ActionIcon>
+    </Tooltip>
+  );
+}
 
 const kilobytes = (bytes: number) => `${Math.round(bytes / 1024)} KB`;
 
@@ -86,7 +117,10 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   } | null>(null);
   const [busy, setBusy] = useState(false);
   const [adding, setAdding] = useState(false);
-  const [crop, setCrop] = useState<PercentCrop | undefined>();
+  const [history, setHistory] = useState<History>(startHistory({ rotation: 0, straighten: 0 }));
+  const [tool, setTool] = useState<Tool>("none");
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [help, setHelp] = useState(false);
   const [aspect, setAspect] = useState("Free");
   const [name, setName] = useState("");
   const [outputFormat, setOutputFormat] = useState<PhotoOutputFormat>(DEFAULT_PHOTO_OUTPUT_FORMAT);
@@ -101,7 +135,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
 
   function open(next: Editing) {
     setEditing(next);
-    setCrop(toPercent(next.recipe.crop));
+    setHistory(startHistory(next.recipe));
+    setTool("none");
     setSuffixChoice("_crop");
     setCustomSuffix("_portfolio");
     setName(next.photoKey ? next.photoKey : catalogNameWithSuffix(next.source.name, "_crop"));
@@ -136,12 +171,22 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     });
   }, [editImage]);
 
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setTool("none");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const recipe = history.present;
+
   // Each recipe change renders again after a short pause; the proxy is redrawn only when the
   // orientation changes. A newer job ends the running one, and its stale result is ignored.
   useEffect(() => {
     if (!editing) return;
     const run = ++generation.current;
-    const { source, recipe, photoKey: key } = editing;
+    const { source, photoKey: key } = editing;
     const timer = setTimeout(async () => {
       // Returns null for a stale result or a failed job. A cancelled job shows no error.
       const settled = (result: Result<ImageRef>) => {
@@ -173,16 +218,19 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
       if (!key) void window.portfolio["photos.saveDraft"](source.id, recipe);
     }, 300);
     return () => clearTimeout(timer);
-  }, [editing, outputFormat]);
+  }, [editing, recipe, outputFormat]);
 
-  const changeRecipe = (recipe: Recipe) => editing && setEditing({ ...editing, recipe });
+  const changeRecipe = (next: Recipe) => setHistory((h) => change(h, next));
 
   // A quarter turn changes the shape of the safe rectangle, so the crop starts over.
   function rotate(degrees: number) {
-    if (!editing) return;
-    setCrop(undefined);
-    const rotation = ((editing.recipe.rotation + degrees) % 360) as Recipe["rotation"];
-    changeRecipe({ ...editing.recipe, rotation, crop: undefined });
+    const rotation = ((recipe.rotation + degrees) % 360) as Recipe["rotation"];
+    changeRecipe({ ...recipe, rotation, crop: undefined });
+  }
+
+  function applyGuide(mode: "H" | "V", start: Point, end: Point) {
+    const straighten = levelGuide(mode, start, end, recipe.straighten);
+    changeRecipe({ ...recipe, straighten, crop: undefined });
   }
 
   async function importOriginal() {
@@ -245,38 +293,25 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     }
   }
 
+  // The largest centred crop of the chosen shape; Free keeps the current crop.
   function chooseAspect(choice: string) {
     setAspect(choice);
     const ratio = ASPECTS[choice];
-    if (!ratio || !proxy || !editing) return;
-    const fill = ratio > proxy.width / proxy.height ? { width: 100 } : { height: 100 };
-    const next = centerCrop(
-      makeAspectCrop({ unit: "%", ...fill }, ratio, proxy.width, proxy.height),
-      proxy.width,
-      proxy.height,
-    );
-    setCrop(next);
-    commitCrop(next);
-  }
-
-  function commitCrop(percent: PercentCrop) {
-    if (!editing) return;
-    const { x, y, width, height } = percent;
+    if (!ratio || !proxy) return;
+    const wide = ratio > proxy.width / proxy.height;
+    const width = wide ? 1 : (proxy.height * ratio) / proxy.width;
+    const height = wide ? proxy.width / (proxy.height * ratio) : 1;
     changeRecipe({
-      ...editing.recipe,
-      crop:
-        width && height
-          ? { x: x / 100, y: y / 100, width: width / 100, height: height / 100 }
-          : undefined,
+      ...recipe,
+      crop: { x: (1 - width) / 2, y: (1 - height) / 2, width, height },
     });
   }
 
+  const commitCrop = (crop: CropRect) => changeRecipe({ ...recipe, crop });
+  const crop = recipe.crop;
+
   const current =
-    rendered &&
-    editing &&
-    rendered.recipe === editing.recipe &&
-    rendered.format === outputFormat &&
-    !busy;
+    rendered && editing && rendered.recipe === recipe && rendered.format === outputFormat && !busy;
   const validChoice = suffixChoice !== "custom" || validSuffix(customSuffix);
   const nameProblem = photoBaseNameProblem(name.trim());
   const described =
@@ -310,54 +345,99 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
             <Title order={3}>
               {editing.photoKey ? `Edit Image: ${editing.photoKey}` : editing.source.name}
             </Title>
-            <Group align="flex-end">
-              <Button variant="default" onClick={() => rotate(270)}>
-                Rotate left
-              </Button>
-              <Button variant="default" onClick={() => rotate(90)}>
-                Rotate right
-              </Button>
+            <Group gap="xs" wrap="nowrap" h={36} aria-label="Tools" role="toolbar">
+              <IconTool
+                label="Crop"
+                symbol="▭"
+                pressed={tool === "crop"}
+                onClick={() => setTool(toggleTool(tool, "crop"))}
+              />
+              <IconTool
+                label="Level horizontal"
+                symbol="↔"
+                pressed={tool === "levelH"}
+                onClick={() => setTool(toggleTool(tool, "levelH"))}
+              />
+              <IconTool
+                label="Level vertical"
+                symbol="↕"
+                pressed={tool === "levelV"}
+                onClick={() => setTool(toggleTool(tool, "levelV"))}
+              />
+              <IconTool label="Rotate left" symbol="⟲" onClick={() => rotate(270)} />
+              <IconTool label="Rotate right" symbol="⟳" onClick={() => rotate(90)} />
               <NumberInput
-                label="Straighten"
+                aria-label="Straighten"
                 suffix="°"
                 min={-90}
                 max={90}
                 step={0.1}
                 decimalScale={1}
                 clampBehavior="strict"
-                w={120}
-                value={editing.recipe.straighten}
-                onChange={(value) =>
-                  changeRecipe({ ...editing.recipe, straighten: Number(value) || 0 })
-                }
+                w={90}
+                size="xs"
+                value={recipe.straighten}
+                onChange={(value) => changeRecipe({ ...recipe, straighten: Number(value) || 0 })}
               />
+              <IconTool
+                label="Undo"
+                symbol="↶"
+                disabled={!canUndo(history)}
+                onClick={() => setHistory(undo)}
+              />
+              <IconTool
+                label="Redo"
+                symbol="↷"
+                disabled={!canRedo(history)}
+                onClick={() => setHistory(redo)}
+              />
+              <Button
+                variant="default"
+                size="xs"
+                disabled={!isEdited(recipe)}
+                onClick={() => setConfirmReset(true)}
+              >
+                Reset
+              </Button>
+              <IconTool label="Help" symbol="?" onClick={() => setHelp(true)} />
+            </Group>
+            <Group gap="xs" wrap="nowrap" h={36} aria-label="Aspect and view" role="toolbar">
               <SegmentedControl
+                size="xs"
                 data={Object.keys(ASPECTS)}
                 value={aspect}
+                disabled={!cropControlsEnabled(tool, !!crop)}
                 onChange={chooseAspect}
               />
-              {busy && (
-                <Button variant="default" onClick={() => void window.portfolio["photos.cancel"]()}>
-                  Cancel
-                </Button>
-              )}
+              <IconTool
+                label="Clear crop"
+                symbol="✕"
+                disabled={!crop}
+                onClick={() => changeRecipe({ ...recipe, crop: undefined })}
+              />
+              <Text size="xs" c="dimmed" ml="auto">
+                {busy ? "Rendering…" : ""}
+              </Text>
+              <Button
+                variant="default"
+                size="xs"
+                disabled={!busy}
+                onClick={() => void window.portfolio["photos.cancel"]()}
+              >
+                Cancel
+              </Button>
             </Group>
             {proxy && (
-              <ReactCrop
+              <PhotoViewport
+                image={proxy}
+                tool={tool}
                 crop={crop}
                 aspect={ASPECTS[aspect]}
-                keepSelection
-                onChange={(_, percent) => setCrop(percent)}
-                onComplete={(_, percent) => commitCrop(percent)}
-              >
-                <img src={proxy.url} alt="" style={{ maxWidth: "100%", maxHeight: "60vh" }} />
-              </ReactCrop>
+                height="55vh"
+                onCrop={commitCrop}
+                onGuide={applyGuide}
+              />
             )}
-            <Text size="sm" c="dimmed">
-              {crop?.width
-                ? `Crop: ${crop.x.toFixed(1)}% from left, ${crop.y.toFixed(1)}% from top, ${crop.width.toFixed(1)}% × ${crop.height.toFixed(1)}%`
-                : "No crop: the whole straightened photo"}
-            </Text>
             {rendered && rendered.format === outputFormat && (
               <>
                 <img
@@ -472,6 +552,32 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
           </>
         )}
       </Stack>
+      <Modal opened={confirmReset} onClose={() => setConfirmReset(false)} title="Reset edits">
+        <Text>Remove the rotation, straightening and crop from this photo? You can undo it.</Text>
+        <Group justify="flex-end" mt="md">
+          <Button variant="default" onClick={() => setConfirmReset(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setConfirmReset(false);
+              setHistory(reset);
+              setAspect("Free");
+              setTool("none");
+            }}
+          >
+            Reset
+          </Button>
+        </Group>
+      </Modal>
+      <Modal opened={help} onClose={() => setHelp(false)} title="Photo editor help">
+        <Text size="sm">
+          With no tool selected, drag the photo to move it and scroll to zoom. Crop draws, moves and
+          resizes the crop. Level horizontal or vertical: drag along a line that should be level;
+          the photo turns to match. Rotate turns a quarter turn. Esc or clicking the tool again
+          returns to moving the photo.
+        </Text>
+      </Modal>
       <Modal opened={conflict !== null} onClose={() => setConflict(null)} title="Name taken">
         <Text>{conflict}</Text>
         <Group justify="flex-end" mt="md">
