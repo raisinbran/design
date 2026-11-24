@@ -35,12 +35,12 @@ This is a real app window, but it is driven through the page, not through OS-lev
 - `portfolio-studio/docs/testing.md` now says "Arrangement menu" instead of "Suggest Arrangement".
 - The full unit-test suite was not re-run after this change (it only touches shell scripts and docs; the run was stopped when it overloaded the machine).
 
-## New finding: packaged macOS app does not launch (pre-existing)
+## Packaged macOS launch: found and fixed
 
-On macOS 27.0.1 (arm64), `macos-packaged-smoke.sh` fails for the DMG build both before and after the entitlement change. The main app starts, but every helper process (GPU, network) dies with "mapping process and mapped file have different Team IDs": the helpers are ad-hoc signed without `disable-library-validation`, so they cannot load the ad-hoc-signed Electron Framework. The "main app only" exception is therefore not enough. This is likely related to the Windows-independent "packaged app fails" reports and must be fixed before the packaged macOS build can be called working. The dev-run app (what the GUI check above used) is unaffected.
+On macOS 27.0.1 (arm64) the packaged app did not launch, with or without the entitlement trim: helper processes (GPU, network) were ad-hoc signed without `disable-library-validation` and could not load the ad-hoc-signed Electron Framework ("different Team IDs"). Per the owner's decision, the main app and its helper apps now share the same two-key exception (`forge.config.ts`); Electron Framework gets none. After the fix a packaged build opens: main plus GPU, network and renderer processes stay up with no loader errors over 12 seconds, and the signing check passes on the real bundle (it now also requires the exception on every helper, with a test scenario). Not yet run: the DMG smoke script and the signed-in-CI flow.
 
 ## Still open before merge
 
-1. **Packaged macOS launch** (above): needs a decision on how to sign helpers (give helpers the same exception, or sign with a real identity).
-2. **Gallery rule:** owner clarified that no row height was ever meant to be reduced and that narrower final rows are fine; the intent is that no photo is excessively undersized or oversized to fit a row. Current code already pairs tall portraits and fills interior rows, so no change is proposed unless a bound on interior row height is wanted.
+1. **Gallery rule:** owner clarified that no row height was ever meant to be reduced and that narrower final rows are fine; the intent is that no photo is excessively undersized or oversized to fit a row. Current code already pairs tall portraits and fills interior rows, so no change is proposed unless a bound on interior row height is wanted.
+2. Run the DMG smoke script (CI or a quiet machine); the local run was stopped because of the earlier CPU load.
 3. Owner merges.
