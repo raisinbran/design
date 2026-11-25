@@ -2,6 +2,8 @@ import { Group, List, NavLink, Stack, Text, TextInput, Title } from "@mantine/co
 import { useState } from "react";
 import { MANUAL, searchManual } from "./manual";
 
+declare const __APP_VERSION__: string;
+
 /** Groups consecutive "- " lines into one list, keeping the order of the text. */
 function blocks(lines: string[]): { list: boolean; lines: string[] }[] {
   const result: { list: boolean; lines: string[] }[] = [];
@@ -22,7 +24,12 @@ export function HelpView() {
 
   return (
     <Stack maw={900}>
-      <Title order={2}>Help</Title>
+      <Group justify="space-between" align="baseline">
+        <Title order={2}>Help</Title>
+        <Text c="dimmed" size="sm">
+          Portfolio Studio version {__APP_VERSION__}
+        </Text>
+      </Group>
       <TextInput
         aria-label="Search user manual"
         placeholder="Search the user manual"

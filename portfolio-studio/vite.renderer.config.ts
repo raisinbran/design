@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { defineConfig, normalizePath, type Plugin } from "vite";
 
@@ -16,5 +17,11 @@ export default defineConfig({
   root: "frontend",
   base: "./",
   plugins: [keepBackendOut],
+  // The Help screen shows the version from package.json.
+  define: {
+    __APP_VERSION__: JSON.stringify(
+      JSON.parse(readFileSync(path.resolve(__dirname, "package.json"), "utf8")).version,
+    ),
+  },
   build: { outDir: "../.vite/renderer", emptyOutDir: true },
 });

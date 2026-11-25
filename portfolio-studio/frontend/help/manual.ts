@@ -41,7 +41,7 @@ export const MANUAL: ManualSection[] = [
     title: "Engineering",
     text: [
       "Each project has a title, heading, context, a cover image with its position, and a body written in the rich text editor. Visible, Expanded and Hero control how the project shows on the page.",
-      "Add project creates one; use the up and down buttons or drag to reorder.",
+      "Add (beside the New project title field) creates a project; use the up and down buttons or drag to reorder.",
       "Media: Add media picks images (and mp4 or webm videos), copies them into the website folder and adds them to the project. Images follow the same rules as photos: upright, at most 800 px on the long side, WebP, with the watermark and rights. Each item has alt text, a caption, a credit line and a position.",
     ],
   },
