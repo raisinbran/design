@@ -16,6 +16,7 @@ export const METHODS = [
   "photos.cancel",
   "photos.add",
   "photos.appearance",
+  "photos.measure",
   "photos.rename",
   "photos.delete",
   "photos.drafts",

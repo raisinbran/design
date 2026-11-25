@@ -2,7 +2,7 @@ import path from "node:path";
 import { Worker } from "node:worker_threads";
 // On glibc Linux, sharp must load in the main thread before any worker loads it.
 import "sharp";
-import type { AppearanceMap, Job, Leveled, Rendered } from "./render";
+import type { AppearanceMap, Job, Leveled, Measured, Rendered } from "./render";
 
 const WORKER = path.join(__dirname, "render-worker.cjs");
 
@@ -14,9 +14,11 @@ let running: { worker: Worker; stop: () => void } | null = null;
  */
 type JobResult<J extends Job> = J extends { kind: "appearance" }
   ? AppearanceMap
-  : J extends { kind: "level" }
-    ? Leveled
-    : Rendered;
+  : J extends { kind: "measure" }
+    ? Measured
+    : J extends { kind: "level" }
+      ? Leveled
+      : Rendered;
 
 export function runJob<J extends Job>(job: J): Promise<JobResult<J> | null> {
   cancelJob();

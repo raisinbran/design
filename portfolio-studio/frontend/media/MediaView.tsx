@@ -6,6 +6,8 @@ import {
   Group,
   Image,
   List,
+  Modal,
+  MultiSelect,
   NavLink,
   SegmentedControl,
   Stack,
@@ -18,7 +20,9 @@ import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import {
   descriptionOf,
+  joinPhotography,
   PAGE_LABELS,
+  photographyProblem,
   pagesInUse,
   removeItem,
   setAlt,
@@ -124,6 +128,9 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
   const uses = usesByFile(catalogs).get(item.src) ?? [];
   const inUse = pagesInUse(catalogs, item.src);
   const description = descriptionOf(catalogs, item);
+  const [tagging, setTagging] = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
+  const [joinError, setJoinError] = useState<string | null>(null);
   const needsDescription = inUse.some((page) => page !== "engineering");
   return (
     <Stack gap="sm" pl="xs" maw={640}>
@@ -156,7 +163,7 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
           const reason = used
             ? `Used on ${label}: ${where}. Remove it there to untick`
             : page === "photography"
-              ? "Adding a file to Photography is not available yet"
+              ? photographyProblem(catalogs, item.src)
               : null;
           return (
             <Tooltip
@@ -174,9 +181,11 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
                   checked={item.pages.includes(page)}
                   disabled={!!reason}
                   onChange={(event) =>
-                    editCatalogs((current) =>
-                      setPage(current, item.src, page, event.currentTarget.checked),
-                    )
+                    page === "photography"
+                      ? event.currentTarget.checked && setTagging(true)
+                      : editCatalogs((current) =>
+                          setPage(current, item.src, page, event.currentTarget.checked),
+                        )
                   }
                 />
               </Box>
@@ -225,6 +234,36 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
           </Box>
         </Tooltip>
       </Group>
+      <Modal opened={tagging} onClose={() => setTagging(false)} title="Add to Photography" centered>
+        <Stack>
+          <MultiSelect
+            label="Tags"
+            description="At least one; the gallery filters by tag"
+            data={catalogs.photography.photoTags}
+            value={tags}
+            onChange={setTags}
+          />
+          {joinError && <Text c="red">{joinError}</Text>}
+          <Group justify="flex-end">
+            <Button variant="default" onClick={() => setTagging(false)}>
+              Cancel
+            </Button>
+            <Button
+              disabled={tags.length === 0}
+              onClick={async () => {
+                const measured = await window.portfolio["photos.measure"](item.src);
+                if (!measured.ok) return setJoinError(measured.error.message);
+                setJoinError(null);
+                editCatalogs((current) => joinPhotography(current, item.src, measured.value, tags));
+                setTagging(false);
+                setTags([]);
+              }}
+            >
+              Add
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </Stack>
   );
 }

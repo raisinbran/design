@@ -4,6 +4,8 @@ import {
   deriveLibrary,
   describeSource,
   isVideo,
+  joinPhotography,
+  photographyProblem,
   descriptionOf,
   describeUses,
   pagesInUse,
@@ -167,5 +169,44 @@ describe("library", () => {
     expect(describeSource(null, "images/a.webp")).toBe("");
     expect(isVideo("video/Clip/a.MP4")).toBe(true);
     expect(isVideo("images/a.webp")).toBe(false);
+  });
+
+  // A file used by Engineering may join Photography; it then shows on both pages with one description.
+  it("adds a library photo to Photography with its description and tags", () => {
+    const withTag = {
+      ...base,
+      photography: { ...base.photography, photoTags: ["Day"] },
+      engineering: {
+        ...base.engineering,
+        projects: [{ ...project, media: [engineeringImage("images/Cat/a.jpg", "a cat")] }],
+      },
+    };
+    const library = deriveLibrary(withTag);
+    const content = { ...withTag, library };
+    expect(photographyProblem(content, "images/Cat/a.jpg")).toBeNull();
+
+    const measured = { width: 600, height: 400, version: "abc" };
+    const joined = joinPhotography(content, "images/Cat/a.jpg", measured, ["Day"]);
+    expect(joined.photography.photos.at(-1)).toMatchObject({
+      file: "a.jpg",
+      alt: "a cat",
+      tags: ["Day"],
+      thumbnail: "images/Cat/a.jpg",
+      thumbnailWidth: 600,
+      thumbnailHeight: 400,
+      thumbnailVersion: "abc",
+    });
+    expect(joined.library.items.find((item) => item.src === "images/Cat/a.jpg")?.pages).toEqual([
+      "photography",
+      "engineering",
+    ]);
+    expect(joinPhotography(content, "images/Cat/a.jpg", measured, [])).toBe(content);
+  });
+
+  it("refuses a file Photography cannot take", () => {
+    const content = { ...base, library: deriveLibrary(base) };
+    expect(photographyProblem(content, "video/Clip/a.mp4")).toMatch(/photos/);
+    expect(photographyProblem(content, "images/a/b/c.jpg")).toMatch(/directly inside/);
+    expect(photographyProblem(content, "images/a.webp")).toMatch(/directly inside/);
   });
 });

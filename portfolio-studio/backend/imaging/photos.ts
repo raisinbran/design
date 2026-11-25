@@ -83,7 +83,7 @@ async function chooseOriginals(window: BrowserWindow | null, many: boolean): Pro
 async function preview(
   sourceId: string,
   kind: "proxy" | "render" | "original",
-  job: (file: string) => Exclude<Job, { kind: "appearance" | "level" }>,
+  job: (file: string) => Exclude<Job, { kind: "appearance" | "level" | "measure" }>,
   recipe?: Recipe,
 ): Promise<Result<ImageRef>> {
   const file = sources.get(sourceId);
@@ -233,6 +233,13 @@ export function photoHandlers(
         photos: photos.filter((photo) => photo !== null),
       });
       return result ? ok(result) : failure("cancelled", "Photo analysis was cancelled");
+    },
+    async "photos.measure"(src) {
+      const url = `portfolio://site/${src.split("/").map(encodeURIComponent).join("/")}`;
+      const file = await resolveSiteImage(folder(), url);
+      if (!file) return failure("invalid", `The image ${src} is missing from the website folder`);
+      const measured = await runJob({ kind: "measure", file });
+      return measured ? ok(measured) : failure("cancelled", "Measuring was cancelled");
     },
     async "photos.rename"(revision, oldName, newName) {
       const result = await renamePhoto(folder(), revision, oldName, newName, (file) =>

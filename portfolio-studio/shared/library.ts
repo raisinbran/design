@@ -207,6 +207,59 @@ export function setPage(catalogs: Catalogs, src: string, page: Page, on: boolean
   };
 }
 
+/** Why `src` cannot join Photography, or null when it can. */
+export function photographyProblem(catalogs: Catalogs, src: string): string | null {
+  const name = src.slice(src.lastIndexOf("/") + 1);
+  if (!/\.(jpe?g|png|webp|avif|tiff?)$/i.test(name))
+    return "Only photos can be added to Photography";
+  if (thumbnailProblem(src) !== null || src.split("/").length !== 3)
+    return "Photography needs the file directly inside a folder under images/";
+  if (catalogs.photography.photos.some((photo) => photo.file.toLowerCase() === name.toLowerCase()))
+    return `Photography already has a photo named ${name}`;
+  const item = catalogs.library.items.find((entry) => entry.src === src);
+  if (!item || descriptionOf(catalogs, item).trim() === "") return "Add a description first";
+  return null;
+}
+
+/** Adds a Photography entry for a library file, shown at the end of the gallery. */
+export function joinPhotography(
+  catalogs: Catalogs,
+  src: string,
+  measured: { width: number; height: number; version: string },
+  tags: string[],
+): Catalogs {
+  const item = catalogs.library.items.find((entry) => entry.src === src);
+  if (!item || photographyProblem(catalogs, src) !== null || tags.length === 0) return catalogs;
+  const photo = {
+    file: src.slice(src.lastIndexOf("/") + 1),
+    alt: descriptionOf(catalogs, item),
+    visible: true,
+    displayPriority: "normal" as const,
+    tags,
+    thumbnail: src,
+    thumbnailVersion: measured.version,
+    thumbnailWidth: measured.width,
+    thumbnailHeight: measured.height,
+  };
+  return {
+    ...catalogs,
+    photography: { ...catalogs.photography, photos: [...catalogs.photography.photos, photo] },
+    library: {
+      ...catalogs.library,
+      items: catalogs.library.items.map((entry) =>
+        entry.src === src
+          ? {
+              ...entry,
+              pages: PAGE_ORDER.filter(
+                (page) => page === "photography" || entry.pages.includes(page),
+              ),
+            }
+          : entry,
+      ),
+    },
+  };
+}
+
 /** Drops an unused file from the library; the file stays on disk. */
 export function removeItem(catalogs: Catalogs, src: string): Catalogs {
   if (usesByFile(catalogs).has(src)) return catalogs;
