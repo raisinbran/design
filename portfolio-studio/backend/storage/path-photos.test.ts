@@ -142,4 +142,63 @@ describe("photos at a site path", () => {
     expect(after.archive.collections[0].media.at(-1)?.src).toBe(edited);
     expect(after.library.items.some((item) => item.src === SITE_PATH)).toBe(false);
   });
+
+  // The Photo Editor may send a photo to pages other than Photography, or to several at once.
+  describe("added to chosen pages", () => {
+    const request = async (
+      pages: ("photography" | "engineering" | "archive")[],
+      tags: string[],
+    ) => {
+      const view = await loadPortfolio(folder);
+      return addPhoto(
+        folder,
+        {
+          kind: "new",
+          revision: view.revision,
+          sourceId: "",
+          name: "Studio_8001",
+          format: "webp",
+          alt: "a studio",
+          tags,
+          pages,
+        },
+        image,
+      );
+    };
+    const itemFor = async () =>
+      (await loadPortfolio(folder)).catalogs.library.items.find(
+        (item) => item.src === "images/Photography/Studio_8001.webp",
+      );
+
+    it("keeps a photo off Photography when that page is not chosen", async () => {
+      const before = (await loadPortfolio(folder)).catalogs.photography.photos.length;
+      expect(await request(["engineering"], [])).toMatchObject({ ok: true });
+      const { catalogs } = await loadPortfolio(folder);
+      expect(catalogs.photography.photos).toHaveLength(before);
+      expect(readFileSync(path.join(folder, "images/Photography/Studio_8001.webp"))).toEqual(bytes);
+      expect(await itemFor()).toMatchObject({ pages: ["engineering"], alt: "a studio" });
+    });
+
+    it("adds to Photography and the other pages together", async () => {
+      expect(await request(["photography", "archive"], ["Day"])).toMatchObject({ ok: true });
+      const { catalogs } = await loadPortfolio(folder);
+      expect(catalogs.photography.photos.at(-1)).toMatchObject({
+        file: "Studio_8001.webp",
+        tags: ["Day"],
+      });
+      expect((await itemFor())?.pages).toEqual(["photography", "archive"]);
+    });
+
+    it("needs a page", async () => {
+      expect(await request([], ["Day"])).toMatchObject({ ok: false });
+    });
+
+    it("refuses a name already in the library unless overwriting", async () => {
+      expect(await request(["engineering"], [])).toMatchObject({ ok: true });
+      expect(await request(["archive"], [])).toMatchObject({
+        ok: false,
+        error: { code: "name-conflict" },
+      });
+    });
+  });
 });

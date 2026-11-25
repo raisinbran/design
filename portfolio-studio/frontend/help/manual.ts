@@ -73,7 +73,7 @@ export const MANUAL: ManualSection[] = [
       "- Level horizontal and Level vertical: drag along a line that should be level. Type an angle in the Angle box to rotate, or press Auto-level.",
       "- Undo and Redo step through angle and crop changes; Reset removes every edit after you confirm.",
       "- Grid shows Thirds, Center or Golden guides; Zoom and the mouse wheel zoom; with no tool selected, drag to move the photo. Hold Show original to compare.",
-      "Name, Filename suffix and Output filetype decide the website file. Add to Photo Catalog needs a name, a description and at least one tag, and saves right away, so Save or reload other edits first. The image is converted to up to 800 px on its long side with the watermark and rights from Settings.",
+      "Name, Filename suffix and Output filetype decide the website file. Pages chooses where the photo goes: Photography (which also needs at least one tag), Engineering, Design, or several. Add needs a name, a description and a page, and saves right away, so Save or reload other edits first. The image is converted to up to 800 px on its long side with the watermark and rights from Settings.",
     ],
   },
   {

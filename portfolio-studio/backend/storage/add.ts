@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import type { Added, AddRequest, PortfolioView, Result } from "../api/api";
+import type { Added, AddRequest, Page, PortfolioView, Result } from "../api/api";
 import { photoNameProblem, webpName } from "./names";
 import {
   fileOutputFormat,
@@ -29,6 +29,27 @@ function editedPath(folder: string, source: string, catalogs: PortfolioView["cat
   return candidate;
 }
 
+// The file's library item with the requested pages; saving adds the page of any use it has.
+function withPages(
+  library: PortfolioView["catalogs"]["library"],
+  src: string,
+  pages: Page[],
+  request: AddRequest,
+  photoFile: string,
+): PortfolioView["catalogs"]["library"] {
+  if (request.kind !== "new") return library;
+  const rest = library.items.filter((item) => item.src !== src);
+  const kept = library.items.find((item) => item.src === src);
+  const item = {
+    ...kept,
+    src,
+    pages: pages.filter((page, at) => pages.indexOf(page) === at),
+    ...(pages.includes("photography") ? { photoFile } : {}),
+    ...(pages.includes("photography") ? {} : { alt: request.alt }),
+  };
+  return { ...library, items: [...rest, item] };
+}
+
 /**
  * Writes `image` as a photo's gallery image and saves the catalog and the photography script.
  * A new photo named like an existing one, ignoring case, returns "name-conflict" and writes
@@ -47,6 +68,12 @@ export async function addPhoto(
   }
   const { catalogs } = await loadPortfolio(folder);
   const photos = catalogs.photography.photos;
+  const pages: Page[] =
+    request.kind === "new" ? (request.pages ?? ["photography"]) : ["photography"];
+  const inPhotography = pages.includes("photography");
+  if (pages.length === 0) {
+    return { ok: false, error: { code: "invalid", message: "Choose a page" } };
+  }
   const bareName = request.kind === "new" ? request.name.trim() : null;
   const problem =
     request.kind === "new"
@@ -56,6 +83,12 @@ export async function addPhoto(
   const key =
     request.kind === "new" ? publishedFilename(bareName!, request.format) : request.photoKey.trim();
   const existing = photos.find((photo) => photo.file.toLowerCase() === key.toLowerCase());
+  if (request.kind === "new" && existing && !inPhotography) {
+    return {
+      ok: false,
+      error: { code: "invalid", message: `${key} is already in Photography` },
+    };
+  }
   if (request.kind === "replace" && !existing) {
     return { ok: false, error: { code: "invalid", message: `${key} is no longer in the catalog` } };
   }
@@ -104,7 +137,10 @@ export async function addPhoto(
   if (
     request.kind === "new" &&
     !request.overwrite &&
-    (existing || competingThumbnail || existsSync(path.join(folder, destination)))
+    (existing ||
+      competingThumbnail ||
+      existsSync(path.join(folder, destination)) ||
+      catalogs.library.items.some((item) => item.src.toLowerCase() === destination.toLowerCase()))
   ) {
     const message = `A photo named ${key} already exists. Overwrite or Cancel?`;
     return { ok: false, error: { code: "name-conflict", message } };
@@ -145,12 +181,15 @@ export async function addPhoto(
       ? photos.map((item) => (item === existing ? photo : item))
       : [...photos, photo],
   };
-  const edited = { ...catalogs, photography };
+  const edited = {
+    ...(inPhotography ? { ...catalogs, photography } : catalogs),
+    library: withPages(catalogs.library, destination, pages, request, photo.file),
+  };
   const saved = await savePortfolio(
     folder,
     request.revision,
     shared ? moveItem(repointUses(edited, previous, destination), previous, destination) : edited,
     { [destination]: image.bytes },
   );
-  return saved.ok ? { ok: true, value: { view: saved.value, photoKey: photo.file } } : saved;
+  return saved.ok ? { ok: true, value: { view: saved.value, photoKey: key } } : saved;
 }
