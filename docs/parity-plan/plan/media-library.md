@@ -78,8 +78,8 @@ New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled stat
 ## Slices (each its own PR, independent review, running-app check)
 
 1. **Library data and Media screen.** Schema in `Catalogs`, derive, sentinel and repair rules, tests, the Media screen with assignments, the description and in-use rules, and the rename, delete and removal refusals. Page picking is not wired yet, which the PR description says.
-2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library. `savePortfolio`'s image check accepts only `photography/thumbnails/` and `photography/published/` paths today; this slice, where `media.import` first writes `images/Library/<file>`, widens it, so every later slice can save there.
-3. **Photography picker and path-based thumbnails:** the `Photo.thumbnail` path rule and validation in the files listed above, then the Photography picker and the new-name Edit Image for shared files.
+2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library.
+3. **Photography picker and path-based thumbnails:** the `Photo.thumbnail` path rule and validation in the files listed above, then the Photography picker and the new-name Edit Image for shared files. `savePortfolio`'s image check accepts only `photography/thumbnails/` and `photography/published/` paths today; this slice, where `images/Library/<file>` is first written through it, widens it (and creates the folder).
 4. **Photo Editor add with pages and batch.** Then docs (`architecture.md`, matrix rows 1 and 24).
 
 ## Tests

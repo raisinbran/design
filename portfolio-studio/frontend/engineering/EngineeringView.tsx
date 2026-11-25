@@ -277,6 +277,7 @@ function ProjectEditor({ project, index, onRemove }: ProjectEditorProps) {
                       src: sources[0],
                       kind: isVideo(sources[0]) ? "video" : "image",
                       alt: describe(sources[0]),
+                      poster: undefined,
                     }
                   : item,
               ),
