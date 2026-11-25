@@ -66,7 +66,7 @@ Revision 3 copied a file into `photography/thumbnails/` when it was also shown o
 ## Screens and where they live
 
 1. **Media** (new sidebar entry between Archive and Photo Editor; image 1). Grid of every library file with page chips, search, filters (All, one page, Unassigned) and a detail panel: description, page checkboxes, where it is used, remove. Buttons: Import files (dialog with page checkboxes) and Add from Editor.
-2. **Picker** (image 2): in an Engineering or Archive project, "Add from library…" lists only files assigned to that page, multi-select, files already in the project dimmed. Photography gets the same picker. "Import files…" stays as the quick path and registers its files in the library with this page ticked. Archive's "Images" heading becomes "Media" like Engineering. `savePortfolio`'s image check accepts only `photography/thumbnails/` and `photography/published/` paths today; this slice, where `media.import` first writes `images/Library/<file>`, widens it, so every later slice can save there.
+2. **Picker** (image 2): in an Engineering or Archive project, "Add from library…" lists only files assigned to that page, multi-select, files already in the project dimmed. Photography gets the same picker. "Import files…" stays as the quick path and registers its files in the library with this page ticked. Archive's "Images" heading becomes "Media" like Engineering.
 3. **Photo Editor** (image 3): draft checkboxes select photos; the two toolbars and every existing control are untouched. The panel is titled "Add to Media" and gets page checkboxes (at least one) and Tags only when Photography is ticked. Ticking Engineering or Archive only assigns the file; the project picks it later with "Add from library…". There is no project choice in the panel. "Add this photo" and "Add selected (n)" use each photo's current edits and the default photo settings. A name already in use is numbered. A photo missing a name or description is marked and skipped.
 
 New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled states instead of added or removed fields, accessible labels, instant tooltips, no standing tutorial text (explanations go to Help and tooltips).
@@ -78,7 +78,7 @@ New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled stat
 ## Slices (each its own PR, independent review, running-app check)
 
 1. **Library data and Media screen.** Schema in `Catalogs`, derive, sentinel and repair rules, tests, the Media screen with assignments, the description and in-use rules, and the rename, delete and removal refusals. Page picking is not wired yet, which the PR description says.
-2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library.
+2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library. `savePortfolio`'s image check accepts only `photography/thumbnails/` and `photography/published/` paths today; this slice, where `media.import` first writes `images/Library/<file>`, widens it, so every later slice can save there.
 3. **Photography picker and path-based thumbnails:** the `Photo.thumbnail` path rule and validation in the files listed above, then the Photography picker and the new-name Edit Image for shared files.
 4. **Photo Editor add with pages and batch.** Then docs (`architecture.md`, matrix rows 1 and 24).
 
