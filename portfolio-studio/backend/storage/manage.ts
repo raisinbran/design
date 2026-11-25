@@ -2,12 +2,16 @@ import { randomUUID } from "node:crypto";
 import { lstat, readFile, realpath, rename } from "node:fs/promises";
 import path from "node:path";
 import type { PhotoChange, PortfolioView, Result, Revision } from "../api/api";
-import { describeUses, moveItem, photoSrc, removeItem } from "../../shared/library";
+import { describeUses, moveItem, photoSrc, removeItem, repointUses } from "../../shared/library";
 import { photoNameProblem } from "./names";
 import { publicationRoot } from "./publication-paths";
 import { loadPortfolio, savePortfolio } from "./portfolio";
 
 type Photo = PortfolioView["catalogs"]["photography"]["photos"][number];
+// A renamed file keeps its pages, and every page that uses it follows it to the new path.
+const renamed = (catalogs: PortfolioView["catalogs"], from: string, to: string) =>
+  moveItem(repointUses(catalogs, from, to), from, to);
+
 type TrashFile = (file: string) => Promise<void>;
 
 const error = (code: "invalid" | "name-conflict", message: string): Result<PhotoChange> => ({
@@ -76,9 +80,6 @@ export async function renamePhoto(
   const original = view.catalogs.photography.photos.find((photo) => photo.file === oldName);
   if (!original) return error("invalid", `Photo "${oldName}" is no longer in the catalog`);
   if (oldName === newName) return { ok: true, value: { view } };
-  const sharedWith = describeUses(view.catalogs, photoSrc(original), "photography");
-  if (sharedWith)
-    return error("invalid", `"${oldName}" is also used by ${sharedWith}, so it cannot be renamed`);
   const photos = view.catalogs.photography.photos;
   if (
     photos.some((photo) => photo !== original && photo.file.toLowerCase() === newName.toLowerCase())
@@ -133,7 +134,7 @@ export async function renamePhoto(
   const saved = await savePortfolio(
     folder,
     revision,
-    moveItem(
+    renamed(
       { ...view.catalogs, photography: { ...view.catalogs.photography, photos: newPhotos } },
       photoSrc(original),
       photoSrc(newPhotos.find((photo) => photo.file === newName)!),

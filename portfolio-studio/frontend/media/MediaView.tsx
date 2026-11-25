@@ -149,8 +149,12 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
         </Text>
         {PAGES.map(([page, label]) => {
           const used = inUse.includes(page);
+          const where = uses
+            .filter((use) => use.page === page)
+            .map((use) => `${use.where} (${use.kind})`)
+            .join(", ");
           const reason = used
-            ? `Used on ${label}, so it cannot be unticked`
+            ? `Used on ${label}: ${where}. Remove it there to untick`
             : page === "photography"
               ? "Adding a file to Photography is not available yet"
               : null;

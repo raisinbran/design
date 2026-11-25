@@ -224,3 +224,32 @@ export function moveItem(catalogs: Catalogs, from: string, to: string): Catalogs
     },
   };
 }
+
+/** Points every Engineering and Design use of `from` (media, covers, posters) at `to`. */
+export function repointUses(catalogs: Catalogs, from: string, to: string): Catalogs {
+  if (from === to) return catalogs;
+  const swap = (src: string) => (src === from ? to : src);
+  return {
+    ...catalogs,
+    engineering: {
+      ...catalogs.engineering,
+      projects: catalogs.engineering.projects.map((project) => ({
+        ...project,
+        cover: swap(project.cover),
+        media: project.media.map((media) => ({
+          ...media,
+          src: swap(media.src),
+          ...(media.poster ? { poster: swap(media.poster) } : {}),
+        })),
+      })),
+    },
+    archive: {
+      ...catalogs.archive,
+      collections: catalogs.archive.collections.map((project) => ({
+        ...project,
+        cover: swap(project.cover),
+        media: project.media.map((media) => ({ ...media, src: swap(media.src) })),
+      })),
+    },
+  };
+}
