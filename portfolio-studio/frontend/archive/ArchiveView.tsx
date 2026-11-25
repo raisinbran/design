@@ -11,10 +11,12 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
-import { editCatalogs } from "../app/editor";
+import { editCatalogs, useEditor } from "../app/editor";
 import { EditorColumns } from "../app/EditorColumns";
 import { ItemList, moveItem, newId, removeItem } from "../app/ItemList";
 import { siteImage } from "../app/portfolio";
+import { LibraryPicker } from "../media/LibraryPicker";
+import { describeSource, setAlt } from "../../shared/library";
 
 type Collection = Catalogs["archive"]["collections"][number];
 type Image = Collection["media"][number];
@@ -165,6 +167,7 @@ interface CollectionEditorProps {
 function CollectionEditor({ collection, index, onRemove }: CollectionEditorProps) {
   const [selected, setSelected] = useState(0);
   const [importError, setImportError] = useState<string | null>(null);
+  const [picking, setPicking] = useState<"add" | "replace" | null>(null);
   const edit = (values: Partial<Collection>) =>
     editCollection(index, (current) => ({ ...current, ...values }));
   const editImages = (change: (media: Image[]) => Image[]) =>
@@ -211,38 +214,80 @@ function CollectionEditor({ collection, index, onRemove }: CollectionEditorProps
         onChange={(event) => edit({ expanded: event.currentTarget.checked })}
       />
       <Group justify="space-between">
-        <Title order={5}>Images</Title>
-        <Button
-          variant="default"
-          onClick={async () => {
-            const result = await window.portfolio["media.import"]("archive", collection.id);
-            if (!result.ok) return setImportError(result.error.message);
-            setImportError(null);
-            if (!result.value?.length) return;
-            const added = result.value;
-            editImages((media) => {
-              const images = [...media];
-              for (const { src } of added) {
-                images.push({
-                  id: newImageId({ ...collection, media: images }),
-                  src,
-                  alt: "",
-                  caption: "",
-                  credit: "",
-                  cropMode: "natural",
-                  displayRatio: null,
-                  position: "50% 50%",
-                  prominence: "normal",
-                });
-              }
-              return images;
-            });
-            setSelected(collection.media.length);
-          }}
-        >
-          Add image
-        </Button>
+        <Title order={5}>Media</Title>
+        <Group gap="xs">
+          <Button variant="default" onClick={() => setPicking("add")}>
+            Add from library
+          </Button>
+          <Button
+            variant="default"
+            onClick={async () => {
+              const result = await window.portfolio["media.import"]("archive", collection.id);
+              if (!result.ok) return setImportError(result.error.message);
+              setImportError(null);
+              if (!result.value?.length) return;
+              const added = result.value;
+              editImages((media) => {
+                const images = [...media];
+                for (const { src } of added) {
+                  images.push({
+                    id: newImageId({ ...collection, media: images }),
+                    src,
+                    alt: describeSource(useEditor.getState().catalogs, src),
+                    caption: "",
+                    credit: "",
+                    cropMode: "natural",
+                    displayRatio: null,
+                    position: "50% 50%",
+                    prominence: "normal",
+                  });
+                }
+                return images;
+              });
+              setSelected(collection.media.length);
+            }}
+          >
+            Import images
+          </Button>
+        </Group>
       </Group>
+      <LibraryPicker
+        page="archive"
+        images
+        opened={picking !== null}
+        single={picking === "replace"}
+        taken={picking === "add" ? collection.media.map((item) => item.src) : []}
+        onClose={() => setPicking(null)}
+        onPick={(sources) => {
+          const alt = (src: string) => describeSource(useEditor.getState().catalogs, src);
+          if (picking === "replace") {
+            editImages((media) =>
+              media.map((item, at) =>
+                at === selected ? { ...item, src: sources[0], alt: alt(sources[0]) } : item,
+              ),
+            );
+            return;
+          }
+          editImages((media) => {
+            const images = [...media];
+            for (const src of sources) {
+              images.push({
+                id: newImageId({ ...collection, media: images }),
+                src,
+                alt: alt(src),
+                caption: "",
+                credit: "",
+                cropMode: "natural",
+                displayRatio: null,
+                position: "50% 50%",
+                prominence: "normal",
+              });
+            }
+            return images;
+          });
+          setSelected(collection.media.length);
+        }}
+      />
       {importError && <Text c="red">{importError}</Text>}
       <ItemList
         items={collection.media.map((item) => ({
@@ -260,6 +305,7 @@ function CollectionEditor({ collection, index, onRemove }: CollectionEditorProps
       {image && (
         <ImageEditor
           image={image}
+          onReplace={() => setPicking("replace")}
           onChange={(values) =>
             editImages((media) =>
               media.map((item, at) => (at === selected ? { ...item, ...values } : item)),
@@ -286,23 +332,26 @@ function CollectionEditor({ collection, index, onRemove }: CollectionEditorProps
 interface ImageEditorProps {
   image: Image;
   onChange: (values: Partial<Image>) => void;
+  onReplace: () => void;
   onRemove: () => void;
 }
 
-function ImageEditor({ image, onChange, onRemove }: ImageEditorProps) {
+function ImageEditor({ image, onChange, onReplace, onRemove }: ImageEditorProps) {
   return (
     <Stack gap="xs">
-      <TextInput
-        label="Image path"
-        placeholder="images/Folder/photo.jpg"
-        value={image.src}
-        onChange={(event) => onChange({ src: event.currentTarget.value })}
-      />
+      <Group align="flex-end" wrap="nowrap">
+        <TextInput flex={1} readOnly label="Image path" value={image.src} />
+        <Button variant="default" onClick={onReplace}>
+          Replace from library
+        </Button>
+      </Group>
       <TextInput
         label="Alt text"
-        description="Read aloud by screen readers; required"
+        description="Read aloud by screen readers; required; the same on every page that uses this file"
         value={image.alt}
-        onChange={(event) => onChange({ alt: event.currentTarget.value })}
+        onChange={(event) =>
+          editCatalogs((catalogs) => setAlt(catalogs, image.src, event.currentTarget.value))
+        }
       />
       <TextInput
         label="Caption"

@@ -253,3 +253,11 @@ export function repointUses(catalogs: Catalogs, from: string, to: string): Catal
     },
   };
 }
+
+export const isVideo = (src: string): boolean => /\.(mp4|webm)$/i.test(src);
+
+/** The description a project starts with when it adds a file the library already describes. */
+export function describeSource(catalogs: Catalogs | null, src: string): string {
+  const item = catalogs?.library.items.find((each) => each.src === src);
+  return catalogs && item ? descriptionOf(catalogs, item) : "";
+}

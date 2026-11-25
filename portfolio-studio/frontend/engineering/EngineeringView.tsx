@@ -11,11 +11,13 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
-import { editCatalogs } from "../app/editor";
+import { editCatalogs, useEditor } from "../app/editor";
 import { EditorColumns } from "../app/EditorColumns";
 import { ItemList, moveItem, newId, removeItem } from "../app/ItemList";
 import { siteImage } from "../app/portfolio";
 import { RichText } from "../app/RichText";
+import { LibraryPicker } from "../media/LibraryPicker";
+import { describeSource, isVideo, setAlt } from "../../shared/library";
 
 type Project = Catalogs["engineering"]["projects"][number];
 type Media = Project["media"][number];
@@ -162,6 +164,7 @@ interface ProjectEditorProps {
 function ProjectEditor({ project, index, onRemove }: ProjectEditorProps) {
   const [selected, setSelected] = useState(0);
   const [importError, setImportError] = useState<string | null>(null);
+  const [picking, setPicking] = useState<"add" | "replace" | null>(null);
   const edit = (values: Partial<Project>) =>
     editProject(index, (current) => ({ ...current, ...values }));
   const editMedia = (change: (media: Media[]) => Media[]) =>
@@ -224,29 +227,79 @@ function ProjectEditor({ project, index, onRemove }: ProjectEditorProps) {
       <RichText label="Body" value={project.bodyHtml} onChange={(bodyHtml) => edit({ bodyHtml })} />
       <Group justify="space-between">
         <Title order={5}>Media</Title>
-        <Button
-          variant="default"
-          onClick={async () => {
-            const result = await window.portfolio["media.import"]("engineering", project.id);
-            if (!result.ok) return setImportError(result.error.message);
-            setImportError(null);
-            if (!result.value?.length) return;
-            const added = result.value;
-            editProject(index, (current) => ({
-              ...current,
-              // The first image becomes the cover of a project that has none.
-              cover: current.cover || added.find((item) => item.kind === "image")?.src || "",
-              media: [
-                ...current.media,
-                ...added.map((item) => ({ ...item, alt: "", caption: "", credit: "" })),
-              ],
-            }));
-            setSelected(project.media.length);
-          }}
-        >
-          Add media
-        </Button>
+        <Group gap="xs">
+          <Button variant="default" onClick={() => setPicking("add")}>
+            Add from library
+          </Button>
+          <Button
+            variant="default"
+            onClick={async () => {
+              const result = await window.portfolio["media.import"]("engineering", project.id);
+              if (!result.ok) return setImportError(result.error.message);
+              setImportError(null);
+              if (!result.value?.length) return;
+              const added = result.value;
+              editProject(index, (current) => ({
+                ...current,
+                // The first image becomes the cover of a project that has none.
+                cover: current.cover || added.find((item) => item.kind === "image")?.src || "",
+                media: [
+                  ...current.media,
+                  ...added.map((item) => ({
+                    ...item,
+                    alt: describeSource(useEditor.getState().catalogs, item.src),
+                    caption: "",
+                    credit: "",
+                  })),
+                ],
+              }));
+              setSelected(project.media.length);
+            }}
+          >
+            Import media
+          </Button>
+        </Group>
       </Group>
+      <LibraryPicker
+        page="engineering"
+        opened={picking !== null}
+        single={picking === "replace"}
+        taken={picking === "add" ? project.media.map((item) => item.src) : []}
+        onClose={() => setPicking(null)}
+        onPick={(sources) => {
+          const describe = (src: string) => describeSource(useEditor.getState().catalogs, src);
+          if (picking === "replace") {
+            editMedia((items) =>
+              items.map((item, at) =>
+                at === selected
+                  ? {
+                      ...item,
+                      src: sources[0],
+                      kind: isVideo(sources[0]) ? "video" : "image",
+                      alt: describe(sources[0]),
+                    }
+                  : item,
+              ),
+            );
+            return;
+          }
+          editProject(index, (current) => ({
+            ...current,
+            cover: current.cover || sources.find((src) => !isVideo(src)) || "",
+            media: [
+              ...current.media,
+              ...sources.map((src) => ({
+                kind: isVideo(src) ? ("video" as const) : ("image" as const),
+                src,
+                alt: describe(src),
+                caption: "",
+                credit: "",
+              })),
+            ],
+          }));
+          setSelected(project.media.length);
+        }}
+      />
       {importError && <Text c="red">{importError}</Text>}
       <ItemList
         items={project.media.map((item, at) => ({
@@ -267,6 +320,7 @@ function ProjectEditor({ project, index, onRemove }: ProjectEditorProps) {
       {media && (
         <MediaEditor
           media={media}
+          onReplace={() => setPicking("replace")}
           onChange={(values) =>
             editMedia((items) =>
               items.map((item, at) => (at === selected ? { ...item, ...values } : item)),
@@ -293,10 +347,11 @@ function ProjectEditor({ project, index, onRemove }: ProjectEditorProps) {
 interface MediaEditorProps {
   media: Media;
   onChange: (values: Partial<Media>) => void;
+  onReplace: () => void;
   onRemove: () => void;
 }
 
-function MediaEditor({ media, onChange, onRemove }: MediaEditorProps) {
+function MediaEditor({ media, onChange, onReplace, onRemove }: MediaEditorProps) {
   return (
     <Stack gap="xs">
       <SegmentedControl
@@ -310,18 +365,25 @@ function MediaEditor({ media, onChange, onRemove }: MediaEditorProps) {
           onChange(kind === "image" ? { kind: "image", poster: undefined } : { kind: "video" })
         }
       />
-      <TextInput
-        label={media.kind === "image" ? "Image path" : "Video path"}
-        placeholder={media.kind === "image" ? "images/Folder/photo.jpg" : "video/Folder/clip.mp4"}
-        value={media.src}
-        onChange={(event) => onChange({ src: event.currentTarget.value })}
-      />
+      <Group align="flex-end" wrap="nowrap">
+        <TextInput
+          flex={1}
+          readOnly
+          label={media.kind === "image" ? "Image path" : "Video path"}
+          value={media.src}
+        />
+        <Button variant="default" onClick={onReplace}>
+          Replace from library
+        </Button>
+      </Group>
       {media.kind === "image" ? (
         <TextInput
           label="Alt text"
-          description="Read aloud by screen readers"
+          description="Read aloud by screen readers; the same on every page that uses this file"
           value={media.alt}
-          onChange={(event) => onChange({ alt: event.currentTarget.value })}
+          onChange={(event) =>
+            editCatalogs((catalogs) => setAlt(catalogs, media.src, event.currentTarget.value))
+          }
         />
       ) : (
         <TextInput
