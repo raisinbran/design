@@ -293,7 +293,7 @@ describe("published thumbnail appearance", () => {
   it(
     "returns finite RGB, brightness and saturation values",
     async () => {
-      const file = path.join(repositoryDir, "photography/thumbnails/DSCF4154_crop.webp");
+      const file = path.join(repositoryDir, "images/Photography/DSCF4154_crop.webp");
       const result = await analyzeJob({
         kind: "appearance",
         photos: [{ key: "DSCF4154_crop.heic", file }],
@@ -314,7 +314,7 @@ describe("measuring a site image", () => {
   it(
     "returns its shape and a stable version",
     async () => {
-      const file = path.join(repositoryDir, "photography/thumbnails/DSCF4154_crop.webp");
+      const file = path.join(repositoryDir, "images/Photography/DSCF4154_crop.webp");
       const first = await measureJob({ kind: "measure", file });
       expect(first.width).toBeGreaterThan(0);
       expect(first.height).toBeGreaterThan(0);

@@ -9,7 +9,7 @@ window.PORTFOLIO_PHOTOS = [
       "Moody",
       "\"It's just rocks\""
     ],
-    "thumbnail": "DSCF3655_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF3655_crop.jpg.webp",
     "thumbnailVersion": "0e7d9cdb990e",
     "thumbnailWidth": 450,
     "thumbnailHeight": 800
@@ -23,7 +23,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF1024_edit_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF1024_edit_crop.jpg.webp",
     "thumbnailVersion": "4363c46265e5",
     "thumbnailWidth": 800,
     "thumbnailHeight": 533
@@ -37,7 +37,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF1464_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF1464_crop.jpg.webp",
     "thumbnailVersion": "7ef929fa6a5a",
     "thumbnailWidth": 800,
     "thumbnailHeight": 533
@@ -51,7 +51,7 @@ window.PORTFOLIO_PHOTOS = [
       "Dusk",
       "\"It's just rocks\""
     ],
-    "thumbnail": "IMG_8889_edit_crop.jpg.webp",
+    "thumbnail": "images/Photography/IMG_8889_edit_crop.jpg.webp",
     "thumbnailVersion": "dd709db1c8af",
     "thumbnailWidth": 800,
     "thumbnailHeight": 590
@@ -66,7 +66,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "\"It's just rocks\""
     ],
-    "thumbnail": "IMG_5598_edit_crop.jpg.webp",
+    "thumbnail": "images/Photography/IMG_5598_edit_crop.jpg.webp",
     "thumbnailVersion": "1c1b41161f91",
     "thumbnailWidth": 800,
     "thumbnailHeight": 600
@@ -80,7 +80,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "\"It's just rocks\""
     ],
-    "thumbnail": "20221006_210129324_iOS_fix.jpg.webp",
+    "thumbnail": "images/Photography/20221006_210129324_iOS_fix.jpg.webp",
     "thumbnailVersion": "9a08135d5398",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -94,7 +94,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "\"It's just rocks\""
     ],
-    "thumbnail": "20230904_205424749_iOS_crop.jpg.webp",
+    "thumbnail": "images/Photography/20230904_205424749_iOS_crop.jpg.webp",
     "thumbnailVersion": "a9bb9c21a2ee",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -108,7 +108,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "\"It's just rocks\""
     ],
-    "thumbnail": "20220511_191505848_iOS_crop.jpg.webp",
+    "thumbnail": "images/Photography/20220511_191505848_iOS_crop.jpg.webp",
     "thumbnailVersion": "274899f843a7",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -122,7 +122,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "\"It's just rocks\""
     ],
-    "thumbnail": "20230904_182542788_iOS_fix.jpg.webp",
+    "thumbnail": "images/Photography/20230904_182542788_iOS_fix.jpg.webp",
     "thumbnailVersion": "581c625dd55b",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -136,7 +136,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "\"It's just rocks\""
     ],
-    "thumbnail": "20221006_190227289_iOS_fix.jpg.webp",
+    "thumbnail": "images/Photography/20221006_190227289_iOS_fix.jpg.webp",
     "thumbnailVersion": "85e73324f1d2",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -150,7 +150,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "\"It's just rocks\""
     ],
-    "thumbnail": "DSCF2527_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF2527_crop.jpg.webp",
     "thumbnailVersion": "92df010e3d3a",
     "thumbnailWidth": 800,
     "thumbnailHeight": 751
@@ -164,7 +164,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF0272_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF0272_crop.jpg.webp",
     "thumbnailVersion": "4aea3f3a60ff",
     "thumbnailWidth": 533,
     "thumbnailHeight": 800
@@ -178,7 +178,7 @@ window.PORTFOLIO_PHOTOS = [
       "Moody",
       "\"It's just rocks\""
     ],
-    "thumbnail": "DSCF7534_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF7534_crop.jpg.webp",
     "thumbnailVersion": "88a137cb7300",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -192,7 +192,7 @@ window.PORTFOLIO_PHOTOS = [
       "Sky",
       "Dusk"
     ],
-    "thumbnail": "DSCF1520_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF1520_crop.jpg.webp",
     "thumbnailVersion": "efc45b59de0b",
     "thumbnailWidth": 533,
     "thumbnailHeight": 800
@@ -208,7 +208,7 @@ window.PORTFOLIO_PHOTOS = [
       "Concrete Jungle",
       "\"It's just rocks\""
     ],
-    "thumbnail": "IMG_2553_edit_crop.jpg.webp",
+    "thumbnail": "images/Photography/IMG_2553_edit_crop.jpg.webp",
     "thumbnailVersion": "66aa708ffe01",
     "thumbnailWidth": 800,
     "thumbnailHeight": 600
@@ -223,7 +223,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "Concrete Jungle"
     ],
-    "thumbnail": "20241012_222059210_iOS_crop.jpg.webp",
+    "thumbnail": "images/Photography/20241012_222059210_iOS_crop.jpg.webp",
     "thumbnailVersion": "cf4195f843d7",
     "thumbnailWidth": 800,
     "thumbnailHeight": 533
@@ -237,7 +237,7 @@ window.PORTFOLIO_PHOTOS = [
       "Day",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF3546_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF3546_crop.jpg.webp",
     "thumbnailVersion": "3bb0918f5d6f",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -251,7 +251,7 @@ window.PORTFOLIO_PHOTOS = [
       "Moody",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF7939_edit_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF7939_edit_crop.jpg.webp",
     "thumbnailVersion": "2284dd5232dc",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -265,7 +265,7 @@ window.PORTFOLIO_PHOTOS = [
       "Dusk",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF2848_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF2848_crop.jpg.webp",
     "thumbnailVersion": "773b6a7ad4dc",
     "thumbnailWidth": 800,
     "thumbnailHeight": 533
@@ -279,7 +279,7 @@ window.PORTFOLIO_PHOTOS = [
       "Dusk",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF0815_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF0815_crop.jpg.webp",
     "thumbnailVersion": "e78cb02fd290",
     "thumbnailWidth": 533,
     "thumbnailHeight": 800
@@ -305,7 +305,7 @@ window.PORTFOLIO_PHOTOS = [
       "Moody",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF2447_edit_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF2447_edit_crop.jpg.webp",
     "thumbnailVersion": "30406a12834e",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -319,7 +319,7 @@ window.PORTFOLIO_PHOTOS = [
       "Moody",
       "Sky"
     ],
-    "thumbnail": "DSCF0179_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF0179_crop.jpg.webp",
     "thumbnailVersion": "64e30c31b7ef",
     "thumbnailWidth": 800,
     "thumbnailHeight": 533
@@ -333,7 +333,7 @@ window.PORTFOLIO_PHOTOS = [
       "Night",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF2868_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF2868_crop.jpg.webp",
     "thumbnailVersion": "17c333b507b9",
     "thumbnailWidth": 800,
     "thumbnailHeight": 800
@@ -347,7 +347,7 @@ window.PORTFOLIO_PHOTOS = [
       "Night",
       "Concrete Jungle"
     ],
-    "thumbnail": "Clipboard Jan 31, 2024 at 7.49 PM_edit_crop.jpg.webp",
+    "thumbnail": "images/Photography/Clipboard Jan 31, 2024 at 7.49 PM_edit_crop.jpg.webp",
     "thumbnailVersion": "755955cd6e8e",
     "thumbnailWidth": 800,
     "thumbnailHeight": 600
@@ -360,7 +360,7 @@ window.PORTFOLIO_PHOTOS = [
     "tags": [
       "Night"
     ],
-    "thumbnail": "DSCF1108_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF1108_crop.jpg.webp",
     "thumbnailVersion": "10621f604088",
     "thumbnailWidth": 533,
     "thumbnailHeight": 800
@@ -374,7 +374,7 @@ window.PORTFOLIO_PHOTOS = [
       "Moody",
       "Night"
     ],
-    "thumbnail": "DSCF1359_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF1359_crop.jpg.webp",
     "thumbnailVersion": "79d0fdc40109",
     "thumbnailWidth": 533,
     "thumbnailHeight": 800
@@ -388,7 +388,7 @@ window.PORTFOLIO_PHOTOS = [
       "Sky",
       "Dusk"
     ],
-    "thumbnail": "DSCF1972_crop.jpg.webp",
+    "thumbnail": "images/Photography/DSCF1972_crop.jpg.webp",
     "thumbnailVersion": "27d890c793f5",
     "thumbnailWidth": 800,
     "thumbnailHeight": 450
@@ -402,7 +402,7 @@ window.PORTFOLIO_PHOTOS = [
       "Dusk",
       "Concrete Jungle"
     ],
-    "thumbnail": "DSCF4154_crop.webp",
+    "thumbnail": "images/Photography/DSCF4154_crop.webp",
     "thumbnailVersion": "1981012db02f",
     "thumbnailWidth": 800,
     "thumbnailHeight": 800
