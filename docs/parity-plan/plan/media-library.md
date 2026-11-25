@@ -35,7 +35,7 @@ Photography, Engineering and Archive each manage their own images, and the Photo
 - `pages` is any of `photography`, `engineering`, `archive`.
 - `photoFile` is the Photography catalog key, present exactly when `pages` includes photography.
 
-**The description lives in the catalogs** (the site reads it there and the schema enforces it). An item may also carry an optional `alt`, only so a file that has no use yet, such as a photo added in the Editor for Engineering, has somewhere to keep its description until a project picks it. Whenever a file has a use, the catalog text wins: repair copies the first use's text into the item. One helper, `setAlt(src, alt)`, writes every use and the item in one edit, and reaches a copied Photography file through `photoFile`. A file added to a project is prefilled from the item. Engineering and Archive media `src` fields become read-only pickers.
+**The description lives in the catalogs** (the site reads it there and the schema enforces it). An item carries an `alt` **only while the file has no use**, such as a photo added in the Editor for Engineering, so it has somewhere to keep its description until a project picks it. When the file gains a use, the item's `alt` is dropped and the catalog text is the only copy, so a description edit never rewrites the library file. One helper, `setAlt(src, alt)`, writes every use (or the item, when there is none) in one edit, and reaches a copied Photography file through `photoFile`. A file added to a project is prefilled from the item. Engineering and Archive media `src` fields become read-only pickers.
 
 **Ticking pages needs a description where the site does.** Photography and Archive can be ticked only once the file has a non-empty description (the Description box sits in the same panel); Engineering has no such rule. Videos cannot be ticked for Photography or Archive.
 
@@ -48,11 +48,11 @@ Photography, Engineering and Archive each manage their own images, and the Photo
 - On load the library is **repaired in memory**, never refused: a use whose page or item is missing is added, as derive does. Repair runs again before Save, so a typed cover or poster path never blocks a save by itself; only real schema problems are reported. A pull or an edit by another tool cannot lock the app.
 - No folder scanning. Only derived and explicitly added files are listed, so site chrome images in `images/` never appear.
 
-**In-use rule.** A page checkbox is disabled, with a tooltip naming where the file is used, while that page uses the file. "Used in" lists each use; an unused file shows "Not used yet". A file used twice in one project lists both.
+**In-use rule.** A page checkbox is disabled, with a tooltip naming where the file is used, while that page uses the file. "Used in" lists each use, a Photography use of a copy with its thumbnail path; an unused file shows "Not used yet". A file used twice in one project lists both.
 
 ## Photography and shared files
 
-Photography only reads `photography/thumbnails/`, so a file from `images/` assigned to Photography needs a copy there. The copy is made **when the owner ticks Photography**, like `media.import` writes at import: one backend call writes the file under a free name (`name`, then `name-2`, …), reads width and height and hashes the bytes through `runJob`, and returns `thumbnail`, `thumbnailVersion`, `thumbnailWidth` and `thumbnailHeight`. The Photography entry is then an ordinary unsaved catalog edit, and Save only commits catalogs. A Discard leaves at most an unreferenced file, as import does today. There is no rollback code to add.
+Photography only reads `photography/thumbnails/`, so a file from `images/` assigned to Photography needs a copy there. The copy is made **when the owner ticks Photography**, like `media.import` writes at import: one backend call writes the file under a free name (`name`, then `name-2`, …), reads width and height and hashes the bytes through `runJob`, and returns `thumbnail`, `thumbnailVersion`, `thumbnailWidth` and `thumbnailHeight`. The entry is created complete: `file`, `alt` (the description), `tags`, `visible: true`, `displayPriority: "normal"` and those four fields, so it is valid the moment it is ticked. It is then an ordinary unsaved catalog edit, and Save only commits catalogs. A Discard leaves at most an unreferenced file, as import does today. There is no rollback code to add.
 
 A copied file means two files for one item. The Photography entry is reached through `photoFile`; the Engineering and Archive uses point at `src`. **Edit Image** changes only the Photography file, and the Media detail panel says so for such an item.
 
@@ -79,7 +79,7 @@ New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled stat
 1. **Library data and Media screen.** Schema in `Catalogs`, derive, sentinel and repair rules, tests, the Media screen with assignments, the description and in-use rules, and the rename, delete and removal refusals. Page picking is not wired yet, which the PR description says.
 2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library.
 3. **Photography picker and copy** at tick time.
-4. **Photo Editor add with pages and batch,** then docs (`architecture.md`, matrix rows 1 and 24).
+4. **Photo Editor add with pages and batch.** `savePortfolio`'s image parameter currently accepts only `photography/thumbnails/` and `photography/published/` paths; this slice widens that check to `images/Library/<file>`. Then docs (`architecture.md`, matrix rows 1 and 24).
 
 ## Tests
 
