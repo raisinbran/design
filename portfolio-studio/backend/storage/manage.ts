@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { lstat, readFile, realpath, rename } from "node:fs/promises";
 import path from "node:path";
 import type { PhotoChange, PortfolioView, Result, Revision } from "../api/api";
-import { describeUses, photoSrc } from "../../shared/library";
+import { describeUses, moveItem, photoSrc, removeItem } from "../../shared/library";
 import { photoNameProblem } from "./names";
 import { publicationRoot } from "./publication-paths";
 import { loadPortfolio, savePortfolio } from "./portfolio";
@@ -133,7 +133,11 @@ export async function renamePhoto(
   const saved = await savePortfolio(
     folder,
     revision,
-    { ...view.catalogs, photography: { ...view.catalogs.photography, photos: newPhotos } },
+    moveItem(
+      { ...view.catalogs, photography: { ...view.catalogs.photography, photos: newPhotos } },
+      photoSrc(original),
+      photoSrc(newPhotos.find((photo) => photo.file === newName)!),
+    ),
     images,
   );
   if (!saved.ok) return saved;
@@ -191,13 +195,20 @@ export async function deletePhoto(
     const found = await assetPath(root, filename);
     if (found) paths.push(found);
   }
-  const saved = await savePortfolio(folder, revision, {
-    ...view.catalogs,
-    photography: {
-      ...view.catalogs.photography,
-      photos: photos.filter((photo) => photo !== target),
-    },
-  });
+  const saved = await savePortfolio(
+    folder,
+    revision,
+    removeItem(
+      {
+        ...view.catalogs,
+        photography: {
+          ...view.catalogs.photography,
+          photos: photos.filter((photo) => photo !== target),
+        },
+      },
+      photoSrc(target),
+    ),
+  );
   if (!saved.ok) return saved;
   return { ok: true, value: { view: saved.value, warning: await trashUnused(paths, trash) } };
 }

@@ -203,3 +203,17 @@ export function describeUses(content: Content, src: string, except?: Page): stri
     .map((use) => `${use.page} (${use.where})`)
     .join(", ");
 }
+
+/** Points the item of a renamed file at its new path, keeping its pages. */
+export function moveItem(catalogs: Catalogs, from: string, to: string): Catalogs {
+  if (from === to) return catalogs;
+  return {
+    ...catalogs,
+    library: {
+      ...catalogs.library,
+      items: catalogs.library.items.map((item) =>
+        item.src === from ? { ...item, src: to } : item,
+      ),
+    },
+  };
+}
