@@ -1,6 +1,6 @@
 # Plan: Media library (one place to assign files to pages)
 
-Status: **revision 2, proposed, not approved, no code written.** Revision 1 was rejected in independent review; each point is answered below. It needs re-review and the owner's go-ahead before any slice starts. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
+Status: **tentatively approved by the owner, subject to the owner comments section; no code written.** Revision 1 was rejected in independent review; each point is answered below. It needs re-review and the owner's go-ahead before any slice starts. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
 
 ## Why
 
@@ -97,3 +97,9 @@ New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled stat
 ## Not in this plan
 
 Automatic description suggestions (matrix row 13, a separate decision), folder scanning, rebuilding thumbnails, renaming files across pages, cache-busting for Engineering and Archive paths.
+
+## Owner comments after tentative approval
+
+- **No `thumbnails` folder.** The site no longer has separate thumbnail and full-size versions, so the name is a misnomer. The plan should end with every Photography image in one plain folder (path to be chosen when slice 3 is written, with a migration that moves the 29 files, rewrites `thumbnail` values and drops the field name's folder assumption). Until slice 3 lands, new photos keep the current folder and the reader rule above covers both.
+- **Credit.** The owner reads Credit lines as captions. Before slice 2, decide whether `credit` is folded into the caption (one text field per page) or kept as a second line.
+- **Description suggestions** (matrix row 13): a few plain words per photo, accuracy not critical, easy to set up on any PC; a small local model bundled with the app is preferred if it adds no setup.
