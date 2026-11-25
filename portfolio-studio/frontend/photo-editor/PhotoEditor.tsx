@@ -667,7 +667,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                   />
                 </Group>
                 <Text size="sm" fw={600}>
-                  Website file: photography/thumbnails/
+                  Website file: images/Photography/
                   {nameProblem
                     ? "(enter a valid name)"
                     : publishedFilename(name.trim(), outputFormat)}

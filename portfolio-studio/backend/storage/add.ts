@@ -13,6 +13,9 @@ import {
 import { describeUses, moveItem, photoSrc, repointUses } from "../../shared/library";
 import { loadPortfolio, savePortfolio } from "./portfolio";
 
+/** Where a photo added from the Photo Editor is published. */
+const PHOTO_FOLDER = "images/Photography";
+
 type Photo = PortfolioView["catalogs"]["photography"]["photos"][number];
 
 // "images/Cat/a.jpg" becomes "images/Cat/a-edit.jpg", numbered when that name is taken.
@@ -91,9 +94,9 @@ export async function addPhoto(
   const thumbnail = shared
     ? editedPath(folder, previous, catalogs)
     : request.kind === "new"
-      ? publishedFilename(bareName!, request.format)
+      ? `${PHOTO_FOLDER}/${publishedFilename(bareName!, request.format)}`
       : (existing?.thumbnail ?? webpName(key));
-  // A bare name lives in photography/thumbnails/; a path names its own place.
+  // A bare name lives in photography/thumbnails/ (older photos); a path names its own place.
   const destination = photoSrc({ file: key, thumbnail });
   const competingThumbnail = photos.find(
     (photo) => photo !== existing && photoSrc(photo).toLowerCase() === destination.toLowerCase(),

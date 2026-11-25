@@ -46,10 +46,10 @@ describe("addPhoto", () => {
     const changed = Object.keys(after).filter((file) => after[file] !== before[file]);
     expect(changed.sort()).toEqual([
       "data/media-catalog.json",
+      "images/Photography/IMG_0001.webp",
       "js/photography-catalog.js",
-      "photography/thumbnails/IMG_0001.webp",
     ]);
-    expect(readFileSync(path.join(folder, "photography/thumbnails/IMG_0001.webp"))).toEqual(
+    expect(readFileSync(path.join(folder, "images/Photography/IMG_0001.webp"))).toEqual(
       image.bytes,
     );
     const { catalogs } = await loadPortfolio(folder);
@@ -60,18 +60,17 @@ describe("addPhoto", () => {
       alt: "harbor",
       visible: true,
       tags: ["Dusk", "Harbor"],
-      thumbnail: "IMG_0001.webp",
+      thumbnail: "images/Photography/IMG_0001.webp",
       thumbnailWidth: 800,
       thumbnailHeight: 600,
     });
   });
 
-  it("refuses to publish through a symlinked thumbnail directory", async () => {
+  it("refuses to publish through a symlinked photo directory", async () => {
     const external = mkdtempSync(path.join(os.tmpdir(), "portfolio-private-images-"));
     try {
-      const thumbnails = path.join(folder, "photography", "thumbnails");
-      rmSync(thumbnails, { recursive: true });
-      symlinkSync(external, thumbnails, process.platform === "win32" ? "junction" : "dir");
+      const published = path.join(folder, "images", "Photography");
+      symlinkSync(external, published, process.platform === "win32" ? "junction" : "dir");
       const view = await loadPortfolio(folder);
 
       const added = await addPhoto(
@@ -169,9 +168,9 @@ describe("addPhoto", () => {
       visible: false,
       displayPriority: "featured",
       locked: true,
-      thumbnail: "Studio_4001.webp",
+      thumbnail: "images/Photography/Studio_4001.webp",
     });
-    expect(readFileSync(path.join(folder, "photography/thumbnails/Studio_4001.webp"))).toEqual(
+    expect(readFileSync(path.join(folder, "images/Photography/Studio_4001.webp"))).toEqual(
       image.bytes,
     );
   });
@@ -275,11 +274,9 @@ describe("addPhoto", () => {
       const current = await loadPortfolio(folder);
       expect(current.catalogs.photography.photos.at(-1)).toMatchObject({
         file: filename,
-        thumbnail: filename,
+        thumbnail: `images/Photography/${filename}`,
       });
-      expect(readFileSync(path.join(folder, "photography/thumbnails", filename))).toEqual(
-        image.bytes,
-      );
+      expect(readFileSync(path.join(folder, "images/Photography", filename))).toEqual(image.bytes);
     },
   );
 });
