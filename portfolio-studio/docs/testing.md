@@ -51,9 +51,9 @@ Copy this list into the PR description and fill it in for each platform.
 - [ ] Choose folder picks the website checkout, and the app opens it after a relaunch.
 - [ ] A resized or maximized window comes back that way after a relaunch.
 - [ ] After closing the window on a second monitor and unplugging that monitor, the app opens on the remaining display.
-- [ ] Photography, Engineering and Archive list their items with images, and Preview opens each page in the default browser.
+- [ ] Photography, Engineering and Design list their items with images, and Preview opens each page in the default browser.
 - [ ] In Photography, an edit, a lock, a drag and an Arrangement menu mode (for example Color harmony) each save, undo and redo work, and the saved page shows the new order.
-- [ ] In Engineering and Archive, an edit, an added item and a drag each save, and only their sections of the page change.
+- [ ] In Engineering and Design, an edit, an added item and a drag each save, and only their sections of the page change.
 - [ ] In the Photo Editor, a phone HEIC imports, and rotate, straighten and the crop handles work with a mouse and a trackpad. Add to Photo Catalog changes only the new image, `data/media-catalog.json` and `js/photography-catalog.js`.
 - [ ] The added image shows the grape logo and the watermark text in the bottom right corner, like the site's other images, and `exiftool` lists the author, copyright, usage terms and AI-training notice, and no GPS.
 - [ ] After a relaunch, the draft list still shows an unfinished import. Edit Image reopens an added photo, and after moving its original, Relink finds it.

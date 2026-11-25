@@ -6,7 +6,7 @@ export type Section = Page | "media" | "photo-editor" | "settings" | "help";
 const PAGES: [Page, string][] = [
   ["photography", "Photography"],
   ["engineering", "Engineering"],
-  ["archive", "Archive"],
+  ["archive", "Design"],
 ];
 const TOOLS: [Section, string][] = [
   ["media", "Media"],

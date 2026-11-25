@@ -152,7 +152,7 @@ describe("library", () => {
 
   it("names where a file is used", () => {
     expect(describeUses(base, "photography/thumbnails/x.webp", "photography")).toBe(
-      "engineering (Caltrain)",
+      "Engineering (Caltrain)",
     );
   });
 });

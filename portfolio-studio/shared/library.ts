@@ -6,6 +6,13 @@ export type LibraryItem = Library["items"][number];
 /** The catalogs without the library, which is what `deriveLibrary` reads. */
 export type Content = Omit<Catalogs, "library">;
 
+/** How each page is named in the app, matching the website's navigation. */
+export const PAGE_LABELS: Record<Page, string> = {
+  photography: "Photography",
+  engineering: "Engineering",
+  archive: "Design",
+};
+
 /** One place a file is used. `carriesAlt` is false for covers and posters, which have no description. */
 export interface Use {
   page: Page;
@@ -200,7 +207,7 @@ export function removeItem(catalogs: Catalogs, src: string): Catalogs {
 export function describeUses(content: Content, src: string, except?: Page): string {
   return (usesByFile(content).get(src) ?? [])
     .filter((use) => use.page !== except)
-    .map((use) => `${use.page} (${use.where})`)
+    .map((use) => `${PAGE_LABELS[use.page]} (${use.where})`)
     .join(", ");
 }
 
