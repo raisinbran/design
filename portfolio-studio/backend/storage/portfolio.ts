@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { copyFile, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { PortfolioView, Result, Revision } from "../api/api";
 import { Catalogs, listProblems } from "../catalogs/schema";
@@ -12,7 +12,7 @@ import {
   photographyScript,
 } from "../site/generate";
 import { sanitizeBody } from "../site/sanitize";
-import { publicationRoot } from "./publication-paths";
+import { publicationRoot, siteImageRoot, type PublicationDirectory } from "./publication-paths";
 
 const CATALOG_FILES = {
   photography: "data/media-catalog.json",
@@ -141,11 +141,16 @@ export async function savePortfolio(
     // Reject untrusted image directories before any site derivative is written.
     for (const relative of Object.keys(images)) {
       const [section, directory, filename, ...extra] = relative.split("/");
+      const inImages = section === "images";
       if (
-        section !== "photography" ||
-        (directory !== "thumbnails" && directory !== "published") ||
+        (section !== "photography" && !inImages) ||
+        !directory ||
+        (!inImages && directory !== "thumbnails" && directory !== "published") ||
         !filename ||
         extra.length > 0 ||
+        directory === "." ||
+        directory === ".." ||
+        directory.includes("\\") ||
         filename === "." ||
         filename === ".." ||
         filename.includes("\\") ||
@@ -156,7 +161,14 @@ export async function savePortfolio(
           error: { code: "invalid", message: `Invalid publication path: ${relative}` },
         };
       }
-      if (!(await publicationRoot(folder, directory))) {
+      // A new folder under images/ is created only after the path passed the checks above.
+      if (inImages && (await siteImageRoot(folder, ["images"]))) {
+        await mkdir(path.join(folder, "images", directory), { recursive: true });
+      }
+      const root = inImages
+        ? await siteImageRoot(folder, ["images", directory])
+        : await publicationRoot(folder, directory as PublicationDirectory);
+      if (!root) {
         return {
           ok: false,
           error: { code: "invalid", message: `Unsafe publication directory: ${directory}` },

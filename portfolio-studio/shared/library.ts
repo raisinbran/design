@@ -22,6 +22,22 @@ export interface Use {
   carriesAlt: boolean;
 }
 
+/**
+ * Returns why a `thumbnail` value is not allowed, or null. It is a bare filename, kept for the
+ * photos in `photography/thumbnails/`, or a site path under `images/` with no `..`, scheme or
+ * backslash.
+ */
+export function thumbnailProblem(value: string): string | null {
+  if (!value.includes("/")) return value && !value.includes("\\") ? null : "must be a file name";
+  const parts = value.split("/");
+  const safe =
+    parts[0] === "images" &&
+    parts.length >= 3 &&
+    parts.every((part) => part && part !== "." && part !== "..") &&
+    !/[\\:]/.test(value);
+  return safe ? null : "must be a file name or a path under images/";
+}
+
 /** The site path of a Photography photo's image. */
 export const photoSrc = (photo: { file: string; thumbnail?: string }): string =>
   photo.thumbnail

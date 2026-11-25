@@ -10,6 +10,7 @@ import {
   publishedFilename,
   type PhotoOutputFormat,
 } from "../../shared/photo-format";
+import { photoSrc } from "../../shared/library";
 import { loadPortfolio, savePortfolio } from "./portfolio";
 
 type Photo = PortfolioView["catalogs"]["photography"]["photos"][number];
@@ -73,15 +74,15 @@ export async function addPhoto(
     request.kind === "new"
       ? publishedFilename(bareName!, request.format)
       : (existing?.thumbnail ?? webpName(key));
+  // A bare name lives in photography/thumbnails/; a path names its own place.
+  const destination = photoSrc({ file: key, thumbnail });
   const competingThumbnail = photos.find(
-    (photo) => photo !== existing && photo.thumbnail?.toLowerCase() === thumbnail.toLowerCase(),
+    (photo) => photo !== existing && photoSrc(photo).toLowerCase() === destination.toLowerCase(),
   );
   if (
     request.kind === "new" &&
     !request.overwrite &&
-    (existing ||
-      competingThumbnail ||
-      existsSync(path.join(folder, "photography/thumbnails", thumbnail)))
+    (existing || competingThumbnail || existsSync(path.join(folder, destination)))
   ) {
     const message = `A photo named ${key} already exists. Overwrite or Cancel?`;
     return { ok: false, error: { code: "name-conflict", message } };
@@ -126,7 +127,7 @@ export async function addPhoto(
     folder,
     request.revision,
     { ...catalogs, photography },
-    { [`photography/thumbnails/${thumbnail}`]: image.bytes },
+    { [destination]: image.bytes },
   );
   return saved.ok ? { ok: true, value: { view: saved.value, photoKey: photo.file } } : saved;
 }
