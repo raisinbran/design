@@ -177,7 +177,8 @@ describe("published photo management", () => {
     expect(renamed).toMatchObject({ ok: false, error: { code: "changed-outside" } });
     expect(() => readFileSync(thumbnail("DSCF4154_fix.webp"))).toThrow();
   });
-  it("preserves the selected JPEG format while renaming its published asset", async () => {
+  // A photo published at a site path keeps its file when renamed; only the catalog name changes.
+  it("keeps a new photo's published file when it is renamed", async () => {
     const view = await loadPortfolio(folder);
     const jpeg = {
       bytes: Buffer.from("test jpeg bytes"),
@@ -207,12 +208,12 @@ describe("published photo management", () => {
       toTrash,
     );
     expect(renamed.ok).toBe(true);
-    expect(readFileSync(thumbnail("Studio_7002.jpg"))).toEqual(jpeg.bytes);
-    expect(() => readFileSync(thumbnail("Studio_7001.jpg"))).toThrow();
+    const published = path.join(folder, "images/Photography/Studio_7001.jpg");
+    expect(readFileSync(published)).toEqual(jpeg.bytes);
     const current = await loadPortfolio(folder);
     expect(current.catalogs.photography.photos.at(-1)).toMatchObject({
       file: "Studio_7002.jpg",
-      thumbnail: "Studio_7002.jpg",
+      thumbnail: "images/Photography/Studio_7001.jpg",
     });
   });
 
