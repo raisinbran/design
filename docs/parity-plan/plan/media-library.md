@@ -35,7 +35,9 @@ Photography, Engineering and Archive each manage their own images, and the Photo
 - `pages` is any of `photography`, `engineering`, `archive`.
 - `photoFile` is the Photography catalog key, present exactly when `pages` includes photography.
 
-**The description stays in the catalogs** (the site reads it there and the schema enforces it). One helper, `setAlt(src, alt)`, updates every use of a file in one edit. A file added to a project is prefilled from any existing use. The Media screen shows the description of the first use. Engineering and Archive `src` fields become read-only pickers, so a retyped path cannot leave the library.
+**The description lives in the catalogs** (the site reads it there and the schema enforces it). An item may also carry an optional `alt`, only so a file that has no use yet, such as a photo added in the Editor for Engineering, has somewhere to keep its description until a project picks it. Whenever a file has a use, the catalog text wins: repair copies the first use's text into the item. One helper, `setAlt(src, alt)`, writes every use and the item in one edit, and reaches a copied Photography file through `photoFile`. A file added to a project is prefilled from the item. Engineering and Archive media `src` fields become read-only pickers.
+
+**Ticking pages needs a description where the site does.** Photography and Archive can be ticked only once the file has a non-empty description (the Description box sits in the same panel); Engineering has no such rule. Videos cannot be ticked for Photography or Archive.
 
 **Uses** are media `src`, project covers (`cover`) and video posters. All count as uses of the page that holds them.
 
@@ -43,7 +45,7 @@ Photography, Engineering and Archive each manage their own images, and the Photo
 
 - `derive(catalogs)` builds the library from the catalogs: every used file, assigned to the page that uses it.
 - A missing `data/media-library.json` is treated as equal to `derive(catalogs)`, with an explicit revision sentinel for the absent file. The file is written only when the library differs from what `derive` gives, so today's saves, including a Photography add, rename or delete, create nothing new. `FILES`, `readFiles`, the "not the website folder" check and the "changes no files without edits" test are updated to say so.
-- On load the library is **repaired in memory**, never refused: a use whose page or item is missing is added, as derive does. Problems are reported on Save only, so a pull or an edit by another tool cannot lock the app.
+- On load the library is **repaired in memory**, never refused: a use whose page or item is missing is added, as derive does. Repair runs again before Save, so a typed cover or poster path never blocks a save by itself; only real schema problems are reported. A pull or an edit by another tool cannot lock the app.
 - No folder scanning. Only derived and explicitly added files are listed, so site chrome images in `images/` never appear.
 
 **In-use rule.** A page checkbox is disabled, with a tooltip naming where the file is used, while that page uses the file. "Used in" lists each use; an unused file shows "Not used yet". A file used twice in one project lists both.
@@ -52,29 +54,31 @@ Photography, Engineering and Archive each manage their own images, and the Photo
 
 Photography only reads `photography/thumbnails/`, so a file from `images/` assigned to Photography needs a copy there. The copy is made **when the owner ticks Photography**, like `media.import` writes at import: one backend call writes the file under a free name (`name`, then `name-2`, …), reads width and height and hashes the bytes through `runJob`, and returns `thumbnail`, `thumbnailVersion`, `thumbnailWidth` and `thumbnailHeight`. The Photography entry is then an ordinary unsaved catalog edit, and Save only commits catalogs. A Discard leaves at most an unreferenced file, as import does today. There is no rollback code to add.
 
-Engineering and Archive can point at any `photography/thumbnails/` file, so a photo born in the Photo Editor needs no copy for them.
+A copied file means two files for one item. The Photography entry is reached through `photoFile`; the Engineering and Archive uses point at `src`. **Edit Image** changes only the Photography file, and the Media detail panel says so for such an item.
 
-**Rename and delete** in Photography are **refused while another page uses the file**, with a message naming the use, the same rule as the disabled checkbox. Removing a file from the library is refused the same way.
+Engineering and Archive can point at any `photography/thumbnails/` file, so a photo born in the Photo Editor with Photography ticked needs no copy for them. **Where a photo is written:** into `photography/thumbnails/` when Photography is ticked (as today), otherwise into `images/Library/`. A photo that is not on Photography has no Edit Image, since Edit Image belongs to a Photography entry; to change it, import the original again.
 
-**Edit Image** on a shared photo changes the one file for every page that uses it, and says so in its confirmation. Engineering and Archive paths carry no version, so the site may show a cached old image until the browser refreshes; that is noted in the Edit Image message and not solved here.
+**Rename, delete and library removal** are **refused while another page uses the file**, with a message naming the use, the same rule as the disabled checkbox. This lands in slice 1, together with the live checkboxes, so no slice leaves a window where a shared file can be trashed.
+
+**Edit Image** on a photo also shown on other pages changes that one file for all of them. Engineering and Archive paths carry no version, so the site may show a cached old image until the browser refreshes; that is noted in the Edit Image message and not solved here.
 
 ## Screens and where they live
 
 1. **Media** (new sidebar entry between Archive and Photo Editor; image 1). Grid of every library file with page chips, search, filters (All, one page, Unassigned) and a detail panel: description, page checkboxes, where it is used, remove. Buttons: Import files (dialog with page checkboxes) and Add from Editor.
 2. **Picker** (image 2): in an Engineering or Archive project, "Add from library…" lists only files assigned to that page, multi-select, files already in the project dimmed. Photography gets the same picker. "Import files…" stays as the quick path and registers its files in the library with this page ticked. Archive's "Images" heading becomes "Media" like Engineering.
-3. **Photo Editor** (image 3): draft checkboxes select photos; the two toolbars and every existing control are untouched. The Add panel gets page checkboxes (at least one) and Tags only when Photography is ticked. "Add this photo" and "Add selected (n)" use each photo's current edits and the default photo settings. A name already in use is numbered. A photo missing a name or description is marked and skipped.
+3. **Photo Editor** (image 3): draft checkboxes select photos; the two toolbars and every existing control are untouched. The panel is titled "Add to Media" and gets page checkboxes (at least one) and Tags only when Photography is ticked. Ticking Engineering or Archive only assigns the file; the project picks it later with "Add from library…". There is no project choice in the panel. "Add this photo" and "Add selected (n)" use each photo's current edits and the default photo settings. A name already in use is numbered. A photo missing a name or description is marked and skipped.
 
 New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled states instead of added or removed fields, accessible labels, instant tooltips, no standing tutorial text (explanations go to Help and tooltips).
 
 ## The Photo Editor keeps its immediate save
 
-`photos.add` stays the one save: it takes the render held for that photo, and the "Save or reload your edits before adding" guard stays. `AddRequest` gains `pages`. For Photography it writes the thumbnail and the entry as today. For Engineering or Archive it also adds the media entry and the library item in the same `savePortfolio`. Batch add loops that call per selected photo. Nothing new is held between add and Save, so Edit Image cannot leave new bytes with an old `thumbnailVersion`, and drafts are dropped only after a successful add.
+`photos.add` stays the one save: it takes the render held for that photo, and the "Save or reload your edits before adding" guard stays. `AddRequest` gains `pages`. For Photography it writes the thumbnail and the entry as today. In every case it also adds the library item (pages, `photoFile`, description) in the same `savePortfolio`; it never creates a project media entry. Batch add loops that call per selected photo. Nothing new is held between add and Save, so Edit Image cannot leave new bytes with an old `thumbnailVersion`, and drafts are dropped only after a successful add.
 
 ## Slices (each its own PR, independent review, running-app check)
 
-1. **Library data and Media screen.** Schema in `Catalogs`, derive, sentinel and repair rules, tests, and the Media screen with assignments and the in-use rule (checkboxes of unused files are live; page picking is not wired yet, which this slice says in its description).
-2. **Engineering and Archive pickers,** read-only `src` pickers, `setAlt`, and `media.import` registering its files in the library.
-3. **Photography picker and copy,** with the rename, delete and remove refusals.
+1. **Library data and Media screen.** Schema in `Catalogs`, derive, sentinel and repair rules, tests, the Media screen with assignments, the description and in-use rules, and the rename, delete and removal refusals. Page picking is not wired yet, which the PR description says.
+2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library.
+3. **Photography picker and copy** at tick time.
 4. **Photo Editor add with pages and batch,** then docs (`architecture.md`, matrix rows 1 and 24).
 
 ## Tests
