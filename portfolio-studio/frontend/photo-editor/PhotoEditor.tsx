@@ -27,7 +27,7 @@ import type {
   Recipe,
   Result,
 } from "../../backend/api/api";
-import { isDirty, useEditor } from "../app/editor";
+import { isDirty, loadView, useEditor } from "../app/editor";
 import { call, runShowingErrors } from "../app/portfolio";
 import {
   DEFAULT_VIEWPORT,
@@ -401,7 +401,11 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
       <Stack w={240} gap="xs">
         <Button onClick={importOriginal}>Import originals</Button>
         {drafts.length > 1 && view && (
-          <Button variant="default" disabled={dirty} onClick={() => setBatching(true)}>
+          <Button
+            variant="default"
+            disabled={dirty || (!!editing && !current)}
+            onClick={() => setBatching(true)}
+          >
             Add all drafts
           </Button>
         )}
@@ -420,11 +424,12 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
           drafts={drafts}
           view={view}
           onClose={() => setBatching(false)}
-          onAdded={(sourceId, added, pages) => {
+          onProgress={(sourceId, added) => {
             setDrafts((all) => all.filter((item) => item.source.id !== sourceId));
             if (editing?.source.id === sourceId) setEditing(null);
-            onAdded(added, pages);
+            loadView(added);
           }}
+          onDone={onAdded}
         />
       )}
       <Stack flex={1} miw={0}>

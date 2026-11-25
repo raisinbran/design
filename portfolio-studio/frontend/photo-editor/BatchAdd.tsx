@@ -22,11 +22,13 @@ interface BatchAddProps {
   view: PortfolioView;
   onClose: () => void;
   /** Called after each photo is added, with the draft's source id and the saved site. */
-  onAdded: (sourceId: string, view: PortfolioView, pages: Page[]) => void;
+  onProgress: (sourceId: string, view: PortfolioView) => void;
+  /** Called once, after the last photo is added. */
+  onDone: (view: PortfolioView, pages: Page[]) => void;
 }
 
 /** Adds every draft with its saved edits: shared pages, tags and format, a name and description each. */
-export function BatchAdd({ opened, drafts, view, onClose, onAdded }: BatchAddProps) {
+export function BatchAdd({ opened, drafts, view, onClose, onProgress, onDone }: BatchAddProps) {
   const [pages, setPages] = useState<Page[]>(["photography"]);
   const [tags, setTags] = useState<string[]>([]);
   const [format, setFormat] = useState<PhotoOutputFormat>("webp");
@@ -47,6 +49,7 @@ export function BatchAdd({ opened, drafts, view, onClose, onAdded }: BatchAddPro
     setAdding(true);
     setError(null);
     let revision = view.revision;
+    let last: PortfolioView | null = null;
     try {
       for (const draft of drafts) {
         const id = draft.source.id;
@@ -65,8 +68,10 @@ export function BatchAdd({ opened, drafts, view, onClose, onAdded }: BatchAddPro
         // The ones before it stay added; this one and the rest remain drafts to fix and retry.
         if (!added.ok) return setError(`${draft.source.name}: ${added.error.message}`);
         revision = added.value.view.revision;
-        onAdded(id, added.value.view, pages);
+        onProgress(id, added.value.view);
+        last = added.value.view;
       }
+      if (last) onDone(last, pages);
       onClose();
     } finally {
       setAdding(false);
@@ -74,7 +79,13 @@ export function BatchAdd({ opened, drafts, view, onClose, onAdded }: BatchAddPro
   }
 
   return (
-    <Modal opened={opened} onClose={onClose} title="Add all drafts" size="lg">
+    <Modal
+      opened={opened}
+      onClose={() => !adding && onClose()}
+      closeOnEscape={!adding}
+      title="Add all drafts"
+      size="lg"
+    >
       <Stack>
         <Checkbox.Group label="Pages" value={pages} onChange={(value) => setPages(value as Page[])}>
           <Group mt={4}>
@@ -127,7 +138,7 @@ export function BatchAdd({ opened, drafts, view, onClose, onAdded }: BatchAddPro
         ))}
         {error && <Text c="red">{error}</Text>}
         <Group justify="flex-end">
-          <Button variant="default" onClick={onClose}>
+          <Button variant="default" disabled={adding} onClick={onClose}>
             Cancel
           </Button>
           <Button disabled={!ready} loading={adding} onClick={() => void addAll()}>
