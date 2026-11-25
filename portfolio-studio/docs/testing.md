@@ -36,6 +36,8 @@ Run the tests with `xvfb-run -a npm test`, so their windows stay off the screen.
 
 GitHub CI runs `.github/workflows/portfolio-studio.yml` on every pull request: on Linux, Windows and macOS it runs `npm ci`, the type check, `npm test` and `npm run make`, and keeps each installer as a workflow artifact. Download an installer from the run's Summary page to hand to a Windows or macOS tester.
 
+To publish installers for the owner, push a tag such as `v2.0.0` that matches `package.json`; `.github/workflows/portfolio-studio-release.yml` builds the three installers and attaches them to a GitHub release. Running that workflow by hand builds them as artifacts only. They are unsigned.
+
 The owner checks the rest by hand with the release checklist.
 
 ### macOS signing exception

@@ -1,0 +1,69 @@
+name: Portfolio Studio release
+
+# Push a tag such as v2.0.0 (it must match portfolio-studio/package.json) to publish the installers
+# as a GitHub release, or run the workflow by hand to get them as artifacts only.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Installer (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    defaults:
+      run:
+        working-directory: portfolio-studio
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: portfolio-studio/package-lock.json
+      - name: Tag matches the app version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
+      - run: npm ci
+      - run: sudo apt-get update && sudo apt-get install -y fakeroot
+        if: runner.os == 'Linux'
+      - run: npm run make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer-${{ runner.os }}
+          path: |
+            portfolio-studio/out/make/**/*Setup.exe
+            portfolio-studio/out/make/**/*.dmg
+            portfolio-studio/out/make/**/*.deb
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: installers
+          merge-multiple: true
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" installers/* --repo "$GITHUB_REPOSITORY" \
+            --title "Portfolio Studio ${GITHUB_REF_NAME#v}" \
+            --notes "These installers are unsigned. Windows may show SmartScreen (More info, then Run anyway). On macOS, right-click the app and choose Open the first time."
