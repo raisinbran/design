@@ -1,4 +1,4 @@
-import { AppShell, Button, Group, List, Modal, NavLink, Text } from "@mantine/core";
+import { AppShell, Button, Group, List, Modal, Text } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import type { ApiError, Page, PortfolioView } from "../../backend/api/api";
@@ -6,18 +6,12 @@ import { ArchiveView } from "../archive/ArchiveView";
 import { EngineeringView } from "../engineering/EngineeringView";
 import { PhotoEditor } from "../photo-editor/PhotoEditor";
 import { PhotographyView } from "../photography/PhotographyView";
+import { HelpView } from "../help/HelpView";
 import { Settings } from "../settings/Settings";
 import { confirmDiscard, isDirty, loadView, redo, showSaved, undo, useEditor } from "./editor";
 import { call, runShowingErrors } from "./portfolio";
+import { isPage, Sidebar, type Section } from "./Sidebar";
 
-type Section = Page | "photo-editor" | "settings";
-const SECTIONS: [Section, string][] = [
-  ["photography", "Photography"],
-  ["engineering", "Engineering"],
-  ["archive", "Archive"],
-  ["photo-editor", "Photo Editor"],
-  ["settings", "Settings"],
-];
 const SAVED_MESSAGE = "Saved. To publish, commit and push in GitHub Desktop.";
 
 export function App() {
@@ -90,7 +84,7 @@ export function App() {
             {view ? view.folder : "No portfolio folder"}
           </Text>
           <Group gap="xs" wrap="nowrap">
-            {section !== "settings" && section !== "photo-editor" && view && (
+            {isPage(section) && view && (
               <Button variant="default" onClick={() => preview(section)}>
                 Preview
               </Button>
@@ -105,15 +99,7 @@ export function App() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="xs">
-        {SECTIONS.map(([name, label]) => (
-          <NavLink
-            key={name}
-            label={label}
-            active={section === name}
-            disabled={!view && name !== "settings"}
-            onClick={() => setSection(name)}
-          />
-        ))}
+        <Sidebar section={section} hasFolder={!!view} onSelect={setSection} />
       </AppShell.Navbar>
       <AppShell.Main>
         {/* Hidden again by the next edit, so it never says "Saved" over unsaved work. */}
@@ -165,6 +151,7 @@ export function App() {
           </div>
         )}
         {section === "settings" && <Settings view={view} onFolderChosen={show} />}
+        {section === "help" && <HelpView />}
       </AppShell.Main>
       <Modal
         opened={changedOutside !== null}
