@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { Catalogs } from "../backend/catalogs/schema";
 import {
   deriveLibrary,
+  describeSource,
+  isVideo,
   descriptionOf,
   describeUses,
   pagesInUse,
@@ -154,5 +156,16 @@ describe("library", () => {
     expect(describeUses(base, "photography/thumbnails/x.webp", "photography")).toBe(
       "Engineering (Caltrain)",
     );
+  });
+
+  // A project that adds a described file should start with that description, not an empty one.
+  it("gives a project the description the library already holds", () => {
+    const withLibrary = { ...base, library: deriveLibrary(base) };
+
+    expect(describeSource(withLibrary, "photography/thumbnails/x.webp")).toBe("a photo");
+    expect(describeSource(withLibrary, "images/unknown.webp")).toBe("");
+    expect(describeSource(null, "images/a.webp")).toBe("");
+    expect(isVideo("video/Clip/a.MP4")).toBe(true);
+    expect(isVideo("images/a.webp")).toBe(false);
   });
 });

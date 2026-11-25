@@ -42,7 +42,7 @@ export const MANUAL: ManualSection[] = [
     text: [
       "Each project has a title, heading, context, a cover image with its position, and a body written in the rich text editor. Visible, Expanded and Hero control how the project shows on the page.",
       "Add (beside the New project title field) creates a project; use the up and down buttons or drag to reorder.",
-      "Media: Add media picks images (and mp4 or webm videos), copies them into the website folder and adds them to the project. Images follow the same rules as photos: upright, at most 800 px on the long side, WebP, with the watermark and rights. Each item has alt text, a caption, a credit line and a position.",
+      "Media: Add from library lists the files assigned to Engineering in Media and adds the ones you tick; the file path is read-only, and Replace from library swaps it. Import media picks images (and mp4 or webm videos), copies them into the website folder and adds them to the project. Images follow the same rules as photos: upright, at most 800 px on the long side, WebP, with the watermark and rights. Each item has alt text, a caption, a credit line and a position.",
     ],
   },
   {
@@ -50,7 +50,7 @@ export const MANUAL: ManualSection[] = [
     title: "Design",
     text: [
       "Design projects work like Engineering projects without a body. Each image needs a description (alt text) and has a caption, a credit line, a position, a prominence and a crop mode.",
-      "Add image picks images and adds them to the project under the same photo rules.",
+      "Add from library lists the files assigned to Design in Media. Import images picks images and adds them to the project under the same photo rules. The file path is read-only; Replace from library swaps it. Alt text is the same on every page that uses the file, while the caption and credit belong to this project alone.",
     ],
   },
   {
