@@ -96,7 +96,7 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
           <Group gap="xs" wrap="nowrap">
             <TextInput
               flex={1}
-              placeholder="New collection title"
+              placeholder="New project title"
               value={title}
               onChange={(event) => setTitle(event.currentTarget.value)}
             />
@@ -106,7 +106,7 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
             <ActionIcon
               size="lg"
               variant="default"
-              aria-label="Move selected collection up"
+              aria-label="Move selected project up"
               title="Move up"
               disabled={selected <= 0}
               onClick={() => shift(-1)}
@@ -116,7 +116,7 @@ export function ArchiveView({ catalog }: ArchiveViewProps) {
             <ActionIcon
               size="lg"
               variant="default"
-              aria-label="Move selected collection down"
+              aria-label="Move selected project down"
               title="Move down"
               disabled={selected >= catalog.collections.length - 1}
               onClick={() => shift(1)}
@@ -273,7 +273,7 @@ function CollectionEditor({ collection, index, onRemove }: CollectionEditorProps
       )}
       <Group>
         <Button color="red" variant="light" onClick={onRemove}>
-          Remove collection
+          Remove project
         </Button>
         <Text size="sm" c="dimmed">
           Removing never deletes image files.
