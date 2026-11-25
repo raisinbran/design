@@ -13,7 +13,8 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { deletePhoto, renamePhoto } from "./manage";
 import { addPhoto } from "./add";
-import { loadPortfolio } from "./portfolio";
+import { setPage } from "../../shared/library";
+import { loadPortfolio, savePortfolio } from "./portfolio";
 import { copyRepository, COPY_TIMEOUT_MS } from "./test-folder";
 
 let folder: string;
@@ -213,5 +214,83 @@ describe("published photo management", () => {
       file: "Studio_7002.jpg",
       thumbnail: "Studio_7002.jpg",
     });
+  });
+
+  // Another page may show the same file, so trashing or renaming it must be refused.
+  it("refuses to rename or delete a photo whose file another page uses", async () => {
+    const view = await loadPortfolio(folder);
+    const [first] = view.catalogs.engineering.projects;
+    const used = {
+      ...view.catalogs,
+      engineering: {
+        ...view.catalogs.engineering,
+        projects: [
+          {
+            ...first,
+            media: [
+              ...first.media,
+              {
+                kind: "image" as const,
+                src: "photography/thumbnails/DSCF4154_crop.webp",
+                alt: "",
+                caption: "",
+                credit: "",
+              },
+            ],
+          },
+          ...view.catalogs.engineering.projects.slice(1),
+        ],
+      },
+    };
+    const saved = await savePortfolio(folder, view.revision, used);
+    if (!saved.ok) throw new Error(saved.error.message);
+
+    const renamed = await renamePhoto(
+      folder,
+      saved.value.revision,
+      "DSCF4154_crop.heic",
+      "other.heic",
+      toTrash,
+    );
+    const deleted = await deletePhoto(folder, saved.value.revision, "DSCF4154_crop.heic", toTrash);
+
+    expect(renamed).toMatchObject({
+      ok: false,
+      error: { message: expect.stringContaining("also used by engineering") },
+    });
+    expect(deleted).toMatchObject({
+      ok: false,
+      error: { message: expect.stringContaining("cannot be deleted") },
+    });
+    expect(() => readFileSync(thumbnail("DSCF4154_crop.webp"))).not.toThrow();
+  });
+
+  // Once the library file exists, a renamed or deleted photo must not leave a stale item behind.
+  it.each(["rename", "delete"])("keeps the library in step on %s", async (action) => {
+    const first = await loadPortfolio(folder);
+    const oldSrc = "photography/thumbnails/DSCF4154_crop.webp";
+    const assigned = await savePortfolio(
+      folder,
+      first.revision,
+      setPage(first.catalogs, oldSrc, "archive", true),
+    );
+    if (!assigned.ok) throw new Error(assigned.error.message);
+    const { revision } = assigned.value;
+
+    const changed =
+      action === "rename"
+        ? await renamePhoto(folder, revision, "DSCF4154_crop.heic", "DSCF4154_fix.heic", toTrash)
+        : await deletePhoto(folder, revision, "DSCF4154_crop.heic", toTrash);
+
+    expect(changed.ok).toBe(true);
+    const items = (await loadPortfolio(folder)).catalogs.library.items;
+    expect(items.some((item) => item.src === oldSrc)).toBe(false);
+    const moved = items.find((item) => item.src === "photography/thumbnails/DSCF4154_fix.webp");
+    if (action === "rename")
+      expect(moved).toMatchObject({
+        pages: ["photography", "archive"],
+        photoFile: "DSCF4154_fix.heic",
+      });
+    else expect(moved).toBeUndefined();
   });
 });

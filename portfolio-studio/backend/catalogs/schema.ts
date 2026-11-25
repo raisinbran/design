@@ -119,10 +119,29 @@ export const ArchiveCatalog = z
   .object({ schemaVersion: z.literal(1), collections: z.array(ArchiveCollection) })
   .strict();
 
+export const PAGES = ["photography", "engineering", "archive"] as const;
+
+const LibraryItem = z
+  .object({
+    /** The site-relative path of the file, which identifies it. */
+    src: z.string().min(1),
+    pages: z.array(z.enum(PAGES)),
+    /** The Photography catalog key; present exactly when `pages` includes photography. */
+    photoFile: z.string().optional(),
+    /** The description of a file with no use that carries one; otherwise the catalogs hold it. */
+    alt: z.string().optional(),
+  })
+  .strict();
+
+export const MediaLibrary = z
+  .object({ schemaVersion: z.literal(1), items: z.array(LibraryItem) })
+  .strict();
+
 export const Catalogs = z.object({
   photography: PhotoCatalog,
   engineering: EngineeringCatalog,
   archive: ArchiveCatalog,
+  library: MediaLibrary,
 });
 export type Catalogs = z.infer<typeof Catalogs>;
 

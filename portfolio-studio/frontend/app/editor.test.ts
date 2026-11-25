@@ -6,6 +6,7 @@ const loaded: Catalogs = {
   photography: { schemaVersion: 1, photoTags: [], photos: [] },
   engineering: { schemaVersion: 1, projects: [] },
   archive: { schemaVersion: 1, collections: [] },
+  library: { schemaVersion: 1, items: [] },
 };
 const viewOf = (catalogs: Catalogs): PortfolioView => ({ folder: "/site", revision: {}, catalogs });
 const setTags = (photoTags: string[]) =>

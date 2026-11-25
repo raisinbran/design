@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { Catalogs } from "../api/api";
+import { setPage } from "../../shared/library";
 import { loadPortfolio, replaceFiles, savePortfolio, TEMPORARY_SUFFIX } from "./portfolio";
 import { COPY_TIMEOUT_MS, copyRepository, hashFiles } from "./test-folder";
 
@@ -187,5 +188,50 @@ describe("loadPortfolio", () => {
     await expect(loadPortfolio(folder)).rejects.toThrow(
       /old apps' format: data\/archive-catalog\.json\./,
     );
+  });
+});
+
+describe("media library file", () => {
+  const SRC = "photography/thumbnails/DSCF3655_crop.jpg.webp";
+
+  // Assigning a file is the first change the catalogs cannot show, so only then does the file appear.
+  it("is created by the first assignment and read back", async () => {
+    const view = await loadPortfolio(folder);
+    expect(view.revision["data/media-library.json"]).toBe("absent");
+
+    const edited = setPage(view.catalogs, SRC, "archive", true);
+    const saved = await savePortfolio(folder, view.revision, edited);
+
+    expect(saved.ok).toBe(true);
+    const written = JSON.parse(read("data/media-library.json"));
+    expect(written.items.find((item: { src: string }) => item.src === SRC)).toEqual({
+      src: SRC,
+      pages: ["photography", "archive"],
+      photoFile: "DSCF3655_crop.jpg",
+    });
+    const again = await loadPortfolio(folder);
+    expect(again.catalogs.library).toEqual(edited.library);
+    // A second save with no edits changes nothing.
+    const before = hashFiles(folder);
+    expect((await savePortfolio(folder, again.revision, again.catalogs)).ok).toBe(true);
+    expect(hashFiles(folder)).toEqual(before);
+  });
+
+  it("is checked for outside changes like the catalogs", async () => {
+    const view = await loadPortfolio(folder);
+    writeFileSync(path.join(folder, "data/media-library.json"), '{"schemaVersion":1,"items":[]}\n');
+
+    const saved = await savePortfolio(folder, view.revision, view.catalogs);
+
+    expect(saved).toMatchObject({ ok: false, error: { code: "changed-outside" } });
+  });
+
+  // A library that names a missing page or file must repair on load, not lock the app.
+  it("repairs an outdated library on load", async () => {
+    writeFileSync(path.join(folder, "data/media-library.json"), '{"schemaVersion":1,"items":[]}\n');
+
+    const view = await loadPortfolio(folder);
+
+    expect(view.catalogs.library.items.length).toBeGreaterThan(100);
   });
 });
