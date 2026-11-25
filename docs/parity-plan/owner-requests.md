@@ -1,0 +1,55 @@
+# Owner's requested UI and design changes
+
+A running record of what the owner asked for in Portfolio Studio (the app in `portfolio-studio/`), in the owner's terms, with where each stands. It was compiled on 2026-11-25 from the working conversations; the owner's wording is paraphrased, not quoted. Plans and per-feature detail live beside it: [media-library plan](plan/media-library.md), [parity matrix](parity/parity-matrix.md), [path forward](plan/path-forward.md). When this file and a plan disagree, ask the owner.
+
+Status: **Done** (merged to `master`), **Open** (decided, not built), **Question** (needs an owner decision).
+
+## Photo Editor
+
+| Request                                                                                                                                                              | Status                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Import several originals at once and add them all in one step (batch).                                                                                               | Done: Import originals takes several files; Add all drafts publishes every draft. |
+| Custom viewport sizes with no limit. The owner did not set the earlier maximum and the 20 px minimum, and wants neither.                                             | Requested; the limits were treated as unwanted. Recheck in the running app.       |
+| Remove the rotate-left and rotate-right buttons. Typing the rotation angle is the main way to rotate.                                                                | Requested. Recheck in the running app.                                            |
+| The editor adds to any page, not only Photography: choose Photography, Engineering or Design when adding.                                                            | Done.                                                                             |
+| The editor stays the tool that edits a photo. Whether Media and the Photo Editor should become one tab is undecided.                                                 | Question: not part of the media-library slices 1 to 4.                            |
+| Short descriptions (alt text) generated from the photo itself: lightweight, local, no setup on any PC; accuracy is not critical; a small bundled model is preferred. | Open: later feature (matrix row 13).                                              |
+
+## Media (the master organizer)
+
+| Request                                                                                                                                                                                             | Status                                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| One master Media screen where each file is assigned to pages (Photography, Engineering, Design) by checkbox. This is also how a photo is moved between pages or, rarely, shown on two or all three. | Done.                                                                                                             |
+| Projects pick their images from the files assigned to their page.                                                                                                                                   | Done for Engineering, Design and Photography.                                                                     |
+| The description (alt text) is the same on every page; captions are per page.                                                                                                                        | Done.                                                                                                             |
+| Credit stays a separate line, optional, and is not carried to other pages. Caption is optional too.                                                                                                 | Done.                                                                                                             |
+| Greyed page checkboxes carry a tooltip saying where the file is used.                                                                                                                               | Done.                                                                                                             |
+| Renaming a shared photo is allowed and follows everywhere. The owner disagreed with a rule that would block renaming.                                                                               | Done.                                                                                                             |
+| "Archive" is called "Design" in the app.                                                                                                                                                            | Done.                                                                                                             |
+| The home page is not a separate page in Media.                                                                                                                                                      | Decided.                                                                                                          |
+| `data/media-library.json` may hold page assignments (the website never reads it).                                                                                                                   | Done.                                                                                                             |
+| No `photography/thumbnails/` folder: the name is a misnomer. Photography images live in `images/Photography/`.                                                                                      | Done (29 photos moved).                                                                                           |
+| Use the same word, "Projects", on the Engineering and Design pages.                                                                                                                                 | Done.                                                                                                             |
+| Per project: **Add project**, **Unlist** (hide without deleting) and **Remove**.                                                                                                                    | Engineering and Photography have them. **Open:** Design Unlist needs a change to the data and the page generator. |
+
+## App chrome
+
+| Request                                                                                                                          | Status                                                       |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| A Settings icon and a Help icon, styled like the owner's Scribe app.                                                             | Requested earlier; confirm against the current toolbar.      |
+| The app version is shown on Help. This app is 2.x.x because the Python app was version 1; it is 2.0.0 now.                       | Done.                                                        |
+| A divider between the Media and Photo Editor sections (see the Media concept images in `docs/ui-proposals/`).                    | Requested earlier; confirm against the current layout.       |
+| The "System" appearance should follow the operating system. On the owner's Windows machine it stays light while Windows is dark. | Open (matrix row 30). Native title-bar tint is also missing. |
+| The app should not depend on specific macOS or Windows versions.                                                                 | Question: raised as a question, not yet investigated here.   |
+
+## Release
+
+| Request                                                                     | Status                                                                                                                                                                                                                           |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One click-to-run installer per system: Windows `.exe`, macOS `.dmg`, Linux. | Done: pushing a tag such as `v2.0.0` publishes them (`.github/workflows/portfolio-studio-release.yml`). The Linux file is a `.deb`, not an AppImage, and the owner has no Linux machine to test it. The installers are unsigned. |
+
+## Not yet decided or deferred
+
+- Rights backfill for already-published JPEGs (matrix row 21; likely waived).
+- Engineering duplicate project and project-level undo (matrix row 23).
+- Real changes reach the live site only when the owner commits and pushes in GitHub Desktop, including the moved `images/Photography` files.
