@@ -31,11 +31,11 @@ Photography, Engineering and Archive each manage their own images, and the Photo
                "photoFile": "cab_crop.webp" } ] }
 ```
 
-- `src` is the identity: the site-relative path of the file, including videos (Engineering only). For a Photography photo it is `photography/thumbnails/<thumbnail>`, or `photography/published/<file>` for a photo with no thumbnail.
+- `src` is the identity: the site-relative path of the file, including videos (Engineering only). For a Photography photo it is `photography/thumbnails/<thumbnail>`, the path itself when `thumbnail` contains `/`, or `photography/published/<file>` for a photo with no thumbnail.
 - `pages` is any of `photography`, `engineering`, `archive`.
 - `photoFile` is the Photography catalog key, present exactly when `pages` includes photography.
 
-**The description lives in the catalogs** (the site reads it there and the schema enforces it). An item carries an `alt` **only while the file has no use**, such as a photo added in the Editor for Engineering, so it has somewhere to keep its description until a project picks it. When the file gains a use, the item's `alt` is dropped and the catalog text is the only copy, so a description edit never rewrites the library file. One helper, `setAlt(src, alt)`, writes every use (or the item, when there is none) in one edit, and reaches a copied Photography file through `photoFile`. A file added to a project is prefilled from the item. Engineering and Archive media `src` fields become read-only pickers.
+**The description lives in the catalogs** (the site reads it there and the schema enforces it). An item carries an `alt` **only while the file has no use**, such as a photo added in the Editor for Engineering, so it has somewhere to keep its description until a project picks it. When the file gains a use, the item's `alt` is dropped and the catalog text is the only copy, so a description edit never rewrites the library file. One helper, `setAlt(src, alt)`, writes every use (or the item, when there is none) in one edit, and reaches the Photography entry through `photoFile`. A file added to a project is prefilled from the item. Engineering and Archive media `src` fields become read-only pickers.
 
 **Ticking pages needs a description where the site does.** Photography and Archive can be ticked only once the file has a non-empty description (the Description box sits in the same panel); Engineering has no such rule. Videos cannot be ticked for Photography or Archive.
 
@@ -48,19 +48,18 @@ Photography, Engineering and Archive each manage their own images, and the Photo
 - On load the library is **repaired in memory**, never refused: a use whose page or item is missing is added, as derive does. Repair runs again before Save, so a typed cover or poster path never blocks a save by itself; only real schema problems are reported. A pull or an edit by another tool cannot lock the app.
 - No folder scanning. Only derived and explicitly added files are listed, so site chrome images in `images/` never appear.
 
-**In-use rule.** A page checkbox is disabled, with a tooltip naming where the file is used, while that page uses the file. "Used in" lists each use, a Photography use of a copy with its thumbnail path; an unused file shows "Not used yet". A file used twice in one project lists both.
+**In-use rule.** A page checkbox is disabled, with a tooltip naming where the file is used, while that page uses the file. "Used in" lists each use, a Photography use with its path; an unused file shows "Not used yet". A file used twice in one project lists both.
 
-## Photography and shared files
+## One file, referenced by path (replaces the copy rule)
 
-Photography only reads `photography/thumbnails/`, so a file from `images/` assigned to Photography needs a copy there. The copy is made **when the owner ticks Photography**, like `media.import` writes at import: one backend call writes the file under a free name (`name`, then `name-2`, …), reads width and height and hashes the bytes through `runJob`, and returns `thumbnail`, `thumbnailVersion`, `thumbnailWidth` and `thumbnailHeight`. The entry is created complete: `file`, `alt` (the description), `tags`, `visible: true`, `displayPriority: "normal"` and those four fields, so it is valid the moment it is ticked. It is then an ordinary unsaved catalog edit, and Save only commits catalogs. A Discard leaves at most an unreferenced file, as import does today. There is no rollback code to add.
+Revision 3 copied a file into `photography/thumbnails/` when it was also shown on Photography. That makes two files for one photo, and Edit Image would change only one of them. The owner asked for a path-based design, so **a file lives in one place and every page points at it.**
 
-A copied file means two files for one item. The Photography entry is reached through `photoFile`; the Engineering and Archive uses point at `src`. **Edit Image** changes only the Photography file, and the Media detail panel says so for such an item.
-
-Engineering and Archive can point at any `photography/thumbnails/` file, so a photo born in the Photo Editor with Photography ticked needs no copy for them. **Where a photo is written:** into `photography/thumbnails/` when Photography is ticked (as today), otherwise into `images/Library/`. A photo that is not on Photography has no Edit Image, since Edit Image belongs to a Photography entry; to change it, import the original again.
-
-**Rename, delete and library removal** are **refused while another page uses the file**, with a message naming the use, the same rule as the disabled checkbox. This lands in slice 1, together with the live checkboxes, so no slice leaves a window where a shared file can be trashed.
-
-**Edit Image** on a photo also shown on other pages changes that one file for all of them. Engineering and Archive paths carry no version, so the site may show a cached old image until the browser refreshes; that is noted in the Edit Image message and not solved here.
+- **Photography entries may hold a path.** `Photo.thumbnail` stays a bare filename for the existing 29 photos (meaning `photography/thumbnails/<name>`, so no data changes). A value containing `/` is a site-relative path, such as `images/Library/cab.webp`. `js/photography.js` and `js/home.js` build the URL with one small rule (a value with `/` is used as given, encoded per segment), and the generated catalog script passes the value through. Schema, `add.ts`, `manage.ts` and `portfolio-studio` image checks learn the same rule. This is the larger change and is slice 3.
+- **No copies, no copy step.** Ticking Photography on a file creates a Photography entry that points at the file's path, with its width, height and version read through `runJob` from the file already on disk, plus `file`, `alt`, `tags`, `visible: true` and `displayPriority: "normal"`.
+- **Where new files go.** A photo added for Photography alone keeps going to `photography/thumbnails/` as today. A photo added for any other page, or imported in Media, goes to `images/Library/`. Either way it is one file with one library item, and `photoFile` links the Photography entry.
+- **Edit Image on a file other pages also use** writes the new image under a new name and repoints every use in the same save, so no page shows a cached old image (Engineering and Archive paths carry no version). The old file goes to Trash once nothing references it. A file used only by Photography keeps today's behavior (same name, new `thumbnailVersion`).
+- **Rename, delete and library removal** are **refused while another page uses the file**, with a message naming the use, the same rule as the disabled checkbox. This lands in slice 1 with the live checkboxes, so no slice leaves a window where a shared file can be trashed.
+- A photo that is not on Photography has no Edit Image; import the original again to change it.
 
 ## Screens and where they live
 
@@ -78,20 +77,20 @@ New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled stat
 
 1. **Library data and Media screen.** Schema in `Catalogs`, derive, sentinel and repair rules, tests, the Media screen with assignments, the description and in-use rules, and the rename, delete and removal refusals. Page picking is not wired yet, which the PR description says.
 2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library.
-3. **Photography picker and copy** at tick time.
+3. **Photography picker and path-based thumbnails:** the `Photo.thumbnail` path rule in schema, generator, site scripts, `add.ts` and `manage.ts`, then the Photography picker and the new-name Edit Image for shared files.
 4. **Photo Editor add with pages and batch.** `savePortfolio`'s image parameter currently accepts only `photography/thumbnails/` and `photography/published/` paths; this slice widens that check to `images/Library/<file>`. Then docs (`architecture.md`, matrix rows 1 and 24).
 
 ## Tests
 
 - Unit: derive, repair, `setAlt`, page rules, name numbering.
-- Storage: save into a copy of the repo and compare every file; a no-edit save changes nothing; the first library change writes the file; the copy writes the three Photography fields.
+- Storage: save into a copy of the repo and compare every file; a no-edit save changes nothing; the first library change writes the file; ticking Photography on a shared file creates a complete entry from the file already on disk; Edit Image on a shared file repoints every use.
 - Running app (Playwright `_electron`, `chromiumSandbox: true`): assign, pick, blocked unpick, a batch add of three real photos; screenshots against the concept images.
 
 ## Open points for the owner
 
-1. **Photography copy** (one extra file when a non-Photography image is also shown in Photography) versus changing the catalog to store paths, which touches the generator and the site script. This plan recommends the copy.
-2. **Credit** is treated like caption (per page).
-3. **Engineering descriptions** may stay empty while the file is assigned to Engineering alone.
+1. **Credit** is the small source line shown with an image's caption in Engineering and Archive (for example "American Axle & Manufacturing", "2015. Charcoal"). The plan keeps it per page like the caption. Photography has none.
+2. **Descriptions are the images' alt text.** The owner wants them generated from the photo's contents. That is a separate feature (matrix row 13): the plan only reserves the field and shows it in the Add panel and the Media detail panel for now. See the note in the PR.
+3. **Media and Photo Editor as one tab.** Discussed in the PR; not part of slices 1 to 4.
 
 ## Not in this plan
 
