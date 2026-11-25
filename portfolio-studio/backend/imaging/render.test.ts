@@ -4,7 +4,7 @@ import path from "node:path";
 import sharp, { type Sharp } from "sharp";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { ImageSettings } from "../api/api";
-import { analyzeJob, FONT_FAMILY, renderJob, SITE_LOGO, type Rendered } from "./render";
+import { analyzeJob, FONT_FAMILY, measureJob, renderJob, SITE_LOGO, type Rendered } from "./render";
 
 const repositoryDir = path.resolve(import.meta.dirname, "../../..");
 const fontFile = path.resolve(import.meta.dirname, "../../assets/fonts/LiberationSans-Bold.ttf");
@@ -305,6 +305,21 @@ describe("published thumbnail appearance", () => {
       expect(sample.brightness).toBeGreaterThanOrEqual(0);
       expect(sample.saturation).toBeGreaterThanOrEqual(0);
       expect(sample.saturation).toBeLessThanOrEqual(1);
+    },
+    RENDER_TIMEOUT_MS,
+  );
+});
+
+describe("measuring a site image", () => {
+  it(
+    "returns its shape and a stable version",
+    async () => {
+      const file = path.join(repositoryDir, "photography/thumbnails/DSCF4154_crop.webp");
+      const first = await measureJob({ kind: "measure", file });
+      expect(first.width).toBeGreaterThan(0);
+      expect(first.height).toBeGreaterThan(0);
+      expect(first.version).toMatch(/^[0-9a-f]{12}$/);
+      expect(await measureJob({ kind: "measure", file })).toEqual(first);
     },
     RENDER_TIMEOUT_MS,
   );

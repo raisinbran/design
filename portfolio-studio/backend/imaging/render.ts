@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import decodeHeic from "heic-decode";
@@ -36,6 +37,7 @@ const TONE_BLUR_DIVISOR = 12;
 
 export type Job =
   | { kind: "appearance"; photos: { key: string; file: string }[] }
+  | { kind: "measure"; file: string }
   | { kind: "proxy"; file: string; orientation: Orientation }
   | { kind: "level"; file: string; orientation: Orientation }
   | {
@@ -60,6 +62,13 @@ export interface Rendered {
 /** The lean of the straightened photo's dominant lines, or null when there are none to measure. */
 export interface Leveled {
   tilt: Tilt | null;
+}
+
+/** An image's shape as shown (orientation applied) and a short fingerprint of its bytes. */
+export interface Measured {
+  width: number;
+  height: number;
+  version: string;
 }
 
 export type AppearanceMap = Record<string, PhotoAppearance>;
@@ -356,6 +365,22 @@ export async function analyzeJob(
   return appearance;
 }
 
+export async function measureJob(job: Extract<Job, { kind: "measure" }>): Promise<Measured> {
+  const {
+    width = 0,
+    height = 0,
+    orientation = 1,
+  } = await sharp(job.file, {
+    limitInputPixels: PIXEL_LIMIT,
+  }).metadata();
+  const turned = orientation >= 5;
+  const version = createHash("sha256")
+    .update(await readFile(job.file))
+    .digest("hex")
+    .slice(0, 12);
+  return { width: turned ? height : width, height: turned ? width : height, version };
+}
+
 export async function levelJob(job: Extract<Job, { kind: "level" }>): Promise<Leveled> {
   const shown = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);
   const { data, info } = await sharp(shown.data, { raw: shown.info })
@@ -367,7 +392,7 @@ export async function levelJob(job: Extract<Job, { kind: "level" }>): Promise<Le
 }
 
 export async function renderJob(
-  job: Exclude<Job, { kind: "appearance" | "level" }>,
+  job: Exclude<Job, { kind: "appearance" | "level" | "measure" }>,
 ): Promise<Rendered> {
   if (job.kind === "proxy") {
     const { data, info } = await straightenAndCrop(job.file, job.orientation, PROXY_LONG_SIDE);

@@ -30,6 +30,8 @@ export interface PortfolioApi {
   "photos.add"(request: AddRequest): R<Added>;
   /** Reads thumbnail color statistics in the image worker; originals remain private. */
   "photos.appearance"(): R<Record<string, PhotoAppearance>>;
+  /** The shape and version of a site image, so a file can join Photography. */
+  "photos.measure"(src: string): R<{ width: number; height: number; version: string }>;
   /** Renames a catalog entry and its public derivative, never the private original. */
   "photos.rename"(revision: Revision, oldName: string, newName: string): R<PhotoChange>;
   /** Removes an entry and moves its unshared site derivatives to the OS Trash. */
