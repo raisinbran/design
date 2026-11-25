@@ -53,6 +53,7 @@ describe("photos at a site path", () => {
       "../x.webp",
       "images/../x.webp",
       "images/a.webp",
+      "images/a/b/c.webp",
       "/images/a/b.webp",
     ]) {
       const photos = [{ ...view.catalogs.photography.photos[0], thumbnail }];
@@ -100,5 +101,10 @@ describe("photos at a site path", () => {
     expect(existsSync(path.join(folder, SITE_PATH))).toBe(true);
     const photos = (await loadPortfolio(folder)).catalogs.photography.photos;
     expect(photos.some((photo) => photo.file === "Harbor.webp")).toBe(false);
+    const item = (await loadPortfolio(folder)).catalogs.library?.items.find(
+      (entry) => entry.src === SITE_PATH,
+    );
+    expect(item).toBeDefined();
+    expect(item?.pages).not.toContain("photography");
   });
 });

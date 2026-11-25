@@ -32,7 +32,7 @@ export function thumbnailProblem(value: string): string | null {
   const parts = value.split("/");
   const safe =
     parts[0] === "images" &&
-    parts.length >= 3 &&
+    parts.length === 3 &&
     parts.every((part) => part && part !== "." && part !== "..") &&
     !/[\\:]/.test(value);
   return safe ? null : "must be a file name or a path under images/";

@@ -212,19 +212,18 @@ export async function deletePhoto(
     const found = await assetPath(root, filename);
     if (found) paths.push(found);
   }
+  const remaining = {
+    ...view.catalogs,
+    photography: {
+      ...view.catalogs.photography,
+      photos: photos.filter((photo) => photo !== target),
+    },
+  };
+  // A file at a site path stays in the library; saving only drops its Photography page.
   const saved = await savePortfolio(
     folder,
     revision,
-    removeItem(
-      {
-        ...view.catalogs,
-        photography: {
-          ...view.catalogs.photography,
-          photos: photos.filter((photo) => photo !== target),
-        },
-      },
-      photoSrc(target),
-    ),
+    target.thumbnail?.includes("/") ? remaining : removeItem(remaining, photoSrc(target)),
   );
   if (!saved.ok) return saved;
   return { ok: true, value: { view: saved.value, warning: await trashUnused(paths, trash) } };
