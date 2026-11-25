@@ -34,19 +34,19 @@ Status: **Done** (merged to `master`), **Open** (decided, not built), **Question
 
 ## App chrome
 
-| Request                                                                                                                          | Status                                                       |
-| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| A Settings icon and a Help icon, styled like the owner's Scribe app.                                                             | Requested earlier; confirm against the current toolbar.      |
-| The app version is shown on Help. This app is 2.x.x because the Python app was version 1; it is 2.0.0 now.                       | Done.                                                        |
-| A divider between the Media and Photo Editor sections (see the Media concept images in `docs/ui-proposals/`).                    | Requested earlier; confirm against the current layout.       |
-| The "System" appearance should follow the operating system. On the owner's Windows machine it stays light while Windows is dark. | Open (matrix row 30). Native title-bar tint is also missing. |
-| The app should not depend on specific macOS or Windows versions.                                                                 | Question: raised as a question, not yet investigated here.   |
+| Request                                                                                                                                                                                                | Status                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| A Settings icon and a Help icon, styled like the owner's Scribe app.                                                                                                                                   | Requested earlier; confirm against the current toolbar.      |
+| The app version is shown on Help. The version is 1.0.0: the Python app was used for only a couple of days before this app replaced it, so it is treated as a retired prototype with no version number. | Done.                                                        |
+| A divider between the Media and Photo Editor sections (see the Media concept images in `docs/ui-proposals/`).                                                                                          | Requested earlier; confirm against the current layout.       |
+| The "System" appearance should follow the operating system. On the owner's Windows machine it stays light while Windows is dark.                                                                       | Open (matrix row 30). Native title-bar tint is also missing. |
+| The app should not depend on specific macOS or Windows versions.                                                                                                                                       | Question: raised as a question, not yet investigated here.   |
 
 ## Release
 
-| Request                                                                     | Status                                                                                                                                                                                                                           |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| One click-to-run installer per system: Windows `.exe`, macOS `.dmg`, Linux. | Done: pushing a tag such as `v2.0.0` publishes them (`.github/workflows/portfolio-studio-release.yml`). The Linux file is a `.deb`, not an AppImage, and the owner has no Linux machine to test it. The installers are unsigned. |
+| Request                                                                     | Status                                                                                                                                                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One click-to-run installer per system: Windows `.exe`, macOS `.dmg`, Linux. | Done: `npm run make` builds the installer for the system it runs on (see `portfolio-studio/README.md`), and pushing a tag such as `v1.0.0` can publish all three (`.github/workflows/portfolio-studio-release.yml`). The Linux file is a `.deb`, not an AppImage, and the owner has no Linux machine to test it. The installers are unsigned. |
 
 ## Not yet decided or deferred
 

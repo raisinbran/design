@@ -17,7 +17,7 @@ Run these in `portfolio-studio/`:
 - `npm run typecheck` checks the app, then `backend/api/` on its own.
 - `npm run format` lays out the code with Prettier. Run it before committing; `npm test` fails on unformatted files.
 - `npm test` builds the app and runs the tests. On Linux, run `xvfb-run -a npm test`.
-- `npm run make` builds the installer for the current OS: `.deb`, `.exe` or `.dmg`.
+- `npm run make` builds the installer for the current OS: `.deb`, `.exe` or `.dmg`. `README.md` has step-by-step instructions for the owner.
 
 ## Rules
 
