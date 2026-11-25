@@ -1,6 +1,6 @@
 name: Portfolio Studio release
 
-# Push a tag such as v2.0.0 (it must match portfolio-studio/package.json) to publish the installers
+# Push a tag such as v1.0.0 (it must match portfolio-studio/package.json) to publish the installers
 # as a GitHub release, or run the workflow by hand to get them as artifacts only.
 on:
   push:

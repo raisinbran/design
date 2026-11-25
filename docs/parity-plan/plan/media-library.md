@@ -102,6 +102,6 @@ Automatic description suggestions (matrix row 13, a separate decision), folder s
 
 - **No `thumbnails` folder.** The site no longer has separate thumbnail and full-size versions, so the name is a misnomer. The plan should end with every Photography image in one plain folder (path to be chosen when slice 3 is written, with a migration that moves the 29 files, rewrites `thumbnail` values and drops the field name's folder assumption). Until slice 3 lands, new photos keep the current folder and the reader rule above covers both.
 - **Credit stays a separate line.** Caption and Credit are both optional, and neither is carried to other pages when a photo is used elsewhere.
-- **Version.** The Python app was version 1, so this app is 2.x.x (2.0.0 now).
+- **Version.** The owner first chose 2.x.x because the Python app was version 1, then changed it to 1.0.0: the Python app was used for a couple of days and fully replaced, so this is the first real version.
 - **Platforms.** The owner has no Linux machine, so Linux builds are not tested by hand.
 - **Description suggestions** (matrix row 13): a few plain words per photo, accuracy not critical, easy to set up on any PC; a small local model bundled with the app is preferred if it adds no setup.
