@@ -216,53 +216,61 @@ describe("published photo management", () => {
     });
   });
 
-  // Another page may show the same file, so trashing or renaming it must be refused.
-  it("refuses to rename or delete a photo whose file another page uses", async () => {
-    const view = await loadPortfolio(folder);
-    const [first] = view.catalogs.engineering.projects;
-    const used = {
-      ...view.catalogs,
-      engineering: {
-        ...view.catalogs.engineering,
-        projects: [
-          {
-            ...first,
-            media: [
-              ...first.media,
-              {
-                kind: "image" as const,
-                src: "photography/thumbnails/DSCF4154_crop.webp",
-                alt: "",
-                caption: "",
-                credit: "",
-              },
-            ],
-          },
-          ...view.catalogs.engineering.projects.slice(1),
-        ],
-      },
-    };
-    const saved = await savePortfolio(folder, view.revision, used);
-    if (!saved.ok) throw new Error(saved.error.message);
+  // Another page may show the same file, so trashing it must be refused, while a rename follows it.
+  describe("a file another page uses", () => {
+    async function useOnEngineering() {
+      const view = await loadPortfolio(folder);
+      const [first, ...rest] = view.catalogs.engineering.projects;
+      const media = {
+        kind: "image" as const,
+        src: "photography/thumbnails/DSCF4154_crop.webp",
+        alt: "",
+        caption: "",
+        credit: "",
+      };
+      const saved = await savePortfolio(folder, view.revision, {
+        ...view.catalogs,
+        engineering: {
+          ...view.catalogs.engineering,
+          projects: [{ ...first, media: [...first.media, media] }, ...rest],
+        },
+      });
+      if (!saved.ok) throw new Error(saved.error.message);
+      return saved.value.revision;
+    }
 
-    const renamed = await renamePhoto(
-      folder,
-      saved.value.revision,
-      "DSCF4154_crop.heic",
-      "other.heic",
-      toTrash,
-    );
-    const deleted = await deletePhoto(folder, saved.value.revision, "DSCF4154_crop.heic", toTrash);
+    it("is not deleted", async () => {
+      const revision = await useOnEngineering();
 
-    expect(renamed).toMatchObject({
-      ok: false,
-      error: { message: expect.stringContaining("also used by Engineering") },
+      const deleted = await deletePhoto(folder, revision, "DSCF4154_crop.heic", toTrash);
+
+      expect(deleted).toMatchObject({
+        ok: false,
+        error: { message: expect.stringContaining("also used by Engineering") },
+      });
+      expect(() => readFileSync(thumbnail("DSCF4154_crop.webp"))).not.toThrow();
     });
-    expect(deleted).toMatchObject({
-      ok: false,
-      error: { message: expect.stringContaining("cannot be deleted") },
+
+    it("is renamed everywhere", async () => {
+      const revision = await useOnEngineering();
+
+      const renamed = await renamePhoto(
+        folder,
+        revision,
+        "DSCF4154_crop.heic",
+        "DSCF4154_fix.heic",
+        toTrash,
+      );
+
+      expect(renamed.ok).toBe(true);
+      const { catalogs } = await loadPortfolio(folder);
+      const sources = catalogs.engineering.projects.flatMap((project) =>
+        project.media.map((media) => media.src),
+      );
+      expect(sources).toContain("photography/thumbnails/DSCF4154_fix.webp");
+      expect(sources).not.toContain("photography/thumbnails/DSCF4154_crop.webp");
+      expect(readFileSync(thumbnail("DSCF4154_fix.webp")).length).toBeGreaterThan(0);
     });
-    expect(() => readFileSync(thumbnail("DSCF4154_crop.webp"))).not.toThrow();
   });
 
   // Once the library file exists, a renamed or deleted photo must not leave a stale item behind.

@@ -61,7 +61,7 @@ export const MANUAL: ManualSection[] = [
       "- Description is the alt text. It is the same on every page, so editing it changes every use of the file.",
       "- Pages: Engineering and Design can be ticked for a file. A page that already uses the file stays ticked and cannot be unticked. Ticking Photography is not available yet.",
       "- Used in lists each place the file appears. Remove from library is available only for a file nothing uses; the file itself stays on disk.",
-      "Renaming or deleting a photo is refused while another page uses its file.",
+      "Renaming a photo in Photography renames its file everywhere it is used. Deleting a photo is refused while another page uses its file.",
     ],
   },
   {
