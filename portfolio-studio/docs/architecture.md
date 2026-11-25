@@ -20,6 +20,8 @@ The frontend imports `backend/api/` with `import type` only, so no backend code 
 
 ## Website files
 
+The optional `data/media-library.json` records which pages (Photography, Engineering, Design) each image or video is assigned to and one shared description per file; when it is absent the app derives it from the catalogs. Photography entries whose `thumbnail` is a path (`images/Photography/<file>`) are shared by path, so a rename or an Edit Image on a shared file repoints every page. New Photo Editor photos are written to `images/Photography/` for the pages chosen when adding, and Add all drafts adds every draft in turn.
+
 The three catalogs in `data/` hold the website's content. Every save regenerates four files from them: `js/photography-catalog.js`, `js/archive-photo-settings.js`, and the marked regions of `engineeringdesign.html` and `creativedesign.html`. A save skips each file whose bytes would not change, so saving without edits changes nothing. A save refuses to write when any of these files changed after the app loaded it, because saving stale data after a pull would undo the pulled work. The owner then presses Reload.
 
 Engineering project text is HTML. A save passes each body that differs from the saved catalog through sanitize-html, which keeps only the tags the rich text editor makes, so a script or event handler from the renderer never reaches the site. Unedited bodies are left alone, because sanitizing rewrites markup such as entities and inline styles, and a save without edits must change nothing. The first edit to a body therefore also tidies it: inline styles, classes and layout `div`s go, and entities such as `&rtrif;` become characters.

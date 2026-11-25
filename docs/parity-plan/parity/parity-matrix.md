@@ -23,7 +23,7 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 
 | # | Python feature (module) | Electron status | Proposed |
 | --- | --- | --- | --- |
-| 1 | Import originals; batch select current/highlighted/all, staged multi-photo publish with conflict numbering (`photo_studio`) | **Missing**: one photo at a time; conflict = overwrite/cancel prompt | Decide: Build batch, or Waive if owner imports one at a time |
+| 1 | Import originals; batch select current/highlighted/all, staged multi-photo publish with conflict numbering (`photo_studio`) | **Implemented**: Import originals takes several files; Add all drafts publishes every draft to the chosen pages (`BatchAdd.tsx`); a name conflict stops that photo with the overwrite/cancel prompt | Done |
 | 2 | Filename suffix presets `_crop _edit _fix _small`, custom (`photo_studio`) | **Done** (PR #22) | Done |
 | 3 | JPEG quality 80/85/90/95; max side presets, "change default" (`photo_studio`, `processor`) | **Partial**: fixed 800 px, fixed quality per codec | Build quality/size controls if the site needs more than 800 px |
 | 4 | Publish full-size JPEG plus separately framed WebP thumbnail (`processor`, `gallery_thumbnails`) | **Missing**: one derivative; format is now owner-selectable | Decide: the single-derivative model may be an intentional simplification |
@@ -51,7 +51,7 @@ Status key: **Done**, **Partial**, **Missing**, **N/A** (Tk or Python-internal, 
 | # | Python feature | Electron status | Proposed |
 | --- | --- | --- | --- |
 | 23 | Engineering: add, duplicate, remove, reorder, undo; rich-text body preserving legacy markup (`engineering_editor`, `rich_text`) | **Partial**: add, remove, reorder, rich text done; **no duplicate and no project-level undo** (verified in `EngineeringView.tsx`) | Verified; owner to decide on duplicate/undo |
-| 24 | Engineering/Archive media: import local image or video, optimize, add/remove/reorder, choose cover (`*_editor`) | **Implemented**: Add media picks files; images follow the photo rules (upright, 800 px, WebP, rights, mark), Engineering videos are copied, the first image becomes an empty cover. Archive takes no video, and no PDF on either page (`backend/storage/media.ts`) | Done |
+| 24 | Engineering/Archive media: import local image or video, optimize, add/remove/reorder, choose cover (`*_editor`) | **Implemented**: Add media picks files; images follow the photo rules (upright, 800 px, WebP, rights, mark), Engineering videos are copied, the first image becomes an empty cover. Projects can also pick files from the media library. Archive takes no video, and no PDF on either page (`backend/storage/media.ts`) | Done |
 | 25 | Video still-frame preview (`video_preview`) | **Missing** | Later |
 | 26 | Unsaved-draft preview with asset overrides (`engineering_editor.preview`, `archive_editor.preview`) | **Partial**: Preview opens saved page only | Decide |
 | 27 | Archive collections: metadata, crop/prominence/focus settings, migrate legacy HTML (`archive_catalog`, `archive_writer`) | **Done**: crop mode, prominence and a Position (focus) field exist in `ArchiveView.tsx` | Verified |
