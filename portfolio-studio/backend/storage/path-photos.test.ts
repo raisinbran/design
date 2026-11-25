@@ -107,4 +107,39 @@ describe("photos at a site path", () => {
     expect(item).toBeDefined();
     expect(item?.pages).not.toContain("photography");
   });
+
+  // Another page showing the photo must follow an edit, and must never see the old file's bytes change.
+  it("writes an edit of a shared photo to a new file and repoints every page", async () => {
+    const view = await withPathPhoto();
+    const catalogs = structuredClone(view.catalogs);
+    const project = catalogs.archive.collections[0];
+    project.media.push({
+      id: "shared",
+      src: SITE_PATH,
+      alt: "harbor",
+      caption: "",
+      credit: "",
+      cropMode: "natural",
+      displayRatio: null,
+      position: "50% 50%",
+      prominence: "normal",
+    });
+    const shared = await savePortfolio(folder, view.revision, catalogs);
+    if (!shared.ok) throw new Error(shared.error.message);
+
+    const next = Buffer.from("edited");
+    const replaced = await addPhoto(
+      folder,
+      { kind: "replace", revision: shared.value.revision, sourceId: "", photoKey: "Harbor.webp" },
+      { ...image, bytes: next },
+    );
+    expect(replaced.ok).toBe(true);
+    const edited = "images/Photography/Harbor-edit.webp";
+    expect(readFileSync(path.join(folder, edited))).toEqual(next);
+    expect(readFileSync(path.join(folder, SITE_PATH))).toEqual(bytes);
+    const after = (await loadPortfolio(folder)).catalogs;
+    expect(after.photography.photos.at(-1)?.thumbnail).toBe(edited);
+    expect(after.archive.collections[0].media.at(-1)?.src).toBe(edited);
+    expect(after.library.items.some((item) => item.src === SITE_PATH)).toBe(false);
+  });
 });
