@@ -66,4 +66,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" installers/* --repo "$GITHUB_REPOSITORY" \
             --title "Portfolio Studio ${GITHUB_REF_NAME#v}" \
-            --notes "These installers are unsigned. Windows may show SmartScreen (More info, then Run anyway). On macOS, right-click the app and choose Open the first time."
+            --notes "These installers are unsigned. Windows may show SmartScreen (More info, then Run anyway). On macOS, open the app once, then go to System Settings, Privacy and Security, and choose Open Anyway. The macOS installer is for Apple silicon Macs."
