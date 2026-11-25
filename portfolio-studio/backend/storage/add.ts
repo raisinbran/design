@@ -10,10 +10,21 @@ import {
   publishedFilename,
   type PhotoOutputFormat,
 } from "../../shared/photo-format";
-import { photoSrc } from "../../shared/library";
+import { describeUses, moveItem, photoSrc, repointUses } from "../../shared/library";
 import { loadPortfolio, savePortfolio } from "./portfolio";
 
 type Photo = PortfolioView["catalogs"]["photography"]["photos"][number];
+
+// "images/Cat/a.jpg" becomes "images/Cat/a-edit.jpg", numbered when that name is taken.
+function editedPath(folder: string, source: string, catalogs: PortfolioView["catalogs"]): string {
+  const { dir, name, ext } = path.posix.parse(source);
+  const taken = (candidate: string) =>
+    existsSync(path.join(folder, candidate)) ||
+    catalogs.library.items.some((item) => item.src.toLowerCase() === candidate.toLowerCase());
+  let candidate = `${dir}/${name}-edit${ext}`;
+  for (let n = 2; taken(candidate); n++) candidate = `${dir}/${name}-edit${n}${ext}`;
+  return candidate;
+}
 
 /**
  * Writes `image` as a photo's gallery image and saves the catalog and the photography script.
@@ -70,8 +81,16 @@ export async function addPhoto(
       },
     };
   }
-  const thumbnail =
-    request.kind === "new"
+  const previous = existing ? photoSrc(existing) : "";
+  // Editing a photo that another page also shows writes a new file beside the old one, so every
+  // page follows the edit and no page is left pointing at bytes that changed under it.
+  const shared =
+    request.kind === "replace" &&
+    !!existing?.thumbnail?.includes("/") &&
+    describeUses(catalogs, previous, "photography") !== "";
+  const thumbnail = shared
+    ? editedPath(folder, previous, catalogs)
+    : request.kind === "new"
       ? publishedFilename(bareName!, request.format)
       : (existing?.thumbnail ?? webpName(key));
   // A bare name lives in photography/thumbnails/; a path names its own place.
@@ -123,10 +142,11 @@ export async function addPhoto(
       ? photos.map((item) => (item === existing ? photo : item))
       : [...photos, photo],
   };
+  const edited = { ...catalogs, photography };
   const saved = await savePortfolio(
     folder,
     request.revision,
-    { ...catalogs, photography },
+    shared ? moveItem(repointUses(edited, previous, destination), previous, destination) : edited,
     { [destination]: image.bytes },
   );
   return saved.ok ? { ok: true, value: { view: saved.value, photoKey: photo.file } } : saved;
