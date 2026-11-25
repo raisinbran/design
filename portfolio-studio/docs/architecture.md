@@ -20,7 +20,7 @@ The frontend imports `backend/api/` with `import type` only, so no backend code 
 
 ## Website files
 
-The optional `data/media-library.json` records which pages (Photography, Engineering, Design) each image or video is assigned to and one shared description per file; when it is absent the app derives it from the catalogs. Photography entries whose `thumbnail` is a path (`images/Photography/<file>`) are shared by path, so a rename or an Edit Image on a shared file repoints every page. New Photo Editor photos are written to `images/Photography/` for the pages chosen when adding, and Add all drafts adds every draft in turn.
+The optional `data/media-library.json` records which pages (Photography, Engineering, Design) each image or video is assigned to and one shared description per file; when it is absent the app derives it from the catalogs. Photography entries whose `thumbnail` is a path (`images/Photography/<file>`) are shared by path. A rename changes only the catalog name and keeps the file; Edit Image on a file another page uses writes a new file and repoints every page. New Photo Editor photos are written to `images/Photography/` for the pages chosen when adding, and Add all drafts adds every draft in turn.
 
 The three catalogs in `data/` hold the website's content. Every save regenerates four files from them: `js/photography-catalog.js`, `js/archive-photo-settings.js`, and the marked regions of `engineeringdesign.html` and `creativedesign.html`. A save skips each file whose bytes would not change, so saving without edits changes nothing. A save refuses to write when any of these files changed after the app loaded it, because saving stale data after a pull would undo the pulled work. The owner then presses Reload.
 
