@@ -1,6 +1,6 @@
 # Plan: Media library (one place to assign files to pages)
 
-Status: **approved by the owner with the comments below; slice 1 in progress.** Revision 1 was rejected in independent review; each point is answered below. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
+Status: **approved by the owner with the comments below; slices 1 to 4 are merged; installers are next.** Revision 1 was rejected in independent review; each point is answered below. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
 
 ## Why
 
@@ -79,8 +79,8 @@ New controls follow `portfolio-studio/AGENTS.md`: fixed positions, disabled stat
 
 1. **Library data and Media screen.** Schema in `Catalogs`, derive, sentinel and repair rules, tests, the Media screen with assignments, the description and in-use rules, and the rename, delete and removal refusals. Page picking is not wired yet, which the PR description says.
 2. **Engineering and Archive pickers,** read-only media `src` pickers, `setAlt`, and `media.import` registering its files in the library.
-3. **Photography picker and path-based thumbnails:** the `Photo.thumbnail` path rule and validation in the files listed above, then the Photography picker and the new-name Edit Image for shared files. `savePortfolio`'s image check accepts only `photography/thumbnails/` and `photography/published/` paths today; this slice, where `images/Library/<file>` is first written through it, widens it (and creates the folder).
-4. **Photo Editor add with pages and batch.** Then docs (`architecture.md`, matrix rows 1 and 24).
+3. **Photography picker and path-based thumbnails:** the `Photo.thumbnail` path rule and validation in the files listed above, then the new-name Edit Image for shared files (a Photography picker was dropped; Media assigns photos). `savePortfolio`'s image check accepts only `photography/thumbnails/` and `photography/published/` paths today; this slice, where `images/Library/<file>` is first written through it, widens it (and creates the folder).
+4. **Photo Editor add with pages and batch.** Merged, with the docs (`portfolio-studio/docs/architecture.md`, matrix rows 1 and 24).
 
 ## Tests
 
