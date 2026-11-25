@@ -14,6 +14,10 @@
   let photos = allPhotos;
 
   const path = name => "photography/published/" + encodeURIComponent(name);
+  // A value with a slash is a site path; a bare name lives in photography/thumbnails/.
+  const thumbnailPath = value => value.includes("/")
+    ? value.split("/").map(encodeURIComponent).join("/")
+    : "photography/thumbnails/" + encodeURIComponent(value);
 
   function ratioAt(index) {
     const p = photos[index];
@@ -65,7 +69,7 @@
     img.loading = "lazy";
     img.decoding = "async";
     img.src = photo.thumbnail
-      ? "photography/thumbnails/" + encodeURIComponent(photo.thumbnail)
+      ? thumbnailPath(photo.thumbnail)
         + (photo.thumbnailVersion ? `?v=${encodeURIComponent(photo.thumbnailVersion)}` : "")
       : path(photo.file);
     img.alt = photo.alt;

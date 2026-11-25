@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { thumbnailProblem } from "../../shared/library";
 
 // Field order is the order in the JSON files, because saving writes the parsed value back.
 const position = z
@@ -18,7 +19,14 @@ export const Photo = z
     tags: z.array(z.string()),
     /** Keeps its index during arrangement; never written to the site. */
     locked: z.literal(true).optional(),
-    thumbnail: z.string().optional(),
+    /** A file name in `photography/thumbnails/`, or a site path under `images/`. */
+    thumbnail: z
+      .string()
+      .refine(
+        (value) => thumbnailProblem(value) === null,
+        "must be a file name or a path under images/",
+      )
+      .optional(),
     thumbnailVersion: z.string().optional(),
     thumbnailWidth: z.number().int().optional(),
     thumbnailHeight: z.number().int().optional(),

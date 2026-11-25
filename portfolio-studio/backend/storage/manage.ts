@@ -96,6 +96,18 @@ export async function renamePhoto(
     );
   }
 
+  // A photo whose image sits at a site path keeps its file; only the catalog name changes.
+  if (original.thumbnail?.includes("/")) {
+    const newPhotos = photos.map((photo) =>
+      photo === original ? { ...photo, file: newName } : photo,
+    );
+    const saved = await savePortfolio(folder, revision, {
+      ...view.catalogs,
+      photography: { ...view.catalogs.photography, photos: newPhotos },
+    });
+    return saved.ok ? { ok: true, value: { view: saved.value } } : saved;
+  }
+
   const directory = original.thumbnail ? "thumbnails" : "published";
   const root = await publicationRoot(folder, directory);
   if (!root) return error("invalid", `Unsafe or missing site image directory: ${directory}`);
@@ -185,10 +197,14 @@ export async function deletePhoto(
     );
 
   const paths: string[] = [];
-  for (const [directory, filename] of [
-    ["thumbnails", target.thumbnail],
-    ["published", target.file],
-  ] as const) {
+  // An image at a site path is not this photo's to trash; deleting only drops the entry.
+  const owned = target.thumbnail?.includes("/")
+    ? []
+    : ([
+        ["thumbnails", target.thumbnail],
+        ["published", target.file],
+      ] as const);
+  for (const [directory, filename] of owned) {
     if (!filename) continue;
     const root = await publicationRoot(folder, directory);
     if (!root) return error("invalid", `Unsafe or missing site image directory: ${directory}`);
@@ -196,19 +212,18 @@ export async function deletePhoto(
     const found = await assetPath(root, filename);
     if (found) paths.push(found);
   }
+  const remaining = {
+    ...view.catalogs,
+    photography: {
+      ...view.catalogs.photography,
+      photos: photos.filter((photo) => photo !== target),
+    },
+  };
+  // A file at a site path stays in the library; saving only drops its Photography page.
   const saved = await savePortfolio(
     folder,
     revision,
-    removeItem(
-      {
-        ...view.catalogs,
-        photography: {
-          ...view.catalogs.photography,
-          photos: photos.filter((photo) => photo !== target),
-        },
-      },
-      photoSrc(target),
-    ),
+    target.thumbnail?.includes("/") ? remaining : removeItem(remaining, photoSrc(target)),
   );
   if (!saved.ok) return saved;
   return { ok: true, value: { view: saved.value, warning: await trashUnused(paths, trash) } };

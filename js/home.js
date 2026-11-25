@@ -18,11 +18,13 @@
   const catalog = (window.PORTFOLIO_PHOTOS || []).filter(photo =>
     photo.visible !== false && photo.file && photo.alt);
   const photoUrl = photo => {
-    const name = photo.thumbnail || photo.file;
-    const folder = photo.thumbnail ? "thumbnails" : "published";
     const version = photo.thumbnail ? photo.thumbnailVersion : photo.mediaVersion;
-    return "photography/" + folder + "/" + encodeURIComponent(name) +
-      (version ? "?v=" + encodeURIComponent(version) : "");
+    const location = !photo.thumbnail
+      ? "photography/published/" + encodeURIComponent(photo.file)
+      : photo.thumbnail.includes("/")
+        ? photo.thumbnail.split("/").map(encodeURIComponent).join("/")
+        : "photography/thumbnails/" + encodeURIComponent(photo.thumbnail);
+    return location + (version ? "?v=" + encodeURIComponent(version) : "");
   };
 
   document.querySelectorAll("[data-home-preview]").forEach(stage => {

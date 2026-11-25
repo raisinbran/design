@@ -7,6 +7,7 @@ import { editCatalogs } from "../app/editor";
 import { PhotoFields } from "./PhotoFields";
 import { EditorColumns } from "../app/EditorColumns";
 import { siteImage } from "../app/portfolio";
+import { photoSrc } from "../../shared/library";
 import {
   arrangePhotos,
   movePhoto,
@@ -33,12 +34,7 @@ const ARRANGEMENTS: { value: ArrangementStrategy | "tags"; label: string }[] = [
   { value: "tags", label: "Tags + alternating shapes" },
 ];
 
-const photoUrl = (photo: Photo) =>
-  siteImage(
-    photo.thumbnail
-      ? `photography/thumbnails/${photo.thumbnail}`
-      : `photography/published/${photo.file}`,
-  );
+const photoUrl = (photo: Photo) => siteImage(photoSrc(photo));
 
 function editPhotography(change: (photography: Photography) => Photography) {
   editCatalogs((catalogs) => ({ ...catalogs, photography: change(catalogs.photography) }));

@@ -12,6 +12,7 @@ import { loadPortfolio } from "../storage/portfolio";
 import { deletePhoto, renamePhoto } from "../storage/manage";
 import { addPhoto } from "../storage/add";
 import { importMedia, MEDIA_EXTENSIONS } from "../storage/media";
+import { photoSrc } from "../../shared/library";
 import { MIN_CONFIDENCE } from "./autolevel";
 import { cancelJob, runJob } from "./jobs";
 import type { Job, Rendered } from "./render";
@@ -221,9 +222,7 @@ export function photoHandlers(
       const view = await loadPortfolio(siteFolder);
       const photos = await Promise.all(
         view.catalogs.photography.photos.map(async (photo) => {
-          const file = photo.thumbnail
-            ? `photography/thumbnails/${photo.thumbnail}`
-            : `photography/published/${photo.file}`;
+          const file = photoSrc(photo);
           const url = `portfolio://site/${file.split("/").map(encodeURIComponent).join("/")}`;
           const resolved = await resolveSiteImage(siteFolder, url);
           return resolved ? { key: photo.file, file: resolved } : null;
