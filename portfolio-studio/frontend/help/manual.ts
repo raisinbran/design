@@ -11,7 +11,7 @@ export const MANUAL: ManualSection[] = [
     title: "Overview",
     text: [
       "Portfolio Studio edits the website in your website folder. It writes files only: to publish, commit and push in GitHub Desktop. The app never commits.",
-      "The sidebar has the three site pages (Photography, Engineering, Archive), then the Photo Editor. Settings and Help are the two icons at the bottom.",
+      "The sidebar has the three site pages (Photography, Engineering, Design), then the Photo Editor. Settings and Help are the two icons at the bottom.",
     ],
   },
   {
@@ -46,10 +46,10 @@ export const MANUAL: ManualSection[] = [
     ],
   },
   {
-    id: "archive",
-    title: "Archive",
+    id: "design",
+    title: "Design",
     text: [
-      "Archive projects work like Engineering projects without a body. Each image needs a description (alt text) and has a caption, a credit line, a position, a prominence and a crop mode.",
+      "Design projects work like Engineering projects without a body. Each image needs a description (alt text) and has a caption, a credit line, a position, a prominence and a crop mode.",
       "Add image picks images and adds them to the project under the same photo rules.",
     ],
   },
@@ -59,7 +59,7 @@ export const MANUAL: ManualSection[] = [
     text: [
       "Media lists every file the site uses, with the pages it is assigned to. Search by file name or description, or filter by page.",
       "- Description is the alt text. It is the same on every page, so editing it changes every use of the file.",
-      "- Pages: Engineering and Archive can be ticked for a file. A page that already uses the file stays ticked and cannot be unticked. Ticking Photography is not available yet.",
+      "- Pages: Engineering and Design can be ticked for a file. A page that already uses the file stays ticked and cannot be unticked. Ticking Photography is not available yet.",
       "- Used in lists each place the file appears. Remove from library is available only for a file nothing uses; the file itself stays on disk.",
       "Renaming or deleting a photo is refused while another page uses its file.",
     ],

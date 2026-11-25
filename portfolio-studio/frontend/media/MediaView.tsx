@@ -18,6 +18,7 @@ import { useState } from "react";
 import type { Catalogs } from "../../backend/api/api";
 import {
   descriptionOf,
+  PAGE_LABELS,
   pagesInUse,
   removeItem,
   setAlt,
@@ -30,11 +31,7 @@ import { EditorColumns } from "../app/EditorColumns";
 import { editCatalogs } from "../app/editor";
 import { siteImage } from "../app/portfolio";
 
-const PAGES: [Page, string][] = [
-  ["photography", "Photography"],
-  ["engineering", "Engineering"],
-  ["archive", "Archive"],
-];
+const PAGES = Object.entries(PAGE_LABELS) as [Page, string][];
 type Filter = "all" | Page | "unassigned";
 const VIDEO = /\.(mp4|webm)$/i;
 const nameOf = (src: string) => src.slice(src.lastIndexOf("/") + 1);
@@ -95,7 +92,7 @@ export function MediaView({ catalogs }: { catalogs: Catalogs }) {
               { value: "all", label: "All" },
               { value: "photography", label: "Photo" },
               { value: "engineering", label: "Eng." },
-              { value: "archive", label: "Archive" },
+              { value: "archive", label: "Design" },
               { value: "unassigned", label: "None" },
             ]}
           />
@@ -109,7 +106,11 @@ export function MediaView({ catalogs }: { catalogs: Catalogs }) {
               onClick={() => setSelected(item.src)}
               leftSection={<Thumbnail src={item.src} size={40} />}
               label={nameOf(item.src)}
-              description={item.pages.length ? item.pages.join(", ") : "Not on any page"}
+              description={
+                item.pages.length
+                  ? item.pages.map((page) => PAGE_LABELS[page]).join(", ")
+                  : "Not on any page"
+              }
             />
           ))}
         </Stack>
@@ -188,7 +189,7 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
             {uses.map((use, index) => (
               <List.Item key={index}>
                 <Badge size="xs" variant="light" mr={6}>
-                  {use.page}
+                  {PAGE_LABELS[use.page]}
                 </Badge>
                 {use.where} ({use.kind})
               </List.Item>

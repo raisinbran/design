@@ -256,7 +256,7 @@ describe("published photo management", () => {
 
     expect(renamed).toMatchObject({
       ok: false,
-      error: { message: expect.stringContaining("also used by engineering") },
+      error: { message: expect.stringContaining("also used by Engineering") },
     });
     expect(deleted).toMatchObject({
       ok: false,
