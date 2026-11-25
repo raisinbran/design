@@ -1,0 +1,205 @@
+import type { Catalogs } from "../backend/catalogs/schema";
+
+export type Page = Catalogs["library"]["items"][number]["pages"][number];
+export type Library = Catalogs["library"];
+export type LibraryItem = Library["items"][number];
+/** The catalogs without the library, which is what `deriveLibrary` reads. */
+export type Content = Omit<Catalogs, "library">;
+
+/** One place a file is used. `carriesAlt` is false for covers and posters, which have no description. */
+export interface Use {
+  page: Page;
+  kind: "photo" | "image" | "video" | "cover" | "poster";
+  /** The project title, or the photo's catalog key, for the Used in list. */
+  where: string;
+  carriesAlt: boolean;
+}
+
+/** The site path of a Photography photo's image. */
+export const photoSrc = (photo: { file: string; thumbnail?: string }): string =>
+  photo.thumbnail
+    ? photo.thumbnail.includes("/")
+      ? photo.thumbnail
+      : `photography/thumbnails/${photo.thumbnail}`
+    : `photography/published/${photo.file}`;
+
+/** Every use of every file in the catalogs, keyed by site path. */
+export function usesByFile(content: Content): Map<string, Use[]> {
+  const uses = new Map<string, Use[]>();
+  const add = (src: string, use: Use) => {
+    if (src) uses.set(src, [...(uses.get(src) ?? []), use]);
+  };
+  for (const photo of content.photography.photos)
+    add(photoSrc(photo), {
+      page: "photography",
+      kind: "photo",
+      where: photo.file,
+      carriesAlt: true,
+    });
+  for (const project of content.engineering.projects) {
+    add(project.cover, {
+      page: "engineering",
+      kind: "cover",
+      where: project.title,
+      carriesAlt: false,
+    });
+    for (const media of project.media) {
+      add(media.src, {
+        page: "engineering",
+        kind: media.kind,
+        where: project.title,
+        carriesAlt: true,
+      });
+      if (media.poster)
+        add(media.poster, {
+          page: "engineering",
+          kind: "poster",
+          where: project.title,
+          carriesAlt: false,
+        });
+    }
+  }
+  for (const project of content.archive.collections) {
+    add(project.cover, { page: "archive", kind: "cover", where: project.title, carriesAlt: false });
+    for (const media of project.media)
+      add(media.src, { page: "archive", kind: "image", where: project.title, carriesAlt: true });
+  }
+  return uses;
+}
+
+const photoFileOf = (uses: Use[]) => uses.find((use) => use.kind === "photo")?.where;
+
+/**
+ * Returns the library with every use represented: a use adds its page to the file's item, the
+ * Photography link and the description follow the catalogs, and assignments without a use stay.
+ */
+export function repairLibrary(library: Library, content: Content): Library {
+  const uses = usesByFile(content);
+  const items = library.items.map((item): LibraryItem => {
+    const here = uses.get(item.src) ?? [];
+    const pages: Page[] = item.pages.filter((page) => page !== "photography");
+    for (const use of here) if (!pages.includes(use.page)) pages.push(use.page);
+    const photoFile = photoFileOf(here);
+    const keepsAlt = item.alt !== undefined && !here.some((use) => use.carriesAlt);
+    return {
+      src: item.src,
+      pages: PAGE_ORDER.filter((page) => pages.includes(page)),
+      ...(photoFile ? { photoFile } : {}),
+      ...(keepsAlt ? { alt: item.alt } : {}),
+    };
+  });
+  const known = new Set(items.map((item) => item.src));
+  for (const [src, here] of uses) {
+    if (known.has(src)) continue;
+    const photoFile = photoFileOf(here);
+    items.push({
+      src,
+      pages: PAGE_ORDER.filter((page) => here.some((use) => use.page === page)),
+      ...(photoFile ? { photoFile } : {}),
+    });
+  }
+  return { schemaVersion: 1, items };
+}
+
+const PAGE_ORDER: Page[] = ["photography", "engineering", "archive"];
+
+/** The library a folder without `data/media-library.json` has: every used file on its pages. */
+export const deriveLibrary = (content: Content): Library =>
+  repairLibrary({ schemaVersion: 1, items: [] }, content);
+
+/** The pages that use `src`, which cannot be unticked. */
+export const pagesInUse = (content: Content, src: string): Page[] => [
+  ...new Set((usesByFile(content).get(src) ?? []).map((use) => use.page)),
+];
+
+/** The description shown for a file: the first use that carries one, else the item's own. */
+export function descriptionOf(catalogs: Catalogs, item: LibraryItem): string {
+  const used = describedUses(catalogs, item.src);
+  return used.find((text) => text.trim() !== "") ?? item.alt ?? "";
+}
+
+function describedUses(catalogs: Catalogs, src: string): string[] {
+  const texts: string[] = [];
+  for (const photo of catalogs.photography.photos)
+    if (photoSrc(photo) === src) texts.push(photo.alt);
+  for (const project of catalogs.engineering.projects)
+    for (const media of project.media) if (media.src === src) texts.push(media.alt);
+  for (const project of catalogs.archive.collections)
+    for (const media of project.media) if (media.src === src) texts.push(media.alt);
+  return texts;
+}
+
+/** Writes `alt` to every use of the file that carries a description, or to the item when none does. */
+export function setAlt(catalogs: Catalogs, src: string, alt: string): Catalogs {
+  const carries = (usesByFile(catalogs).get(src) ?? []).some((use) => use.carriesAlt);
+  if (!carries)
+    return {
+      ...catalogs,
+      library: {
+        ...catalogs.library,
+        items: catalogs.library.items.map((item) => (item.src === src ? { ...item, alt } : item)),
+      },
+    };
+  return {
+    ...catalogs,
+    photography: {
+      ...catalogs.photography,
+      photos: catalogs.photography.photos.map((photo) =>
+        photoSrc(photo) === src ? { ...photo, alt } : photo,
+      ),
+    },
+    engineering: {
+      ...catalogs.engineering,
+      projects: catalogs.engineering.projects.map((project) => ({
+        ...project,
+        media: project.media.map((media) => (media.src === src ? { ...media, alt } : media)),
+      })),
+    },
+    archive: {
+      ...catalogs.archive,
+      collections: catalogs.archive.collections.map((project) => ({
+        ...project,
+        media: project.media.map((media) => (media.src === src ? { ...media, alt } : media)),
+      })),
+    },
+  };
+}
+
+/** Ticks or unticks Engineering or Archive for a file; refuses a page that uses it. */
+export function setPage(catalogs: Catalogs, src: string, page: Page, on: boolean): Catalogs {
+  if (page === "photography" || (!on && pagesInUse(catalogs, src).includes(page))) return catalogs;
+  return {
+    ...catalogs,
+    library: {
+      ...catalogs.library,
+      items: catalogs.library.items.map((item) =>
+        item.src !== src
+          ? item
+          : {
+              ...item,
+              pages: PAGE_ORDER.filter((each) => (each === page ? on : item.pages.includes(each))),
+            },
+      ),
+    },
+  };
+}
+
+/** Drops an unused file from the library; the file stays on disk. */
+export function removeItem(catalogs: Catalogs, src: string): Catalogs {
+  if (usesByFile(catalogs).has(src)) return catalogs;
+  return {
+    ...catalogs,
+    library: {
+      ...catalogs.library,
+      items: catalogs.library.items.filter((item) => item.src !== src),
+    },
+  };
+}
+
+/** Where `src` is used, as a sentence for a refusal such as "Archive project Charcoal". */
+export function describeUses(content: Content, src: string, except?: Page): string {
+  return (usesByFile(content).get(src) ?? [])
+    .filter((use) => use.page !== except)
+    .map((use) => `${use.page} (${use.where})`)
+    .join(", ");
+}

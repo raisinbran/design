@@ -7,6 +7,7 @@ import { EngineeringView } from "../engineering/EngineeringView";
 import { PhotoEditor } from "../photo-editor/PhotoEditor";
 import { PhotographyView } from "../photography/PhotographyView";
 import { HelpView } from "../help/HelpView";
+import { MediaView } from "../media/MediaView";
 import { Settings } from "../settings/Settings";
 import { confirmDiscard, isDirty, loadView, redo, showSaved, undo, useEditor } from "./editor";
 import { call, runShowingErrors } from "./portfolio";
@@ -136,6 +137,7 @@ export function App() {
           <EngineeringView catalog={catalogs.engineering} />
         )}
         {catalogs && section === "archive" && <ArchiveView catalog={catalogs.archive} />}
+        {catalogs && section === "media" && <MediaView catalogs={catalogs} />}
         {/* Hidden rather than unmounted, so switching sections keeps the photo being edited. */}
         {view && (
           <div hidden={section !== "photo-editor"}>

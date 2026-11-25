@@ -4,6 +4,7 @@ import { copyFile, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { PortfolioView, Result, Revision } from "../api/api";
 import { Catalogs, listProblems } from "../catalogs/schema";
+import { deriveLibrary, repairLibrary, type Library } from "../../shared/library";
 import {
   archivePage,
   archiveSettingsScript,
@@ -18,6 +19,7 @@ const CATALOG_FILES = {
   engineering: "data/engineering-catalog.json",
   archive: "data/archive-catalog.json",
 } as const;
+const FILE_NAMES = { ...CATALOG_FILES, library: "data/media-library.json" };
 const SITE_FILES = {
   photographyScript: "js/photography-catalog.js",
   engineeringPage: "engineeringdesign.html",
@@ -25,19 +27,36 @@ const SITE_FILES = {
   archiveSettings: "js/archive-photo-settings.js",
 } as const;
 const FILES = [...Object.values(CATALOG_FILES), ...Object.values(SITE_FILES)];
+// The library file is optional: without it the library is what the catalogs imply, and a save
+// creates the file only when the library says more than that.
+const LIBRARY_FILE = "data/media-library.json";
+const ABSENT = "absent";
 export const TEMPORARY_SUFFIX = ".portfolio-studio-tmp";
 const BACKUP_SUFFIX = ".portfolio-studio-bak";
 
 const hash = (text: string) => createHash("sha256").update(text).digest("hex");
 const toJson = (value: unknown) => JSON.stringify(value, null, 2) + "\n";
 
+// The library file's text is "" while the file is absent.
 async function readFiles(folder: string): Promise<Record<string, string>> {
   const texts = await Promise.all(FILES.map((file) => readFile(path.join(folder, file), "utf8")));
-  return Object.fromEntries(FILES.map((file, index) => [file, texts[index]]));
+  const library = await readFile(path.join(folder, LIBRARY_FILE), "utf8").catch((error) => {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return "";
+    throw error;
+  });
+  return {
+    ...Object.fromEntries(FILES.map((file, index) => [file, texts[index]])),
+    [LIBRARY_FILE]: library,
+  };
 }
 
 const revisionOf = (texts: Record<string, string>): Revision =>
-  Object.fromEntries(FILES.map((file) => [file, hash(texts[file])]));
+  Object.fromEntries(
+    [...FILES, LIBRARY_FILE].map((file) => [
+      file,
+      file === LIBRARY_FILE && texts[file] === "" ? ABSENT : hash(texts[file]),
+    ]),
+  );
 
 const describeError = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
@@ -57,24 +76,40 @@ export async function loadPortfolio(folder: string): Promise<PortfolioView> {
       `This is not the website folder, because it has no ${missing.join(", ")}. Choose the folder that holds data/ and index.html.`,
     );
   const texts = await readFiles(folder);
-  const input = Object.fromEntries(
+  const input: Record<string, unknown> = Object.fromEntries(
     Object.entries(CATALOG_FILES).map(([name, file]) => [name, parseCatalog(file, texts[file])]),
   );
+  // Without a library file the library is empty here and filled in below.
+  input.library = texts[LIBRARY_FILE]
+    ? parseCatalog(LIBRARY_FILE, texts[LIBRARY_FILE])
+    : { schemaVersion: 1, items: [] };
   const parsed = Catalogs.safeParse(input);
   // The old apps' catalogs carry fields this app dropped, such as sourceHtml in the archive catalog.
   const unknownFields = parsed.error?.issues.filter((issue) => issue.code === "unrecognized_keys");
   if (unknownFields?.length) {
-    const names = unknownFields.map((issue) => issue.path[0] as keyof typeof CATALOG_FILES);
+    const names = unknownFields.map((issue) => issue.path[0] as keyof typeof FILE_NAMES);
     throw new Error(
-      `These catalogs are in the old apps' format: ${[...new Set(names)].map((name) => CATALOG_FILES[name]).join(", ")}. Pull the latest version in GitHub Desktop, then press Reload.`,
+      `These catalogs are in the old apps' format: ${[...new Set(names)].map((name) => FILE_NAMES[name]).join(", ")}. Pull the latest version in GitHub Desktop, then press Reload.`,
     );
   }
   if (!parsed.success)
     throw new Error(
-      `The catalogs have problems: ${listProblems(parsed.error, input, CATALOG_FILES).join("; ")}`,
+      `The catalogs have problems: ${listProblems(parsed.error, input, FILE_NAMES).join("; ")}`,
     );
-  return { folder, revision: revisionOf(texts), catalogs: parsed.data };
+  const { library, ...content } = parsed.data;
+  return {
+    folder,
+    revision: revisionOf(texts),
+    catalogs: { ...content, library: repairLibrary(library, content) },
+  };
 }
+
+// Item order is not meaning, so a library that differs from the derived one only in order is the same.
+const sameItems = (a: Library, b: Library) => {
+  const sorted = (library: Library) =>
+    toJson([...library.items].sort((x, y) => x.src.localeCompare(y.src)));
+  return sorted(a) === sorted(b);
+};
 
 let saving = false;
 
@@ -97,7 +132,7 @@ export async function savePortfolio(
   try {
     const parsed = Catalogs.safeParse(catalogs);
     if (!parsed.success) {
-      const problems = listProblems(parsed.error, catalogs, CATALOG_FILES);
+      const problems = listProblems(parsed.error, catalogs, FILE_NAMES);
       return {
         ok: false,
         error: { code: "invalid", message: "The catalogs have problems", problems },
@@ -129,14 +164,24 @@ export async function savePortfolio(
       }
     }
     const current = await readFiles(folder);
-    const changed = FILES.filter((file) => hash(current[file]) !== revision[file]);
+    const changed = [...FILES, LIBRARY_FILE].filter(
+      (file) => revisionOf(current)[file] !== revision[file],
+    );
     if (changed.length) {
       const message = `Files changed outside the app: ${changed.join(", ")}`;
       return { ok: false, error: { code: "changed-outside", message } };
     }
-    const { photography, archive } = parsed.data;
+    const { library: unrepaired, ...content } = parsed.data;
+    const { photography, archive } = content;
+    const library = repairLibrary(unrepaired, content);
+    const libraryText = toJson(library);
+    // An absent file is created only when the library says more than the catalogs do.
+    const writeLibrary =
+      current[LIBRARY_FILE] === ""
+        ? sameItems(library, deriveLibrary(content)) === false
+        : libraryText !== current[LIBRARY_FILE];
     const engineering = sanitizeEditedBodies(
-      parsed.data.engineering,
+      content.engineering,
       current[CATALOG_FILES.engineering],
     );
     const next: Record<string, string | Uint8Array> = {
@@ -151,10 +196,15 @@ export async function savePortfolio(
       ),
       [SITE_FILES.archivePage]: archivePage(current[SITE_FILES.archivePage], archive),
       [SITE_FILES.archiveSettings]: archiveSettingsScript(archive),
+      [LIBRARY_FILE]: libraryText,
     };
     await replaceFiles(
       folder,
-      [...Object.keys(images), ...FILES.filter((file) => next[file] !== current[file])],
+      [
+        ...Object.keys(images),
+        ...FILES.filter((file) => next[file] !== current[file]),
+        ...(writeLibrary ? [LIBRARY_FILE] : []),
+      ],
       next,
     );
     return { ok: true, value: await loadPortfolio(folder) };

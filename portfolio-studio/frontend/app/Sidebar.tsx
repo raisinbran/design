@@ -1,14 +1,17 @@
 import { ActionIcon, Divider, Group, NavLink, Stack, Tooltip } from "@mantine/core";
 import type { Page } from "../../backend/api/api";
 
-export type Section = Page | "photo-editor" | "settings" | "help";
+export type Section = Page | "media" | "photo-editor" | "settings" | "help";
 
 const PAGES: [Page, string][] = [
   ["photography", "Photography"],
   ["engineering", "Engineering"],
   ["archive", "Archive"],
 ];
-const TOOLS: [Section, string][] = [["photo-editor", "Photo Editor"]];
+const TOOLS: [Section, string][] = [
+  ["media", "Media"],
+  ["photo-editor", "Photo Editor"],
+];
 
 // Icon outlines on a 24-unit grid, the same ones the Scribe app uses for Settings and Help.
 const SETTINGS_ICON =

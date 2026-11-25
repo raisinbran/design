@@ -1,6 +1,6 @@
 # Plan: Media library (one place to assign files to pages)
 
-Status: **approved by the owner with the comments below; slice 1 in progress.** Revision 1 was rejected in independent review; each point is answered below. It needs re-review and the owner's go-ahead before any slice starts. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
+Status: **approved by the owner with the comments below; slice 1 in progress.** Revision 1 was rejected in independent review; each point is answered below. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
 
 ## Why
 
