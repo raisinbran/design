@@ -8,6 +8,12 @@ export const SUFFIX_OPTIONS = [
   { value: "custom", label: "Custom suffix…" },
 ];
 
+export const FORMAT_CHOICES = [
+  { value: "webp", label: ".webp (rec)" },
+  { value: "jpg", label: ".jpg" },
+  { value: "png", label: ".png" },
+];
+
 export const validSuffix = (suffix: string) => /^_[a-zA-Z0-9_-]{1,20}$/.test(suffix);
 
 /** Appends a recognizable edit suffix to the base name, without retaining the source type. */

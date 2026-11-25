@@ -51,7 +51,8 @@ import {
   type History,
   type Point,
 } from "./geometry";
-import { catalogNameWithSuffix, SUFFIX_OPTIONS, validSuffix } from "./naming";
+import { BatchAdd } from "./BatchAdd";
+import { catalogNameWithSuffix, FORMAT_CHOICES, SUFFIX_OPTIONS, validSuffix } from "./naming";
 import { PhotoViewport } from "./PhotoViewport";
 import {
   aspectOf,
@@ -78,12 +79,6 @@ import {
 interface Editing extends Draft {
   photoKey?: string;
 }
-
-const FORMAT_CHOICES = [
-  { value: "webp", label: ".webp (rec)" },
-  { value: "jpg", label: ".jpg" },
-  { value: "png", label: ".png" },
-];
 
 /** A button with only a symbol: it needs an accessible label and an instant tooltip. */
 function IconTool(props: {
@@ -142,6 +137,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [tool, setTool] = useState<Tool>("none");
   const [confirmReset, setConfirmReset] = useState(false);
   const [help, setHelp] = useState(false);
+  const [batching, setBatching] = useState(false);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
   const [grid, setGrid] = useState<GridMode>("Off");
   const [ratio, setRatio] = useState<RatioState>(FREEFORM);
@@ -246,7 +242,12 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
       if (!image) return;
       setRendered({ image, recipe, format: outputFormat });
       setBusy(false);
-      if (!key) void window.portfolio["photos.saveDraft"](source.id, recipe);
+      if (!key) {
+        void window.portfolio["photos.saveDraft"](source.id, recipe);
+        setDrafts((all) =>
+          all.map((item) => (item.source.id === source.id ? { ...item, recipe } : item)),
+        );
+      }
       // The unedited preview for the eye button loads once, after the first render; a newer job cancels it.
       if (originalFor.current !== source.id) {
         const plain = await window.portfolio["photos.original"](source.id);
@@ -399,6 +400,11 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     <Group align="flex-start" wrap="nowrap">
       <Stack w={240} gap="xs">
         <Button onClick={importOriginal}>Import originals</Button>
+        {drafts.length > 1 && view && (
+          <Button variant="default" disabled={dirty} onClick={() => setBatching(true)}>
+            Add all drafts
+          </Button>
+        )}
         {drafts.map((draft) => (
           <NavLink
             key={draft.source.id}
@@ -408,6 +414,19 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
           />
         ))}
       </Stack>
+      {view && (
+        <BatchAdd
+          opened={batching}
+          drafts={drafts}
+          view={view}
+          onClose={() => setBatching(false)}
+          onAdded={(sourceId, added, pages) => {
+            setDrafts((all) => all.filter((item) => item.source.id !== sourceId));
+            if (editing?.source.id === sourceId) setEditing(null);
+            onAdded(added, pages);
+          }}
+        />
+      )}
       <Stack flex={1} miw={0}>
         {missing && (
           <Group>
