@@ -2,6 +2,7 @@
 import {
   ActionIcon,
   Button,
+  Checkbox,
   Group,
   Modal,
   NavLink,
@@ -21,6 +22,7 @@ import type {
   AddRequest,
   Draft,
   ImageRef,
+  Page,
   PortfolioView,
   Recipe,
   Result,
@@ -112,7 +114,8 @@ const kilobytes = (bytes: number) => `${Math.round(bytes / 1024)} KB`;
 interface PhotoEditorProps {
   /** Each Edit Image click passes a new object, so clicking the same photo again reopens it. */
   editImage: { photoKey: string } | null;
-  onAdded: (view: PortfolioView) => void;
+  /** `pages` are the ones the photo was added to; the app shows the first. */
+  onAdded: (view: PortfolioView, pages: Page[]) => void;
 }
 
 export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
@@ -148,6 +151,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const [customSuffix, setCustomSuffix] = useState("_portfolio");
   const [alt, setAlt] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [pages, setPages] = useState<Page[]>(["photography"]);
   const [conflict, setConflict] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const proxyFor = useRef("");
@@ -175,6 +179,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
     );
     setAlt("");
     setTags([]);
+    setPages(["photography"]);
     setError(null);
   }
 
@@ -344,7 +349,8 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
           name,
           format: outputFormat,
           alt,
-          tags,
+          tags: pages.includes("photography") ? tags : [],
+          pages,
           overwrite,
         };
     setAdding(true);
@@ -354,7 +360,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
       if (added.ok) {
         setDrafts(drafts.filter((item) => item.source.id !== editing.source.id));
         setEditing(null);
-        onAdded(added.value.view);
+        onAdded(added.value.view, request.kind === "new" ? (request.pages ?? []) : ["photography"]);
       } else if (added.error.code === "name-conflict") setConflict(added.error.message);
       else setError(added.error.message);
     } finally {
@@ -382,7 +388,12 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
   const validChoice = suffixChoice !== "custom" || validSuffix(customSuffix);
   const nameProblem = photoBaseNameProblem(name.trim());
   const described =
-    !!editing?.photoKey || (!nameProblem && !!alt.trim() && tags.length > 0 && validChoice);
+    !!editing?.photoKey ||
+    (!nameProblem &&
+      !!alt.trim() &&
+      pages.length > 0 &&
+      (!pages.includes("photography") || tags.length > 0) &&
+      validChoice);
 
   return (
     <Group align="flex-start" wrap="nowrap">
@@ -685,14 +696,27 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                   value={alt}
                   onChange={(event) => setAlt(event.currentTarget.value)}
                 />
-                <TagsInput
-                  label="Tags"
-                  description="A new tag also becomes a filter on the site"
-                  required
-                  data={view?.catalogs.photography.photoTags ?? []}
-                  value={tags}
-                  onChange={setTags}
-                />
+                <Checkbox.Group
+                  label="Pages"
+                  value={pages}
+                  onChange={(value) => setPages(value as Page[])}
+                >
+                  <Group mt={4}>
+                    <Checkbox value="photography" label="Photography" />
+                    <Checkbox value="engineering" label="Engineering" />
+                    <Checkbox value="archive" label="Design" />
+                  </Group>
+                </Checkbox.Group>
+                {pages.includes("photography") && (
+                  <TagsInput
+                    label="Tags"
+                    description="A new tag also becomes a filter on the site"
+                    required
+                    data={view?.catalogs.photography.photoTags ?? []}
+                    value={tags}
+                    onChange={setTags}
+                  />
+                )}
               </>
             )}
             {dirty && <Text c="orange">Save or reload your edits before adding.</Text>}
@@ -702,7 +726,11 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                 loading={adding}
                 onClick={() => void add()}
               >
-                {editing.photoKey ? "Replace image" : "Add to Photo Catalog"}
+                {editing.photoKey
+                  ? "Replace image"
+                  : pages.length === 1 && pages[0] === "photography"
+                    ? "Add to Photo Catalog"
+                    : "Add to library"}
               </Button>
               {!editing.photoKey && (
                 <Button variant="default" onClick={discard}>

@@ -143,11 +143,11 @@ export function App() {
           <div hidden={section !== "photo-editor"}>
             <PhotoEditor
               editImage={editImage}
-              onAdded={(added) => {
+              onAdded={(added, pages) => {
                 loadView(added);
                 setSavedMessage(true);
                 setEditImage(null);
-                setSection("photography");
+                setSection(pages.includes("photography") ? "photography" : "media");
               }}
             />
           </div>

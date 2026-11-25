@@ -136,7 +136,10 @@ export type AddRequest =
       name: string;
       format: PhotoOutputFormat;
       alt: string;
+      /** Needed only when Photography is one of the pages. */
       tags: string[];
+      /** The pages the photo is assigned to; Photography alone when omitted. */
+      pages?: Page[];
       overwrite?: boolean;
     }
   // Edit Image replaces the gallery image of an existing photo, keeping its record.
