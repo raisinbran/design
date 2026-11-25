@@ -1,6 +1,6 @@
 # Plan: Media library (one place to assign files to pages)
 
-Status: **tentatively approved by the owner, subject to the owner comments section; no code written.** Revision 1 was rejected in independent review; each point is answered below. It needs re-review and the owner's go-ahead before any slice starts. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
+Status: **approved by the owner with the comments below; slice 1 in progress.** Revision 1 was rejected in independent review; each point is answered below. It needs re-review and the owner's go-ahead before any slice starts. Concept images: `docs/ui-proposals/media-library-1-section.svg`, `-2-picker.svg`, `-3-editor.svg` (hand-drawn layouts; thumbnails and names are placeholders).
 
 ## Why
 
@@ -101,5 +101,7 @@ Automatic description suggestions (matrix row 13, a separate decision), folder s
 ## Owner comments after tentative approval
 
 - **No `thumbnails` folder.** The site no longer has separate thumbnail and full-size versions, so the name is a misnomer. The plan should end with every Photography image in one plain folder (path to be chosen when slice 3 is written, with a migration that moves the 29 files, rewrites `thumbnail` values and drops the field name's folder assumption). Until slice 3 lands, new photos keep the current folder and the reader rule above covers both.
-- **Credit.** The owner reads Credit lines as captions. Before slice 2, decide whether `credit` is folded into the caption (one text field per page) or kept as a second line.
+- **Credit stays a separate line.** Caption and Credit are both optional, and neither is carried to other pages when a photo is used elsewhere.
+- **Version.** The Python app was version 1, so this app is 2.x.x (2.0.0 now).
+- **Platforms.** The owner has no Linux machine, so Linux builds are not tested by hand.
 - **Description suggestions** (matrix row 13): a few plain words per photo, accuracy not critical, easy to set up on any PC; a small local model bundled with the app is preferred if it adds no setup.
