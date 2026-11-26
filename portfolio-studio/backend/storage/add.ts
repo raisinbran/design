@@ -148,7 +148,8 @@ export async function addPhoto(
 
   // Overwriting a name that another photo already publishes under replaces that photo's image.
   const target =
-    existing ?? (request.kind === "new" && request.overwrite ? competingThumbnail : undefined);
+    existing ??
+    (request.kind === "new" && request.overwrite && inPhotography ? competingThumbnail : undefined);
   if (competingThumbnail && competingThumbnail !== target) {
     return {
       ok: false,
