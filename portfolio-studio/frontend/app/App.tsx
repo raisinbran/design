@@ -1,4 +1,4 @@
-import { AppShell, Button, Group, List, Modal, Text } from "@mantine/core";
+import { AppShell, Button, Group, Modal, Text } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import type { ApiError, Page, PortfolioView } from "../../backend/api/api";
@@ -11,6 +11,7 @@ import { MediaView } from "../media/MediaView";
 import { Settings } from "../settings/Settings";
 import { confirmDiscard, isDirty, loadView, redo, showSaved, undo, useEditor } from "./editor";
 import { call, runShowingErrors } from "./portfolio";
+import { Notices } from "./Notices";
 import { isPage, Sidebar, type Section } from "./Sidebar";
 
 const SAVED_MESSAGE = "Saved. To publish, commit and push in GitHub Desktop.";
@@ -103,22 +104,6 @@ export function App() {
         <Sidebar section={section} hasFolder={!!view} onSelect={setSection} />
       </AppShell.Navbar>
       <AppShell.Main>
-        {/* Hidden again by the next edit, so it never says "Saved" over unsaved work. */}
-        {savedMessage && !dirty && (
-          <Text c="green" mb="md">
-            {SAVED_MESSAGE}
-          </Text>
-        )}
-        {error && (
-          <>
-            <Text c="red">{error.message}</Text>
-            <List size="sm" c="red" mb="md">
-              {error.problems?.map((problem) => (
-                <List.Item key={problem}>{problem}</List.Item>
-              ))}
-            </List>
-          </>
-        )}
         {catalogs && section === "photography" && (
           <PhotographyView
             catalog={catalogs.photography}
@@ -155,6 +140,13 @@ export function App() {
         {section === "settings" && <Settings view={view} onFolderChosen={show} />}
         {section === "help" && <HelpView />}
       </AppShell.Main>
+      {/* Hidden again by the next edit, so it never says "Saved" over unsaved work. */}
+      <Notices
+        saved={savedMessage && !dirty ? SAVED_MESSAGE : null}
+        error={error}
+        onDismissSaved={() => setSavedMessage(false)}
+        onDismissError={() => setError(null)}
+      />
       <Modal
         opened={changedOutside !== null}
         onClose={() => setChangedOutside(null)}
