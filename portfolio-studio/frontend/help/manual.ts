@@ -59,7 +59,7 @@ export const MANUAL: ManualSection[] = [
     text: [
       "Media lists every file the site uses, with the pages it is assigned to. Search by file name or description, or filter by page.",
       "- Description is the alt text. It is the same on every page, so editing it changes every use of the file.",
-      "- Pages: Engineering and Design can be ticked for a file. A page that already uses the file stays ticked and cannot be unticked. Ticking Photography is not available yet.",
+      "- Pages: tick Engineering, Design or Photography for a file. Unticking Photography removes the photo from the gallery and keeps the file here. Engineering and Design stay ticked while a project uses the file.",
       "- Used in lists each place the file appears. Remove from library is available only for a file nothing uses; the file itself stays on disk.",
       "Renaming a photo in Photography renames its file everywhere it is used. Deleting a photo is refused while another page uses its file.",
     ],

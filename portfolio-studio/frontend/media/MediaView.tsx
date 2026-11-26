@@ -24,6 +24,7 @@ import {
   PAGE_LABELS,
   photographyProblem,
   pagesInUse,
+  leavePhotography,
   removeItem,
   setAlt,
   setPage,
@@ -160,11 +161,15 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
             .filter((use) => use.page === page)
             .map((use) => `${use.where} (${use.kind})`)
             .join(", ");
-          const reason = used
-            ? `Used on ${label}: ${where}. Remove it there to untick`
-            : page === "photography"
-              ? photographyProblem(catalogs, item.src)
-              : null;
+          // Unticking Photography removes the photo from the gallery; other pages must drop it first.
+          const reason =
+            page === "photography"
+              ? used
+                ? null
+                : photographyProblem(catalogs, item.src)
+              : used
+                ? `Used on ${label}: ${where}. Remove it there to untick`
+                : null;
           return (
             <Tooltip
               key={page}
@@ -182,7 +187,9 @@ function Detail({ catalogs, item }: { catalogs: Catalogs; item: LibraryItem }) {
                   disabled={!!reason}
                   onChange={(event) =>
                     page === "photography"
-                      ? event.currentTarget.checked && setTagging(true)
+                      ? event.currentTarget.checked
+                        ? setTagging(true)
+                        : editCatalogs((current) => leavePhotography(current, item.src))
                       : editCatalogs((current) =>
                           setPage(current, item.src, page, event.currentTarget.checked),
                         )

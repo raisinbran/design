@@ -5,6 +5,7 @@ import {
   describeSource,
   isVideo,
   joinPhotography,
+  leavePhotography,
   photographyProblem,
   descriptionOf,
   describeUses,
@@ -201,6 +202,48 @@ describe("library", () => {
       "engineering",
     ]);
     expect(joinPhotography(content, "images/Cat/a.jpg", measured, [])).toBe(content);
+  });
+
+  it("removes a photo from Photography and keeps its file, description and other pages", () => {
+    const content = {
+      ...base,
+      photography: {
+        ...base.photography,
+        photos: [{ ...photo("a.jpg", "images/Cat/a.jpg"), alt: "a cat" }, photo("old.jpg")],
+      },
+      engineering: {
+        ...base.engineering,
+        projects: [{ ...project, media: [engineeringImage("images/Cat/a.jpg", "a cat")] }],
+      },
+    };
+    const joined = { ...content, library: deriveLibrary(content) };
+
+    const left = leavePhotography(joined, "images/Cat/a.jpg");
+
+    expect(left.photography.photos.map((entry) => entry.file)).toEqual(["old.jpg"]);
+    const item = left.library.items.find((entry) => entry.src === "images/Cat/a.jpg");
+    expect(item).toMatchObject({ pages: ["engineering"] });
+    expect(item).not.toHaveProperty("photoFile");
+    expect(descriptionOf(left, item!)).toBe("a cat");
+    expect(leavePhotography(left, "images/Cat/a.jpg")).toBe(left);
+  });
+
+  it("keeps the description of a photo removed from Photography when no page uses the file", () => {
+    const content = {
+      ...base,
+      photography: {
+        ...base.photography,
+        photos: [{ ...photo("a.jpg", "images/Cat/a.jpg"), alt: "a cat" }],
+      },
+      engineering: { ...base.engineering, projects: [] },
+    };
+    const left = leavePhotography(
+      { ...content, library: deriveLibrary(content) },
+      "images/Cat/a.jpg",
+    );
+
+    expect(left.photography.photos).toEqual([]);
+    expect(left.library.items).toEqual([{ src: "images/Cat/a.jpg", pages: [], alt: "a cat" }]);
   });
 
   it("refuses a file Photography cannot take", () => {
