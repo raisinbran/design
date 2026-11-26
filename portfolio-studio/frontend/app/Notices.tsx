@@ -1,4 +1,4 @@
-import { CloseButton, List, Paper, Stack, Text } from "@mantine/core";
+import { CloseButton, List, Paper, Stack, Text, Tooltip } from "@mantine/core";
 import type { ApiError } from "../../backend/api/api";
 
 type Props = {
@@ -29,12 +29,19 @@ export function Notices({ saved, error, onDismissSaved, onDismissError }: Props)
     >
       {error && (
         <Paper withBorder shadow="md" p="sm" role="alert" style={{ position: "relative" }}>
-          <CloseButton
-            aria-label="Dismiss message"
-            size="sm"
-            onClick={onDismissError}
-            style={{ position: "absolute", top: 6, right: 6 }}
-          />
+          <Tooltip
+            label="Dismiss message"
+            openDelay={0}
+            closeDelay={0}
+            transitionProps={{ duration: 0 }}
+          >
+            <CloseButton
+              aria-label="Dismiss message"
+              size="sm"
+              onClick={onDismissError}
+              style={{ position: "absolute", top: 6, right: 6 }}
+            />
+          </Tooltip>
           <Text c="red" pr="xl">
             {error.message}
           </Text>
@@ -49,12 +56,19 @@ export function Notices({ saved, error, onDismissSaved, onDismissError }: Props)
       )}
       {saved && (
         <Paper withBorder shadow="md" p="sm" role="status" style={{ position: "relative" }}>
-          <CloseButton
-            aria-label="Dismiss message"
-            size="sm"
-            onClick={onDismissSaved}
-            style={{ position: "absolute", top: 6, right: 6 }}
-          />
+          <Tooltip
+            label="Dismiss message"
+            openDelay={0}
+            closeDelay={0}
+            transitionProps={{ duration: 0 }}
+          >
+            <CloseButton
+              aria-label="Dismiss message"
+              size="sm"
+              onClick={onDismissSaved}
+              style={{ position: "absolute", top: 6, right: 6 }}
+            />
+          </Tooltip>
           <Text pr="xl">{saved}</Text>
         </Paper>
       )}
