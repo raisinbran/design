@@ -130,7 +130,7 @@ const PAGE_ORDER: Page[] = ["photography", "engineering", "archive"];
 export const deriveLibrary = (content: Content): Library =>
   repairLibrary({ schemaVersion: 1, items: [] }, content);
 
-/** The pages that use `src`, which cannot be unticked. */
+/** The pages that use `src`; all but Photography cannot be unticked while they do. */
 export const pagesInUse = (content: Content, src: string): Page[] => [
   ...new Set((usesByFile(content).get(src) ?? []).map((use) => use.page)),
 ];
@@ -256,6 +256,35 @@ export function joinPhotography(
             }
           : entry,
       ),
+    },
+  };
+}
+
+/**
+ * Removes a file's Photography entries, as unticking Photography does. The file stays on disk and
+ * in the library, keeping its description, and other pages keep using it.
+ */
+export function leavePhotography(catalogs: Catalogs, src: string): Catalogs {
+  const leaving = catalogs.photography.photos.filter((photo) => photoSrc(photo) === src);
+  if (leaving.length === 0) return catalogs;
+  const alt = leaving.find((photo) => photo.alt.trim() !== "")?.alt;
+  return {
+    ...catalogs,
+    photography: {
+      ...catalogs.photography,
+      photos: catalogs.photography.photos.filter((photo) => !leaving.includes(photo)),
+    },
+    library: {
+      ...catalogs.library,
+      items: catalogs.library.items.map((item) => {
+        if (item.src !== src) return item;
+        const { photoFile: _link, ...rest } = item;
+        return {
+          ...rest,
+          pages: item.pages.filter((page) => page !== "photography"),
+          ...(alt !== undefined && item.alt === undefined ? { alt } : {}),
+        };
+      }),
     },
   };
 }
