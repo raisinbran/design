@@ -244,7 +244,8 @@ describe("watermark", () => {
 
   // The mark stays faint but readable on any background, lighter on dark and darker on light, at
   // 20% to 55% opacity of a tone about 60 levels away. The upper bound allows for WebP ringing at
-  // the mark's edges.
+  // the mark's edges, which measured 33 on Windows and 38 on macOS at 1000 px; a mark of the wrong
+  // tone would peak near 60.
   it.each([
     { name: "dark", level: 48, lighter: true },
     { name: "light", level: 208, lighter: false },
@@ -255,7 +256,7 @@ describe("watermark", () => {
 
       expect(mark.mean > level).toBe(lighter);
       expect(mark.peak).toBeGreaterThanOrEqual(10);
-      expect(mark.peak).toBeLessThanOrEqual(36);
+      expect(mark.peak).toBeLessThanOrEqual(42);
     },
     RENDER_TIMEOUT_MS,
   );
