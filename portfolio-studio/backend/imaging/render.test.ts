@@ -41,7 +41,7 @@ beforeAll(() => {
 });
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
 
-/** A 2000 × 1500 image of one gray `level`, which renders at 800 × 600. */
+/** A 2000 × 1500 image of one gray `level`, which renders at 1000 × 750. */
 async function flatImage(level: number): Promise<string> {
   const file = path.join(scratch, `flat-${level}.png`);
   const background = { r: level, g: level, b: level };
@@ -132,7 +132,7 @@ describe("renderJob", () => {
     {
       name: "rotated jpeg",
       file: path.join(repositoryDir, "images/Bolt/File_000.jpeg"),
-      size: [600, 800],
+      size: [750, 1000],
     },
   ])(
     "returns an upright WebP with rights ($name)",
@@ -221,18 +221,18 @@ describe("renderJob", () => {
 });
 
 describe("watermark", () => {
-  // At 800 × 600 the text is 16 px (2.6% of 600) and the margin 14 px (2.4%), as on the site's
+  // At 1000 × 750 the text is 20 px (2.6% of 750) and the margin 18 px (2.4%), as on the site's
   // other images. A mark in the wrong place or size, without the logo, or tiled, would differ.
   it(
     "sits bottom right with the logo first",
     async () => {
       const mark = await findMark(await renderFlat(48), 48);
 
-      expect(Math.abs(mark.imageWidth - mark.right - 14)).toBeLessThanOrEqual(2);
-      expect(Math.abs(mark.imageHeight - mark.bottom - 14)).toBeLessThanOrEqual(2);
+      expect(Math.abs(mark.imageWidth - mark.right - 18)).toBeLessThanOrEqual(2);
+      expect(Math.abs(mark.imageHeight - mark.bottom - 18)).toBeLessThanOrEqual(2);
       const height = mark.bottom - mark.top;
-      expect(height).toBeGreaterThanOrEqual(9);
-      expect(height).toBeLessThanOrEqual(14);
+      expect(height).toBeGreaterThanOrEqual(11);
+      expect(height).toBeLessThanOrEqual(18);
       // The logo, about as wide as the letter is high, and a gap come before the narrow "I".
       expect(mark.right - mark.left).toBeGreaterThan(1.5 * height);
       // Tiled text would change pixels across the whole image.
@@ -255,7 +255,7 @@ describe("watermark", () => {
 
       expect(mark.mean > level).toBe(lighter);
       expect(mark.peak).toBeGreaterThanOrEqual(10);
-      expect(mark.peak).toBeLessThanOrEqual(30);
+      expect(mark.peak).toBeLessThanOrEqual(36);
     },
     RENDER_TIMEOUT_MS,
   );
@@ -267,7 +267,7 @@ describe("watermark", () => {
     async () => {
       const output = await render(await flatImage(48));
       const mark = await findMark(output, 48);
-      const font = `${FONT_FAMILY} 16`;
+      const font = `${FONT_FAMILY} 20`;
       const letters = await inkOf(
         sharp({ text: { text: "Test Author", font, fontfile: fontFile } }),
       );
@@ -346,7 +346,7 @@ describe("explicit published output formats", () => {
       const metadata = await sharp(rendered.bytes).metadata();
       expect(metadata.format).toBe(encoded);
       expect(rendered.format).toBe(format);
-      expect(metadata.width).toBe(800);
+      expect(metadata.width).toBe(1000);
     },
     RENDER_TIMEOUT_MS,
   );

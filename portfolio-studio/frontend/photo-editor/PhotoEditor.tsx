@@ -708,7 +708,7 @@ export function PhotoEditor({ editImage, onAdded }: PhotoEditorProps) {
                     : publishedFilename(name.trim(), outputFormat)}
                 </Text>
                 <Text size="sm" c="dimmed">
-                  The photo is converted to .{outputFormat}, up to 800 px on its longest side, with
+                  The photo is converted to .{outputFormat}, up to 1000 px on its longest side, with
                   a watermark and rights metadata. The private original is unchanged.
                 </Text>
                 <Textarea

@@ -5,6 +5,12 @@
 
   const MAX_PHOTOS_PER_ROW = 2;
   const TALL_PORTRAIT_MAX_RATIO = 2 / 3; // Minimum height:width ratio of 3:2.
+  const MAX_PORTRAIT_ROW = 3; // Only three portraits may share a row.
+  const MIN_SHORT_SIDE = 300; // Shortest side, in pixels, of any photo in a three-across row.
+  const PORTRAIT_PAIR_PENALTY = 100;
+  const WIDE_MIN_RATIO = 1.75; // A photo at least this wide may take a row alone.
+  const MAX_UPSCALE = 1.15; // No photo is shown above this multiple of its file's pixels.
+  const MAX_ROW_HEIGHT = 950; // About the page area of a maximized browser on a 1080p screen.
   const gallery = document.getElementById("photo-gallery");
   if (!gallery) return;
 
@@ -157,9 +163,11 @@
     dp[n] = 0;
     for (let begin = n - 1; begin >= 0; begin--) {
       let sum = 0;
-      for (let end = begin + 1; end <= Math.min(n, begin + MAX_PHOTOS_PER_ROW); end++) {
+      for (let end = begin + 1; end <= Math.min(n, begin + MAX_PORTRAIT_ROW); end++) {
         sum += r[end - 1];
         const count = end - begin;
+        // A third photo joins a row only when all three are portraits.
+        if (count > MAX_PHOTOS_PER_ROW && r.slice(begin, end).some(ratio => ratio >= 0.95)) continue;
         const rowPhotos = photos.slice(begin, end);
         const hasPortrait = rowPhotos.some(photo => {
           const ratio = photo.thumbnailWidth / photo.thumbnailHeight || photo.aspectRatio;
@@ -175,16 +183,29 @@
           ? Math.min(360, viewportHeight * 0.48)
           : standardMax;
         const exact = (width - gap * (count - 1)) / sum;
+        const wideSingle = count === 1 && r[begin] >= WIDE_MIN_RATIO;
         const cap = count === 1 ? Math.min(maximum, desired + (hasPortrait ? 15 : 40)) : maximum;
+        const ceiling = Math.min(
+          MAX_ROW_HEIGHT,
+          ...rowPhotos.map(photo => MAX_UPSCALE * photo.thumbnailHeight || Infinity)
+        );
         // Interior rows always span the gallery. Only the final row may be shorter.
         const height = end === n && (count > 1 || hasPortrait)
-          ? Math.min(exact, cap)
-          : exact;
+          ? Math.min(exact, cap, ceiling)
+          : end === n ? Math.min(exact, ceiling) : exact;
+        // Three across is allowed only while every photo keeps a short side this long.
+        if (count > MAX_PHOTOS_PER_ROW && Math.min(...r.slice(begin, end)) * height < MIN_SHORT_SIDE) continue;
         const used = sum * height + gap * (count - 1);
-        let penalty = 10 + 110 * Math.pow(Math.log(height / desired), 2);
-        penalty += 180 * Math.pow(Math.max(0, width - used) / width, 2);
+        // A wide photo alone on a row is meant to be tall, so it is judged against its full-row height.
+        const target = wideSingle ? Math.min(exact, 640) : desired;
+        let penalty = 10 + 110 * Math.pow(Math.log(height / target), 2);
+        penalty += 900 * Math.pow(Math.max(0, width - used) / width, 2);
+        // An interior row can't be shortened, so a row beyond its photos' resolution is a last resort.
+        if (height > ceiling) penalty += 2000 * (height / ceiling - 1) + 200;
         if (height < 190) penalty += 150;
-        if (count === 1) penalty += end === n ? 40 : 120;
+        if (count === 1) penalty += wideSingle ? 15 : end === n ? 40 : 120;
+        // Two portraits side by side make a very tall row, so pair a portrait with a landscape when order allows.
+        if (count === 2 && r[begin] < 0.95 && r[begin + 1] < 0.95) penalty += PORTRAIT_PAIR_PENALTY;
         if (hasPortrait) {
           const minimum = Math.max(...rowPhotos.map((photo, offset) => r[begin + offset] < 0.95
             ? Math.min(desiredPortraitMin(photo), width < 720 ? width * 0.65 : 410) : 0));
