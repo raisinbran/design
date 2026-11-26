@@ -175,6 +175,39 @@ describe("addPhoto", () => {
     );
   });
 
+  // A photo whose catalog name differs from its published file (a .heic source shown as .webp)
+  // is still replaced when the same published name is added with Overwrite.
+  it("overwrites the photo that already publishes the chosen filename", async () => {
+    const view = await loadPortfolio(folder);
+    view.catalogs.photography.photos[0].thumbnail = "images/Photography/DSCF3655_crop.webp";
+    const saved = await savePortfolio(folder, view.revision, view.catalogs);
+    if (!saved.ok) throw new Error(saved.error.message);
+    const count = saved.value.catalogs.photography.photos.length;
+    const request = {
+      kind: "new" as const,
+      revision: saved.value.revision,
+      sourceId: "",
+      name: "DSCF3655_crop",
+      format: "webp" as const,
+      alt: "again",
+      tags: [],
+    };
+
+    expect(await addPhoto(folder, request, image)).toMatchObject({
+      ok: false,
+      error: { code: "name-conflict" },
+    });
+    const replaced = await addPhoto(folder, { ...request, overwrite: true }, image);
+
+    expect(replaced.ok).toBe(true);
+    const photos = (await loadPortfolio(folder)).catalogs.photography.photos;
+    expect(photos).toHaveLength(count);
+    expect(photos[0]).toMatchObject({
+      file: "DSCF3655_crop.jpg",
+      thumbnail: "images/Photography/DSCF3655_crop.webp",
+    });
+  });
+
   // DSCF3655_crop.jpg is the first photo, described as "mountains"; its gallery image is 450 × 800.
   it("keeps the photo's details on Edit Image", async () => {
     const view = await loadPortfolio(folder);

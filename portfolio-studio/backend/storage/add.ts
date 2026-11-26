@@ -146,7 +146,10 @@ export async function addPhoto(
     return { ok: false, error: { code: "name-conflict", message } };
   }
 
-  if (competingThumbnail) {
+  // Overwriting a name that another photo already publishes under replaces that photo's image.
+  const target =
+    existing ?? (request.kind === "new" && request.overwrite ? competingThumbnail : undefined);
+  if (competingThumbnail && competingThumbnail !== target) {
     return {
       ok: false,
       error: {
@@ -157,9 +160,9 @@ export async function addPhoto(
   }
 
   // A gallery image gives the photo its shape, so the fields kept for photos without one go.
-  const { aspectRatio: _ratio, mediaVersion: _version, ...kept } = existing ?? {};
+  const { aspectRatio: _ratio, mediaVersion: _version, ...kept } = target ?? {};
   const photo: Photo = {
-    file: existing?.file ?? key,
+    file: target?.file ?? key,
     visible: true,
     displayPriority: "normal",
     ...kept,
@@ -177,9 +180,7 @@ export async function addPhoto(
       ...catalogs.photography.photoTags,
       ...photo.tags.filter((tag) => !catalogs.photography.photoTags.includes(tag)),
     ],
-    photos: existing
-      ? photos.map((item) => (item === existing ? photo : item))
-      : [...photos, photo],
+    photos: target ? photos.map((item) => (item === target ? photo : item)) : [...photos, photo],
   };
   const edited = {
     ...(inPhotography ? { ...catalogs, photography } : catalogs),
@@ -191,5 +192,5 @@ export async function addPhoto(
     shared ? moveItem(repointUses(edited, previous, destination), previous, destination) : edited,
     { [destination]: image.bytes },
   );
-  return saved.ok ? { ok: true, value: { view: saved.value, photoKey: key } } : saved;
+  return saved.ok ? { ok: true, value: { view: saved.value, photoKey: photo.file } } : saved;
 }
