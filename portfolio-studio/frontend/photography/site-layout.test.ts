@@ -239,3 +239,76 @@ describe("Photography gallery row capacity", () => {
     expect(gallery.children.every((row) => row.children.length <= 2)).toBe(true);
   });
 });
+
+describe("Photography gallery resolution and wide photos", () => {
+  it("never shows a lone final photo above 1.15 times its pixels", () => {
+    const dimensions: Array<[number, number]> = [
+      [800, 533],
+      [800, 533],
+      [800, 800],
+    ];
+    const { gallery } = page(1136, 3, dimensions);
+    for (const row of gallery.children) {
+      for (const tile of row.children) {
+        expect(Number.parseFloat(tile.style.height)).toBeLessThanOrEqual(1.15 * 800 + 0.01);
+      }
+    }
+  });
+
+  it("lets a lone wide photo stay tall when its file is large enough", () => {
+    const dimensions: Array<[number, number]> = Array.from({ length: 5 }, () => [1000, 563]);
+    const { gallery } = page(1136, dimensions.length, dimensions);
+    expectInteriorRowsFullWidth(gallery, 1136);
+    const lone = gallery.children.find((row) => row.children.length === 1)!;
+    expect(Number.parseFloat(lone.children[0].style.height)).toBeGreaterThan(600);
+  });
+
+  it("keeps every row within one 1080p browser height", () => {
+    const { gallery } = page(
+      1136,
+      12,
+      Array.from({ length: 12 }, () => [533, 800]),
+    );
+    for (const row of gallery.children) {
+      for (const tile of row.children) {
+        expect(Number.parseFloat(tile.style.height)).toBeLessThanOrEqual(950 + 0.01);
+      }
+    }
+  });
+
+  it("puts three portraits across only when each stays at least 300 px wide", () => {
+    const portraits: Array<[number, number]> = [
+      [533, 800],
+      [533, 800],
+      [533, 800],
+    ];
+    expect(rowFiles(page(1136, 3, portraits).gallery)).toEqual([
+      ["IMG_0.jpg", "IMG_1.jpg", "IMG_2.jpg"],
+    ]);
+    // At 900 px each would be about 292 px wide, so the third photo goes to its own row.
+    const rows = rowFiles(page(900, 3, portraits).gallery);
+    expect(rows.every((files) => files.length <= 2)).toBe(true);
+  });
+
+  it("never puts a landscape in a three-across row", () => {
+    const mixed: Array<[number, number]> = [
+      [533, 800],
+      [800, 533],
+      [533, 800],
+    ];
+    expect(rowFiles(page(1136, 3, mixed).gallery).every((files) => files.length <= 2)).toBe(true);
+  });
+
+  it("pairs a portrait with a landscape instead of two portraits when the order allows", () => {
+    const sequence: Array<[number, number]> = [
+      [800, 533],
+      [533, 800],
+      [533, 800],
+      [800, 533],
+    ];
+    expect(rowFiles(page(1136, 4, sequence).gallery)).toEqual([
+      ["IMG_0.jpg", "IMG_1.jpg"],
+      ["IMG_2.jpg", "IMG_3.jpg"],
+    ]);
+  });
+});

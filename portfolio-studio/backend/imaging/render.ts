@@ -7,7 +7,7 @@ import type { ImageSettings, Orientation, PhotoAppearance, Recipe } from "../api
 import { estimateTilt, type Tilt } from "./autolevel";
 import { DEFAULT_PHOTO_OUTPUT_FORMAT, type PhotoOutputFormat } from "../../shared/photo-format";
 
-export const OUTPUT_LONG_SIDE = 800;
+export const OUTPUT_LONG_SIDE = 1000;
 export const PROXY_LONG_SIDE = 1600;
 export const WEBP_QUALITY = 78;
 export const PIXEL_LIMIT = 100_000_000;
@@ -333,7 +333,7 @@ function rightsXmp({ author, copyright, usageTerms }: ImageSettings["rights"]): 
 }
 
 /**
- * Runs a proxy or render job. A render is the gallery image, at most 800 px on the long side, with
+ * Runs a proxy or render job. A render is the gallery image, at most 1000 px on the long side, with
  * the watermark and the rights metadata, and none of the original's metadata, such as GPS.
  */
 export async function analyzeJob(
