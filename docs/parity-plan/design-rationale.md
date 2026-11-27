@@ -108,9 +108,9 @@ The investigation of 2026-11-25 found no stated reason for 1200 px. What it did 
 | 1140 to 1280 | The range one developer guide gives for a centered content container |
 | 1440 px      | One agency's choice, based on MacBook screens                        |
 
-Text is a separate limit: [Baymard](https://baymard.com/research-articles/line-length-readability) and WCAG 1.4.8 put readable lines at 45 to 80 characters, which caps body text, not the page container.
+Text is a separate limit: [Baymard](https://baymard.com/research-articles/line-length-readability) puts readable lines at about 50 to 75 characters and WCAG 1.4.8 allows at most 80, which caps body text, not the page container.
 
-**Conclusion.** 1200 px is in the same range as the common framework containers (1140 to 1320 px) and works on a 1280 px or larger window. It is not copied from any one standard, and the repository does not record why it was chosen. It stays "reason not recorded" unless the owner remembers one. **Decision (owner, 2026-11-26): keep 1200 px.** The owner has no attachment to the number, and nothing found makes another width clearly better.
+**Conclusion.** 1200 px is in the same range as the common framework containers (1140 to 1320 px) and works on a 1280 px or larger window. It is not copied from any one standard, and the repository does not record why it was chosen. It stays "reason not recorded" unless the owner remembers one. **Decision (owner, 2026-11-26): keep 1200 px.** Nothing found makes another width clearly better.
 
 ## Reasons the owner can supply
 
