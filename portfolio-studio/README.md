@@ -8,7 +8,7 @@ An installer can only be built on the kind of computer it is for: build the macO
 
 ### One-time setup
 
-1. Install **Node.js 22** (the LTS version) from <https://nodejs.org>. Accept the defaults.
+1. Install **Node.js 22** (the LTS version) from <https://nodejs.org>. Accept the defaults. Then open a new terminal and run `node -v`; it should print `v22` followed by numbers. If it says `command not found`, the terminal cannot see Node: close it and open a new one, or on macOS add Node's folder to the path.
 2. **macOS only:** open Terminal and run `xcode-select --install` if you have never installed the developer tools. (If it says they are already installed, carry on.)
 3. Open a terminal in this folder (`portfolio-studio`):
    - **macOS:** open Terminal, type `cd ` (with a space), drag the `portfolio-studio` folder onto the window, press Return.
@@ -31,7 +31,7 @@ npm run make
 | System  | File                                                                                             |
 | ------- | ------------------------------------------------------------------------------------------------ |
 | macOS   | `out/make/dmg/arm64/Portfolio Studio-1.0.0-arm64.dmg` (`x64` instead of `arm64` on an Intel Mac) |
-| Windows | `out/make/squirrel.windows/x64/` , the file ending in `Setup.exe`                                |
+| Windows | `out/make/squirrel.windows/x64/`, the file ending in `Setup.exe`                                 |
 
 Open it to install. The installers are not signed, so:
 
